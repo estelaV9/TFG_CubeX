@@ -17,4 +17,11 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  assets:
+    - assets/background_intro.jpeg
+    - assets/app_logo.png
+  fonts:
+    - family: JollyLodger
+      fonts:
+        - asset: assets/fonts/JollyLodger-Regular.ttf
   uses-material-design: true
