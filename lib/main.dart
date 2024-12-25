@@ -2,13 +2,18 @@ import 'package:esteladevega_tfg_cubex/color/app_color.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
-void main() {
-  runApp(const CubeXApp());
+import 'database/database_helper.dart';
+
+void main() async {
+  Database database = await DatabaseHelper.database; // SE INICIALIZA LA BASE DE DATOS
+  runApp(CubeXApp(database: database)); // SE INICIA LA APLICACION
 }
 
 class CubeXApp extends StatelessWidget {
-  const CubeXApp({super.key});
+  final Database database;
+  const CubeXApp({super.key, required this.database});
 
   @override
   Widget build(BuildContext context) {
