@@ -23,5 +23,8 @@ flutter:
   fonts:
     - family: JollyLodger
       fonts:
-        - asset: assets/fonts/JollyLodger-Regular.ttf
+            - asset: assets/fonts/JollyLodger-Regular.ttf
+    - family: Gluten
+      fonts:
+        - asset: assets/fonts/Gluten-Bold.otf
   uses-material-design: true
