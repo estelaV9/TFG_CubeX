@@ -1,19 +1,24 @@
 import 'package:esteladevega_tfg_cubex/color/app_color.dart';
 import 'package:flutter/material.dart';
 
-class FieldForm extends StatelessWidget {
+class FieldForm extends StatefulWidget {
   final Icon icon; // EL ICONO QUE SE VA A USAR
   final String labelText; // TEXTO DEL FORMULARIO
   final String hintText; // TEXTO QUE VA A APARECER CUANDO SE PULSA
+  final TextEditingController controller; // PASAMOS TAMBIEN EL CONTROLADOR
 
-  final _formKey = GlobalKey<FormState>(); // CLAVE GLOBAL PARA EL FORM
-  final _nameController = TextEditingController();
-
-  FieldForm({super.key,
+  const FieldForm(
+      {super.key,
       required this.icon,
       required this.labelText,
-      required this.hintText});
+      required this.hintText,
+      required this.controller});
 
+  @override
+  _FieldFormState createState() => _FieldFormState();
+}
+
+class _FieldFormState extends State<FieldForm> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -31,7 +36,8 @@ class FieldForm extends StatelessWidget {
                 color: Colors.black.withOpacity(0.2), // COLOR DE LA SOMBRA
                 spreadRadius: 2, // LARGURA DE LA SOMBRA
                 blurRadius: 5, // EFECTO BLUR DE LA SOMBRA
-                offset: const Offset(2, 4), // DONDE SE VA A COLOCAR HORIZONTAL Y VERTICALMENTE
+                offset: const Offset(
+                    2, 4), // DONDE SE VA A COLOCAR HORIZONTAL Y VERTICALMENTE
               ),
             ],
           ),
@@ -39,27 +45,24 @@ class FieldForm extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                icon,
+                widget.icon,
 
                 // ESPACIO ENTRE EL ICONO Y EL FORMULARIO
                 const SizedBox(width: 20),
 
                 Expanded(
-                  child: Form(
-                    key: _formKey,
-                    child: TextFormField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: labelText,
-                        hintText: hintText,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please fill in this field.';
-                        } // VALIDAR SI EL CAMPO NO ESTA VACIO
-                        return null;
-                      },
+                  child: TextFormField(
+                    controller: widget.controller,
+                    decoration: InputDecoration(
+                      labelText: widget.labelText,
+                      hintText: widget.hintText,
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please fill in this field.';
+                      } // VALIDAR SI EL CAMPO NO ESTA VACIO
+                      return null;
+                    },
                   ),
                 )
               ],
