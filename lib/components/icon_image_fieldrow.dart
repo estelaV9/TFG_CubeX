@@ -21,8 +21,6 @@ class FieldForm extends StatelessWidget {
         Expanded(
             child: Container(
           height: 50,
-          // A LOS LADOS TIENE UN MARGEN DE 20
-          margin: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
             color: AppColors.lightVioletColor,
             borderRadius: BorderRadius.circular(100),
