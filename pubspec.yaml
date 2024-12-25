@@ -8,6 +8,8 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  sqflite: ^2.4.1
+  sqflite_common_ffi: ^2.3.4+3
   flutter:
     sdk: flutter
 
