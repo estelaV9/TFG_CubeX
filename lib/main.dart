@@ -1,5 +1,6 @@
 import 'package:esteladevega_tfg_cubex/color/app_color.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
+import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -138,7 +139,15 @@ class _IntroScreenState extends State<IntroScreen> {
                           children: [
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                      const SignUpScreen(),
+                                    ),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.purpleIntroColor,
                                   // COLOR DE FONDO
