@@ -10,6 +10,7 @@ environment:
 dependencies:
   sqflite: ^2.4.1
   sqflite_common_ffi: ^2.3.4+3
+  logger: ^1.1.0
   flutter:
     sdk: flutter
 
@@ -25,7 +26,7 @@ flutter:
   fonts:
     - family: JollyLodger
       fonts:
-            - asset: assets/fonts/JollyLodger-Regular.ttf
+        - asset: assets/fonts/JollyLodger-Regular.ttf
     - family: Gluten
       fonts:
         - asset: assets/fonts/Gluten-Bold.otf
