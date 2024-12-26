@@ -25,10 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final username = _usernameController.text;
+      final usernameOrEmail = _usernameController.text;
       final password = _passwordController.text;
-      if (await userDao.validateLogin('username',username, password, context) ||
-          await userDao.validateLogin('mail', username, password, context)) {
+      if (await userDao.validateLogin(usernameOrEmail, password)) {
         // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const IntroScreen(),));
       } else {
