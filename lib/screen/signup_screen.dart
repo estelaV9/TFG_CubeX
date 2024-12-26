@@ -52,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       const SizedBox(height: 10),
 
-                      FieldForm(
+                      /*FieldForm(
                         icon: const Icon(Icons.person),
                         labelText: 'Username',
                         hintText: 'Write your username',
@@ -83,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         icon: const Icon(Icons.check),
                         labelText: 'Confirm password',
                         hintText: 'Confirm password',
-                      ),
+                      ),*/
 
                       const SizedBox(height: 30),
 

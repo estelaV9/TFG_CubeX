@@ -1,6 +1,10 @@
 import 'package:esteladevega_tfg_cubex/color/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
+import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:flutter/material.dart';
+
+import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +14,35 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  UserDao userDao = UserDao();
+  final _formKey = GlobalKey<FormState>();
+
+  // CONTROLADORES
+  /// nota: se crean y se pasan como parametro los controladores en esta vista
+  /// para manejar mejor el acceso al texto del formulario
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Future<void> _login() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      final usernameOrEmail = _usernameController.text;
+      final password = _passwordController.text;
+      if (await userDao.validateLogin(usernameOrEmail, password)) {
+        // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const IntroScreen(),));
+      } else {
+        // SI LAS CREDENCIALES FALLAN, SE MUESTRA UNA ALERTA
+        AlertUtil.showAlert(
+            "Login Failed",
+            "The username or password you entered is incorrect. Please try again.",
+            context);
+      }
+    } else {
+      // SI LA VALIDACION FALLA, SE MUESTRA UNA ALERTA
+      AlertUtil.showAlert("Validation", "Please fill in this field.", context);
+    }
+  } // FUNCION LOGIN
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     begin: Alignment.topCenter, // DESDE ARRIBA
                     end: Alignment.bottomCenter, // HASTA ABAJO
                     colors: [
-                      AppColors.upLinearColor, // COLOR DE ARRIBA DEL DEGRADADO
-                      AppColors.downLinearColor, // COLOR DE ABAJO DEL DEGRADADO
+                      AppColors.upLinearColor,
+                      // COLOR DE ARRIBA DEL DEGRADADO
+                      AppColors.downLinearColor,
+                      // COLOR DE ABAJO DEL DEGRADADO
                     ],
                   ),
                 ),
@@ -52,19 +87,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: 10),
 
-                      FieldForm(
-                        icon: const Icon(Icons.person),
-                        labelText: 'Username or mail',
-                        hintText: 'Write your username or mail',
-                      ),
-
-                      // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
-                      const SizedBox(height: 10),
-
-                      FieldForm(
-                        icon: const Icon(Icons.lock),
-                        labelText: 'Password',
-                        hintText: 'Write your password',
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            FieldForm(
+                              icon: const Icon(Icons.person),
+                              labelText: 'Username',
+                              hintText: 'Enter your username',
+                              controller: _usernameController,
+                            ),
+                            const SizedBox(height: 10),
+                            FieldForm(
+                              icon: const Icon(Icons.lock),
+                              labelText: 'Password',
+                              hintText: 'Enter your password',
+                              controller: _passwordController,
+                            ),
+                          ],
+                        ),
                       ),
 
                       const SizedBox(height: 10),
@@ -98,7 +139,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(width: 14),
                           ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _login();
+                              },
                               style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets
                                     .zero, // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
