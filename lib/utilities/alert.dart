@@ -48,4 +48,12 @@ class AlertUtil {
       ScaffoldMessenger.of(context).clearSnackBars();
     });
   } // MOSTRAR UN SNACKBAR
+
+  static showSnackBarError(BuildContext context, String message) {
+    showSnackBar(context, Icons.error, message, Colors.redAccent);
+  } // SNACKBAR PARA MOSTRAR UN ERROR
+
+  static showSnackBarInformation(BuildContext context, String message) {
+    showSnackBar(context, Icons.info, message, Colors.green);
+  } // SNACKBAR PARA MOSTRAR UNA INFORMACION
 }
