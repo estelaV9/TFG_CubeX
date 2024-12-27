@@ -1,14 +1,14 @@
 import 'package:esteladevega_tfg_cubex/color/app_color.dart';
 import 'package:flutter/material.dart';
 
-class FieldForm extends StatefulWidget {
+class PasswordFieldForm extends StatefulWidget {
   final Icon icon; // EL ICONO QUE SE VA A USAR
   final String labelText; // TEXTO DEL FORMULARIO
   final String hintText; // TEXTO QUE VA A APARECER CUANDO SE PULSA
   final TextEditingController controller; // PASAMOS TAMBIEN EL CONTROLADOR
   final FormFieldValidator<String> validator; // PASAMOS LA VALIDACION
 
-  const FieldForm(
+  const PasswordFieldForm(
       {super.key,
       required this.icon,
       required this.labelText,
@@ -17,10 +17,13 @@ class FieldForm extends StatefulWidget {
       required this.validator});
 
   @override
-  _FieldFormState createState() => _FieldFormState();
+  _PasswordFieldFormState createState() => _PasswordFieldFormState();
 }
 
-class _FieldFormState extends State<FieldForm> {
+class _PasswordFieldFormState extends State<PasswordFieldForm> {
+  // ATRIBUTO PARA CONTROLAR SI SE MUESTRA O NO LA CONTRASEÑA
+  var _isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -55,12 +58,28 @@ class _FieldFormState extends State<FieldForm> {
                 Expanded(
                   child: TextFormField(
                       controller: widget.controller,
+                      obscureText: _isObscure,
                       decoration: InputDecoration(
                         labelText: widget.labelText,
                         hintText: widget.hintText,
                       ),
                       validator: widget.validator),
-                )
+                ),
+
+                IconButton(
+                    onPressed: () {
+                      // CUANDO PRESIONE EL BOTON DE VER SE CAMBIARA EL ESTADO DEL ATRIBUTO "isObscure"
+                      // DE ESTA FORMA CUANDO PULSE SE MOSTRARA/OCULTARA LA CONTRASEÑA
+                      setState(() {
+                        if (_isObscure) {
+                          _isObscure = true; // SE CAMBIA A TRUE
+                        } else {
+                          _isObscure = false; // SE CAMBIA A FALSE
+                        }
+                        _isObscure = !_isObscure; // SE CAMBIA EL ESTADO
+                      });
+                    },
+                    icon: const Icon(Icons.remove_red_eye))
               ],
             ),
           ),
