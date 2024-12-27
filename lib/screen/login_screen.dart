@@ -1,9 +1,13 @@
 import 'package:esteladevega_tfg_cubex/color/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
 import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
+import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
 import 'package:flutter/material.dart';
 
+import '../components/password_field_row.dart';
 import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final password = _passwordController.text;
       if (await userDao.validateLogin(usernameOrEmail, password)) {
         // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const IntroScreen(),));
+        ChangeScreen.changeScreen(const IntroScreen(), context);
       } else {
         // SI LAS CREDENCIALES FALLAN, SE MUESTRA UNA ALERTA
         AlertUtil.showAlert(
@@ -37,9 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
             "The username or password you entered is incorrect. Please try again.",
             context);
       }
-    } else {
-      // SI LA VALIDACION FALLA, SE MUESTRA UNA ALERTA
-      AlertUtil.showAlert("Validation", "Please fill in this field.", context);
     }
   } // FUNCION LOGIN
 
@@ -96,13 +97,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelText: 'Username',
                               hintText: 'Enter your username',
                               controller: _usernameController,
+                              validator: Validator.validateUsernameOrEmail,
                             ),
                             const SizedBox(height: 10),
-                            FieldForm(
+                            PasswordFieldForm(
                               icon: const Icon(Icons.lock),
                               labelText: 'Password',
                               hintText: 'Enter your password',
                               controller: _passwordController,
+                              validator: Validator.validatePassword,
                             ),
                           ],
                         ),
@@ -143,8 +146,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _login();
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets
-                                    .zero, // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
+                                // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
+                                padding: EdgeInsets.zero,
                               ),
                               child: const Icon(Icons.arrow_forward)),
                         ],
@@ -163,7 +166,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(width: 10),
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                // CAMBIAR A LA PANTALLA DE REGISTRO
+                                ChangeScreen.changeScreen(
+                                    const SignUpScreen(), context);
+                              },
                               child: const Text(
                                 "Sign up",
                                 style: TextStyle(
