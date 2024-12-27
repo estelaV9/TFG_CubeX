@@ -1,14 +1,15 @@
+import 'package:esteladevega_tfg_cubex/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
 import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
+import 'package:esteladevega_tfg_cubex/utilities/encrypt_password.dart';
 import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
 import 'package:flutter/material.dart';
 
 import '../components/password_field_row.dart';
-import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,15 +33,15 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       final usernameOrEmail = _usernameController.text;
       final password = _passwordController.text;
-      if (await userDao.validateLogin(usernameOrEmail, password)) {
+      final encryptedPassword = EncryptPassword.encryptPassword(password);
+
+      if (await userDao.validateLogin(usernameOrEmail, encryptedPassword)) {
         // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
-        ChangeScreen.changeScreen(const IntroScreen(), context);
+        ChangeScreen.changeScreen(const TimerScreen(), context);
       } else {
         // SI LAS CREDENCIALES FALLAN, SE MUESTRA UNA ALERTA
-        AlertUtil.showAlert(
-            "Login Failed",
-            "The username or password you entered is incorrect. Please try again.",
-            context);
+        AlertUtil.showSnackBarError(context,
+            "The username or password you entered is incorrect. Please try again.");
       }
     }
   } // FUNCION LOGIN

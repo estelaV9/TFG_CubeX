@@ -3,6 +3,7 @@ import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/main.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
+import 'package:esteladevega_tfg_cubex/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
@@ -29,10 +30,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
 
   Future<void> _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
+      // EJECUTA LAS FUNCIONES onSvaed DE LOS CAMPOS DEL FORMULARIO PORQUE
+      // SI NO LA CONTRASEÑA NO SE ACTUALIZA
+      _formKey.currentState?.save();
+
       final username = _usernameController.text;
       final mail = _mailController.text;
       String encryptedPassword = EncryptPassword.encryptPassword(_password);
@@ -40,25 +45,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       // SE CREA UN USUARIO
       User user =
-          User(username: username, mail: mail, password: encryptedPassword);
+      User(username: username, mail: mail, password: encryptedPassword);
 
       if (!await userDao.isExistsUsername(username)) {
-        if(!await userDao.isExistsEmail(mail)) {
+        if (!await userDao.isExistsEmail(mail)) {
           if (await userDao.insertUser(user)) {
             // SE MUESTRA UN SNACKBAR DE QUE SE HA CREADO CORRECTAMENTE Y SE REDIRIGE A LA PANTALLA PRINCIPAL
 
             AlertUtil.showSnackBarInformation(
-                context, "Account created\nsuccessfully.");
-            ChangeScreen.changeScreen(IntroScreen(), context);
+                context, "Account created successfully.");
+            ChangeScreen.changeScreen(const TimerScreen(), context);
           } else {
             // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
             AlertUtil.showSnackBarError(
-                context, "An error occurred while\ncreating the account.");
+                context, "An error occurred while creating the account.");
           } // INSERTAR AL USUARIO
         } else {
           // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
           AlertUtil.showSnackBarError(
-              context, "An account with this email\nalready exists.");
+              context, "An account with this email already exists.");
         } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
       } else {
         // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DEL USUARIO YA EXISTE

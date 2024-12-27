@@ -32,11 +32,22 @@ class AlertUtil {
         textColor: Colors.yellow, // COLOR DEL TEXTO DEL BOTON
         onPressed: () {
           // SE CIERRA EL SNACKBAR CUANDO PULSE "Accept"
-          Navigator.of(context).pop();
         },
       ),
       content: Row(
-        children: [Icon(icon), const SizedBox(width: 10), Text(message)],
+        children: [
+          Icon(icon),
+          const SizedBox(width: 10),
+          // PARA CONTROLAR EL OVERFLOW QUE CAUSA EL TEXTO, SE USA EL WIDGET FLEXIBLE
+          Flexible(
+            child: Text(
+              message,
+              overflow: TextOverflow.ellipsis, // CORTA EL TEXTO CON "..."
+              maxLines: 5, // LIMITA EL TEXTO A 5 LINEAS SI ES NECESARIO
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
       ), // EL TEXTO QUE SE MOSTRARA EN EL SNACKBAR
     );
 
