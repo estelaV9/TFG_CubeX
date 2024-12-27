@@ -2,6 +2,7 @@ import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/main.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
+import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
@@ -41,16 +42,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
       User user =
           User(username: username, mail: mail, password: encryptedPassword);
 
-      if (await userDao.insertUser(user)) {
-        // SE MUESTRA UN SNACKBAR DE QUE SE HA CREADO CORRECTAMENTE Y SE REDIRIGE A LA PANTALLA PRINCIPAL
-        AlertUtil.showSnackBar(context, Icons.info,
-            "Account created\nsuccessfully.", Colors.green);
-        ChangeScreen.changeScreen(IntroScreen(), context);
+      if (!await userDao.isExistsUsername(username)) {
+        if(!await userDao.isExistsEmail(mail)) {
+          if (await userDao.insertUser(user)) {
+            // SE MUESTRA UN SNACKBAR DE QUE SE HA CREADO CORRECTAMENTE Y SE REDIRIGE A LA PANTALLA PRINCIPAL
+
+            AlertUtil.showSnackBarInformation(
+                context, "Account created\nsuccessfully.");
+            ChangeScreen.changeScreen(IntroScreen(), context);
+          } else {
+            // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
+            AlertUtil.showSnackBarError(
+                context, "An error occurred while\ncreating the account.");
+          } // INSERTAR AL USUARIO
+        } else {
+          // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
+          AlertUtil.showSnackBarError(
+              context, "An account with this email\nalready exists.");
+        } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
       } else {
-        // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
-        AlertUtil.showSnackBar(context, Icons.error,
-            "An error occurred while\ncreating the account.", Colors.redAccent);
-      } // INSERTAR AL USUARIO
+        // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DEL USUARIO YA EXISTE
+        AlertUtil.showSnackBarError(
+            context, "This username is already in use.");
+      } // VALIDAR QUE EL NOMBRE DE USUARIO NO EXISTA
     } // SI TODOS LOS CAMPOS DEL FORMULARIO ESTAN CORRECTOS
   } // METODO PARA CREAR UNA CUENTA
 
@@ -181,7 +195,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           const SizedBox(width: 10),
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                // CAMBIAR A LA PANTALLA LOGIN
+                                ChangeScreen.changeScreen(
+                                    const LoginScreen(), context);
+                              },
                               child: const Text(
                                 "Log in",
                                 style: TextStyle(
