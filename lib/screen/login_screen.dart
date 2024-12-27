@@ -1,4 +1,4 @@
-import 'package:esteladevega_tfg_cubex/color/app_color.dart';
+import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
 import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   /// para manejar mejor el acceso al texto del formulario
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  String _password = '';
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -106,6 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintText: 'Enter your password',
                               controller: _passwordController,
                               validator: Validator.validatePassword,
+                              passwordOnSaved: (value) => _password = value!,
                             ),
                           ],
                         ),

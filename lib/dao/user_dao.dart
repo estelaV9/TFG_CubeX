@@ -1,5 +1,6 @@
-import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/model/user.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../database/database_helper.dart';
 
@@ -19,4 +20,57 @@ class UserDao {
       return false;
     }
   } // METODO PARA VALIDAR EL LOGIN DEL USUARIO CON EL NOMBRE O MAIL DE USUARIO
+
+  Future<bool> insertUser(User user) async {
+    final db = await DatabaseHelper.database;
+    try {
+      await db.insert('user', {
+        'username': user.username,
+        'mail': user.mail,
+        'passwordHash': user.password,
+        'creationDate': user.creationDate,
+        'imageUrl': user.imageUrl,
+      }); // SE INSERTA EL USUARIO
+
+      DatabaseHelper.logger.i(user.toString());
+      return true;
+    } catch (e) {
+      DatabaseHelper.logger.w("Error al crear usuario: $e");
+      return false;
+    } // try-catch
+  } // METODO PARA INSERTAR UN USUARIO
+
+  Future<bool> isExistsUsername(String username) async {
+    final db = await DatabaseHelper.database;
+    try {
+      final List<Map<String, Object?>> result = await db.query(
+        'user',
+        where: 'username = ?',
+        whereArgs: [username],
+      ); // VERIFICAR SI EL USUARIO EXISTE
+
+      // SI DEVUELVE UN RESULT ES QUE EXISTE UN USUARIO CON ESE NOMBRE
+      return result.isNotEmpty;
+    } catch (e) {
+      DatabaseHelper.logger.w("Error al buscar nombre de usuario: $e");
+      return false;
+    }
+  } // METODO PARA COMPRABAR SI EXISTE UN USUARIO CON ESE NOMBRE (ya que es un campo unico)
+
+  Future<bool> isExistsEmail(String mail) async {
+    final db = await DatabaseHelper.database;
+    try {
+      final List<Map<String, Object?>> result = await db.query(
+        'user',
+        where: 'mail = ?',
+        whereArgs: [mail],
+      ); // VERIFICAR SI EL MAIL EXISTE
+
+      // SI DEVUELVE UN RESULT ES QUE EXISTE UN USUARIO CON ESE MAIL
+      return result.isNotEmpty;
+    } catch (e) {
+      DatabaseHelper.logger.w("Error al buscar mail de usuario: $e");
+      return false;
+    }
+  } // METODO PARA COMPRABAR SI EXISTE UN USUARIO CON ESE MAIL (ya que es un campo unico)
 }

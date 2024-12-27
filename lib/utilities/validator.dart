@@ -1,14 +1,14 @@
 class Validator {
-  static String? validatePassword(String? value){
+  static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please fill in this field.';
     } // VALIDAR CAMPOS VACIOS
 
-    if(value.length < 8){
+    if (value.length < 8) {
       return "Must be at least 8 characters.";
     } // VALIDAR QUE LA CONTRASEÑA CONTENGA AL MENSO 8 CARACTERES
 
-    if(value.contains(' ')){
+    if (value.contains(' ')) {
       return "Must not contain spaces.";
     } // VALIDAR QUE LA CONTRASEÑA NO CONTENGA ESPACIOS EN BLANCO
 
@@ -16,12 +16,40 @@ class Validator {
       return "Must add one special character.";
     } // DEBE CONTENER AL MENOS UN CARACTER ESPECIAL
 
-    if(!RegExp(r'[0-9]').hasMatch(value)){
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
       return "Must add one number.";
     } // DEBE CONTENER AL MENOS UN NUMERO
 
     return null;
   } // VALIDACION PARA EL CAMPO DE CONTRASEÑA
+
+  static String? validateConfirmPassword(String? value, String password) {
+    if (value == null || value.isEmpty) {
+      return 'Please fill in this field.';
+    } // VALIDAR CAMPOS VACIOS
+
+    if (value.length < 8) {
+      return "Must be at least 8 characters.";
+    } // VALIDAR QUE LA CONTRASEÑA CONTENGA AL MENSO 8 CARACTERES
+
+    if (value.contains(' ')) {
+      return "Must not contain spaces.";
+    } // VALIDAR QUE LA CONTRASEÑA NO CONTENGA ESPACIOS EN BLANCO
+
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+      return "Must add one special character.";
+    } // DEBE CONTENER AL MENOS UN CARACTER ESPECIAL
+
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return "Must add one number.";
+    } // DEBE CONTENER AL MENOS UN NUMERO
+
+    if (value != password) {
+      return "Passwords do not match.";
+    } // VALIDA QUE LAS CONTRASEÑAS COINCIDAN
+
+    return null;
+  } // VALIDACION PARA CONFIRMAR EL CAMPO DE CONTRASEÑA
 
   static String? validateUsernameOrEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -40,4 +68,30 @@ class Validator {
 
     return null;
   } // VALIDACION PARA EL CAMPO DEL NOMBRE E EMAIL DEL USUARIO
+
+  static String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please fill in this field.';
+    } // VALIDAR CAMPOS VACIOS
+
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
+        .hasMatch(value)) {
+      return 'Please enter a valid email';
+    } // VALIDAR EL CAMPO DEL EMAIL
+
+    return null;
+  } // VALIDACION PARA EL CAMPO DEL EMAIL DEL USUARIO
+
+  static String? validateUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please fill in this field.';
+    } // VALIDAR CAMPOS VACIOS
+
+    if (value.length > 12) {
+      return "Name mustn't exceed 12 characters.";
+    } // SE VALIDA QUE LOS CARACTERES QUE COMPONEN EL NOMRBE DEL USUARIO NO
+    // SEA MAYOR DE 12 CARACTERES
+
+    return null;
+  } // VALIDACION PARA EL CAMPO DEL NOMBRE DEL USUARIO
 }

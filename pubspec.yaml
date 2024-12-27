@@ -10,6 +10,7 @@ environment:
 dependencies:
   sqflite: ^2.4.1
   sqflite_common_ffi: ^2.3.4+3
+  crypto: ^3.0.1
   logger: ^1.1.0
   flutter:
     sdk: flutter
@@ -23,6 +24,7 @@ flutter:
   assets:
     - assets/background_intro.jpeg
     - assets/app_logo.png
+    - assets/default_user_image.png
   fonts:
     - family: JollyLodger
       fonts:
