@@ -1,8 +1,10 @@
+import 'package:esteladevega_tfg_cubex/components/cube_type_menu.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedIconWidget extends StatefulWidget {
   final AnimatedIconData animatedIconData;
+
   const AnimatedIconWidget({super.key, required this.animatedIconData});
 
   @override
@@ -11,9 +13,10 @@ class AnimatedIconWidget extends StatefulWidget {
 
 class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
     with SingleTickerProviderStateMixin {
-
+  bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
   // SE DEFINE EL CONTROLADOR DE LA ANIMACIÓN
   late AnimationController animationController;
+  OverlayEntry? _overlayEntry; // LA VARIABLE ES OPCIONAL
 
   @override
   void initState() {
@@ -27,24 +30,82 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      // SE CREA EL ICONO CON UNA ANIMACION DE ABRIR Y CERRAR EL MENU
-      icon: AnimatedIcon(
-        icon: widget.animatedIconData, // ICONO
-        progress: animationController, // PROGRESO DE LA ANIMACION
-        color: AppColors.darkPurpleColor,
-        size: 20.0,
-      ),
-      onPressed: () {
-        // AL PRESIONAR EL ICONO, SE INICIA O REVIERTE LA ANIMACION
-        if (animationController.isCompleted) {
-          animationController.reverse(); // SE REVIERTE (CERRAR MENU)
-        } else {
-          animationController.forward(); // SE INICIA (ABRIR MENU)
-        }
-      },
+    return Column(
+      children: [
+        IconButton(
+          // SE CREA EL ICONO CON UNA ANIMACION DE ABRIR Y CERRAR EL MENU
+          icon: AnimatedIcon(
+            icon: widget.animatedIconData,
+            progress: animationController,
+            color: AppColors.darkPurpleColor,
+            size: 20.0,
+          ),
+          onPressed: () {
+            if (isMenuVisible) {
+              // SI EL MENU ESTA VISIBLE, SE OCULTA
+              animationController.reverse();
+              _removeOverlay(); // SE ELIMINA EL OVERLAY
+            } else {
+              // SI EL MENU NO ESTA VISIBLE, SE MUESTRA
+              animationController.forward();
+              _showOverlay(); // MOSTRAR EL OVERLAY
+            } // CUANDO SE PRESIONE EL ICONO, SE AGREGA/QUITA EL  MENU DEL OVERLAY
+          },
+        ),
+      ],
     );
   }
+
+  void _showOverlay() {
+    _overlayEntry = _createOverlayEntry(); // SE INICIALIZA EL OVERLAYENTRY
+    // SE INSERTA EL OVERLAY
+    Overlay.of(context)?.insert(_overlayEntry!);
+
+    setState(() {
+      isMenuVisible = true;
+    }); // SE ACUTALIZA EL ESTADO VISIBLE
+  } // METODO PARA MOSTRAR EL OVERLAY CON EL CubeTypeMenu
+
+  void _removeOverlay() {
+    _overlayEntry?.remove(); // SE ELIMINA EL OVERLAY
+    setState(() {
+      isMenuVisible = false;
+    }); // SE ACTUALIZA EL ESTADO VISIBLE
+  } // METODO PARA ELIMINAR EL OVERLAY
+
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(
+      builder: (context) {
+        return GestureDetector(
+          onTap: () {
+            // AL TOCAR FUERA, SE CIERRA EL MENU
+            _removeOverlay(); // ELIMINAR EL OVERLAY
+          },
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  // SE PONE EL FONDO MEDIO OSCURO CUANDO APARECE EL MENU
+                  color: Colors.black.withOpacity(0.5),
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: 289,
+                  height: 376,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.red,
+                  ),
+                  child: const CubeTypeMenu(), // MENÚ DE TIPOS DE CUBOS
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  } // CREAR EL OVERLAYENTRY PARA MOSTRAR EL CubeTypeMenu
 
   @override
   void dispose() {
