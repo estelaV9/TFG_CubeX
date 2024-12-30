@@ -10,6 +10,7 @@ import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
 import 'package:flutter/material.dart';
 
 import '../components/password_field_row.dart';
+import '../navigation/bottom_navigation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (await userDao.validateLogin(usernameOrEmail, encryptedPassword)) {
         // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
-        ChangeScreen.changeScreen(const TimerScreen(), context);
+        ChangeScreen.changeScreen(const BottomNavigation(), context);
       } else {
         // SI LAS CREDENCIALES FALLAN, SE MUESTRA UNA ALERTA
         AlertUtil.showSnackBarError(context,

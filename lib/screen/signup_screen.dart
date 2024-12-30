@@ -12,6 +12,7 @@ import 'package:esteladevega_tfg_cubex/utilities/encrypt_password.dart';
 import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
 import 'package:flutter/material.dart';
 
+import '../navigation/bottom_navigation.dart';
 import '../components/password_field_row.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -54,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             AlertUtil.showSnackBarInformation(
                 context, "Account created successfully.");
-            ChangeScreen.changeScreen(const TimerScreen(), context);
+            ChangeScreen.changeScreen(const BottomNavigation(), context);
           } else {
             // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
             AlertUtil.showSnackBarError(
