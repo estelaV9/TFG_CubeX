@@ -82,7 +82,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
           // .fill PARA QUE SE EXPANDA EL TIMER Y SIGA QUEDANDOSE EN EL CENTRO
           Positioned.fill(
-            top: 270, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
+            top: 250, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
             child: Column(
               children: [
                 Container(

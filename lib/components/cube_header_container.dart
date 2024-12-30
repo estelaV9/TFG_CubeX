@@ -1,6 +1,8 @@
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
+import 'icon.dart';
+
 class CubeHeaderContainer extends StatefulWidget {
   const CubeHeaderContainer({super.key});
 
@@ -12,13 +14,13 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 265,
+      width: 245,
       decoration: BoxDecoration(
         color: AppColors.lightVioletColor,
         borderRadius: BorderRadius.circular(100),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 15),
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: Row(
           children: [
             const SizedBox(width: 20),
@@ -33,16 +35,13 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
                 Text("Name Session")
               ],
             ),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.arrow_right,
-                  color: AppColors.darkPurpleColor,
-                  size: 35,
-                )),
-            const SizedBox(
-              width: 10,
-            ),
+
+            // ICONO DE MENU CERRADO/ABIERTO
+            const AnimatedIconWidget(
+                animatedIconData: AnimatedIcons.menu_close),
+
+            const SizedBox(width: 10),
+
             IconButton(
                 onPressed: () {},
                 icon: const Icon(
