@@ -1,5 +1,6 @@
 import 'package:esteladevega_tfg_cubex/components/cube_header_container.dart';
 import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
+import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
 import 'package:flutter/material.dart';
 
 import '../utilities/app_color.dart';
@@ -12,6 +13,7 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
+  // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
   var pbValue = "--:--.--";
   var worstValue = "--:--.--";
@@ -21,9 +23,13 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao50Value = "--:--.--";
   var ao100Value = "--:--.--";
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // KEY PARA CONTROLLAR EL SCAFFOLD PARA EL DRAWER
+      drawer: const AppDrawer(), // DRAWER
       body: Stack(
         children: [
           // FONDO DEGRADADO
@@ -45,14 +51,18 @@ class _TimerScreenState extends State<TimerScreen> {
           )),
 
           // BOTON DE CONFIGURACION ARRIBA A LA IZQUIERDA
-          const Positioned(
+          Positioned(
             top: 20,
             left: 20,
-            child: Icon(
-              Icons.settings,
-              size: 30,
-              color: AppColors.darkPurpleColor,
-            ),
+            child: IconButton(
+                onPressed: () {
+                  _scaffoldKey.currentState?.openDrawer(); // ABRE EL DRAWER
+                },
+                icon: const Icon(
+                  Icons.settings,
+                  size: 30,
+                  color: AppColors.darkPurpleColor,
+                )),
           ),
 
           // CONTAINER DEL TIPO DE CUBO Y LA SESION UN POCO MAS ABAJO A LA DERECHA
@@ -62,6 +72,7 @@ class _TimerScreenState extends State<TimerScreen> {
             child: CubeHeaderContainer(),
           ),
 
+          // CONTAINER DEL SCRAMBLE
           const Positioned(
             top: 110,
             right: 20,
@@ -77,8 +88,9 @@ class _TimerScreenState extends State<TimerScreen> {
                 Container(
                   padding:
                       // TODO_EL ESPACIO QUE OCUPA EL ESPACIO DEL TIMER
-                      const EdgeInsets.symmetric(vertical: 100, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 95, horizontal: 20),
                   child: Column(
+                    // SE CENTRA
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
