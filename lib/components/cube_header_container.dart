@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/components/session_menu.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,15 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
     }); // SE ACTUALIZA EL ESTADO VISIBLE
   } // METODO PARA ELIMINAR EL OVERLAY
 
+  void logicSessionIcon(){
+    // CUANDO SE TOCA, SE MUESTRA/OCULTA EL MENU DE SESSION
+    if (isMenuVisible) {
+      _removeOverlay(); // SI EL MENU ESTA VISIBLE, SE OCULTA
+    } else {
+      _showOverlay(); // SI NO ESTA VISIBLE, SE MUESTRA
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -85,25 +95,15 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
               ],
             ),
 
+            const SizedBox(width: 5),
+
             // ICONO DE MENU CERRADO/ABIERTO
             const AnimatedIconWidget(
                 animatedIconData: AnimatedIcons.menu_close),
 
-            const SizedBox(width: 10),
+            const SizedBox(width: 5),
 
-            IconButton(
-                onPressed: () {
-                  // CUANDO SE TOCA, SE MUESTRA/OCULTA EL MENU DE SESSION
-                  if (isMenuVisible) {
-                    _removeOverlay(); // SI EL MENU ESTA VISIBLE, SE OCULTA
-                  } else {
-                    _showOverlay(); // SI NO ESTA VISIBLE, SE MUESTRA
-                  }
-                },
-                icon: const Icon(
-                  Icons.square,
-                  color: AppColors.darkPurpleColor,
-                ))
+            IconClass.iconButtonImage(logicSessionIcon, "assets/session_icon.png")
           ],
         ),
       ),
