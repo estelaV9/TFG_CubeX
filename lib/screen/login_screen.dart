@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
@@ -96,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             FieldForm(
-                              icon: const Icon(Icons.person),
+                              icon: IconClass.iconMaker(Icons.person, "Username"),
                               labelText: 'Username',
                               hintText: 'Enter your username',
                               controller: _usernameController,
@@ -104,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 10),
                             PasswordFieldForm(
-                              icon: const Icon(Icons.lock),
+                              icon: IconClass.iconMaker(Icons.lock, "Password"),
                               labelText: 'Password',
                               hintText: 'Enter your password',
                               controller: _passwordController,
@@ -153,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: const Icon(Icons.arrow_forward)),
+                              child: IconClass.iconMaker(Icons.arrow_forward, "Enter app")),
                         ],
                       ),
                       const SizedBox(height: 70),

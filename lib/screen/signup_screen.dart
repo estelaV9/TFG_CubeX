@@ -12,6 +12,7 @@ import 'package:esteladevega_tfg_cubex/utilities/encrypt_password.dart';
 import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
 import 'package:flutter/material.dart';
 
+import '../components/Icon/icon.dart';
 import '../navigation/bottom_navigation.dart';
 import '../components/password_field_row.dart';
 
@@ -118,7 +119,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           key: _formKey,
                           child: Column(children: [
                             FieldForm(
-                              icon: const Icon(Icons.person),
+                              icon: IconClass.iconMaker(Icons.person, "Username"),
                               labelText: 'Username',
                               hintText: 'Write your username',
                               controller: _usernameController,
@@ -130,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             FieldForm(
-                              icon: const Icon(Icons.mail),
+                              icon: IconClass.iconMaker(Icons.mail, "Mail"),
                               labelText: 'Mail',
                               hintText: 'Write your mail',
                               controller: _mailController,
@@ -142,7 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             PasswordFieldForm(
-                              icon: const Icon(Icons.lock),
+                              icon: IconClass.iconMaker(Icons.lock, "Password"),
                               labelText: 'Password',
                               hintText: 'Write your password',
                               controller: _passwordController,
@@ -155,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             PasswordFieldForm(
-                              icon: const Icon(Icons.check),
+                              icon: IconClass.iconMaker(Icons.check, "Confirm Password"),
                               labelText: 'Confirm password',
                               hintText: 'Confirm password',
                               controller: _confirmPasswordController,
@@ -185,7 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: const Icon(Icons.arrow_forward)),
+                              child: IconClass.iconMaker(Icons.arrow_forward, "Enter app")),
                         ],
                       ),
                       const SizedBox(height: 15),

@@ -2,7 +2,7 @@ import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 class FieldForm extends StatefulWidget {
-  final Icon icon; // EL ICONO QUE SE VA A USAR
+  final Tooltip icon; // EL ICONO QUE SE VA A USAR
   final String labelText; // TEXTO DEL FORMULARIO
   final String hintText; // TEXTO QUE VA A APARECER CUANDO SE PULSA
   final TextEditingController controller; // PASAMOS TAMBIEN EL CONTROLADOR

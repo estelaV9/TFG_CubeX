@@ -103,7 +103,7 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
             const SizedBox(width: 5),
 
-            IconClass.iconButtonImage(logicSessionIcon, "assets/session_icon.png")
+            IconClass.iconButtonImage(logicSessionIcon, "assets/session_icon.png", "Choose a session")
           ],
         ),
       ),

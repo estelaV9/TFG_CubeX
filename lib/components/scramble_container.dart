@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,10 @@ class ScrambleContainer extends StatefulWidget {
 }
 
 class _ScrambleContainerState extends State<ScrambleContainer> {
+  void logicAddScramble() {
+
+  } // METODO PARA CUANDO PULSE EL ICONO DE AÑADIR SCRAMBLE
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,13 +56,8 @@ class _ScrambleContainerState extends State<ScrambleContainer> {
           Positioned(
               bottom: 10,
               right: 10,
-              child: IconButton(
-                  onPressed: () {},
-                  color: AppColors.darkPurpleColor,
-                  tooltip: "Add scramble manually",
-                  icon: const Icon(
-                    Icons.add_circle_outline,
-                  )))
+              child: IconClass.iconButton(
+                  logicAddScramble, "Add scramble manually", Icons.add_circle_outline))
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
 import 'package:flutter/material.dart';
 
+import '../components/Icon/icon.dart';
 import '../utilities/app_color.dart';
 
 class TimerScreen extends StatefulWidget {
@@ -24,6 +25,14 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao100Value = "--:--.--";
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void logicComment(){
+
+  } // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
+
+  void logicDeleteTime() {
+
+  } // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +67,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 onPressed: () {
                   _scaffoldKey.currentState?.openDrawer(); // ABRE EL DRAWER
                 },
-                icon: const Icon(
-                  Icons.settings,
-                  size: 30,
-                  color: AppColors.darkPurpleColor,
-                )),
+                icon: IconClass.iconMaker(Icons.settings, "Settings", 30)),
           ),
 
           // CONTAINER DEL TIPO DE CUBO Y LA SESION UN POCO MAS ABAJO A LA DERECHA
@@ -105,10 +110,9 @@ class _TimerScreenState extends State<TimerScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.add_comment_rounded,
-                                  color: AppColors.darkPurpleColor)),
+                          IconClass.iconButton(logicComment, "Add comments",
+                              Icons.add_comment_rounded),
+
                           TextButton(
                               onPressed: () {},
                               child: const Text(
@@ -129,10 +133,8 @@ class _TimerScreenState extends State<TimerScreen> {
                                   color: AppColors.darkPurpleColor,
                                 ),
                               )),
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.close,
-                                  color: AppColors.darkPurpleColor)),
+                          IconClass.iconButton(logicDeleteTime, "Delete time",
+                              Icons.close),
                         ],
                       )
                     ],
