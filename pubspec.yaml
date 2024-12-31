@@ -25,6 +25,7 @@ flutter:
     - assets/background_intro.jpeg
     - assets/app_logo.png
     - assets/default_user_image.png
+    - assets/session_icon.png
   fonts:
     - family: JollyLodger
       fonts:
