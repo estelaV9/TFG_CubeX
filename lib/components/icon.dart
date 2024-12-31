@@ -14,45 +14,40 @@ class AnimatedIconWidget extends StatefulWidget {
 class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
     with SingleTickerProviderStateMixin {
   bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
-  // SE DEFINE EL CONTROLADOR DE LA ANIMACIÓN
-  late AnimationController animationController;
-  OverlayEntry? _overlayEntry; // LA VARIABLE ES OPCIONAL
+  late AnimationController animationController; // CONTROLADOR DE LA ANIMACIÓN
+  OverlayEntry? _overlayEntry; // MANEJAR EL MENU COMO OVERLAY
 
   @override
   void initState() {
     super.initState();
     // SE INCIALIZA EL CONTROLADOR DE LA ANIMACIÓN CON UNA DURACION DE 1 SEGUNDO
     animationController = AnimationController(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 500),
       vsync: this, // VSYNC HACE QUE SOLO TENGA UNA ANIMACION A LA VEZ
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IconButton(
-          // SE CREA EL ICONO CON UNA ANIMACION DE ABRIR Y CERRAR EL MENU
-          icon: AnimatedIcon(
-            icon: widget.animatedIconData,
-            progress: animationController,
-            color: AppColors.darkPurpleColor,
-            size: 20.0,
-          ),
-          onPressed: () {
-            if (isMenuVisible) {
-              // SI EL MENU ESTA VISIBLE, SE OCULTA
-              animationController.reverse();
-              _removeOverlay(); // SE ELIMINA EL OVERLAY
-            } else {
-              // SI EL MENU NO ESTA VISIBLE, SE MUESTRA
-              animationController.forward();
-              _showOverlay(); // MOSTRAR EL OVERLAY
-            } // CUANDO SE PRESIONE EL ICONO, SE AGREGA/QUITA EL  MENU DEL OVERLAY
-          },
-        ),
-      ],
+    return IconButton(
+      // SE CREA EL ICONO CON UNA ANIMACION DE ABRIR Y CERRAR EL MENU
+      icon: AnimatedIcon(
+        icon: widget.animatedIconData,
+        progress: animationController,
+        color: AppColors.darkPurpleColor,
+        size: 20.0,
+      ),
+      onPressed: () {
+        if (isMenuVisible) {
+          // SI EL MENU ESTA VISIBLE, SE OCULTA
+          _removeOverlay(); // SE ELIMINA EL OVERLAY
+          animationController.reverse();
+        } else {
+          // SI EL MENU NO ESTA VISIBLE, SE MUESTRA
+          _showOverlay(); // MOSTRAR EL OVERLAY
+          animationController.forward();
+        } // CUANDO SE PRESIONE EL ICONO, SE AGREGA/QUITA EL  MENU DEL OVERLAY
+      },
     );
   }
 
@@ -80,6 +75,7 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
           onTap: () {
             // AL TOCAR FUERA, SE CIERRA EL MENU
             _removeOverlay(); // ELIMINAR EL OVERLAY
+            animationController.reverse(); // VOLVER AL ESTADO INICIAL
           },
           child: Stack(
             children: [
