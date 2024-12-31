@@ -82,16 +82,16 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
               Positioned.fill(
                 child: Container(
                   // SE PONE EL FONDO MEDIO OSCURO CUANDO APARECE EL MENU
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withOpacity(0.4),
                 ),
               ),
               Center(
+                // ESTE CONTAINER SIRVE PARA CENTRARLO EN LA PANTALLA EL OTRO CONTAINER
                 child: Container(
-                  width: 289,
-                  height: 376,
+                  width: 250,
+                  height: 300,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(30)
                   ),
                   child: const CubeTypeMenu(), // MENÚ DE TIPOS DE CUBOS
                 ),
