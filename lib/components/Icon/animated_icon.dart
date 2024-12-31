@@ -30,6 +30,7 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      tooltip: "Choose cube type",
       // SE CREA EL ICONO CON UNA ANIMACION DE ABRIR Y CERRAR EL MENU
       icon: AnimatedIcon(
         icon: widget.animatedIconData,
