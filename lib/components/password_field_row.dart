@@ -1,8 +1,9 @@
+import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 class PasswordFieldForm extends StatefulWidget {
-  final Icon icon; // EL ICONO QUE SE VA A USAR
+  final Tooltip icon; // EL ICONO QUE SE VA A USAR
   final String labelText; // TEXTO DEL FORMULARIO
   final String hintText; // TEXTO QUE VA A APARECER CUANDO SE PULSA
   final TextEditingController controller; // PASAMOS TAMBIEN EL CONTROLADOR
@@ -81,7 +82,11 @@ class _PasswordFieldFormState extends State<PasswordFieldForm> {
                             _isObscure = !_isObscure; // SE CAMBIA EL ESTADO
                           });
                         },
-                        icon: const Icon(Icons.remove_red_eye))
+                      icon: _isObscure
+                          ? IconClass.iconMaker(Icons.visibility_off, "Show password")
+                          : IconClass.iconMaker(Icons.remove_red_eye, "Hide password"),
+                      tooltip: _isObscure ? "Show password" : "Hide password",
+                    )
                   ],
                 ),
               ),
