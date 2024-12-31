@@ -5,7 +5,7 @@ import '../../utilities/app_color.dart';
 class IconClass {
 
   static Tooltip iconMaker(IconData icon, String messageTooltip, [double? size]){
-    size ??= 20; // SI NO SE INTRODUCE UN TAMAÑO, POR DEFECTO SERA 20
+    size ??= 25; // SI NO SE INTRODUCE UN TAMAÑO, POR DEFECTO SERA 25
     return Tooltip(
       message: messageTooltip,
       child: Icon(icon, color: AppColors.darkPurpleColor, size: size),
