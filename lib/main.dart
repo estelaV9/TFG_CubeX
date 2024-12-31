@@ -7,13 +7,14 @@ import 'package:sqflite/sqflite.dart';
 import 'database/database_helper.dart';
 
 void main() async {
-  Database database = await DatabaseHelper.database; // SE INICIALIZA LA BASE DE DATOS
-  runApp(CubeXApp(database: database)); // SE INICIA LA APLICACION
+  WidgetsFlutterBinding.ensureInitialized();
+  // SE INICIALIZA LA BASE DE DATOS
+  await DatabaseHelper.initDatabase();
+  runApp(CubeXApp()); // SE INICIA LA APLICACION
 }
 
 class CubeXApp extends StatelessWidget {
-  final Database database;
-  const CubeXApp({super.key, required this.database});
+  const CubeXApp({super.key});
 
   @override
   Widget build(BuildContext context) {
