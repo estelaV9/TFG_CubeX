@@ -9,6 +9,8 @@ environment:
 
 dependencies:
   sqflite: ^2.4.1
+  sqflite_common_ffi: ^2.3.4+3
+  path: ^1.8.0
   crypto: ^3.0.1
   logger: ^1.1.0
   flutter:
