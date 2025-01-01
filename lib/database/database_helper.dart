@@ -1,53 +1,87 @@
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/services.dart';
 
+// ESTA CLASE EMULA, TANTO EN DESKTOP COMO EN MOVIL
 class DatabaseHelper {
   static Database? _database;
   static final logger = Logger();
 
   static Future<Database> initDatabase() async {
-    /*sqfliteFfiInit(); // INICIALIZAR EL sqflite PARA ESCRITORIO
-    databaseFactory = databaseFactoryFfi;*/
+    if (Platform.isAndroid || Platform.isIOS) {
+      return _initMobileDatabase(); // INICIA EN MOVILES
+    } else {
+      return _initDesktopDatabase(); // INICIA EN DESKTOP
+    } // SEGUN EL ENTORNO (SI ES MOVIL O DESKTOP) SE EJECUTA DE UNA MANERA
+  } // FUNCION PARA INICIALIZAR LA BASE DE DATOS
 
-    // OBTENER LA RUTA DE LA BASE DE DATOS EN LA CARPETA DATABASE
+  static Future<Database> _initMobileDatabase() async {
+    // OBTENER LA RUTA DE LA BASE DE DATOS PARA MOVIL
     final dbPath = await getDatabasesPath();
     final dbFullPath = join(dbPath, 'database_schema.db');
 
-    logger.i("Ruta de la base de datos: $dbFullPath");
+    // RUTA DEL ARCHIVO DONDE SE ENCUENTRA LA BASE DE DATOS
+    final dbFilePath =
+    join(dbPath, 'databaseCubeX.db');
+
+    logger.i("Ruta de la base de datos: $dbFilePath");
 
     try {
-      // VERIFICA SI EL ARCHIVO DE BD EXISTE, SINO, SE COPIA EN EL DIRECTORIO assets
       final exists = await File(dbFullPath).exists();
       if (!exists) {
-        // SE COPIA EL ARCHIVO DE LA BD DESDE LOS ASSETS
         logger.i("La base de datos no existe, copiándola desde los assets...");
-        final data = await File('assets/database_schema.db').readAsBytes();
-        await File(dbFullPath).writeAsBytes(data);
+        final ByteData data =
+            await rootBundle.load('assets/database/databaseCubeX.db');
+        final buffer = data.buffer.asUint8List();
+        await File(dbFullPath).writeAsBytes(buffer);
       }
     } catch (e) {
       logger.e("Error al copiar la base de datos: $e");
     }
 
-    // ABRIR LA BASE DE DATOS
+    // SE ABRE LA BASE DE DATOS
     final db = await openDatabase(dbFullPath);
-    logger.i("Base de datos abierta correctamente");
+    logger.i("Se creo correctamente la base de datos"); // SE MUESTRA UN MENSAJE
 
     try {
-      // CREAR LAS TABLAS (SI ES NECESARIO)
-      await _createTables(db);
+      // SE EJECUTA EL ARCHIVO QUE CONTIENE TODA LA BASE DE DATOS
+      await _createTables(db, dbFilePath);
     } catch (e) {
       logger.e("Error al crear las tablas: $e");
     }
 
     return db;
-  } // FUNCION PARA INICIALIZAR LA BASE DE DATOS DESDE EL ARCHIVO DE "databaseCubeX.db"
+  } // MOVILES: FUNCION PARA INICIALIZAR LA BASE DE DATOS DESDE EL ARCHIVO DE "databaseCubeX.db"
 
-  static Future<void> _createTables(Database db) async {
+  static Future<Database> _initDesktopDatabase() async {
+    sqfliteFfiInit(); // INICIALIZAR EL sqflite PARA ESCRITORIO
+    databaseFactory = databaseFactoryFfi;
+
+    // OBTENER LA RUTA DE LA BASE DE DATOS EN LA CARPETA DATABASE
+    final dbPath =
+        join(Directory.current.path, 'lib', 'database', 'database_schema.db');
+
     // RUTA DEL ARCHIVO DONDE SE ENCUENTRA LA BASE DE DATOS
     final dbFilePath =
-        join(Directory.current.path, 'lib', 'database', 'databaseCubeX.db');
+    join(Directory.current.path, 'lib', 'database', 'databaseCubeX.db');
+
+    final db = await databaseFactory.openDatabase(dbPath);
+    logger.i("Se creo correctamente la base de datos"); // SE MUESTRA UN MENSAJE
+
+    try {
+      // SE EJECUTA EL ARCHIVO QUE CONTIENE TODA LA BASE DE DATOS
+      await _createTables(db, dbFilePath);
+    } catch (e) {
+      logger.e("Error al crear las tablas: $e");
+    }
+
+    return db;
+  } // DESKTOP: FUNCION PARA INICIALIZAR LA BASE DE DATOS DESDE EL ARCHIVO DE "databaseCubeX.db"
+
+  static Future<void> _createTables(Database db, String dbFilePath) async {
     final file = File(dbFilePath); // SE CONVIERTE A ARCHIVO
 
     if (!file.existsSync()) {
