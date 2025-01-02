@@ -1,5 +1,8 @@
+import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+
+import '../model/cubetype.dart';
 
 class CubeTypeMenu extends StatefulWidget {
   const CubeTypeMenu({super.key});
@@ -9,6 +12,22 @@ class CubeTypeMenu extends StatefulWidget {
 }
 
 class _CubeTypeMenuState extends State<CubeTypeMenu> {
+  CubeTypeDao cubeTypeDao = CubeTypeDao();
+  List<CubeType> cubeTypes = [];
+
+  void getTotalCubes() async {
+    List<CubeType> result = await cubeTypeDao.getCubeTypes();
+    setState(() {
+      cubeTypes = result;
+    });
+  } // METODO PARA SETTEAR EL NUMERO DE TIPOS DE CUBOS
+
+  @override
+  void initState() {
+    super.initState();
+    getTotalCubes(); // AL INCIIALIZARSE LA APLICACION SE ACTUALIZA EL TOTAL
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,11 +68,11 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                         mainAxisSpacing: 10,
 
                         // GENERAR LOS TIPOS DE CUBO QUE HAY EN LA BASE DE DATOS
-                        children: List.generate(15, (index) {
+                        children: cubeTypes.map((cubeType) {
                           // GESTURE DETECTOR PARA CUANDO PULSE EL TIPO DE CUBO
                           return GestureDetector(
                             onTap: () {
-                              print("Hola");
+                              print(cubeType.cubeName);
                             }, // ACCIÓN AL TOCAR
                             child: Container(
                               decoration: BoxDecoration(
@@ -66,17 +85,16 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               ),
                               child: Center(
                                 child: Text(
-                                  "Tipo de cubo $index",
+                                  cubeType.cubeName, // MUESTRA EL NOMBRE DEL CUBO
                                   style: const TextStyle(
                                     color: AppColors.darkPurpleColor,
                                     fontSize: 14,
-                                  ),
-                                  textAlign: TextAlign.center,
+                                  )
                                 ),
                               ),
                             ),
                           );
-                        }),
+                        }).toList(),
                       ),
                     ),
                   ],
