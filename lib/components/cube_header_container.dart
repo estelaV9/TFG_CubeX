@@ -3,6 +3,8 @@ import 'package:esteladevega_tfg_cubex/components/session_menu.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
+import '../dao/cubetype_dao.dart';
+import '../model/cubetype.dart';
 import 'Icon/animated_icon.dart';
 
 class CubeHeaderContainer extends StatefulWidget {
@@ -16,6 +18,23 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   // SE AÑADE EN ESTA CLASE EL OVERLAY DEL MENU SESSION
   bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
   OverlayEntry? _overlayEntry; // MANEJAR EL MENU COMO OVERLAY
+
+  late CubeType cubeType = CubeType("DefaultCube"); // VALOR INCIAL
+  CubeTypeDao cubeTypeDao = CubeTypeDao();
+
+  void getCubeTypeDefault() async{
+    CubeType result = await cubeTypeDao.cubeTypeDefault("3x3x3");
+    print(result);
+    setState(() {
+      cubeType = result;
+    });
+  } // SETTEAR EL TIPO DE CUBO POR DEFECTO (sera el 3x3x3)
+
+  @override
+  void initState() {
+    super.initState();
+    getCubeTypeDefault();
+  } // AL INICIAR LA APLICAION, SE SETTEA EL TIPO DE CUBO POR DEFECTO
 
   void _showOverlay() {
     _overlayEntry = OverlayEntry(
@@ -83,10 +102,10 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
         child: Row(
           children: [
             const SizedBox(width: 20),
-            const Column(
+            Column(
               children: [
                 Text(
-                  "Cube type name",
+                  cubeType.cubeName,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.darkPurpleColor),
