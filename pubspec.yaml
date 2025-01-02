@@ -2,7 +2,7 @@ name: esteladevega_tfg_cubex
 description: "Aplicación Flutter para resolver, analizar cubos de Rubik y hablar con la comunidad | 
               TFG DAM 24/25 | Estela de Vega Martín | IES Ribera de Castilla."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
   sdk: ^3.5.3
@@ -10,6 +10,7 @@ environment:
 dependencies:
   sqflite: ^2.4.1
   sqflite_common_ffi: ^2.3.4+3
+  path: ^1.8.0
   crypto: ^3.0.1
   logger: ^1.1.0
   flutter:
