@@ -13,6 +13,7 @@ dependencies:
   path: ^1.8.0
   crypto: ^3.0.1
   logger: ^1.1.0
+  provider: ^6.1.2
   flutter:
     sdk: flutter
 
