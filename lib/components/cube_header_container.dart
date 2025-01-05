@@ -1,7 +1,13 @@
 import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/components/session_menu.dart';
+import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/model/session.dart';
+import 'package:esteladevega_tfg_cubex/state/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../dao/cubetype_dao.dart';
 import '../model/cubetype.dart';
@@ -19,21 +25,61 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
   OverlayEntry? _overlayEntry; // MANEJAR EL MENU COMO OVERLAY
 
-  late CubeType cubeType = CubeType("DefaultCube"); // VALOR INCIAL
+  CubeType cubeType = CubeType(-1, ""); // VALOR INCIAL
   CubeTypeDao cubeTypeDao = CubeTypeDao();
+  SessionDao sessionDao = SessionDao();
+  List<Session> sessions = [];
+  UserDao userDao = UserDao();
+  Session session = Session.empty();
 
-  void getCubeTypeDefault() async{
+  void getCubeTypeDefault() async {
     CubeType result = await cubeTypeDao.cubeTypeDefault("3x3x3");
-    print(result);
     setState(() {
       cubeType = result;
     });
   } // SETTEAR EL TIPO DE CUBO POR DEFECTO (sera el 3x3x3)
 
+  void insertSessionDefault() async {
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+
+    if (currentUser != null) {
+      // BUSCAR EL ID DEL USUARIO
+      int idUser = await userDao.getIdUserFromName(currentUser.username);
+
+      if (idUser != -1) {
+        if (!await sessionDao.isExistsSessionName("Normal")) {
+          session = Session(
+              idUser: idUser,
+              sessionName: "Normal",
+              idCubeType: cubeType.idCube);
+          if (await sessionDao.insertSession(session)) {
+            sessionList();
+          } else {
+            DatabaseHelper.logger.e("No se ha podido insertar la sesion");
+          } // INSERTAR SESION
+        } // SI NO EXISTE LA SESION PREDETEERMINADA, SE CREA
+      } else {
+        DatabaseHelper.logger
+            .e("No se pudo obtener el id de usuario por nombre");
+      } // SI DEVUELVE UN ID, SE CREA LA SESION
+    } else {
+      DatabaseHelper.logger.e("No se pudo obtener el usuario actual");
+    }
+  } // METODO PARA INSERTAR UNA SESION PREDETERMINADA
+
+  void sessionList() async {
+    List<Session> result = await sessionDao.sessionList();
+    setState(() {
+      sessions = result;
+    });
+  } // METODO PRA OBTENER LISTA DE SESIONES
+
   @override
   void initState() {
     super.initState();
     getCubeTypeDefault();
+    insertSessionDefault();
   } // AL INICIAR LA APLICAION, SE SETTEA EL TIPO DE CUBO POR DEFECTO
 
   void _showOverlay() {
@@ -80,7 +126,7 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
     }); // SE ACTUALIZA EL ESTADO VISIBLE
   } // METODO PARA ELIMINAR EL OVERLAY
 
-  void logicSessionIcon(){
+  void logicSessionIcon() {
     // CUANDO SE TOCA, SE MUESTRA/OCULTA EL MENU DE SESSION
     if (isMenuVisible) {
       _removeOverlay(); // SI EL MENU ESTA VISIBLE, SE OCULTA
@@ -106,11 +152,11 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
               children: [
                 Text(
                   cubeType.cubeName,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.darkPurpleColor),
                 ),
-                Text("Name Session")
+                Text(session.sessionName)
               ],
             ),
 
@@ -122,7 +168,8 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
             const SizedBox(width: 5),
 
-            IconClass.iconButtonImage(logicSessionIcon, "assets/session_icon.png", "Choose a session")
+            IconClass.iconButtonImage(
+                logicSessionIcon, "assets/session_icon.png", "Choose a session")
           ],
         ),
       ),
