@@ -148,28 +148,44 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
         child: Row(
           children: [
             const SizedBox(width: 20),
-            Column(
-              children: [
-                Text(
-                  cubeType.cubeName,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkPurpleColor),
-                ),
-                Text(session.sessionName)
-              ],
+            // CENTRAR EL CONTENIDO DE LA COLUMNA
+            Expanded(
+              child: Column(
+                // ALINEAMOS AL CENTRO
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+
+                children: [
+                  Text(
+                    cubeType.cubeName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.darkPurpleColor),
+                  ),
+                  Text(session.sessionName)
+                ],
+              ),
             ),
 
             const SizedBox(width: 5),
 
-            // ICONO DE MENU CERRADO/ABIERTO
-            const AnimatedIconWidget(
-                animatedIconData: AnimatedIcons.menu_close),
+            // LOS BOTONES LOS ANCLAMOS A LA PARTE DE LA DERECHA
+            Align(
+              alignment: Alignment.centerRight,
 
-            const SizedBox(width: 5),
+              child: Row(
+                children: [
+                  // ICONO DE MENU CERRADO/ABIERTO
+                  const AnimatedIconWidget(
+                      animatedIconData: AnimatedIcons.menu_close),
 
-            IconClass.iconButtonImage(
-                logicSessionIcon, "assets/session_icon.png", "Choose a session")
+                  const SizedBox(width: 5),
+
+                  IconClass.iconButtonImage(
+                      logicSessionIcon, "assets/session_icon.png", "Choose a session")
+                ],
+              ),
+            )
           ],
         ),
       ),
