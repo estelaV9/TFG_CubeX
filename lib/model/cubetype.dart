@@ -1,5 +1,6 @@
 class CubeType {
+  int idCube;
   String cubeName;
 
-  CubeType(this.cubeName);
+  CubeType(this.idCube, this.cubeName);
 }
