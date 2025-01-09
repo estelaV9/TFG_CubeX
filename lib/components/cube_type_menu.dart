@@ -1,4 +1,5 @@
 import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,21 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
       cubeTypes = result;
     });
   } // METODO PARA SETTEAR EL NUMERO DE TIPOS DE CUBOS
+
+  void insertNewType (String name) async {
+    if(!await cubeTypeDao.isExistsCubeTypeName(name)){
+      if(await cubeTypeDao.insertNewType(name)){
+        getTotalCubes(); // RECARGAMOS LA LISTA DE TIPOS DE CUBOS
+        AlertUtil.showSnackBarInformation(context, "The new type was successfully inserted");
+      } else {
+        // SI NO SE INSERTO CORRECTAMENTE SE MUESTRA UN ERROR
+        AlertUtil.showSnackBarError(context, "Failed to insert the new type. Try again, please.");
+      } // INSERTAR TIPO DE CUBO
+    } else {
+      // SI EL NOMBRE YA EXISTE SE MUESTRA UN ERROR
+      AlertUtil.showSnackBarError(context, "The chosen name already exists");
+    } // VERIFICAR SI EXISTE EL TIPO DE CUBo
+  }
 
   @override
   void initState() {
@@ -97,6 +113,15 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                         }).toList(),
                       ),
                     ),
+                    // ESPACIO ENTRE EL LISTVIEW Y EL BOTON
+                    const SizedBox(height: 10),
+
+                    // BOTON PARA CREAR NUEVA SESION
+                    ElevatedButton(
+                        onPressed: () async {
+                          String? name = await  AlertUtil.showAlertForm("Insert a new type", "Insert a new type", context);
+                          insertNewType(name!);
+                        }, child: const Text("Create a new cube type"))
                   ],
                 ),
               ),
