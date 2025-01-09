@@ -21,6 +21,48 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA
 
+  static Future<String?> showAlertForm(
+      String title, String content, BuildContext context) async {
+    final TextEditingController controller = TextEditingController();
+
+    // MOSTRAR EL DIALOG
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // AJUSTE DE TAMAÑO DEL CONTENIDO
+            children: [
+              Text(content),
+              SizedBox(height: 10),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: 'Enter cube name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                String newCubeName = controller.text.trim();
+                if (newCubeName.isNotEmpty) {
+                  Navigator.of(context).pop(newCubeName); // RETORNA EL NOMBRE
+                } else {
+                  Navigator.of(context).pop(); // SE ESTA VACIO, NO RETORNA NADA
+                }
+              },
+              child: const Text("Accept"),
+            ),
+          ],
+        );
+      },
+    );
+  } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO
+
   static showSnackBar(
       BuildContext context, IconData icon, String message, Color color) {
     // CREAMOS EL SNACKBAR
