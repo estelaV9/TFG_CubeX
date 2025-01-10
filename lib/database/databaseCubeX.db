@@ -1,8 +1,7 @@
 -- ACTIVAR LA VERIFICACION DE LAS FOREIGN KEYS DE LA BASE DE DATOS
 PRAGMA foreign_keys = ON;
 
-DROP TABLE IF EXISTS user;
-CREATE TABLE user (
+CREATE TABLE IF NOT EXISTS user (
     idUser INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT(12) NOT NULL UNIQUE, -- EL NOMBRE DEL USUARIO SERA UNICO Y DE LONGUITUD DE 12
   	mail TEXT NOT NULL UNIQUE, -- EL MAIL SERA UNICO
@@ -12,31 +11,29 @@ CREATE TABLE user (
 );
 
 -- USUARIO PREDETERMINADO ADMIN
-INSERT INTO user (username, mail, passwordHash, creationDate, imageUrl)
-VALUES ('admin', 'admin@admin.com', 'admin', CURRENT_TIMESTAMP, 'imagen');
+INSERT OR REPLACE INTO user (username, mail, passwordHash, creationDate, imageUrl)
+VALUES ('admin', 'admin@admin.com', '12345678(', CURRENT_TIMESTAMP, 'imagen');
 
 
-DROP TABLE IF EXISTS cubeType;
-CREATE TABLE cubeType (
+CREATE TABLE IF NOT EXISTS cubeType (
   idCubeType INTEGER PRIMARY KEY AUTOINCREMENT,
   cubeName TEXT NOT NULL UNIQUE -- EL NOMBRE DEL CUBO SERA UNICO
 );
 
 -- CUBOS PREDETERMINADOS
-INSERT INTO cubeType (cubeName) VALUES ('2x2x2');
-INSERT INTO cubeType (cubeName) VALUES ('3x3x3');
-INSERT INTO cubeType (cubeName) VALUES ('4x4x4');
-INSERT INTO cubeType (cubeName) VALUES ('5x5x5');
-INSERT INTO cubeType (cubeName) VALUES ('6x6x6');
-INSERT INTO cubeType (cubeName) VALUES ('7x7x7');
-INSERT INTO cubeType (cubeName) VALUES ('PYRAMINX');
-INSERT INTO cubeType (cubeName) VALUES ('SKEWB');
-INSERT INTO cubeType (cubeName) VALUES ('MEGAMINX');
-INSERT INTO cubeType (cubeName) VALUES ('SQUARE-1');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('2x2x2');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('3x3x3');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('4x4x4');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('5x5x5');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('6x6x6');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('7x7x7');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('PYRAMINX');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('SKEWB');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('MEGAMINX');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('SQUARE-1');
 
 
-DROP TABLE IF EXISTS sessionTime;
-CREATE TABLE sessionTime (
+CREATE TABLE IF NOT EXISTS sessionTime (
 	idSession INTEGER PRIMARY KEY AUTOINCREMENT,  
     idUser INTEGER NOT NULL,
   	sessionName TEXT NOT NULL,
@@ -47,8 +44,7 @@ CREATE TABLE sessionTime (
   	UNIQUE (idUser, sessionName) -- ASEGURAR QUE UN USUARIO NO PUEDA TENER DOS SESIONES CON EL MISMO NOMBRE
 );
 
-DROP TABLE IF EXISTS timeTraining;
-CREATE TABLE timeTraining (
+CREATE TABLE IF NOT EXISTS timeTraining (
 	idTimeTraining INTEGER PRIMARY KEY AUTOINCREMENT,
   	idSession INTEGER NOT NULL,
   	scramble TEXT NOT NULL,
@@ -61,8 +57,7 @@ CREATE TABLE timeTraining (
 );
 
 
-DROP TABLE IF EXISTS versusCompetition;
-CREATE TABLE versusCompetition (
+CREATE TABLE IF NOT EXISTS versusCompetition (
   idVersusCompe INTEGER PRIMARY KEY AUTOINCREMENT,
   idUser INTEGER NOT NULL,
   cuber1Name TEXT NOT NULL,
@@ -72,8 +67,8 @@ CREATE TABLE versusCompetition (
   FOREIGN KEY (idUser) REFERENCES user (idUser)
 );
 
-DROP TABLE IF EXISTS timeCompetition;
-CREATE TABLE timeCompetition (
+
+CREATE TABLE IF NOT EXISTS timeCompetition (
   idTimeCompetition INTEGER PRIMARY KEY AUTOINCREMENT,
   idVersusCompe INTEGER NOT NULL,
   scramble TEXT NOT NULL,
@@ -89,9 +84,8 @@ CREATE TABLE timeCompetition (
   FOREIGN KEY (idCubeType) REFERENCES cubeType (idCubeType), 
   FOREIGN KEY (idVersusCompe) REFERENCES versusCompetition (idVersusCompe)
  );
- 
- DROP TABLE IF EXISTS average;
- CREATE TABLE average (
+
+ CREATE TABLE IF NOT EXISTS average (
    idAverage INTEGER PRIMARY KEY AUTOINCREMENT,
    idSession INTEGER NOT NULL,
    -- ESTOS CAMPOS PUEDEN SER NULOS YA QUE PUEDE NO TENER TIEMPOS UNA MEDIA
