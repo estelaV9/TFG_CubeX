@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/state/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/state/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
@@ -10,8 +11,11 @@ void main() async {
   // SE INICIALIZA LA BASE DE DATOS
   await DatabaseHelper.initDatabase();
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => CurrentUser(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CurrentCubeType()),
+        ChangeNotifierProvider(create: (context) => CurrentUser()),
+      ],
       child: CubeXApp(), // SE INICIA LA APLICACIÓN
     ),
   ); // SE INICIA LA APLICACION DENTRO DE UN PROVIDER PARA GESTIONAR EL USUARIO
