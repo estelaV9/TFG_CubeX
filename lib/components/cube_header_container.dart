@@ -1,8 +1,16 @@
 import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/components/session_menu.dart';
+import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/model/session.dart';
+import 'package:esteladevega_tfg_cubex/state/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../dao/cubetype_dao.dart';
+import '../model/cubetype.dart';
 import 'Icon/animated_icon.dart';
 
 class CubeHeaderContainer extends StatefulWidget {
@@ -16,6 +24,63 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   // SE AÑADE EN ESTA CLASE EL OVERLAY DEL MENU SESSION
   bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
   OverlayEntry? _overlayEntry; // MANEJAR EL MENU COMO OVERLAY
+
+  CubeType cubeType = CubeType(-1, ""); // VALOR INCIAL
+  CubeTypeDao cubeTypeDao = CubeTypeDao();
+  SessionDao sessionDao = SessionDao();
+  List<Session> sessions = [];
+  UserDao userDao = UserDao();
+  Session session = Session.empty();
+
+  void getCubeTypeDefault() async {
+    CubeType result = await cubeTypeDao.cubeTypeDefault("3x3x3");
+    setState(() {
+      cubeType = result;
+    });
+  } // SETTEAR EL TIPO DE CUBO POR DEFECTO (sera el 3x3x3)
+
+  void insertSessionDefault() async {
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+
+    if (currentUser != null) {
+      // BUSCAR EL ID DEL USUARIO
+      int idUser = await userDao.getIdUserFromName(currentUser.username);
+
+      if (idUser != -1) {
+        if (!await sessionDao.isExistsSessionName("Normal")) {
+          session = Session(
+              idUser: idUser,
+              sessionName: "Normal",
+              idCubeType: cubeType.idCube);
+          if (await sessionDao.insertSession(session)) {
+            sessionList();
+          } else {
+            DatabaseHelper.logger.e("No se ha podido insertar la sesion");
+          } // INSERTAR SESION
+        } // SI NO EXISTE LA SESION PREDETEERMINADA, SE CREA
+      } else {
+        DatabaseHelper.logger
+            .e("No se pudo obtener el id de usuario por nombre");
+      } // SI DEVUELVE UN ID, SE CREA LA SESION
+    } else {
+      DatabaseHelper.logger.e("No se pudo obtener el usuario actual");
+    }
+  } // METODO PARA INSERTAR UNA SESION PREDETERMINADA
+
+  void sessionList() async {
+    List<Session> result = await sessionDao.sessionList();
+    setState(() {
+      sessions = result;
+    });
+  } // METODO PRA OBTENER LISTA DE SESIONES
+
+  @override
+  void initState() {
+    super.initState();
+    getCubeTypeDefault();
+    insertSessionDefault();
+  } // AL INICIAR LA APLICAION, SE SETTEA EL TIPO DE CUBO POR DEFECTO
 
   void _showOverlay() {
     _overlayEntry = OverlayEntry(
@@ -61,7 +126,7 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
     }); // SE ACTUALIZA EL ESTADO VISIBLE
   } // METODO PARA ELIMINAR EL OVERLAY
 
-  void logicSessionIcon(){
+  void logicSessionIcon() {
     // CUANDO SE TOCA, SE MUESTRA/OCULTA EL MENU DE SESSION
     if (isMenuVisible) {
       _removeOverlay(); // SI EL MENU ESTA VISIBLE, SE OCULTA
@@ -83,27 +148,44 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
         child: Row(
           children: [
             const SizedBox(width: 20),
-            const Column(
-              children: [
-                Text(
-                  "Cube type name",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkPurpleColor),
-                ),
-                Text("Name Session")
-              ],
+            // CENTRAR EL CONTENIDO DE LA COLUMNA
+            Expanded(
+              child: Column(
+                // ALINEAMOS AL CENTRO
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+
+                children: [
+                  Text(
+                    cubeType.cubeName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.darkPurpleColor),
+                  ),
+                  Text(session.sessionName)
+                ],
+              ),
             ),
 
             const SizedBox(width: 5),
 
-            // ICONO DE MENU CERRADO/ABIERTO
-            const AnimatedIconWidget(
-                animatedIconData: AnimatedIcons.menu_close),
+            // LOS BOTONES LOS ANCLAMOS A LA PARTE DE LA DERECHA
+            Align(
+              alignment: Alignment.centerRight,
 
-            const SizedBox(width: 5),
+              child: Row(
+                children: [
+                  // ICONO DE MENU CERRADO/ABIERTO
+                  const AnimatedIconWidget(
+                      animatedIconData: AnimatedIcons.menu_close),
 
-            IconClass.iconButtonImage(logicSessionIcon, "assets/session_icon.png", "Choose a session")
+                  const SizedBox(width: 5),
+
+                  IconClass.iconButtonImage(
+                      logicSessionIcon, "assets/session_icon.png", "Choose a session")
+                ],
+              ),
+            )
           ],
         ),
       ),

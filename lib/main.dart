@@ -1,16 +1,24 @@
+import 'package:esteladevega_tfg_cubex/state/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/state/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-
+import 'package:provider/provider.dart';
 import 'database/database_helper.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   // SE INICIALIZA LA BASE DE DATOS
   await DatabaseHelper.initDatabase();
-  runApp(CubeXApp()); // SE INICIA LA APLICACION
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CurrentCubeType()),
+        ChangeNotifierProvider(create: (context) => CurrentUser()),
+      ],
+      child: CubeXApp(), // SE INICIA LA APLICACIÓN
+    ),
+  ); // SE INICIA LA APLICACION DENTRO DE UN PROVIDER PARA GESTIONAR EL USUARIO
 }
 
 class CubeXApp extends StatelessWidget {
@@ -150,7 +158,7 @@ class _IntroScreenState extends State<IntroScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                      const SignUpScreen(),
+                                          const SignUpScreen(),
                                     ),
                                   );
                                 },
@@ -178,10 +186,7 @@ class _IntroScreenState extends State<IntroScreen> {
                           ],
                         ),
                       ],
-                    )
-
-                    // ESPACIO INFERIOR
-                    )
+                    ))
               ],
             ),
           ),

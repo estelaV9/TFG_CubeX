@@ -1,8 +1,8 @@
 import 'package:esteladevega_tfg_cubex/components/cube_header_container.dart';
 import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
+import 'package:esteladevega_tfg_cubex/screen/show_time_screen.dart';
 import 'package:flutter/material.dart';
-
 import '../components/Icon/icon.dart';
 import '../utilities/app_color.dart';
 
@@ -14,6 +14,11 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
+  TextStyle style = const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: AppColors.darkPurpleColor);
+
   // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
   var pbValue = "--:--.--";
@@ -26,13 +31,30 @@ class _TimerScreenState extends State<TimerScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void logicComment(){
+  // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
+  String _finalTime = "0.00";
 
-  } // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
+  void _openShowTimerScreen(BuildContext context) async {
+    // ABRIR LA PANTALLA DE SHOWTIME Y ESPERAR EL RESULTADO
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ShowTimeScreen(),
+      ),
+    );
 
-  void logicDeleteTime() {
+    // SI EL RESULTADO NO ES NULO SE ACTUALIZA EL TIEMPO
+    if (result != null) {
+      setState(() {
+        _finalTime = result; // ACTUALIZAR TIEMPO
+      });
+    }
+  } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
 
-  } // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
+  void logicComment() {} // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
+
+  void
+      logicDeleteTime() {} // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
 
   @override
   Widget build(BuildContext context) {
@@ -88,138 +110,135 @@ class _TimerScreenState extends State<TimerScreen> {
           // .fill PARA QUE SE EXPANDA EL TIMER Y SIGA QUEDANDOSE EN EL CENTRO
           Positioned.fill(
             top: 250, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
-            child: Column(
-              children: [
-                Container(
-                  padding:
-                      // TODO_EL ESPACIO QUE OCUPA EL ESPACIO DEL TIMER
-                      const EdgeInsets.symmetric(vertical: 95, horizontal: 20),
-                  child: Column(
-                    // SE CENTRA
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "0.00",
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.darkPurpleColor,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconClass.iconButton(logicComment, "Add comments",
-                              Icons.add_comment_rounded),
-
-                          TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                "DNF",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor,
-                                ),
-                              )),
-                          TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                "+2",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor,
-                                ),
-                              )),
-                          IconClass.iconButton(logicDeleteTime, "Delete time",
-                              Icons.close),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-
-                // EXPANDE EL CONTENEDOR CON LOS TEXTOS PARA QUE OCUPE TODO_EL ESPACIO
-                // DISPONIBLE ENTRE EL TIMER Y LOS TEXTOS
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      // ESPACIO ENTRE LAS COLUMNAS
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: GestureDetector(
+              onLongPress: () {
+                _openShowTimerScreen(context);
+              }, // CUANDO MANTIENE PULSADO ABRE LA PANTALLA DE MOSTRAR TIMER
+              child: Column(
+                children: [
+                  Container(
+                    padding:
+                        // TODO_EL ESPACIO QUE OCUPA EL ESPACIO DEL TIMER
+                        const EdgeInsets.symmetric(
+                            vertical: 95, horizontal: 20),
+                    child: Column(
+                      // SE CENTRA
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // COLUMNA IZQUIERDA
-                        Column(
-                          // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Average: $averageValue",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
-                            Text(
-                              "Pb: $pbValue",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
-                            Text(
-                              "Worst: $worstValue",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
-                            Text(
-                              "Count: $countValue",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
-                          ],
+                        Text(
+                          _finalTime,
+                          style: const TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.darkPurpleColor,
+                          ),
                         ),
-
-                        //COLUMNA DERECHA
-                        Column(
-                          // EMPIEZA DESDE ARRIBA A LA DERECHA
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "Ao5: $ao5Value",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
-                            Text(
-                              "Ao12: $ao12Value",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
-                            Text(
-                              "Ao50: $ao50Value",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
-                            Text(
-                              "Ao100: $ao100Value",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor),
-                            ),
+                            IconClass.iconButton(logicComment, "Add comments",
+                                Icons.add_comment_rounded),
+                            TextButton(
+                                onPressed: () {},
+                                child: const Text(
+                                  "DNF",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.darkPurpleColor,
+                                  ),
+                                )),
+                            TextButton(
+                                onPressed: () {},
+                                child: const Text(
+                                  "+2",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.darkPurpleColor,
+                                  ),
+                                )),
+                            IconClass.iconButton(
+                                logicDeleteTime, "Delete time", Icons.close),
                           ],
-                        ),
+                        )
                       ],
                     ),
                   ),
-                ),
-              ],
+
+                  // EXPANDE EL CONTENEDOR CON LOS TEXTOS PARA QUE OCUPE TODO_EL ESPACIO
+                  // DISPONIBLE ENTRE EL TIMER Y LOS TEXTOS
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              // ESPACIO ENTRE LAS COLUMNAS
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // COLUMNA IZQUIERDA
+                                Column(
+                                  // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Average: $averageValue",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Pb: $pbValue",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Worst: $worstValue",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Count: $countValue",
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
+
+                                //COLUMNA DERECHA
+                                Column(
+                                  // EMPIEZA DESDE ARRIBA A LA DERECHA
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "Ao5: $ao5Value",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Ao12: $ao12Value",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Ao50: $ao50Value",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Ao100: $ao100Value",
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

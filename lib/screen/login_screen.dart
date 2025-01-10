@@ -1,5 +1,4 @@
 import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
-import 'package:esteladevega_tfg_cubex/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
 import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
@@ -9,9 +8,12 @@ import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/encrypt_password.dart';
 import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../components/password_field_row.dart';
+import '../model/user.dart';
 import '../navigation/bottom_navigation.dart';
+import '../state/current_user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,7 +39,15 @@ class _LoginScreenState extends State<LoginScreen> {
       final password = _passwordController.text;
       final encryptedPassword = EncryptPassword.encryptPassword(password);
 
+      // SE CREA UN USUARIO
+      final newUser =
+      User(username: usernameOrEmail, mail: usernameOrEmail, password: encryptedPassword);
+
       if (await userDao.validateLogin(usernameOrEmail, encryptedPassword)) {
+        // GUARDAR LOS DATOS DEL USURAIO EN EL ESTADO GLOBAL
+        final currentUser = Provider.of<CurrentUser>(this.context, listen: false);
+        currentUser.setUser(newUser); // SE ACTUALIZA EL ESTADO GLOBAL
+
         // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
         ChangeScreen.changeScreen(const BottomNavigation(), context);
       } else {

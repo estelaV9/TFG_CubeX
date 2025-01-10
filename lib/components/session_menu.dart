@@ -1,5 +1,9 @@
+import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+
+import '../database/database_helper.dart';
+import '../model/session.dart';
 
 class SessionMenu extends StatefulWidget {
   const SessionMenu({super.key});
@@ -9,6 +13,23 @@ class SessionMenu extends StatefulWidget {
 }
 
 class _SessionMenuState extends State<SessionMenu> {
+  List<Session> sessions = [];
+  SessionDao sessionDao = SessionDao();
+
+  void sessionList() async{
+    final result = await sessionDao.sessionList();
+    setState(() {
+      sessions = result;
+    });
+    DatabaseHelper.logger.i("obtenidas: ${result.toString()}");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    sessionList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +61,7 @@ class _SessionMenuState extends State<SessionMenu> {
                 // EXPANDIR EL LISTVIEW
                 Expanded(
                   child: ListView.builder(
-                      itemCount: 6,
+                      itemCount: sessions.length,
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
                           /// cuando pulsa, se establece la sesion a la elegida y se ceirra
@@ -52,7 +73,7 @@ class _SessionMenuState extends State<SessionMenu> {
                             margin: const EdgeInsets.symmetric(vertical: 2),
                             height: 50,
                             color: Colors.grey,
-                            child: Center(child: Text('$index')),
+                            child: Center(child: Text(sessions[index].sessionName)),
                           ),
                         );
                       }),

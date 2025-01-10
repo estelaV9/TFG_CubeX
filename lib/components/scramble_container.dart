@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+
+import '../utilities/ScrambleGenerator.dart';
 
 class ScrambleContainer extends StatefulWidget {
   const ScrambleContainer({super.key});
@@ -10,9 +14,13 @@ class ScrambleContainer extends StatefulWidget {
 }
 
 class _ScrambleContainerState extends State<ScrambleContainer> {
-  void logicAddScramble() {
+  Scramble scramble = Scramble();
 
-  } // METODO PARA CUANDO PULSE EL ICONO DE AÑADIR SCRAMBLE
+  // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
+  int random = (Random().nextInt(25 - 20 + 1) + 20);
+
+  void
+      logicAddScramble() {} // METODO PARA CUANDO PULSE EL ICONO DE AÑADIR SCRAMBLE
 
   @override
   Widget build(BuildContext context) {
@@ -40,24 +48,26 @@ class _ScrambleContainerState extends State<ScrambleContainer> {
       child: Stack(
         children: [
           // SCRAMBLE
-          const Positioned(
+          Positioned(
               top: 10,
               right: 10,
               left: 10,
               bottom: 10,
               child: Text(
-                "SCRAMBLE",
-                style: TextStyle(
+                // MOSTRAMOS EL SCRAMBLE
+                scramble.generateScramble(random),
+                style: const TextStyle(
                     color: AppColors.darkPurpleColor,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
               )),
 
           // BOTON AÑADIR MANUALMENTE
           Positioned(
               bottom: 10,
               right: 10,
-              child: IconClass.iconButton(
-                  logicAddScramble, "Add scramble manually", Icons.add_circle_outline))
+              child: IconClass.iconButton(logicAddScramble,
+                  "Add scramble manually", Icons.add_circle_outline))
         ],
       ),
     );

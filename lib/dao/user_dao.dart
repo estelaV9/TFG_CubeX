@@ -73,4 +73,25 @@ class UserDao {
       return false;
     }
   } // METODO PARA COMPRABAR SI EXISTE UN USUARIO CON ESE MAIL (ya que es un campo unico)
+
+  Future<int> getIdUserFromName (String name) async {
+    final db = await DatabaseHelper.database;
+    try {
+      final idUser = await db.query(
+        'user',
+        where: 'username = ?',
+        whereArgs: [name]
+      );
+
+      if(idUser.isNotEmpty){
+        return idUser.first['idUser'] as int;
+      } else {
+        return -1;
+      } // SI NO ESTA VACIO, RETORNA EL ID, SI NO DEVUELVE -1
+
+    } catch(e){
+      DatabaseHelper.logger.e("Error al buscar el id de usuario por nombre: $e");
+      return -1;
+    }
+  } // METODO PARA DEVOLVER EL ID POR NOMBRE DE USUARIO
 }
