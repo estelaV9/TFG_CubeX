@@ -1,7 +1,12 @@
+import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../state/current_user.dart';
 import 'bottom_navigation.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -13,6 +18,32 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   String rutaImagen = "assets/default_user_image.png"; // IMAGEN DEFECTO
+  UserDao userDao = UserDao();
+  String mail = "";
+
+  String returnName() {
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+    return currentUser?.username ?? "error";
+  } // METODO PARA RETORNAR EL NOMBRE DEL USUARIO QUE ACCEDIO
+
+  void returnMail() async {
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+    String result = await userDao.getMailUserFromName(currentUser!.username);
+    setState(() {
+      mail = result;
+    });
+    if (mail == "") {
+      DatabaseHelper.logger.e("El mail es nulo. Mail: $mail");
+    } // SI EL MAIL ES "", MUESTRA UN AVISO
+  } // METODO PARA RETORNAR EL MAIL DEL USUARIO QUE ACCEDIO
+
+  @override
+  void initState() {
+    super.initState();
+    returnMail();
+  }
 
   Widget listTileGenerator(IconData icon, String text, Widget nameScreen) {
     bool isHovered = false; // ESTADO PARA DETECTAR EL HOVER
@@ -79,41 +110,48 @@ class _AppDrawerState extends State<AppDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // AVATAR Y NOMBRE
-            Container(
-              padding: const EdgeInsets.only(left: 20, top: 30),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: AppColors.imagenBg,
-                    child: Image.asset(rutaImagen), // IAMGEN
-                  ),
-                  const SizedBox(height: 10),
+            // LO METEMOS TODO_EN UNA FILA PARA EXPANDIR EL CONTAINER
+            Row(
+              children: [
+                Expanded(
+                  // AVATAR Y NOMBRE
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 20, top: 30),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: AppColors.imagenBg,
+                          child: Image.asset(rutaImagen), // IAMGEN
+                        ),
+                        const SizedBox(height: 10),
 
-                  // NOMBRE USUARIO
-                  const Text(
-                    "namelength12",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkPurpleColor,
+                        // NOMBRE USUARIO
+                        Text(
+                          returnName(),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.darkPurpleColor,
+                          ),
+                        ),
+
+                        // MAIL USUARIO
+                        Text(
+                          mail,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: AppColors.darkPurpleColor,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-
-                  // MAIL USUARIO
-                  const Text(
-                    "example@example.com",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: AppColors.darkPurpleColor,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
 
             // OPCIONES DEL MENU
             Expanded(
@@ -156,8 +194,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 color: AppColors.darkPurpleColor),
 
             // BOTON PARA CERRAR SESION
-            listTileGenerator(
-                Icons.logout, "Log out", const BottomNavigation()),
+            listTileGenerator(Icons.logout, "Log out", const LoginScreen()),
           ],
         ),
       ),
