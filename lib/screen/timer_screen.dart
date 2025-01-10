@@ -14,6 +14,11 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
+  TextStyle style = const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: AppColors.darkPurpleColor);
+
   // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
   var pbValue = "--:--.--";
@@ -167,76 +172,68 @@ class _TimerScreenState extends State<TimerScreen> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        // ESPACIO ENTRE LAS COLUMNAS
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // COLUMNA IZQUIERDA
-                          Column(
-                            // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Average: $averageValue",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                              Text(
-                                "Pb: $pbValue",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                              Text(
-                                "Worst: $worstValue",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                              Text(
-                                "Count: $countValue",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                            ],
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              // ESPACIO ENTRE LAS COLUMNAS
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // COLUMNA IZQUIERDA
+                                Column(
+                                  // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Average: $averageValue",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Pb: $pbValue",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Worst: $worstValue",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Count: $countValue",
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
 
-                          //COLUMNA DERECHA
-                          Column(
-                            // EMPIEZA DESDE ARRIBA A LA DERECHA
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "Ao5: $ao5Value",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                              Text(
-                                "Ao12: $ao12Value",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                              Text(
-                                "Ao50: $ao50Value",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                              Text(
-                                "Ao100: $ao100Value",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor),
-                              ),
-                            ],
-                          ),
-                        ],
+                                //COLUMNA DERECHA
+                                Column(
+                                  // EMPIEZA DESDE ARRIBA A LA DERECHA
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "Ao5: $ao5Value",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Ao12: $ao12Value",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Ao50: $ao50Value",
+                                      style: style,
+                                    ),
+                                    Text(
+                                      "Ao100: $ao100Value",
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
