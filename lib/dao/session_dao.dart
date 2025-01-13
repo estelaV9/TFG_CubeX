@@ -69,8 +69,9 @@ class SessionDao {
   } // METODO PARA BUSCAR SI EL NOMBRE DE LA SESION YA EXISTE
 
 
-  Future<List<Session>?> getSessionOfUser(int idName) async {
+  Future<List<Session>> getSessionOfUser(int idName) async {
     final db = await DatabaseHelper.database;
+    List<Session> sessionError = [];
     try {
       final sessions = await db.query(
           'sessionTime',
@@ -87,13 +88,13 @@ class SessionDao {
           );
         }).toList();
       } else {
-        return null;
+        return sessionError;
       } // SI NO ESTA VACIO, RETORNA LA SESSION, SI NO DEVUELVE NULL
 
     } catch (e) {
       DatabaseHelper.logger.e(
           "Error al listar sessiones del usuario: $e");
-      return null;
+      return sessionError;
     }
   } // METODO PARA OBTENER LAS SESSIONES DE UN USUARIO
 }
