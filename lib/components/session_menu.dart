@@ -1,4 +1,5 @@
 import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,9 @@ import '../model/session.dart';
 import '../state/current_user.dart';
 
 class SessionMenu extends StatefulWidget {
-  const SessionMenu({super.key});
+  final Function(String) onSessionSelected;
+
+  const SessionMenu({super.key, required this.onSessionSelected});
 
   @override
   State<SessionMenu> createState() => _SessionMenuState();
@@ -18,15 +21,20 @@ class SessionMenu extends StatefulWidget {
 class _SessionMenuState extends State<SessionMenu> {
   List<Session> sessions = [];
   SessionDao sessionDao = SessionDao();
+  UserDao userDao = UserDao();
   String sessionName = "";
 
-  void getSessionOfUser() async {
+  Future<void> getSessionOfUser() async {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;
+
     if (currentUser != null) {
-      List<Session>? result =
-          await sessionDao.getSessionOfUser(currentUser.idUser!);
-      if (result != null) {
+      // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
+      int idUser = await userDao.getIdUserFromName(currentUser.username);
+      // BUSCAR SESION POR ID DE USUARIO
+      List<Session> result = await sessionDao.getSessionOfUser(idUser);
+
+      if (result.isNotEmpty) {
         setState(() {
           sessions = result;
         });
@@ -43,7 +51,6 @@ class _SessionMenuState extends State<SessionMenu> {
   @override
   void initState() {
     super.initState();
-    sessionList();
     getSessionOfUser();
   }
 
@@ -56,6 +63,9 @@ class _SessionMenuState extends State<SessionMenu> {
   }
 
   void createNewSession() async {
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+
     String? newSession = await AlertUtil.showAlertForm(
         "Create a new session",
         "Please enter a name for your new session",
@@ -70,8 +80,18 @@ class _SessionMenuState extends State<SessionMenu> {
       setState(() {
         sessionName = newSession;
       }); // SE SETTEA EL NOMBRE DE LA SESSION AL AÑADIDO
-      // SE MUESTRA UN ALERT DE CONFIRMACION
-      AlertUtil.showSnackBarInformation(context, "Session added successful");
+
+      if (currentUser != null) {
+        // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
+        int idUser = await userDao.getIdUserFromName(currentUser.username);
+        // Session newSession = Session(idUser: idUser, sessionName: sessionName, idCubeType: idCubeType);
+        // sessionDao.insertSession(newSession);
+        // SE MUESTRA UN ALERT DE CONFIRMACION
+        AlertUtil.showSnackBarInformation(context, "Session added successful");
+      } else {
+        // MENSAJE INTERNO DE ERROR
+        DatabaseHelper.logger.e("Current user nulo");
+      }
     } // VALIDA SI LA SESION AÑADIDO ES NULO O NO
   } // METODO PARA CREAR UNA NUEVA SESION
 
@@ -123,6 +143,8 @@ class _SessionMenuState extends State<SessionMenu> {
                             // SE ACTUALIZA EL NOMBRE DE LA SESION ACTUAL ELEGIDA
                             sessionName == session.sessionName;
                           });
+                          // Actualizar el nombre de la sesión seleccionada
+                          widget.onSessionSelected(session.sessionName);
                           print(sessionName);
                         },
                         child: Container(
