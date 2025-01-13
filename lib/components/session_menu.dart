@@ -1,9 +1,12 @@
 import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../database/database_helper.dart';
 import '../model/session.dart';
+import '../state/current_user.dart';
 
 class SessionMenu extends StatefulWidget {
   const SessionMenu({super.key});
@@ -15,8 +18,36 @@ class SessionMenu extends StatefulWidget {
 class _SessionMenuState extends State<SessionMenu> {
   List<Session> sessions = [];
   SessionDao sessionDao = SessionDao();
+  String sessionName = "";
 
-  void sessionList() async{
+  void getSessionOfUser() async {
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+    if (currentUser != null) {
+      List<Session>? result =
+          await sessionDao.getSessionOfUser(currentUser.idUser!);
+      if (result != null) {
+        setState(() {
+          sessions = result;
+        });
+      } else {
+        // MENSAJE INTERNO DE ERROR
+        DatabaseHelper.logger.e("Lista de sesiones nula");
+      }
+    } else {
+      // MENSAJE INTERNO DE ERROR
+      DatabaseHelper.logger.e("Current user nulo");
+    }
+  } // METODO PARA SETTEAR EL NUMERO DE SESIONES DE UN USUARIO
+
+  @override
+  void initState() {
+    super.initState();
+    sessionList();
+    getSessionOfUser();
+  }
+
+  void sessionList() async {
     final result = await sessionDao.sessionList();
     setState(() {
       sessions = result;
@@ -24,11 +55,25 @@ class _SessionMenuState extends State<SessionMenu> {
     DatabaseHelper.logger.i("obtenidas: ${result.toString()}");
   }
 
-  @override
-  void initState() {
-    super.initState();
-    sessionList();
-  }
+  void createNewSession() async {
+    String? newSession = await AlertUtil.showAlertForm(
+        "Create a new session",
+        "Please enter a name for your new session",
+        "Type the session name",
+        context);
+
+    if (newSession == null) {
+      // MENSAJE DE ERROR POR SI DEJA EL FORMULARIO VACIO
+      AlertUtil.showSnackBarError(
+          context, "Please add a session name that isn't empty.");
+    } else {
+      setState(() {
+        sessionName = newSession;
+      }); // SE SETTEA EL NOMBRE DE LA SESSION AL AÑADIDO
+      // SE MUESTRA UN ALERT DE CONFIRMACION
+      AlertUtil.showSnackBarInformation(context, "Session added successful");
+    } // VALIDA SI LA SESION AÑADIDO ES NULO O NO
+  } // METODO PARA CREAR UNA NUEVA SESION
 
   @override
   Widget build(BuildContext context) {
@@ -60,23 +105,38 @@ class _SessionMenuState extends State<SessionMenu> {
 
                 // EXPANDIR EL LISTVIEW
                 Expanded(
-                  child: ListView.builder(
-                      itemCount: sessions.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          /// cuando pulsa, se establece la sesion a la elegida y se ceirra
-                          onTap: () {
-                            print('hola');
-                          },
-                          child: Container(
-                            // MARGEN ENTRE SESION Y SESION
-                            margin: const EdgeInsets.symmetric(vertical: 2),
-                            height: 50,
-                            color: Colors.grey,
-                            child: Center(child: Text(sessions[index].sessionName)),
-                          ),
-                        );
-                      }),
+                  child: GridView.count(
+                    // UNA COLUMNA
+                    crossAxisCount: 1,
+                    // ESPACIADO HORIZONTAL ENTRE CONTAINERS
+                    crossAxisSpacing: 10,
+                    // ESPACIADO VERTICAL
+                    mainAxisSpacing: 10,
+
+                    // GENERAR LOS TIPOS DE CUBO QUE HAY EN LA BASE DE DATOS
+                    children: sessions.map((session) {
+                      // GESTURE DETECTOR PARA CUANDO PULSE EL TIPO DE CUBO
+                      return GestureDetector(
+                        /// cuando pulsa, se establece la sesion a la elegida y se ceirra
+                        onTap: () {
+                          setState(() {
+                            // SE ACTUALIZA EL NOMBRE DE LA SESION ACTUAL ELEGIDA
+                            sessionName == session.sessionName;
+                          });
+                          print(sessionName);
+                        },
+                        child: Container(
+                          // MARGEN ENTRE SESION Y SESION
+                          margin: const EdgeInsets.symmetric(vertical: 2),
+                          height: 50,
+                          color: Colors.grey,
+                          child: Center(
+                              // SE MUESTRA LOS NOMBRES DE LA SESIONES
+                              child: Text(session.sessionName)),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
 
                 // ESPACIO ENTRE EL LISTVIEW Y EL BOTON
@@ -84,7 +144,10 @@ class _SessionMenuState extends State<SessionMenu> {
 
                 // BOTON PARA CREAR NUEVA SESION
                 ElevatedButton(
-                    onPressed: () {}, child: const Text("Create a new session"))
+                    onPressed: () {
+                      createNewSession();
+                    },
+                    child: const Text("Create a new session"))
               ],
             ),
           ),
