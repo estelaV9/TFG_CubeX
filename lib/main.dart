@@ -1,4 +1,5 @@
 import 'package:esteladevega_tfg_cubex/state/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/state/current_session.dart';
 import 'package:esteladevega_tfg_cubex/state/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
@@ -14,6 +15,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CurrentCubeType()),
+        ChangeNotifierProvider(create: (_) => CurrentSession()),
         ChangeNotifierProvider(create: (context) => CurrentUser()),
       ],
       child: CubeXApp(), // SE INICIA LA APLICACIÓN
