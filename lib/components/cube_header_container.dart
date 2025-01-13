@@ -4,6 +4,7 @@ import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
+import 'package:esteladevega_tfg_cubex/state/current_session.dart';
 import 'package:esteladevega_tfg_cubex/state/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
   OverlayEntry? _overlayEntry; // MANEJAR EL MENU COMO OVERLAY
 
-  CubeType cubeType = CubeType(-1, ""); // VALOR INCIAL
+  CubeType cubeType = CubeType(idCube: -1, cubeName: ""); // VALOR INCIAL
   CubeTypeDao cubeTypeDao = CubeTypeDao();
   SessionDao sessionDao = SessionDao();
   List<Session> sessions = [];
@@ -52,7 +53,7 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
           session = Session(
               idUser: idUser,
               sessionName: "Normal",
-              idCubeType: cubeType.idCube);
+              idCubeType: cubeType.idCube!);
           if (await sessionDao.insertSession(session)) {
             sessionList();
           } else {
@@ -103,7 +104,13 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
                 child: Container(
                   width: 250,
                   height: 300,
-                  child: const SessionMenu(), // SESSION MENU
+                  child: SessionMenu(
+                    onSessionSelected: (sessionName) {
+                      setState(() {
+                        session.sessionName = sessionName;
+                      }); // SE ACTUALIZA EL NOMBRE DE LA SESION
+                    },
+                  ), // SESSION MENU
                 ),
               ),
             ],
@@ -172,7 +179,6 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
             // LOS BOTONES LOS ANCLAMOS A LA PARTE DE LA DERECHA
             Align(
               alignment: Alignment.centerRight,
-
               child: Row(
                 children: [
                   // ICONO DE MENU CERRADO/ABIERTO
@@ -181,8 +187,8 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
                   const SizedBox(width: 5),
 
-                  IconClass.iconButtonImage(
-                      logicSessionIcon, "assets/session_icon.png", "Choose a session")
+                  IconClass.iconButtonImage(logicSessionIcon,
+                      "assets/session_icon.png", "Choose a session")
                 ],
               ),
             )
