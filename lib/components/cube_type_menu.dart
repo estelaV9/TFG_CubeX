@@ -119,7 +119,7 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                     // BOTON PARA CREAR NUEVA SESION
                     ElevatedButton(
                         onPressed: () async {
-                          String? name = await  AlertUtil.showAlertForm("Insert a new type", "Insert a new type", context);
+                          String? name = await  AlertUtil.showAlertForm("Insert a new type", "Insert a new type", "Enter a new cube type", context);
                           insertNewType(name!);
                         }, child: const Text("Create a new cube type"))
                   ],

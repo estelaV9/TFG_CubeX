@@ -94,4 +94,25 @@ class UserDao {
       return -1;
     }
   } // METODO PARA DEVOLVER EL ID POR NOMBRE DE USUARIO
+
+  Future<String> getMailUserFromName (String name) async {
+    final db = await DatabaseHelper.database;
+    try {
+      final idUser = await db.query(
+          'user',
+          where: 'username = ?',
+          whereArgs: [name]
+      );
+
+      if(idUser.isNotEmpty){
+        return idUser.first['mail'] as String;
+      } else {
+        return "";
+      } // SI NO ESTA VACIO, RETORNA EL MAIL, SI NO DEVUELVE ""
+
+    } catch(e){
+      DatabaseHelper.logger.e("Error al buscar el mail de usuario por nombre: $e");
+      return "";
+    }
+  } // METODO PARA DEVOLVER EL MAIL POR NOMBRE DE USUARIO
 }

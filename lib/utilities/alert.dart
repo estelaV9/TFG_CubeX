@@ -22,7 +22,7 @@ class AlertUtil {
   } // METODO PARA MOSTRAR UNA ALERTA
 
   static Future<String?> showAlertForm(
-      String title, String content, BuildContext context) async {
+      String title, String content, String labelText, BuildContext context) async {
     final TextEditingController controller = TextEditingController();
 
     // MOSTRAR EL DIALOG
@@ -38,8 +38,8 @@ class AlertUtil {
               SizedBox(height: 10),
               TextField(
                 controller: controller,
-                decoration: const InputDecoration(
-                  labelText: 'Enter cube name',
+                decoration: InputDecoration(
+                  labelText: labelText,
                   border: OutlineInputBorder(),
                 ),
               ),

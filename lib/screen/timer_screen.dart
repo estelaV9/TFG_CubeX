@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:esteladevega_tfg_cubex/components/cube_header_container.dart';
 import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/screen/show_time_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/Icon/icon.dart';
+import '../utilities/ScrambleGenerator.dart';
 import '../utilities/app_color.dart';
 
 class TimerScreen extends StatefulWidget {
@@ -15,7 +18,7 @@ class TimerScreen extends StatefulWidget {
 
 class _TimerScreenState extends State<TimerScreen> {
   TextStyle style = const TextStyle(
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: FontWeight.bold,
       color: AppColors.darkPurpleColor);
 
@@ -34,6 +37,12 @@ class _TimerScreenState extends State<TimerScreen> {
   // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
   String _finalTime = "0.00";
 
+  // KEY DEL ScrambleContainer
+  final GlobalKey<ScrambleContainerState> _scrambleKey = GlobalKey<ScrambleContainerState>();
+  Scramble scramble = Scramble();
+  // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
+  int random = (Random().nextInt(25 - 20 + 1) + 20);
+
   void _openShowTimerScreen(BuildContext context) async {
     // ABRIR LA PANTALLA DE SHOWTIME Y ESPERAR EL RESULTADO
     final result = await Navigator.push(
@@ -48,6 +57,9 @@ class _TimerScreenState extends State<TimerScreen> {
       setState(() {
         _finalTime = result; // ACTUALIZAR TIEMPO
       });
+
+      // SE ACTUALIZA EL SCRAMBLE UNA VEZ TEMINADO EL TIEMPO DE RESOLUCION
+      _scrambleKey.currentState?.updateScramble();
     }
   } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
 
@@ -100,11 +112,12 @@ class _TimerScreenState extends State<TimerScreen> {
           ),
 
           // CONTAINER DEL SCRAMBLE
-          const Positioned(
+          Positioned(
             top: 110,
             right: 20,
             left: 20,
-            child: ScrambleContainer(),
+            // SE PASA LA CLAVE DEL SCRMABLE PARA QUE FUNCIONE
+            child: ScrambleContainer(key: _scrambleKey),
           ),
 
           // .fill PARA QUE SE EXPANDA EL TIMER Y SIGA QUEDANDOSE EN EL CENTRO
@@ -120,7 +133,7 @@ class _TimerScreenState extends State<TimerScreen> {
                     padding:
                         // TODO_EL ESPACIO QUE OCUPA EL ESPACIO DEL TIMER
                         const EdgeInsets.symmetric(
-                            vertical: 95, horizontal: 20),
+                            vertical: 80, horizontal: 20),
                     child: Column(
                       // SE CENTRA
                       mainAxisAlignment: MainAxisAlignment.center,

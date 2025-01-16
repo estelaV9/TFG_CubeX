@@ -32,7 +32,8 @@ class SessionDao {
       if (sessions.isNotEmpty) {
         // MAPEAR LOS RESULTADOS A UNA LISTA DE OBJETOS Session
         return sessions
-            .map((map) => Session(
+            .map((map) =>
+            Session(
                 sessionName: map['sessionName'] as String,
                 idCubeType: map['idCubeType'] as int,
                 idUser: map['idUser'] as int))
@@ -66,4 +67,34 @@ class SessionDao {
       return false; // EN CASO DE ERROR, RETORNA FALSE
     }
   } // METODO PARA BUSCAR SI EL NOMBRE DE LA SESION YA EXISTE
+
+
+  Future<List<Session>> getSessionOfUser(int idName) async {
+    final db = await DatabaseHelper.database;
+    List<Session> sessionError = [];
+    try {
+      final sessions = await db.query(
+          'sessionTime',
+          where: 'idUser = ?',
+          whereArgs: [idName]
+      );
+
+      if (sessions.isNotEmpty) {
+        return sessions.map((session) {
+          return Session(
+            idUser: session['idUser'] as int,
+            sessionName: session['sessionName'] as String,
+            idCubeType: session['idCubeType'] as int,
+          );
+        }).toList();
+      } else {
+        return sessionError;
+      } // SI NO ESTA VACIO, RETORNA LA SESSION, SI NO DEVUELVE NULL
+
+    } catch (e) {
+      DatabaseHelper.logger.e(
+          "Error al listar sessiones del usuario: $e");
+      return sessionError;
+    }
+  } // METODO PARA OBTENER LAS SESSIONES DE UN USUARIO
 }
