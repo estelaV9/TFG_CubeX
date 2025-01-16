@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
+import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -10,17 +11,44 @@ class ScrambleContainer extends StatefulWidget {
   const ScrambleContainer({super.key});
 
   @override
-  State<ScrambleContainer> createState() => _ScrambleContainerState();
+  State<ScrambleContainer> createState() => ScrambleContainerState();
 }
 
-class _ScrambleContainerState extends State<ScrambleContainer> {
+class ScrambleContainerState extends State<ScrambleContainer> {
   Scramble scramble = Scramble();
+  String scrambleName = "";
 
   // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
   int random = (Random().nextInt(25 - 20 + 1) + 20);
 
-  void
-      logicAddScramble() {} // METODO PARA CUANDO PULSE EL ICONO DE AÑADIR SCRAMBLE
+  void logicAddScramble() async {
+    // SE MUESTRA UNA ALERTA DE FORMULARIO
+    String? newScramble = await AlertUtil.showAlertForm("Add a custom scramble", "", "Enter a new scramble", context);
+    if(newScramble == null){
+      // MENSAJE DE ERROR POR SI DEJA EL FORMULARIO VACIO
+      AlertUtil.showSnackBarError(context, "Please add a scramble that isn't empty.");
+    } else {
+      setState(() {
+        scrambleName = newScramble;
+      }); // SE SETTEA EL NOMBRE DEL SCRAMBLE AL AÑADIDO
+      // SE MUESTRA UN ALERT DE CONFIRMACION
+      AlertUtil.showSnackBarInformation(context, "Scramble added successful");
+    } // VALIDA SI EL SCRAMBLE AÑADIDO ES NULO O NO
+  } // METODO PARA CUANDO PULSE EL ICONO DE AÑADIR SCRAMBLE
+
+
+  void updateScramble() {
+    setState(() {
+      scrambleName = scramble.generateScramble(random);  // SE ASIGNA UN NUEVO SCRAMBLE
+    });
+  } // METODO PARA ACTUALIZAR EL SCRAMBLE
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    scrambleName = scramble.generateScramble(random);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +83,7 @@ class _ScrambleContainerState extends State<ScrambleContainer> {
               bottom: 10,
               child: Text(
                 // MOSTRAMOS EL SCRAMBLE
-                scramble.generateScramble(random),
+                scrambleName,
                 style: const TextStyle(
                     color: AppColors.darkPurpleColor,
                     fontWeight: FontWeight.bold,
