@@ -1,0 +1,97 @@
+-- ACTIVAR LA VERIFICACION DE LAS FOREIGN KEYS DE LA BASE DE DATOS
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS user (
+    idUser INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT(12) NOT NULL UNIQUE, -- EL NOMBRE DEL USUARIO SERA UNICO Y DE LONGUITUD DE 12
+  	mail TEXT NOT NULL UNIQUE, -- EL MAIL SERA UNICO
+  	passwordHash TEXT NOT NULL,
+  	creationDate TIME NOT NULL,
+  	imageUrl TEXT NOT NULL /** nota: por defecto tendra una imagen predeterminada **/
+);
+
+-- USUARIO PREDETERMINADO ADMIN
+INSERT OR REPLACE INTO user (username, mail, passwordHash, creationDate, imageUrl)
+VALUES ('admin', 'admin@admin.com', '12345678(', CURRENT_TIMESTAMP, 'imagen');
+
+
+CREATE TABLE IF NOT EXISTS cubeType (
+  idCubeType INTEGER PRIMARY KEY AUTOINCREMENT,
+  cubeName TEXT NOT NULL UNIQUE -- EL NOMBRE DEL CUBO SERA UNICO
+);
+
+-- CUBOS PREDETERMINADOS
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('2x2x2');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('3x3x3');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('4x4x4');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('5x5x5');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('6x6x6');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('7x7x7');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('PYRAMINX');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('SKEWB');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('MEGAMINX');
+INSERT OR REPLACE INTO cubeType (cubeName) VALUES ('SQUARE-1');
+
+
+CREATE TABLE IF NOT EXISTS sessionTime (
+	idSession INTEGER PRIMARY KEY AUTOINCREMENT,  
+    idUser INTEGER NOT NULL,
+  	sessionName TEXT NOT NULL,
+  	creationDate TIME NOT NULL,
+  	idCubeType INTEGER NOT NULL,
+  	FOREIGN KEY (idUser) REFERENCES user (idUser),
+  	FOREIGN KEY (idCubeType) REFERENCES cubeType (idCubeType),
+  	UNIQUE (idUser, sessionName) -- ASEGURAR QUE UN USUARIO NO PUEDA TENER DOS SESIONES CON EL MISMO NOMBRE
+);
+
+CREATE TABLE IF NOT EXISTS timeTraining (
+	idTimeTraining INTEGER PRIMARY KEY AUTOINCREMENT,
+  	idSession INTEGER NOT NULL,
+  	scramble TEXT NOT NULL,
+  	timeInSeconds REAL NOT NULL,
+  	comments TEXT DEFAULT NULL,
+  	-- RESTRINGIMOS LOS VALORES DEL CAMPO penalty (tipo ENUM)
+  	penalty TEXT CHECK(penalty IN ('none', 'DNF', '+2')) DEFAULT 'none',
+  	registrationDate TIME NOT NULL DEFAULT CURRENT_TIMESTAMP, --  POR DEFECTO ES EL TIEMPO ACTUAL
+  	FOREIGN KEY (idSession) REFERENCES sessionTime (idSession)
+);
+
+
+CREATE TABLE IF NOT EXISTS versusCompetition (
+  idVersusCompe INTEGER PRIMARY KEY AUTOINCREMENT,
+  idUser INTEGER NOT NULL,
+  cuber1Name TEXT NOT NULL,
+  cuber2Name TEXT NOT NULL,
+  winner TEXT NOT NULL,
+  registrationDate TIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idUser) REFERENCES user (idUser)
+);
+
+
+CREATE TABLE IF NOT EXISTS timeCompetition (
+  idTimeCompetition INTEGER PRIMARY KEY AUTOINCREMENT,
+  idVersusCompe INTEGER NOT NULL,
+  scramble TEXT NOT NULL,
+  timeCuber1InSeconds REAL NOT NULL,
+  timeCuber2InSeconds REAL NOT NULL,
+  commentsCuber1 TEXT DEFAULT NULL,
+  commentsCuber2 TEXT DEFAULT NULL,
+  -- RESTRINGIMOS LOS VALORES DEL CAMPO penalty (tipo ENUM)
+  penaltyCuber1 TEXT CHECK(penaltyCuber1 IN ('none', 'DNF', '+2')) DEFAULT 'none',
+  penaltyCuber2 TEXT CHECK(penaltyCuber2 IN ('none', 'DNF', '+2')) DEFAULT 'none',
+  registrationDate TIME NOT NULL DEFAULT CURRENT_TIMESTAMP, --  POR DEFECTO ES EL TIEMPO ACTUAL
+  idCubeType INTEGER NOT NULL,
+  FOREIGN KEY (idCubeType) REFERENCES cubeType (idCubeType), 
+  FOREIGN KEY (idVersusCompe) REFERENCES versusCompetition (idVersusCompe)
+ );
+
+ CREATE TABLE IF NOT EXISTS average (
+   idAverage INTEGER PRIMARY KEY AUTOINCREMENT,
+   idSession INTEGER NOT NULL,
+   -- ESTOS CAMPOS PUEDEN SER NULOS YA QUE PUEDE NO TENER TIEMPOS UNA MEDIA
+   avgTimeInSeconds REAL DEFAULT NULL,
+   numberOfSolves INTEGER DEFAULT NULL,
+   pbTimeInSeconds REAL DEFAULT NULL,
+   worstTimeInSeconds REAL DEFAULT NULL,
+   FOREIGN KEY (idSession) REFERENCES sessionTime (idSession)
+);
