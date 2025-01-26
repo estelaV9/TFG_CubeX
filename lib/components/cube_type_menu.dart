@@ -2,8 +2,10 @@ import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../model/cubetype.dart';
+import '../state/current_cube_type.dart';
 
 class CubeTypeMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR EL TIPO DE CUBO SELECCIONADO AL COMPONENTE QUE CREA
@@ -103,6 +105,10 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
+                              // SE ACTUALIZA EL TIPO DE CUBO EN EL PROVIDER
+                              final currentCubeType = Provider.of<CurrentCubeType>(this.context, listen: false);
+                              currentCubeType.setCubeType(cubeTypes[index]); // SE ACTUALIZA EL ESTADO GLOBAL
+                              print(currentCubeType);
                               widget.onCubeTypeSelected(cubeTypes[index]);
                               // SE CIERRA EL MENU UNA VEZ ELIJA
                               Navigator.of(context).pop();
