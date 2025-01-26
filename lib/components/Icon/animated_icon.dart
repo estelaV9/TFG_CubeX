@@ -2,13 +2,16 @@ import 'package:esteladevega_tfg_cubex/components/cube_type_menu.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/cubetype.dart';
+
 class AnimatedIconWidget extends StatefulWidget {
   final AnimatedIconData animatedIconData;
+  final void Function(CubeType selectedCubeType) onCubeTypeSelected; // Asegúrate de pasar el callback
 
   const AnimatedIconWidget({
     super.key,
     required this.animatedIconData,
-    required Null Function() onPressed,
+    required this.onCubeTypeSelected,
   });
 
   @override
@@ -61,8 +64,7 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
       context: context,
       builder: (BuildContext context) {
         return CubeTypeMenu(
-          onCubeTypeSelected: (selectedCubeType) {
-          }, // CUANDO SE SELECCIONE UN TIPO DE CUBO
+          onCubeTypeSelected: widget.onCubeTypeSelected // PASA EL TIPO DE CUBO
         );
       },
     ).whenComplete(() {
