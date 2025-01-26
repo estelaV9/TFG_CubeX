@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import '../model/cubetype.dart';
 
 class CubeTypeMenu extends StatefulWidget {
-  const CubeTypeMenu({super.key});
+  // FUNCION PARA ENVIAR EL TIPO DE CUBO SELECCIONADO AL COMPONENTE QUE CREA
+  // EL CubeTypeMenu
+  final void Function(CubeType selectedCubeType) onCubeTypeSelected;
+
+  const CubeTypeMenu({super.key, required this.onCubeTypeSelected});
 
   @override
   State<CubeTypeMenu> createState() => _CubeTypeMenuState();
@@ -49,10 +53,9 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     return Scaffold(
         backgroundColor: const Color(0x00000000), // QUITAR COLOR DE FONDO
         body: Container(
-            width: 250,
-            height: 300,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+            decoration: const BoxDecoration(
+              // SE LE AGREGA BORDE CIRCULAR A LA PARTE DE ARRIBA SOLO
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               color: AppColors.purpleIntroColor,
             ),
             child: Padding(
@@ -67,29 +70,43 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.darkPurpleColor,
-                          fontSize: 18),
+                          fontSize: 25),
                     ), // TITULO
 
-                    // ESPACIO ENTRE EL TITULO Y EL GRIDVIEW
+                    // ESPACIO ENTRE EL TITULO Y EL DIVIDER
+                    const SizedBox(height: 8),
+
+                    // LINEA DIVISORIA ENTRE EL TITULO Y EL GridView
+                    const Divider(
+                      height: 10,
+                      thickness: 3,
+                      indent: 10,
+                      endIndent: 10,
+                      color: AppColors.darkPurpleColor,
+                    ),
+
+                    // ESPACIO ENTRE EL DIVIDER Y EL GridView
                     const SizedBox(height: 10),
 
-                    // EXPANDIR EL GRIDVIEW
+                    // EXPANDIR EL GridView
                     Expanded(
-                      child: GridView.count(
-                        // TRES COLUMNAS
-                        crossAxisCount: 3,
-                        // ESPACIADO HORIZONTAL ENTRE CONTAINERS
-                        crossAxisSpacing: 10,
-                        // ESPACIADO VERTICAL
-                        mainAxisSpacing: 10,
-
-                        // GENERAR LOS TIPOS DE CUBO QUE HAY EN LA BASE DE DATOS
-                        children: cubeTypes.map((cubeType) {
-                          // GESTURE DETECTOR PARA CUANDO PULSE EL TIPO DE CUBO
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          // TRES COLUMNAS
+                          crossAxisCount: 3,
+                          // ESPACIADO HORIZONTAL ENTRE CONTAINERS
+                          crossAxisSpacing: 10,
+                          // ESPACIADO VERTICAL
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: cubeTypes.length, // TOTAL DE CUBOS
+                        itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              print(cubeType.cubeName);
-                            }, // ACCIÓN AL TOCAR
+                              widget.onCubeTypeSelected(cubeTypes[index]);
+                              // SE CIERRA EL MENU UNA VEZ ELIJA
+                              Navigator.of(context).pop();
+                            }, // ACCION AL TOCAR
                             child: Container(
                               decoration: BoxDecoration(
                                 color: AppColors.purpleIntroColor,
@@ -101,27 +118,34 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               ),
                               child: Center(
                                 child: Text(
-                                  cubeType.cubeName, // MUESTRA EL NOMBRE DEL CUBO
+                                  // SE MUESTRA EL NOMBRE DEL CUBO
+                                  cubeTypes[index].cubeName,
                                   style: const TextStyle(
                                     color: AppColors.darkPurpleColor,
-                                    fontSize: 14,
+                                    fontSize: 17,
                                   )
                                 ),
                               ),
                             ),
                           );
-                        }).toList(),
+                        },
                       ),
                     ),
+
                     // ESPACIO ENTRE EL LISTVIEW Y EL BOTON
                     const SizedBox(height: 10),
 
                     // BOTON PARA CREAR NUEVA SESION
                     ElevatedButton(
                         onPressed: () async {
-                          String? name = await  AlertUtil.showAlertForm("Insert a new type", "Insert a new type", "Enter a new cube type", context);
+                          String? name = await AlertUtil.showAlertForm(
+                              "Insert a new type",
+                              "Insert a new type",
+                              "Enter a new cube type",
+                              context);
                           insertNewType(name!);
-                        }, child: const Text("Create a new cube type"))
+                        },
+                        child: const Text("Create a new cube type"))
                   ],
                 ),
               ),
