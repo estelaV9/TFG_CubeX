@@ -6,7 +6,7 @@ import '../../model/cubetype.dart';
 
 class AnimatedIconWidget extends StatefulWidget {
   final AnimatedIconData animatedIconData;
-  final void Function(CubeType selectedCubeType) onCubeTypeSelected; // Asegúrate de pasar el callback
+  final void Function(CubeType selectedCubeType) onCubeTypeSelected;
 
   const AnimatedIconWidget({
     super.key,
