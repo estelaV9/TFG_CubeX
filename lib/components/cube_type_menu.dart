@@ -1,4 +1,5 @@
 import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +32,9 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     });
   } // METODO PARA SETTEAR EL NUMERO DE TIPOS DE CUBOS
 
-  void insertNewType(String name) async {
+  void insertNewType(String name, int idUser) async {
     if (!await cubeTypeDao.isExistsCubeTypeName(name)) {
-      if (await cubeTypeDao.insertNewType(name)) {
+      if (await cubeTypeDao.insertNewType(name, idUser)) {
         getTotalCubes(); // RECARGAMOS LA LISTA DE TIPOS DE CUBOS
         AlertUtil.showSnackBarInformation(
             context, "The new type was successfully inserted");
@@ -173,7 +174,11 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               "Insert a new type",
                               "Enter a new cube type",
                               context);
-                          insertNewType(name!);
+                          UserDao userDao = UserDao();
+                          // OBTENEMOS LOS DATOS DEL USUARIO
+                          final currentUser = context.read<CurrentUser>().user;
+                          int idUser = await userDao.getIdUserFromName(currentUser!.username);
+                          insertNewType(name!, idUser);
                         },
                         child: const Text("Create a new cube type"))
                   ],
