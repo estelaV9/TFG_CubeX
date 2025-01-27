@@ -67,10 +67,10 @@ class CubeTypeDao {
     }
   } // METODO PARA SABER SI EL NOMBRE DE UN TIPO DE CUBO YA EXISTE
 
-  Future<bool> insertNewType(String name) async {
+  Future<bool> insertNewType(String name, int idUser) async {
     final db = await DatabaseHelper.database;
     try {
-      final result = await db.insert('cubeType', {'cubeName': name});
+      final result = await db.insert('cubeType', {'cubeName': name, 'idUser': idUser});
 
       if (result > 0) {
         return true; // SE INSERTO CORRECTAMENTE
