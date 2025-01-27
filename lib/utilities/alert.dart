@@ -63,6 +63,36 @@ class AlertUtil {
     );
   } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO
 
+  static showDeleteSessionOrCube(
+      BuildContext context, String title, String content, Function delete) {
+    // SE MUESTRA EL DIALOG
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // TITULO DE LA ALERTA
+            title: Text(title),
+            content: Text(content),
+            actions: <Widget>[
+              // BOTONES PARA CANCELAR O DARLE OK
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'Cancel');
+                },
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'OK');
+                  delete(); // FUNCION PARA ELIMINAR SI PULSA OK
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        });
+  } // METODO PARA MOSTRAR UNA ALERTA DE SI DESEA ELIMINAR LA SESION O EL TIPO DE CUBO
+
   static showSnackBar(
       BuildContext context, IconData icon, String message, Color color) {
     // CREAMOS EL SNACKBAR
