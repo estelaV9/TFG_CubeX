@@ -68,7 +68,7 @@ class _SessionMenuState extends State<SessionMenu> {
     setState(() {
       sessions = result;
     });
-    DatabaseHelper.logger.i("obtenidas: ${result.toString()}");
+    DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
   }
 
   @override
@@ -107,9 +107,7 @@ class _SessionMenuState extends State<SessionMenu> {
         print('********************** $currentUser');
 
         Session newSession = Session(
-            idUser: idUser,
-            sessionName: sessionName,
-            idCubeType: idCubeType);
+            idUser: idUser, sessionName: sessionName, idCubeType: idCubeType);
         // INSERTAMOS LA NUEVA SESIÓN EN LA BASE DE DATOS
         bool sessionInserted = await sessionDao.insertSession(newSession);
 
@@ -205,6 +203,47 @@ class _SessionMenuState extends State<SessionMenu> {
                               ),
                             ],
                           ),
+                          onLongPress: () {
+                            // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
+                            AlertUtil.showDeleteSessionOrCube(
+                                context,
+                                "Delete Session",
+                                "Are you sure you want to delete all your saved times?",
+                                () async {
+                              String sessionName = sessions[index].sessionName;
+                              // OBTENEMOS LOS DATOS DEL USUARIO
+                              final currentUser =
+                                  context.read<CurrentUser>().user;
+                              // CONSEGUIMOS EL ID DEL USUAIRO ACTUAL
+                              int idUser = await userDao
+                                  .getIdUserFromName(currentUser!.username);
+                              if (idUser == -1) {
+                                // SI NO SE OBTIENE EL ID DE USUARIO SE MUESTRA UN MENSAJE
+                                DatabaseHelper.logger.e(
+                                    "No se pudo conseguir el id del usuario actual $idUser");
+                              } else {
+                                // PILLAMOS EL ID DE LA SESION
+                                int idSession = await sessionDao
+                                    .searchIdSessionByNameAndUser(
+                                        idUser, sessionName);
+                                if (idSession == -1) {
+                                  // SI NO SE ENCUENTRA EL ID DE LA SESION S EMUESTRA UN MENSAJE
+                                  AlertUtil.showSnackBarError(
+                                      context, "Session not found");
+                                } else {
+                                  if (await sessionDao
+                                      .deleteSession(idSession)) {
+                                    AlertUtil.showSnackBarInformation(
+                                        context, "Session deleted successful");
+                                    sessionList(); // VOLVEMOS A CARGAR LAS SESIONES
+                                  } else {
+                                    AlertUtil.showSnackBarError(context,
+                                        "Session deletion failed. Please try again.");
+                                  } // SE ELIMINA LA SESION
+                                } // BUSCAR EL ID DE LA SESION
+                              } // BUSCAR EL ID DEL USUARIO
+                            });
+                          },
                           onTap: () {
                             setState(() {
                               widget.onSessionSelected(
