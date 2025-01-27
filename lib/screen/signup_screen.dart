@@ -1,5 +1,9 @@
+import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
+import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
@@ -32,7 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-  TextEditingController();
+      TextEditingController();
 
   Future<void> _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -47,20 +51,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       // SE CREA UN USUARIO
       final newUser =
-      User(username: username, mail: mail, password: encryptedPassword);
+          User(username: username, mail: mail, password: encryptedPassword);
 
       if (!await userDao.isExistsUsername(username)) {
         if (!await userDao.isExistsEmail(mail)) {
           if (await userDao.insertUser(newUser)) {
             // GUARDAR LOS DATOS DEL USURAIO EN EL ESTADO GLOBAL
-            final currentUser = Provider.of<CurrentUser>(this.context, listen: false);
+            final currentUser =
+                Provider.of<CurrentUser>(this.context, listen: false);
             currentUser.setUser(newUser); // SE ACTUALIZA EL ESTADO GLOBAL
 
             // SE MUESTRA UN SNACKBAR DE QUE SE HA CREADO CORRECTAMENTE
             // Y SE REDIRIGE A LA PANTALLA PRINCIPAL
             AlertUtil.showSnackBarInformation(
                 this.context, "Account created successfully.");
-            ChangeScreen.changeScreen(const BottomNavigation(),  this.context);
+
+            int idUser =
+                await userDao.getIdUserFromName(currentUser.user!.username);
+
+            if (idUser != -1) {
+              // CUANDO SE INSERTA UN NUEVO USUARIO SE LE ASIGNA CUBOS POR DEFECTO
+              CubeTypeDao cubeTypeDao = CubeTypeDao();
+              cubeTypeDao.insertNewType("2x2x2", idUser);
+              cubeTypeDao.insertNewType("3x3x3", idUser);
+              cubeTypeDao.insertNewType("4x4x4", idUser);
+              cubeTypeDao.insertNewType("5x5x5", idUser);
+              cubeTypeDao.insertNewType("6x6x6", idUser);
+              cubeTypeDao.insertNewType("7x7x7", idUser);
+              cubeTypeDao.insertNewType("PYRAMINX", idUser);
+              cubeTypeDao.insertNewType("SKEWB", idUser);
+              cubeTypeDao.insertNewType("MEGAMINX", idUser);
+              cubeTypeDao.insertNewType("SQUARE-1", idUser);
+
+              /*List<CubeType> result = await cubeTypeDao.getCubeTypes();
+              DatabaseHelper.logger.i("TIPOS DE CUBOS obtenidas: \n${result.join('\n')}");*/
+
+              // Y SE INSERTA LA SESION POR DEFECTO "Normal"
+              SessionDao sessionDao = SessionDao();
+              // BUSCAMOS EL ID DEL TIPO DE CUBO 3X3
+              CubeType cubeType = await cubeTypeDao.cubeTypeDefault("3x3x3");
+              int? idCubeType = cubeType.idCube;
+              if (idCubeType != null) {
+                Session session = Session(
+                    idUser: idUser,
+                    sessionName: "Normal",
+                    idCubeType: idCubeType);
+                sessionDao.insertSession(session);
+
+                // MENSAJE CON LA SESION
+                DatabaseHelper.logger.w(session.sessionName);
+
+                // CAMBIA A LA PANTALLA PRINCIPAL
+                ChangeScreen.changeScreen(
+                    const BottomNavigation(), this.context);
+              } else {
+                // SE MUESTRA UN ERROR SI ES NULO
+                DatabaseHelper.logger
+                    .e("Error al pillar el id de tipo de cubo 3x3");
+                // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR PORQUE ES NULO
+                AlertUtil.showSnackBarError(this.context,
+                    "An error occurred while creating the account.");
+              } // VERIFICA SI EL ID DEL TIPO DE CUBO ES NULO
+            } else {
+              DatabaseHelper.logger.e("Error la obtener el id del usuario");
+              // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR AL BUSCAR EL ID
+              AlertUtil.showSnackBarError(this.context,
+                  "An error occurred while creating the account.");
+            } // VERIFICAR EL ID DEL USUARIO
           } else {
             // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
             AlertUtil.showSnackBarError(
@@ -123,7 +180,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           key: _formKey,
                           child: Column(children: [
                             FieldForm(
-                              icon: IconClass.iconMaker(Icons.person, "Username"),
+                              icon:
+                                  IconClass.iconMaker(Icons.person, "Username"),
                               labelText: 'Username',
                               hintText: 'Write your username',
                               controller: _usernameController,
@@ -160,7 +218,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             PasswordFieldForm(
-                              icon: IconClass.iconMaker(Icons.check, "Confirm Password"),
+                              icon: IconClass.iconMaker(
+                                  Icons.check, "Confirm Password"),
                               labelText: 'Confirm password',
                               hintText: 'Confirm password',
                               controller: _confirmPasswordController,
@@ -190,7 +249,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: IconClass.iconMaker(Icons.arrow_forward, "Enter app")),
+                              child: IconClass.iconMaker(
+                                  Icons.arrow_forward, "Enter app")),
                         ],
                       ),
                       const SizedBox(height: 15),
