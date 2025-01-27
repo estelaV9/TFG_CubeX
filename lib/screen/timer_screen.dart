@@ -5,7 +5,14 @@ import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/screen/show_time_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../components/Icon/icon.dart';
+import '../dao/session_dao.dart';
+import '../dao/time_training_dao.dart';
+import '../dao/user_dao.dart';
+import '../database/database_helper.dart';
+import '../model/time_training.dart';
+import '../state/current_user.dart';
 import '../utilities/ScrambleGenerator.dart';
 import '../utilities/app_color.dart';
 
@@ -60,8 +67,59 @@ class _TimerScreenState extends State<TimerScreen> {
 
       // SE ACTUALIZA EL SCRAMBLE UNA VEZ TEMINADO EL TIEMPO DE RESOLUCION
       _scrambleKey.currentState?.updateScramble();
+
+      // GUARDAR EL TIEMPO QUE HA HECHO
+      await _saveTimeToDatabase(double.parse(result));
     }
   } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
+
+
+  Future<void> _saveTimeToDatabase(double timeInSeconds) async {
+    final userDao = UserDao();
+    final sessionDao = SessionDao();
+    final timeTrainingDao = TimeTrainingDao();
+
+    try {
+      // OBTENER EL USUARIO ACTUAL
+      final currentUser = context.read<CurrentUser>().user;
+      // OBTENER EL ID DEL USUARIO
+      int idUser = await userDao.getIdUserFromName(currentUser!.username);
+      if (idUser == -1) {
+        DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+        return;
+      } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+      // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
+      int idSession = await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
+
+      /// falta OBTENER EL SCRAMBLE ACTUAL
+
+
+      final timeTraining = TimeTraining(
+        idSession: idSession,
+        scramble: "fjnsdkak",
+        timeInSeconds: timeInSeconds,
+        comments: null,
+        penalty: "none",
+      ); // CREAR OBJETO TimeTraining
+
+      // INSERTAR EL TIEMPO EN LA BASE DE DATOS
+      final success = await timeTrainingDao.insertNewTime(timeTraining);
+
+     // MOSTRAR UNA LISTA CON LOS TIEMPOS
+      final result = await timeTrainingDao.getTimesOfSession(idSession);
+      DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
+
+      if (success) {
+        DatabaseHelper.logger.i("Tiempo guardado correctamente.");
+      } else {
+        DatabaseHelper.logger.e("Error al guardar el tiempo.");
+      } // VERIFICAR QUE SI SE INSERTO CORRECTAMENTE
+    } catch (e) {
+      DatabaseHelper.logger.e("Error al guardar el tiempo en la base de datos: $e");
+    }
+  } // METODO PARA GUARDAR EL TIEMPO REALIZADO
+
 
   void logicComment() {} // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
 
@@ -124,7 +182,7 @@ class _TimerScreenState extends State<TimerScreen> {
           Positioned.fill(
             top: 250, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
             child: GestureDetector(
-              onLongPress: () {
+              onTap: () {
                 _openShowTimerScreen(context);
               }, // CUANDO MANTIENE PULSADO ABRE LA PANTALLA DE MOSTRAR TIMER
               child: Column(
