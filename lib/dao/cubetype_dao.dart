@@ -82,4 +82,20 @@ class CubeTypeDao {
       return false; // DEVUELVE FALSE EN CASO DE ERROR
     }
   } // METODO PARA INSERTAR UN NUEVO TIPO DE CUBO
+
+
+  Future<bool> deleteCubeType(String cubeName) async{
+    final db = await DatabaseHelper.database;
+    try {
+      // SE ELIMINA EL TIPO DE CUBO CON EL NOMBRE PROPORCIONADO
+      final deleteCube = await db.delete('cubeType',
+          where: 'cubeName = ?', whereArgs: [cubeName]);
+
+      // DEVUELVE TRUE/FALSE SI SE ELIMINO CORRECTAMENTE O NO
+      return deleteCube > 0;
+    } catch (e) {
+      DatabaseHelper.logger.e("Error al eliminar la tipo de cubo: $e");
+      return false;
+    }
+  } // METODO PARA ELIMINAR UN TIPO DE CUBO POR SU NOMBRE
 }
