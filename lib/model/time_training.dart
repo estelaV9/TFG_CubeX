@@ -17,4 +17,17 @@ class TimeTraining {
     required this.penalty,
     String? registrationDate})
       : registrationDate = registrationDate ?? DateTime.now().toString();
+
+  @override
+  String toString() {
+    return 'TimeTraining{'
+        'idTimeTraining: $idTimeTraining, '
+        'idSession: $idSession, '
+        'scramble: $scramble, '
+        'timeInSeconds: $timeInSeconds, '
+        'comments: $comments, '
+        'penalty: $penalty, '
+        'registrationDate: $registrationDate'
+        '}';
+  } // METODO TOSTRING
 } // CLASE PARA LOS TIEMPOS DE UNA SESION
