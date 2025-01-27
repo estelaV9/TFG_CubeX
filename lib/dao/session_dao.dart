@@ -131,4 +131,40 @@ class SessionDao {
       return -1;
     }
   } // METODO PARA BUSCAR EL ID DE LA SESION POR EL NOMBRE DE LA SESION Y ID USUARIO
+
+
+  Future<Session?> getSessionByUserAndName(int idUser, String sessionName) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // CONSULTA PARA OBTENER LA SESION BASADA EN EL ID DEL USUARIO Y EL NOMBRE DE LA SESION
+      final result = await db.query(
+        'sessionTime',
+        where: 'idUser = ? AND sessionName = ?',
+        whereArgs: [idUser, sessionName],
+      );
+
+      if (result.isNotEmpty) {
+        // SI SE ENCUENTRA LA SESION, SE MAPEA LOS DATOS Y SE DEVOLVE LA SESION
+        final session = result.first;
+        return Session(
+          idSession: session['idSession'] as int,
+          idUser: session['idUser'] as int,
+          sessionName: session['sessionName'] as String,
+          idCubeType: session['idCubeType'] as int,
+          creationDate: session['creationDate'] as String,
+        );
+      } else {
+        // SI NO SE ENCONTRO NINGUNA SESION, RETORNAMOS NULL
+        DatabaseHelper.logger.w(
+            "No se encontro la sesion para el usuario con id $idUser y nombre de sesion $sessionName");
+        return null;
+      } // VERIFICAMOS SI EL RESULTADO ES NULO O NO
+    } catch (e) {
+      // SI DA ERROR, DEVOLVEMOS NULL
+      DatabaseHelper.logger.e(
+          "Error al obtener la sesion del usuario con id $idUser: $e");
+      return null;
+    }
+  } // METODO QUE DEVUELVE UNA SESION POR ID DE USUARIO Y NOMBRE DE LA SESION
+
 }
