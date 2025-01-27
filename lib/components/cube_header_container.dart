@@ -32,6 +32,7 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   SessionDao sessionDao = SessionDao();
   List<Session> sessions = [];
   UserDao userDao = UserDao();
+
   Session session = Session.empty();
 
   void onCubeTypeSelected(CubeType selectedCubeType) {
@@ -49,6 +50,55 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
       session.sessionName = sessionName;
     });
   }
+
+  Future<String?> initSession() async {
+    UserDao userDao = UserDao();
+    SessionDao sessionDao = SessionDao();
+
+    try {
+      // OBTENEMOS LOS DATOS DEL USUARIO ACTUAL
+      final currentUser = context.read<CurrentUser>().user;
+
+      if (currentUser == null) {
+        DatabaseHelper.logger.e("El usuario actual es nulo");
+        return null;
+      }
+
+      // OBTENER EL ID DEL USUARIO POR SU NOMBRE
+      int idUser = await userDao.getIdUserFromName(currentUser.username);
+
+      if (idUser == -1) {
+        DatabaseHelper.logger.e("Error al conseguir el ID del usuario actual.");
+        return null;
+      } // SI RETORNA -1, MOSTRAMOS UN MENSAJE DE ERROR
+
+      // BUSCAR LA SESION DEL USUARIO POR ID Y NOMBRE DE SESION
+      Session? aux = await sessionDao.getSessionByUserAndName(idUser, "Normal");
+
+      if (aux != null) {
+        // ACTUALIZAMOS EL ESTADO
+        setState(() {
+          session = aux;
+        });
+        // RETORNAMOS EL NOMBRE DE LA SESION
+        return aux.sessionName;
+      } else {
+        // MENSAJE DE ERROR
+        DatabaseHelper.logger.e(
+            "Error al conseguir la sesión por el ID de usuario y el nombre de la sesión.");
+        return null;
+      } // VERIFICAR SI LA SESION DEVUELTA ES NULA
+    } catch (e) {
+      DatabaseHelper.logger.e("Error en initSession: $e");
+      return null;
+    }
+  } // METODO PARA INICIAR CON LA SESION "Normal"
+
+  @override
+  void initState() {
+    super.initState();
+    initSession();
+  } // AL INICIAR LLAMA A LA FUNCION PARA SETTEAR LA SESION "Normal"
 
   @override
   Widget build(BuildContext context) {
