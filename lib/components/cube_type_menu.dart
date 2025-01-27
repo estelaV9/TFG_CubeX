@@ -4,8 +4,10 @@ import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../database/database_helper.dart';
 import '../model/cubetype.dart';
 import '../state/current_cube_type.dart';
+import '../state/current_user.dart';
 
 class CubeTypeMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR EL TIPO DE CUBO SELECCIONADO AL COMPONENTE QUE CREA
@@ -29,14 +31,16 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     });
   } // METODO PARA SETTEAR EL NUMERO DE TIPOS DE CUBOS
 
-  void insertNewType (String name) async {
-    if(!await cubeTypeDao.isExistsCubeTypeName(name)){
-      if(await cubeTypeDao.insertNewType(name)){
+  void insertNewType(String name) async {
+    if (!await cubeTypeDao.isExistsCubeTypeName(name)) {
+      if (await cubeTypeDao.insertNewType(name)) {
         getTotalCubes(); // RECARGAMOS LA LISTA DE TIPOS DE CUBOS
-        AlertUtil.showSnackBarInformation(context, "The new type was successfully inserted");
+        AlertUtil.showSnackBarInformation(
+            context, "The new type was successfully inserted");
       } else {
         // SI NO SE INSERTO CORRECTAMENTE SE MUESTRA UN ERROR
-        AlertUtil.showSnackBarError(context, "Failed to insert the new type. Try again, please.");
+        AlertUtil.showSnackBarError(
+            context, "Failed to insert the new type. Try again, please.");
       } // INSERTAR TIPO DE CUBO
     } else {
       // SI EL NOMBRE YA EXISTE SE MUESTRA UN ERROR
@@ -93,7 +97,8 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                     // EXPANDIR EL GridView
                     Expanded(
                       child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           // TRES COLUMNAS
                           crossAxisCount: 3,
                           // ESPACIADO HORIZONTAL ENTRE CONTAINERS
@@ -104,6 +109,26 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                         itemCount: cubeTypes.length, // TOTAL DE CUBOS
                         itemBuilder: (context, index) {
                           return GestureDetector(
+                            onLongPress: () {
+                              // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
+                              AlertUtil.showDeleteSessionOrCube(
+                                  context,
+                                  "Delete Cube Type",
+                                  "Are you sure you want to delete all your saved times with that cube?",
+                                  () async {
+                                String cubeName = cubeTypes[index].cubeName;
+
+                                if (await cubeTypeDao
+                                    .deleteCubeType(cubeName)) {
+                                  AlertUtil.showSnackBarInformation(
+                                      context, "Cube type deleted successful");
+                                  getTotalCubes(); // VOLVEMOS A CARGAR LOS TIPOS DE CUBO
+                                } else {
+                                  AlertUtil.showSnackBarError(context,
+                                      "Cube type deletion failed. Please try again.");
+                                } // SE ELIMINA EL TIPO DE CUBO
+                              });
+                            },
                             onTap: () {
                               // SE ACTUALIZA EL TIPO DE CUBO EN EL PROVIDER
                               final currentCubeType = Provider.of<CurrentCubeType>(this.context, listen: false);
@@ -124,13 +149,12 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               ),
                               child: Center(
                                 child: Text(
-                                  // SE MUESTRA EL NOMBRE DEL CUBO
-                                  cubeTypes[index].cubeName,
-                                  style: const TextStyle(
-                                    color: AppColors.darkPurpleColor,
-                                    fontSize: 17,
-                                  )
-                                ),
+                                    // SE MUESTRA EL NOMBRE DEL CUBO
+                                    cubeTypes[index].cubeName,
+                                    style: const TextStyle(
+                                      color: AppColors.darkPurpleColor,
+                                      fontSize: 17,
+                                    )),
                               ),
                             ),
                           );
