@@ -32,8 +32,7 @@ class SessionDao {
       if (sessions.isNotEmpty) {
         // MAPEAR LOS RESULTADOS A UNA LISTA DE OBJETOS Session
         return sessions
-            .map((map) =>
-            Session(
+            .map((map) => Session(
                 sessionName: map['sessionName'] as String,
                 idCubeType: map['idCubeType'] as int,
                 idUser: map['idUser'] as int))
@@ -92,9 +91,44 @@ class SessionDao {
       } // SI NO ESTA VACIO, RETORNA LA SESSION, SI NO DEVUELVE NULL
 
     } catch (e) {
-      DatabaseHelper.logger.e(
-          "Error al listar sessiones del usuario: $e");
+      DatabaseHelper.logger.e("Error al listar sessiones del usuario: $e");
       return sessionError;
     }
   } // METODO PARA OBTENER LAS SESSIONES DE UN USUARIO
+
+  Future<bool> deleteSession(int idSession) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // SE ELIMINA LA SESION CON EL ID PROPORCIONADO
+      final deleteSession = await db.delete('sessionTime',
+          where: 'idSession = ?', whereArgs: [idSession]);
+
+      // DEVUELVE TRUE/FALSE SI SE ELIMINO CORRECTAMENTE O NO
+      return deleteSession > 0;
+    } catch (e) {
+      DatabaseHelper.logger.e("Error al eliminar la sesion: $e");
+      return false;
+    }
+  } // METODO PARA ELIMINAR UNA SESION
+
+  Future<int> searchIdSessionByNameAndUser(
+      int idUser, String sessionName) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // BUSCA LA SESION CON EL NOMBRE Y EL ID PROPORCIONADO
+      final result = await db.query('sessionTime',
+          where: 'idUser = ? AND sessionName = ?',
+          whereArgs: [idUser, sessionName]);
+
+      if(result.isNotEmpty){
+        return result.first['idSession'] as int;
+      } else {
+        DatabaseHelper.logger.e("No hay resultados de esa sesion");
+        return -1;
+      } // SI NO ESTA VACIO, RETORNA EL ID, SI NO DEVUELVE -1
+    } catch (e) {
+      DatabaseHelper.logger.e("Error al buscar el id de la sesion: $e");
+      return -1;
+    }
+  } // METODO PARA BUSCAR EL ID DE LA SESION POR EL NOMBRE DE LA SESION Y ID USUARIO
 }
