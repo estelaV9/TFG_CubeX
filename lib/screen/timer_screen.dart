@@ -40,6 +40,99 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao50Value = "--:--.--";
   var ao100Value = "--:--.--";
 
+  void insertTimes() async {
+    final userDao = UserDao();
+    final sessionDao = SessionDao();
+    final timeTrainingDao = TimeTrainingDao();
+
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+      return;
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
+    int idSession = await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
+    List<TimeTraining> timeTrainings = [
+      TimeTraining(idSession: idSession, scramble: "B F2 D U' L' D' L2 B' R D' U2 F R U' D R' U F' R2 L' R' U2 F", timeInSeconds: 1.4, comments: null, penalty: "+2"),
+      TimeTraining(idSession: idSession, scramble: "U' D L' R2 F2 D' L' B' F R' D2 U2 F' U D2 R' L2", timeInSeconds: 2.1, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "F' R' L2 D R' F' U2 L2 F2 U' R' U2 L", timeInSeconds: 3.0, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "L D' F' R2 L' R' F2 D U' F' L", timeInSeconds: 2.5, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "R F2 L2 U R' D' F' U' D' L2", timeInSeconds: 4.2, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "U' L2 D' F R2 L' B' U D F'", timeInSeconds: 3.5, comments: null, penalty: "+2"),
+      TimeTraining(idSession: idSession, scramble: "B' F D2 L' R U F2 U' L", timeInSeconds: 5.0, comments: null, penalty: "+2"),
+      TimeTraining(idSession: idSession, scramble: "U F' R' D B' F' U2 R' L D'", timeInSeconds: 2.8, comments: null, penalty: "DNF"),
+      TimeTraining(idSession: idSession, scramble: "D L2 F U' B2 F R D' L R", timeInSeconds: 3.6, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "F D' L B' R2 D L2 F' U", timeInSeconds: 4.7, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "B' U2 D' L' F U' D2 F' R", timeInSeconds: 6.0, comments: null, penalty: "+2"),
+      TimeTraining(idSession: idSession, scramble: "R2 F2 D' B2 U' R F L' D2", timeInSeconds: 3.2, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "D2 R B2 U' L2 F' D2", timeInSeconds: 5.3, comments: null, penalty: "DNF"),
+      TimeTraining(idSession: idSession, scramble: "U' R' D F L' B U2 R' F2 L", timeInSeconds: 4.1, comments: null,),
+      TimeTraining(idSession: idSession, scramble: "F2 R2 L2 D U' R2 F D'", timeInSeconds: 3.8, comments: null,),
+    ];
+
+    for (var timeTraining in timeTrainings) {
+      final success = await timeTrainingDao.insertNewTime(timeTraining);
+      if (success) {
+        DatabaseHelper.logger.i("Tiempo insertado: $timeTraining");
+      } else {
+        DatabaseHelper.logger.i("Error al insertar el tiempo: $timeTraining");
+      } // VERIFICAMOS SI SE INSERTO CORRECTAMENTE
+    } // SE INSERTA CADA TIEMPO EN LA BASE DE DATOS
+
+    // MOSTRAR RESULTADOS
+    // final result = await timeTrainingDao.getTimesOfSession(idSession);
+    // DatabaseHelper.logger.i("Tiempos obtenidos: \n${result.join('\n')}");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //insertTimes();
+    // INICIA LAS ESTADISTICAS
+    initTimeStatistics();
+  }
+  
+  void initTimeStatistics() async{
+    final userDao = UserDao();
+    final sessionDao = SessionDao();
+    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
+
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+      return;
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
+    int idSession = await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
+
+    var timesList = await timeTrainingDao.getTimesOfSession(idSession);
+    
+    // VALORES DE LAS ESTADISTICAS DE LA SESION
+    final worst = await timeTrainingDao.getWorstTimeBySession(timesList);
+    final pb = await timeTrainingDao.getPbTimeBySession(timesList);
+    int count = await timeTrainingDao.getCountBySession(timesList);
+
+    setState(() {
+      // averageValue = await timeTrainingDao.;
+      pbValue = pb;
+      worstValue = worst;
+      countValue = count.toString();
+      // ao5Value = await timeTrainingDao.;
+      // ao12Value = await timeTrainingDao.;
+      // ao50Value = await timeTrainingDao.;
+      // ao100Value = await timeTrainingDao.;
+    }); // SETTEA EL ESTADO DE LAS ESTADISTICAS
+  } // INICIALIZAR/ACTUALIZAR LAS ESTADISTICA
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
@@ -101,7 +194,6 @@ class _TimerScreenState extends State<TimerScreen> {
         scramble: scramble,
         timeInSeconds: timeInSeconds,
         comments: null,
-        penalty: "none",
       ); // CREAR OBJETO TimeTraining
 
       // INSERTAR EL TIEMPO EN LA BASE DE DATOS
@@ -113,6 +205,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
       if (success) {
         DatabaseHelper.logger.i("Tiempo guardado correctamente.");
+        initTimeStatistics(); // ACTUALIZAR LAS ESTADISTICAS
       } else {
         DatabaseHelper.logger.e("Error al guardar el tiempo.");
       } // VERIFICAR QUE SI SE INSERTO CORRECTAMENTE
