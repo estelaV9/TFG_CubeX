@@ -4,6 +4,7 @@ import 'package:esteladevega_tfg_cubex/components/cube_header_container.dart';
 import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/screen/show_time_screen.dart';
+import 'package:esteladevega_tfg_cubex/state/current_scramble.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/Icon/icon.dart';
@@ -51,6 +52,9 @@ class _TimerScreenState extends State<TimerScreen> {
   int random = (Random().nextInt(25 - 20 + 1) + 20);
 
   void _openShowTimerScreen(BuildContext context) async {
+    // OBTENEMOS EL SCRAMBLE ACTUAL ANTES DE ABRIR LA PANTALLA DE SHOWTIME
+    final currentScramble = context.read<CurrentScramble>().scramble.toString();
+
     // ABRIR LA PANTALLA DE SHOWTIME Y ESPERAR EL RESULTADO
     final result = await Navigator.push(
       context,
@@ -69,12 +73,12 @@ class _TimerScreenState extends State<TimerScreen> {
       _scrambleKey.currentState?.updateScramble();
 
       // GUARDAR EL TIEMPO QUE HA HECHO
-      await _saveTimeToDatabase(double.parse(result));
+      await _saveTimeToDatabase(double.parse(result), currentScramble);
     }
   } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
 
 
-  Future<void> _saveTimeToDatabase(double timeInSeconds) async {
+  Future<void> _saveTimeToDatabase(double timeInSeconds, String scramble) async {
     final userDao = UserDao();
     final sessionDao = SessionDao();
     final timeTrainingDao = TimeTrainingDao();
@@ -92,12 +96,9 @@ class _TimerScreenState extends State<TimerScreen> {
       // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
       int idSession = await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
 
-      /// falta OBTENER EL SCRAMBLE ACTUAL
-
-
       final timeTraining = TimeTraining(
         idSession: idSession,
-        scramble: "fjnsdkak",
+        scramble: scramble,
         timeInSeconds: timeInSeconds,
         comments: null,
         penalty: "none",
