@@ -12,7 +12,9 @@ import 'package:provider/provider.dart';
 
 import '../dao/cubetype_dao.dart';
 import '../model/cubetype.dart';
+import '../state/current_cube_type.dart';
 import 'Icon/animated_icon.dart';
+import 'cube_type_menu.dart';
 
 class CubeHeaderContainer extends StatefulWidget {
   const CubeHeaderContainer({super.key});
@@ -24,123 +26,79 @@ class CubeHeaderContainer extends StatefulWidget {
 class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   // SE AÑADE EN ESTA CLASE EL OVERLAY DEL MENU SESSION
   bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
-  OverlayEntry? _overlayEntry; // MANEJAR EL MENU COMO OVERLAY
 
-  CubeType cubeType = CubeType(idCube: -1, cubeName: ""); // VALOR INCIAL
+  CubeType cubeType = CubeType(idCube: -1, cubeName: "3x3x3"); // VALOR INCIAL
   CubeTypeDao cubeTypeDao = CubeTypeDao();
   SessionDao sessionDao = SessionDao();
   List<Session> sessions = [];
   UserDao userDao = UserDao();
+
   Session session = Session.empty();
 
-  void getCubeTypeDefault() async {
-    CubeType result = await cubeTypeDao.cubeTypeDefault("3x3x3");
+  void onCubeTypeSelected(CubeType selectedCubeType) {
     setState(() {
-      cubeType = result;
+      cubeType = selectedCubeType;
     });
-  } // SETTEAR EL TIPO DE CUBO POR DEFECTO (sera el 3x3x3)
+    // SE ACTUALIZA EL TIPO DE CUBO EN EL PROVIDER
+    final currentCubeType = Provider.of<CurrentCubeType>(this.context, listen: false);
+    currentCubeType.setCubeType(cubeType); // SE ACTUALIZA EL ESTADO GLOBAL
+    print(currentCubeType);
+  }
 
-  void insertSessionDefault() async {
-    // OBTENEMOS LOS DATOS DEL USUARIO
-    final currentUser = context.read<CurrentUser>().user;
+  void onSessionSelected(String sessionName) {
+    setState(() {
+      session.sessionName = sessionName;
+    });
+  }
 
-    if (currentUser != null) {
-      // BUSCAR EL ID DEL USUARIO
+  Future<String?> initSession() async {
+    UserDao userDao = UserDao();
+    SessionDao sessionDao = SessionDao();
+
+    try {
+      // OBTENEMOS LOS DATOS DEL USUARIO ACTUAL
+      final currentUser = context.read<CurrentUser>().user;
+
+      if (currentUser == null) {
+        DatabaseHelper.logger.e("El usuario actual es nulo");
+        return null;
+      }
+
+      // OBTENER EL ID DEL USUARIO POR SU NOMBRE
       int idUser = await userDao.getIdUserFromName(currentUser.username);
 
-      if (idUser != -1) {
-        if (!await sessionDao.isExistsSessionName("Normal")) {
-          session = Session(
-              idUser: idUser,
-              sessionName: "Normal",
-              idCubeType: cubeType.idCube!);
-          if (await sessionDao.insertSession(session)) {
-            sessionList();
-          } else {
-            DatabaseHelper.logger.e("No se ha podido insertar la sesion");
-          } // INSERTAR SESION
-        } // SI NO EXISTE LA SESION PREDETEERMINADA, SE CREA
-      } else {
-        DatabaseHelper.logger
-            .e("No se pudo obtener el id de usuario por nombre");
-      } // SI DEVUELVE UN ID, SE CREA LA SESION
-    } else {
-      DatabaseHelper.logger.e("No se pudo obtener el usuario actual");
-    }
-  } // METODO PARA INSERTAR UNA SESION PREDETERMINADA
+      if (idUser == -1) {
+        DatabaseHelper.logger.e("Error al conseguir el ID del usuario actual.");
+        return null;
+      } // SI RETORNA -1, MOSTRAMOS UN MENSAJE DE ERROR
 
-  void sessionList() async {
-    List<Session> result = await sessionDao.sessionList();
-    setState(() {
-      sessions = result;
-    });
-  } // METODO PRA OBTENER LISTA DE SESIONES
+      // BUSCAR LA SESION DEL USUARIO POR ID Y NOMBRE DE SESION
+      Session? aux = await sessionDao.getSessionByUserAndName(idUser, "Normal");
+
+      if (aux != null) {
+        // ACTUALIZAMOS EL ESTADO
+        setState(() {
+          session = aux;
+        });
+        // RETORNAMOS EL NOMBRE DE LA SESION
+        return aux.sessionName;
+      } else {
+        // MENSAJE DE ERROR
+        DatabaseHelper.logger.e(
+            "Error al conseguir la sesión por el ID de usuario y el nombre de la sesión.");
+        return null;
+      } // VERIFICAR SI LA SESION DEVUELTA ES NULA
+    } catch (e) {
+      DatabaseHelper.logger.e("Error en initSession: $e");
+      return null;
+    }
+  } // METODO PARA INICIAR CON LA SESION "Normal"
 
   @override
   void initState() {
     super.initState();
-    getCubeTypeDefault();
-    insertSessionDefault();
-  } // AL INICIAR LA APLICAION, SE SETTEA EL TIPO DE CUBO POR DEFECTO
-
-  void _showOverlay() {
-    _overlayEntry = OverlayEntry(
-      builder: (context) {
-        return GestureDetector(
-          onTap: () {
-            // AL TOCAR FUERA, SE CIERRA EL MENU
-            _removeOverlay(); // ELIMINAR EL OVERLAY
-          },
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Container(
-                  // SE PONE EL FONDO MEDIO OSCURO CUANDO APARECE EL MENU
-                  color: Colors.black.withOpacity(0.4),
-                ),
-              ),
-              Center(
-                // ESTE CONTAINER SIRVE PARA CENTRARLO EN LA PANTALLA EL OTRO CONTAINER
-                child: Container(
-                  width: 250,
-                  height: 300,
-                  child: SessionMenu(
-                    onSessionSelected: (sessionName) {
-                      setState(() {
-                        session.sessionName = sessionName;
-                      }); // SE ACTUALIZA EL NOMBRE DE LA SESION
-                    },
-                  ), // SESSION MENU
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-
-    // SE INSERTA EL OVERLAY EN LA PANTALLA
-    Overlay.of(context)?.insert(_overlayEntry!);
-    setState(() {
-      isMenuVisible = true; // SE HACE VISIBLE EL MENU
-    });
-  } // METODO PARA AÑADIR EL OVERLAY
-
-  void _removeOverlay() {
-    _overlayEntry?.remove(); // SE ELIMINA EL OVERLAY
-    setState(() {
-      isMenuVisible = false;
-    }); // SE ACTUALIZA EL ESTADO VISIBLE
-  } // METODO PARA ELIMINAR EL OVERLAY
-
-  void logicSessionIcon() {
-    // CUANDO SE TOCA, SE MUESTRA/OCULTA EL MENU DE SESSION
-    if (isMenuVisible) {
-      _removeOverlay(); // SI EL MENU ESTA VISIBLE, SE OCULTA
-    } else {
-      _showOverlay(); // SI NO ESTA VISIBLE, SE MUESTRA
-    }
-  }
+    initSession();
+  } // AL INICIAR LLAMA A LA FUNCION PARA SETTEAR LA SESION "Normal"
 
   @override
   Widget build(BuildContext context) {
@@ -181,14 +139,23 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
               alignment: Alignment.centerRight,
               child: Row(
                 children: [
-                  // ICONO DE MENU CERRADO/ABIERTO
-                  const AnimatedIconWidget(
-                      animatedIconData: AnimatedIcons.menu_close),
+                  AnimatedIconWidget(
+                    // ICONO DE MENU CERRADO/ABIERTO
+                    animatedIconData: AnimatedIcons.menu_close,
+                    // LE PASA EL CALLBACK
+                    onCubeTypeSelected: onCubeTypeSelected,
+                  ),
 
                   const SizedBox(width: 5),
 
-                  IconClass.iconButtonImage(logicSessionIcon,
-                      "assets/session_icon.png", "Choose a session")
+                  IconClass.iconButtonImage(() {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => SessionMenu(
+                        onSessionSelected: onSessionSelected,
+                      ),
+                    );
+                  }, "assets/session_icon.png", "Choose session"),
                 ],
               ),
             )

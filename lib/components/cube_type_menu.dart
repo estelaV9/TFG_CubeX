@@ -1,12 +1,21 @@
 import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../database/database_helper.dart';
 import '../model/cubetype.dart';
+import '../state/current_cube_type.dart';
+import '../state/current_user.dart';
 
 class CubeTypeMenu extends StatefulWidget {
-  const CubeTypeMenu({super.key});
+  // FUNCION PARA ENVIAR EL TIPO DE CUBO SELECCIONADO AL COMPONENTE QUE CREA
+  // EL CubeTypeMenu
+  final void Function(CubeType selectedCubeType) onCubeTypeSelected;
+
+  const CubeTypeMenu({super.key, required this.onCubeTypeSelected});
 
   @override
   State<CubeTypeMenu> createState() => _CubeTypeMenuState();
@@ -23,14 +32,16 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     });
   } // METODO PARA SETTEAR EL NUMERO DE TIPOS DE CUBOS
 
-  void insertNewType (String name) async {
-    if(!await cubeTypeDao.isExistsCubeTypeName(name)){
-      if(await cubeTypeDao.insertNewType(name)){
+  void insertNewType(String name, int idUser) async {
+    if (!await cubeTypeDao.isExistsCubeTypeName(name)) {
+      if (await cubeTypeDao.insertNewType(name, idUser)) {
         getTotalCubes(); // RECARGAMOS LA LISTA DE TIPOS DE CUBOS
-        AlertUtil.showSnackBarInformation(context, "The new type was successfully inserted");
+        AlertUtil.showSnackBarInformation(
+            context, "The new type was successfully inserted");
       } else {
         // SI NO SE INSERTO CORRECTAMENTE SE MUESTRA UN ERROR
-        AlertUtil.showSnackBarError(context, "Failed to insert the new type. Try again, please.");
+        AlertUtil.showSnackBarError(
+            context, "Failed to insert the new type. Try again, please.");
       } // INSERTAR TIPO DE CUBO
     } else {
       // SI EL NOMBRE YA EXISTE SE MUESTRA UN ERROR
@@ -49,10 +60,9 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     return Scaffold(
         backgroundColor: const Color(0x00000000), // QUITAR COLOR DE FONDO
         body: Container(
-            width: 250,
-            height: 300,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+            decoration: const BoxDecoration(
+              // SE LE AGREGA BORDE CIRCULAR A LA PARTE DE ARRIBA SOLO
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               color: AppColors.purpleIntroColor,
             ),
             child: Padding(
@@ -67,29 +77,68 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.darkPurpleColor,
-                          fontSize: 18),
+                          fontSize: 25),
                     ), // TITULO
 
-                    // ESPACIO ENTRE EL TITULO Y EL GRIDVIEW
+                    // ESPACIO ENTRE EL TITULO Y EL DIVIDER
+                    const SizedBox(height: 8),
+
+                    // LINEA DIVISORIA ENTRE EL TITULO Y EL GridView
+                    const Divider(
+                      height: 10,
+                      thickness: 3,
+                      indent: 10,
+                      endIndent: 10,
+                      color: AppColors.darkPurpleColor,
+                    ),
+
+                    // ESPACIO ENTRE EL DIVIDER Y EL GridView
                     const SizedBox(height: 10),
 
-                    // EXPANDIR EL GRIDVIEW
+                    // EXPANDIR EL GridView
                     Expanded(
-                      child: GridView.count(
-                        // TRES COLUMNAS
-                        crossAxisCount: 3,
-                        // ESPACIADO HORIZONTAL ENTRE CONTAINERS
-                        crossAxisSpacing: 10,
-                        // ESPACIADO VERTICAL
-                        mainAxisSpacing: 10,
-
-                        // GENERAR LOS TIPOS DE CUBO QUE HAY EN LA BASE DE DATOS
-                        children: cubeTypes.map((cubeType) {
-                          // GESTURE DETECTOR PARA CUANDO PULSE EL TIPO DE CUBO
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          // TRES COLUMNAS
+                          crossAxisCount: 3,
+                          // ESPACIADO HORIZONTAL ENTRE CONTAINERS
+                          crossAxisSpacing: 10,
+                          // ESPACIADO VERTICAL
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: cubeTypes.length, // TOTAL DE CUBOS
+                        itemBuilder: (context, index) {
                           return GestureDetector(
+                            onLongPress: () {
+                              // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
+                              AlertUtil.showDeleteSessionOrCube(
+                                  context,
+                                  "Delete Cube Type",
+                                  "Are you sure you want to delete all your saved times with that cube?",
+                                  () async {
+                                String cubeName = cubeTypes[index].cubeName;
+
+                                if (await cubeTypeDao
+                                    .deleteCubeType(cubeName)) {
+                                  AlertUtil.showSnackBarInformation(
+                                      context, "Cube type deleted successful");
+                                  getTotalCubes(); // VOLVEMOS A CARGAR LOS TIPOS DE CUBO
+                                } else {
+                                  AlertUtil.showSnackBarError(context,
+                                      "Cube type deletion failed. Please try again.");
+                                } // SE ELIMINA EL TIPO DE CUBO
+                              });
+                            },
                             onTap: () {
-                              print(cubeType.cubeName);
-                            }, // ACCIÓN AL TOCAR
+                              // SE ACTUALIZA EL TIPO DE CUBO EN EL PROVIDER
+                              final currentCubeType = Provider.of<CurrentCubeType>(this.context, listen: false);
+                              currentCubeType.setCubeType(cubeTypes[index]); // SE ACTUALIZA EL ESTADO GLOBAL
+                              print(currentCubeType);
+                              widget.onCubeTypeSelected(cubeTypes[index]);
+                              // SE CIERRA EL MENU UNA VEZ ELIJA
+                              Navigator.of(context).pop();
+                            }, // ACCION AL TOCAR
                             child: Container(
                               decoration: BoxDecoration(
                                 color: AppColors.purpleIntroColor,
@@ -101,27 +150,37 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               ),
                               child: Center(
                                 child: Text(
-                                  cubeType.cubeName, // MUESTRA EL NOMBRE DEL CUBO
-                                  style: const TextStyle(
-                                    color: AppColors.darkPurpleColor,
-                                    fontSize: 14,
-                                  )
-                                ),
+                                    // SE MUESTRA EL NOMBRE DEL CUBO
+                                    cubeTypes[index].cubeName,
+                                    style: const TextStyle(
+                                      color: AppColors.darkPurpleColor,
+                                      fontSize: 17,
+                                    )),
                               ),
                             ),
                           );
-                        }).toList(),
+                        },
                       ),
                     ),
+
                     // ESPACIO ENTRE EL LISTVIEW Y EL BOTON
                     const SizedBox(height: 10),
 
                     // BOTON PARA CREAR NUEVA SESION
                     ElevatedButton(
                         onPressed: () async {
-                          String? name = await  AlertUtil.showAlertForm("Insert a new type", "Insert a new type", "Enter a new cube type", context);
-                          insertNewType(name!);
-                        }, child: const Text("Create a new cube type"))
+                          String? name = await AlertUtil.showAlertForm(
+                              "Insert a new type",
+                              "Insert a new type",
+                              "Enter a new cube type",
+                              context);
+                          UserDao userDao = UserDao();
+                          // OBTENEMOS LOS DATOS DEL USUARIO
+                          final currentUser = context.read<CurrentUser>().user;
+                          int idUser = await userDao.getIdUserFromName(currentUser!.username);
+                          insertNewType(name!, idUser);
+                        },
+                        child: const Text("Create a new cube type"))
                   ],
                 ),
               ),
