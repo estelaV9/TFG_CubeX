@@ -4,19 +4,20 @@ class TimeTraining {
   final String scramble;
   final double timeInSeconds;
   final String? comments; // POR DEFECTO SERA NULO
-  final String penalty;
+  final String? penalty; // POR DEFECTO SERA "none"
   final String registrationDate;
 
   // CONSTRUCTOR
-  TimeTraining({
-    this.idTimeTraining,
-    required this.idSession,
-    required this.scramble,
-    required this.timeInSeconds,
-    this.comments,
-    required this.penalty,
-    String? registrationDate})
-      : registrationDate = registrationDate ?? DateTime.now().toString();
+  TimeTraining(
+      {this.idTimeTraining,
+      required this.idSession,
+      required this.scramble,
+      required this.timeInSeconds,
+      this.comments,
+      String? penalty,
+      String? registrationDate})
+      : registrationDate = registrationDate ?? DateTime.now().toString(),
+        penalty = penalty ?? "none";
 
   @override
   String toString() {
