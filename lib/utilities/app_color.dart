@@ -11,4 +11,5 @@ class AppColors {
   static const Color purpleA172de = Color(0xFFa172de);
   static const Color imagenBg = Color(0xFFa384bd);
   static const Color listTileHover = Color(0xFFc5b7e7);
+  static const Color purpleButton = Color(0xFF8265a4);
 } // CLASE CON ATRIBUTOS DE LOS COLORES DE LA APP
