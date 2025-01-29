@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:flutter/material.dart';
 import '../dao/time_training_dao.dart';
 import '../model/time_training.dart';
@@ -64,17 +65,22 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
         final time = listTimes[index];
         return SizedBox(
           height: 50,
-          child: Card(
-            color: AppColors.lightVioletColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            elevation: 4,
-            child: Center(
-              child: Text(
-                "${time.timeInSeconds.toStringAsFixed(2)}",
-                style:
-                    TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+          child: GestureDetector(
+            onTap: (){
+              AlertUtil.showDetailsTime(context, listTimes[index]);
+            },
+            child: Card(
+              color: AppColors.lightVioletColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 4,
+              child: Center(
+                child: Text(
+                  "${time.timeInSeconds.toStringAsFixed(2)}",
+                  style:
+                      TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ),

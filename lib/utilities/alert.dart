@@ -1,4 +1,7 @@
+import 'package:esteladevega_tfg_cubex/model/time_training.dart';
+import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AlertUtil {
   static void showAlert(String title, String content, BuildContext context) {
@@ -21,8 +24,8 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA
 
-  static Future<String?> showAlertForm(
-      String title, String content, String labelText, BuildContext context) async {
+  static Future<String?> showAlertForm(String title, String content,
+      String labelText, BuildContext context) async {
     final TextEditingController controller = TextEditingController();
 
     // MOSTRAR EL DIALOG
@@ -92,6 +95,73 @@ class AlertUtil {
           );
         });
   } // METODO PARA MOSTRAR UNA ALERTA DE SI DESEA ELIMINAR LA SESION O EL TIPO DE CUBO
+
+  static showDetailsTime(BuildContext context, TimeTraining timeTraining) {
+    // SE MUESTRA EL DIALOG
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // SE REDUCE EL PADDING DEL TITULO Y DEL CONTENIDO
+            titlePadding:
+                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+
+            backgroundColor: AppColors.lightVioletColor,
+            // TITULO DE LA ALERTA
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.block),
+                ),
+                Text(
+                  timeTraining.timeInSeconds.toString(),
+                  style: const TextStyle(
+                    color: AppColors.darkPurpleColor,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.delete),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min, // QUE OCUPE EL MINIMO
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.calendar_month),
+                    ),
+                    Text(
+                      DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                      style: const TextStyle(
+                          color: AppColors.darkPurpleColor, fontSize: 16),
+                    )
+                  ],
+                ),
+
+                // LINEA DIVISORIA ENTRE EL LA FECHA Y EL CONTENIDO EN SI
+                const Divider(
+                  height: 10,
+                  thickness: 2,
+                  indent: 10,
+                  endIndent: 10,
+                  color: AppColors.purpleA172de,
+                ),
+              ],
+            ),
+          );
+        });
+  } // METODO PARA MOSTRAR DETALLES DEL TIEMPO SELECCIONADO
 
   static showSnackBar(
       BuildContext context, IconData icon, String message, Color color) {
