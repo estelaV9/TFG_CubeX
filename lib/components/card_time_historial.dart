@@ -53,7 +53,6 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: 10,
