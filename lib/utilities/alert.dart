@@ -128,7 +128,7 @@ class AlertUtil {
                   ),
                 ),
 
-                IconClass.iconButton((){}, "Delete time", Icons.calendar_month)
+                IconClass.iconButton((){}, "Delete time", Icons.delete)
               ],
             ),
             content: Column(
@@ -137,10 +137,7 @@ class AlertUtil {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.calendar_month),
-                    ),
+                    IconClass.iconButton((){}, "Date", Icons.calendar_month),
                     Text(
                       DateFormat('dd/MM/yyyy').format(DateTime.now()),
                       style: const TextStyle(
