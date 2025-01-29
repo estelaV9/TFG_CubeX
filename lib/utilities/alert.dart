@@ -1,7 +1,9 @@
+import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 class AlertUtil {
   static void showAlert(String title, String content, BuildContext context) {
@@ -97,6 +99,8 @@ class AlertUtil {
   } // METODO PARA MOSTRAR UNA ALERTA DE SI DESEA ELIMINAR LA SESION O EL TIPO DE CUBO
 
   static showDetailsTime(BuildContext context, TimeTraining timeTraining) {
+    var colorPressed = AppColors.purpleButton;
+    var isTextPressed = false;
     // SE MUESTRA EL DIALOG
     return showDialog(
         context: context,
@@ -113,10 +117,8 @@ class AlertUtil {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.block),
-                ),
+                IconClass.iconButton((){}, "Add a penalty", Icons.block),
+
                 Text(
                   timeTraining.timeInSeconds.toString(),
                   style: const TextStyle(
@@ -125,10 +127,8 @@ class AlertUtil {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.delete),
-                ),
+
+                IconClass.iconButton((){}, "Delete time", Icons.calendar_month)
               ],
             ),
             content: Column(
@@ -152,11 +152,86 @@ class AlertUtil {
                 // LINEA DIVISORIA ENTRE EL LA FECHA Y EL CONTENIDO EN SI
                 const Divider(
                   height: 10,
-                  thickness: 2,
+                  thickness: 1.3,
                   indent: 10,
                   endIndent: 10,
-                  color: AppColors.purpleA172de,
+                  color: AppColors.darkPurpleColor,
                 ),
+
+                SizedBox(height: 5),
+
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        isTextPressed = !isTextPressed;
+                      },
+                      child: Container(
+                        width: 95,
+                        height: 30,
+                        color: isTextPressed
+                            ? AppColors.purpleButton
+                            : Colors.transparent,
+                        child: Card(
+                          color: isTextPressed
+                              ? AppColors.purpleButton
+                              : Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ), // RADIO DEL CARD
+                          child: TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              "Scramble",
+                              style: TextStyle(
+                                  color: AppColors.darkPurpleColor,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 30,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ), // RADIO DEL CARD
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Comments",
+                            style: TextStyle(
+                                color: AppColors.darkPurpleColor,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 190,
+                      child: Text(
+                        timeTraining.scramble,
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    IconClass.iconButton(() async {
+                      await Clipboard.setData(
+                          ClipboardData(text: timeTraining.scramble));
+                      // MUESTRA MENSAJE DE QUE SE COPIO CORRECTAMENTE
+                      showSnackBarInformation(context, "Copied successfully");
+                    }, "Copy scramble", Icons.copy)
+                  ],
+                )
               ],
             ),
           );
