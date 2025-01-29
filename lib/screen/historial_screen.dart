@@ -1,4 +1,5 @@
 import 'package:esteladevega_tfg_cubex/components/card_time_historial.dart';
+import 'package:esteladevega_tfg_cubex/components/search_time_container.dart';
 import 'package:flutter/material.dart';
 
 import '../components/Icon/icon.dart';
@@ -61,6 +62,14 @@ class _HistorialScreenState extends State<HistorialScreen> {
 
           const Positioned(
             top: 110,
+            right: 20,
+            left: 20,
+            bottom: 465,
+            child: SearchTimeContainer(),
+          ),
+
+          const Positioned(
+            top: 175,
             right: 20,
             left: 20,
             bottom: 20,
