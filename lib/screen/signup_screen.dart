@@ -19,6 +19,7 @@ import '../components/Icon/icon.dart';
 import '../navigation/bottom_navigation.dart';
 import '../components/password_field_row.dart';
 import '../state/current_user.dart';
+import '../utilities/internationalization.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -168,9 +169,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      const Text(
-                        "Sign Up",
-                        style: TextStyle(
+                      // Sign up
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "sign_up_button_label",
+                        "sign_up_button_hint",
+                        "sign_up_button",
+                        const TextStyle(
                             fontFamily: 'Gluten',
                             fontSize: 70,
                             color: AppColors.lightPurpleColor),
@@ -182,11 +188,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             FieldForm(
                               icon:
                                   IconClass.iconMaker(Icons.person, "Username"),
-                              labelText: 'Username',
-                              hintText: 'Write your username',
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_hint"),
                               controller: _usernameController,
                               validator: (value) =>
                                   Validator.validateUsername(value),
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_hint"),
                             ),
 
                             // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
@@ -194,11 +210,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                             FieldForm(
                               icon: IconClass.iconMaker(Icons.mail, "Mail"),
-                              labelText: 'Mail',
-                              hintText: 'Write your mail',
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "mail"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "mail_hint"),
                               controller: _mailController,
                               validator: (value) =>
                                   Validator.validateEmail(value),
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "mail_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "mail_hint"),
                             ),
 
                             // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
@@ -206,12 +232,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                             PasswordFieldForm(
                               icon: IconClass.iconMaker(Icons.lock, "Password"),
-                              labelText: 'Password',
-                              hintText: 'Write your password',
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_hint"),
                               controller: _passwordController,
                               validator: (value) =>
                                   Validator.validatePassword(value),
                               passwordOnSaved: (value) => _password = value!,
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_hint"),
                             ),
 
                             // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
@@ -220,22 +256,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             PasswordFieldForm(
                               icon: IconClass.iconMaker(
                                   Icons.check, "Confirm Password"),
-                              labelText: 'Confirm password',
-                              hintText: 'Confirm password',
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password_hint"),
                               controller: _confirmPasswordController,
                               validator: (value) =>
                                   Validator.validateConfirmPassword(
                                       value, _passwordController.text),
                               passwordOnSaved: (value) => _password = value!,
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password_hint"),
                             ),
                           ])),
                       const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Sign up",
-                            style: TextStyle(
+                          // Sign up
+                          Internationalization.internationalization
+                              .createLocalizedSemantics(
+                            context,
+                            "sign_up_button_label",
+                            "sign_up_button_hint",
+                            "sign_up_button",
+                            const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 45,
                                 color: AppColors.darkPurpleColor),
@@ -257,9 +312,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Already have an account?",
-                            style: TextStyle(
+                          // Already have an account?
+                          Internationalization.internationalization
+                              .createLocalizedSemantics(
+                            context,
+                            "already_have_account_label",
+                            "already_have_account_hint",
+                            "already_have_account",
+                            const TextStyle(
                                 color: AppColors.darkPurpleColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15),
@@ -271,13 +331,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ChangeScreen.changeScreen(
                                     const LoginScreen(), context);
                               },
-                              child: const Text(
-                                "Log in",
-                                style: TextStyle(
+                              // Log in
+                              child:
+                                  // Already have an account?
+                                  Internationalization.internationalization
+                                      .createLocalizedSemantics(
+                                context,
+                                "login_link_label",
+                                "login_link_hint",
+                                "login_link",
+                                const TextStyle(
                                     fontSize: 15,
                                     color: AppColors.darkPurpleColor,
                                     decoration: TextDecoration.underline),
-                              ))
+                              )),
                         ],
                       )
                     ],

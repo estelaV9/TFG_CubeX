@@ -5,9 +5,12 @@ import 'package:esteladevega_tfg_cubex/state/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
+import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'database/database_helper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   // SE INICIALIZA LA BASE DE DATOS
@@ -31,7 +34,19 @@ class CubeXApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        debugShowCheckedModeBanner: false, // QUITAR MARCA DEBUG
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
+        supportedLocales: [
+          Locale('es'),
+          Locale('en')
+        ],
+        locale: Locale('es'),
+        debugShowCheckedModeBanner: false,
+        // QUITAR MARCA DEBUG
         home: IntroScreen());
   }
 }
@@ -59,21 +74,26 @@ class _IntroScreenState extends State<IntroScreen> {
       ),
       child: Column(
         children: [
-          const Stack(
+          Stack(
             children: [
               Padding(
                 // SE DESPLAZA LA POSICIÓN PARA QUE SE VEA EL OTRO TEXTO
-                padding: EdgeInsets.only(right: 10),
-                child: Text(
-                  "CubeX",
-                  style: TextStyle(
+                padding: const EdgeInsets.only(right: 10),
+                // CubeX
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  "cube_x",
+                  "cube_x",
+                  "cube_x",
+                  const TextStyle(
                     fontFamily: 'JollyLodger',
                     fontSize: 132,
                     color: AppColors.purpleIntroColor,
                   ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(left: 7),
                 child: Text(
                   "CubeX",
@@ -93,9 +113,14 @@ class _IntroScreenState extends State<IntroScreen> {
             child: Column(
               children: [
                 Image.asset("assets/app_logo.png"),
-                const Text(
-                  "Take your skills to the next level.",
-                  style: TextStyle(
+                // Take your skills to the next level.
+                Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  "main_title",
+                  "main_title_hint",
+                  "main_title",
+                  const TextStyle(
                     fontFamily: 'Berlin Sans FB',
                     color: Colors.white,
                     fontSize: 30,
@@ -136,9 +161,14 @@ class _IntroScreenState extends State<IntroScreen> {
                                         width: 1), // BORDE NEGRO
                                   ),
                                 ),
-                                child: const Text(
-                                  "Log in",
-                                  style: TextStyle(
+                                // Log in
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context,
+                                  "login_label",
+                                  "login_hint",
+                                  "login_label",
+                                  const TextStyle(
                                     fontFamily: 'JollyLodger',
                                     fontSize: 35,
                                     color: Colors.black87,
@@ -177,9 +207,14 @@ class _IntroScreenState extends State<IntroScreen> {
                                         width: 1), // BORDE NEGRO
                                   ),
                                 ),
-                                child: const Text(
-                                  "Sign up",
-                                  style: TextStyle(
+                                // Sign up
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context,
+                                  "signup_label",
+                                  "signup_hint",
+                                  "signup_label",
+                                  const TextStyle(
                                     fontFamily: 'JollyLodger',
                                     fontSize: 35,
                                     color: Colors.black87,
