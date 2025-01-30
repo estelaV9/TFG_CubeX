@@ -55,5 +55,16 @@
 
   "confirm_password": "Confirm password",
   "confirm_password_label": "Confirm password field",
-  "confirm_password_hint": "Enter the same password before"
+  "confirm_password_hint": "Enter the same password before",
+
+  "time_label": "Recorded time",
+  "time_hint": "Show the recorded time",
+
+  "dnf": "Did Not Finish",
+  "dnf_label": "Did Not Finish Button",
+  "dnf_hint": "Indicates that the action was not completed and no result was achieved.",
+
+  "plus_two": "+2",
+  "plus_two_label": "Plus Two Button",
+  "plus_two_hint": "Indicates a penalty of two seconds added to the time."
 }

@@ -119,6 +119,25 @@ class Internationalization {
       case 'confirm_password_hint':
         return l10n.confirm_password_hint;
 
+      case 'time_label':
+        return l10n.time_label;
+      case 'time_hint':
+        return l10n.time_hint;
+
+      case 'dnf':
+        return l10n.dnf;
+      case 'dnf_label':
+        return l10n.dnf_label;
+      case 'dnf_hint':
+        return l10n.dnf_hint;
+
+      case 'plus_two':
+        return l10n.plus_two;
+      case 'plus_two_label':
+        return l10n.plus_two_label;
+      case 'plus_two_hint':
+        return l10n.plus_two_hint;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;

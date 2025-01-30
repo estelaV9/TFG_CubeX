@@ -55,5 +55,16 @@
 
   "confirm_password": "Confirmar contraseña",
   "confirm_password_label": "Campo para confirmar la contraseña",
-  "confirm_password_hint": "Escribe la misma contraseña de antes"
+  "confirm_password_hint": "Escribe la misma contraseña de antes",
+
+  "time_label": "Tiempo registrado",
+  "time_hint": "Se muestra el tiempo registrado",
+
+  "dnf": "DFN",
+  "dnf_label": "Botón No Terminó",
+  "dnf_hint": "Indica que la acción no se completó y no se obtuvo un resultado.",
+
+  "plus_two": "+2",
+  "plus_two_label": "Botón +2",
+  "plus_two_hint": "Indica una penalización de dos segundos añadidos al tiempo."
 }
