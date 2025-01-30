@@ -7,6 +7,8 @@ class FieldForm extends StatefulWidget {
   final String hintText; // TEXTO QUE VA A APARECER CUANDO SE PULSA
   final TextEditingController controller; // PASAMOS TAMBIEN EL CONTROLADOR
   final FormFieldValidator<String> validator; // PASAMOS LA VALIDACION
+  final String labelSemantics; // TEXTO QUE TENDRA EL SEMANTIC
+  final String hintSemantics; // TEXTO DEL HINT QUE TENDRA EL SEMANTIC
 
   const FieldForm(
       {super.key,
@@ -14,7 +16,9 @@ class FieldForm extends StatefulWidget {
       required this.labelText,
       required this.hintText,
       required this.controller,
-      required this.validator});
+      required this.validator,
+      required this.labelSemantics,
+      required this.hintSemantics});
 
   @override
   _FieldFormState createState() => _FieldFormState();
@@ -53,13 +57,17 @@ class _FieldFormState extends State<FieldForm> {
                 const SizedBox(width: 20),
 
                 Expanded(
-                  child: TextFormField(
-                      controller: widget.controller,
-                      decoration: InputDecoration(
-                        labelText: widget.labelText,
-                        hintText: widget.hintText,
-                      ),
-                      validator: widget.validator),
+                  child: Semantics(
+                    label: widget.labelSemantics,
+                    hint: widget.hintSemantics,
+                    child: TextFormField(
+                        controller: widget.controller,
+                        decoration: InputDecoration(
+                          labelText: widget.labelText,
+                          hintText: widget.hintText,
+                        ),
+                        validator: widget.validator),
+                  ),
                 )
               ],
             ),
