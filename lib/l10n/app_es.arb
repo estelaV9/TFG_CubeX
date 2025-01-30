@@ -1,0 +1,59 @@
+{
+  "cube_x": "CubeX",
+  "main_title": "Lleva tus habilidades al siguiente nivel.",
+  "main_title_hint": "El título que se muestra en la parte superior de la pantalla de inicio",
+
+  "login_label": "Iniciar sesión",
+  "login_hint": "Botón para iniciar sesión en tu cuenta",
+
+  "signup_label": "Regístrate",
+  "signup_hint": "Botón para crear una nueva cuenta",
+
+  "login_screen_title": "Iniciar sesión",
+  "login_screen_title_label": "Título de la pantalla de inicio de sesión",
+  "login_screen_title_hint": "El título en la pantalla de inicio de sesión",
+
+  "forgot_password": "¿Olvidaste tu contraseña?",
+  "forgot_password_label": "Enlace para olvidar la contraseña",
+  "forgot_password_hint": "Enlace para restablecer la contraseña",
+
+  "sign_in": "Iniciar sesión",
+  "sign_in_label": "Botón de iniciar sesión",
+  "sign_in_hint": "Botón para iniciar sesión en tu cuenta",
+
+  "no_account": "¿No tienes una cuenta?",
+  "no_account_label": "Texto de no tener cuenta",
+  "no_account_hint": "Texto que pregunta si el usuario tiene cuenta",
+
+  "sign_up_button": "Regístrate",
+  "sign_up_button_label": "Botón de registro",
+  "sign_up_button_hint": "Botón para comenzar a registrarse",
+
+  "signup_screen_title": "Registrarse",
+  "signup_screen_title_label": "Título de la pantalla de registro",
+  "signup_screen_title_hint": "El título en la pantalla de registro",
+
+  "already_have_account": "¿Ya tienes una cuenta?",
+  "already_have_account_label": "Texto de ya tener cuenta",
+  "already_have_account_hint": "Texto que pregunta si el usuario ya tiene cuenta",
+
+  "login_link": "Iniciar sesión",
+  "login_link_label": "Enlace de iniciar sesión",
+  "login_link_hint": "Enlace para ir a la página de inicio de sesión",
+
+  "username": "Nombre de usuario",
+  "username_label": "Campo de nombre de usuario",
+  "username_hint": "Escribe tu nombre de usuario",
+
+  "mail": "Correo",
+  "mail_label": "Campo del correo",
+  "mail_hint": "Escribe tu correo",
+
+  "password": "Contraseña",
+  "password_label": "Campo de contraseña",
+  "password_hint": "Escribe tu contaseña",
+
+  "confirm_password": "Confirmar contraseña",
+  "confirm_password_label": "Campo para confirmar la contraseña",
+  "confirm_password_hint": "Escribe la misma contraseña de antes"
+}

@@ -1,0 +1,59 @@
+{
+  "cube_x": "CubeX",
+  "main_title": "Take your skills to the next level.",
+  "main_title_hint": "The title displayed at the top of the home screen",
+
+  "login_label": "Log in",
+  "login_hint": "Button to log into your account",
+
+  "signup_label": "Sign up",
+  "signup_hint": "Button to create a new account",
+
+  "login_screen_title": "Login",
+  "login_screen_title_label": "Login screen title",
+  "login_screen_title_hint": "The title on the login screen",
+
+  "forgot_password": "Forgot your password?",
+  "forgot_password_label": "Forgot password link",
+  "forgot_password_hint": "Link to reset password",
+
+  "sign_in": "Sign in",
+  "sign_in_label": "Sign in button",
+  "sign_in_hint": "Button to sign in to your account",
+
+  "no_account": "Don't have an account?",
+  "no_account_label": "No account text",
+  "no_account_hint": "Text asking if the user has an account",
+
+  "sign_up_button": "Sign up",
+  "sign_up_button_label": "Sign up button",
+  "sign_up_button_hint": "Button to start signing up",
+
+  "signup_screen_title": "Sign Up",
+  "signup_screen_title_label": "Sign up screen title",
+  "signup_screen_title_hint": "The title on the sign up screen",
+
+  "already_have_account": "Already have an account?",
+  "already_have_account_label": "Already have an account text",
+  "already_have_account_hint": "Text asking if the user already has an account",
+
+  "login_link": "Log in",
+  "login_link_label": "Login link",
+  "login_link_hint": "Link to the login page",
+
+  "username": "Username",
+  "username_label": "Username field",
+  "username_hint": "Enter your username",
+
+  "mail": "Mail",
+  "mail_label": "Mail field",
+  "mail_hint": "Enter your mail",
+
+  "password": "Password",
+  "password_label": "Password field",
+  "password_hint": "Enter your password",
+
+  "confirm_password": "Confirm password",
+  "confirm_password_label": "Confirm password field",
+  "confirm_password_hint": "Enter the same password before"
+}
