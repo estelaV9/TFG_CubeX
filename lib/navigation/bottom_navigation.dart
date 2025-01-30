@@ -3,6 +3,8 @@ import 'package:esteladevega_tfg_cubex/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
+import '../screen/historial_screen.dart';
+
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
 
@@ -16,9 +18,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
   // LISTA DE WIDGETS PARA CADA PANTALLA
   final List<Widget> _screens = [
     /// nota: se cambiara, pero se necesita una para que el timer empiece en 1 en el medio
-    const IntroScreen(),
+    const HistorialScreen(),
     const TimerScreen(),
-    // HistorialScreen(),
     // StatisticScreen()
   ];
 

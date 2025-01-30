@@ -102,8 +102,22 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
   @override
   Widget build(BuildContext context) {
+    // USA MediaQuery PARA OBTENER EL ANCHO DE LA VENTANA
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    // WIDTH INICIAL DEL CONTAINER DEL HEADER
+    double widthContainer = 0;
+
+    if (screenWidth < 380) {
+      // SI LA PANTALLA ES MENOR DE 380, EL TAMAÑO DEL CONTAINER SE ESTABLECE EN 245
+      widthContainer = 245;
+    } else{
+      // SI NO, VA AUTOINCREMENTANDO SEGUN EL TAMAÑO DE LA PANTALLA
+      widthContainer = screenWidth * 0.75;
+    } // SEGUN EL TAMAÑO DE LA PANTALLA, AUMENTA EL TAMAÑO DEL CONTAINER
+
+
     return Container(
-      width: 245,
+      width: widthContainer,
       decoration: BoxDecoration(
         color: AppColors.lightVioletColor,
         borderRadius: BorderRadius.circular(100),

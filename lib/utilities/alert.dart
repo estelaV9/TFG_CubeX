@@ -1,4 +1,9 @@
+import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
+import 'package:esteladevega_tfg_cubex/model/time_training.dart';
+import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 class AlertUtil {
   static void showAlert(String title, String content, BuildContext context) {
@@ -21,8 +26,8 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA
 
-  static Future<String?> showAlertForm(
-      String title, String content, String labelText, BuildContext context) async {
+  static Future<String?> showAlertForm(String title, String content,
+      String labelText, BuildContext context) async {
     final TextEditingController controller = TextEditingController();
 
     // MOSTRAR EL DIALOG
@@ -92,6 +97,143 @@ class AlertUtil {
           );
         });
   } // METODO PARA MOSTRAR UNA ALERTA DE SI DESEA ELIMINAR LA SESION O EL TIPO DE CUBO
+
+  static showDetailsTime(BuildContext context, TimeTraining timeTraining) {
+    var colorPressed = AppColors.purpleButton;
+    var isTextPressed = false;
+    // SE MUESTRA EL DIALOG
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // SE REDUCE EL PADDING DEL TITULO Y DEL CONTENIDO
+            titlePadding:
+                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+
+            backgroundColor: AppColors.lightVioletColor,
+            // TITULO DE LA ALERTA
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconClass.iconButton((){}, "Add a penalty", Icons.block),
+
+                Text(
+                  timeTraining.timeInSeconds.toString(),
+                  style: const TextStyle(
+                    color: AppColors.darkPurpleColor,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                IconClass.iconButton((){}, "Delete time", Icons.delete)
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min, // QUE OCUPE EL MINIMO
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconClass.iconButton((){}, "Date", Icons.calendar_month),
+                    Text(
+                      DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                      style: const TextStyle(
+                          color: AppColors.darkPurpleColor, fontSize: 16),
+                    )
+                  ],
+                ),
+
+                // LINEA DIVISORIA ENTRE EL LA FECHA Y EL CONTENIDO EN SI
+                const Divider(
+                  height: 10,
+                  thickness: 1.3,
+                  indent: 10,
+                  endIndent: 10,
+                  color: AppColors.darkPurpleColor,
+                ),
+
+                SizedBox(height: 5),
+
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        isTextPressed = !isTextPressed;
+                      },
+                      child: Container(
+                        width: 95,
+                        height: 30,
+                        color: isTextPressed
+                            ? AppColors.purpleButton
+                            : Colors.transparent,
+                        child: Card(
+                          color: isTextPressed
+                              ? AppColors.purpleButton
+                              : Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ), // RADIO DEL CARD
+                          child: TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              "Scramble",
+                              style: TextStyle(
+                                  color: AppColors.darkPurpleColor,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 30,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ), // RADIO DEL CARD
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Comments",
+                            style: TextStyle(
+                                color: AppColors.darkPurpleColor,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 190,
+                      child: Text(
+                        timeTraining.scramble,
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    IconClass.iconButton(() async {
+                      await Clipboard.setData(
+                          ClipboardData(text: timeTraining.scramble));
+                      // MUESTRA MENSAJE DE QUE SE COPIO CORRECTAMENTE
+                      showSnackBarInformation(context, "Copied successfully");
+                    }, "Copy scramble", Icons.copy)
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+  } // METODO PARA MOSTRAR DETALLES DEL TIEMPO SELECCIONADO
 
   static showSnackBar(
       BuildContext context, IconData icon, String message, Color color) {
