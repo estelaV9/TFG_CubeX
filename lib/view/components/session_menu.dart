@@ -8,9 +8,9 @@ import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data/database/database_helper.dart';
-import '../model/session.dart';
-import '../viewmodel/current_user.dart';
+import '../../data/database/database_helper.dart';
+import '../../model/session.dart';
+import '../../viewmodel/current_user.dart';
 
 class SessionMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR LA SESION SELECCIONADA AL COMPONENTE QUE CREA

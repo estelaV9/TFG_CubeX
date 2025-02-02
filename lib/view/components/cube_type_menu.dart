@@ -6,10 +6,10 @@ import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../data/database/database_helper.dart';
-import '../model/cubetype.dart';
-import '../viewmodel/current_cube_type.dart';
-import '../viewmodel/current_user.dart';
+import '../../data/database/database_helper.dart';
+import '../../model/cubetype.dart';
+import '../../viewmodel/current_cube_type.dart';
+import '../../viewmodel/current_user.dart';
 
 class CubeTypeMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR EL TIPO DE CUBO SELECCIONADO AL COMPONENTE QUE CREA

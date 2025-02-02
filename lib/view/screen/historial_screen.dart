@@ -1,11 +1,11 @@
-import 'package:esteladevega_tfg_cubex/components/card_time_historial.dart';
-import 'package:esteladevega_tfg_cubex/components/search_time_container.dart';
+import 'package:esteladevega_tfg_cubex/view/components/card_time_historial.dart';
+import 'package:esteladevega_tfg_cubex/view/components/search_time_container.dart';
 import 'package:flutter/material.dart';
 
 import '../components/Icon/icon.dart';
-import '../components/cube_header_container.dart';
-import '../navigation/app_drawer.dart';
-import '../utilities/app_color.dart';
+import '../../view/components/cube_header_container.dart';
+import '../../view/navigation/app_drawer.dart';
+import '../../utilities/app_color.dart';
 
 class HistorialScreen extends StatefulWidget {
   const HistorialScreen({super.key});

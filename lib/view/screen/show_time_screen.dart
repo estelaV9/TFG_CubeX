@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../utilities/app_color.dart';
+import '../../utilities/app_color.dart';
 
 class ShowTimeScreen extends StatefulWidget {
   const ShowTimeScreen({super.key});

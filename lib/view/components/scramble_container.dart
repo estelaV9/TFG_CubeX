@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
+import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../utilities/ScrambleGenerator.dart';
+import '../../utilities/ScrambleGenerator.dart';
 
 class ScrambleContainer extends StatefulWidget {
   const ScrambleContainer({super.key});

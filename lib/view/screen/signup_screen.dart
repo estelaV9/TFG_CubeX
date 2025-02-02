@@ -5,10 +5,10 @@ import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
-import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
-import 'package:esteladevega_tfg_cubex/components/icon_image_fieldrow.dart';
+import 'package:esteladevega_tfg_cubex/view/components/icon_image_fieldrow.dart';
 import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/encrypt_password.dart';
 import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
@@ -16,10 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/Icon/icon.dart';
-import '../navigation/bottom_navigation.dart';
+import '../../view/navigation/bottom_navigation.dart';
 import '../components/password_field_row.dart';
-import '../viewmodel/current_user.dart';
-import '../utilities/internationalization.dart';
+import '../../viewmodel/current_user.dart';
+import '../../utilities/internationalization.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

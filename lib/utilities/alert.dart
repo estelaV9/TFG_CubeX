@@ -1,4 +1,4 @@
-import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
+import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';

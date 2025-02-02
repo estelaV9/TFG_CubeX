@@ -1,8 +1,8 @@
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:flutter/material.dart';
-import '../data/dao/time_training_dao.dart';
-import '../model/time_training.dart';
-import '../utilities/app_color.dart';
+import '../../data/dao/time_training_dao.dart';
+import '../../model/time_training.dart';
+import '../../utilities/app_color.dart';
 
 class CardTimeHistorial extends StatefulWidget {
   const CardTimeHistorial({Key? key}) : super(key: key);
