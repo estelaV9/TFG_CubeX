@@ -1,12 +1,12 @@
-import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../database/database_helper.dart';
+import '../data/database/database_helper.dart';
 import '../model/cubetype.dart';
 import '../viewmodel/current_cube_type.dart';
 import '../viewmodel/current_user.dart';

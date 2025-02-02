@@ -1,6 +1,6 @@
-import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 
-import '../model/session.dart';
+import '../../model/session.dart';
 
 class SessionDao {
   Future<bool> insertSession(Session session) async {

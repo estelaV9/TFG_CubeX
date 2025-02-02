@@ -8,7 +8,7 @@ import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'database/database_helper.dart';
+import 'data/database/database_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 

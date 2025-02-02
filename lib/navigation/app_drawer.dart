@@ -1,5 +1,5 @@
-import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
-import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';

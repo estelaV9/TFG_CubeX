@@ -1,7 +1,7 @@
-import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
-import 'package:esteladevega_tfg_cubex/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
@@ -70,6 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             int idUser =
                 await userDao.getIdUserFromName(currentUser.user!.username);
 
+            print(idUser );
             if (idUser != -1) {
               // CUANDO SE INSERTA UN NUEVO USUARIO SE LE ASIGNA CUBOS POR DEFECTO
               CubeTypeDao cubeTypeDao = CubeTypeDao();

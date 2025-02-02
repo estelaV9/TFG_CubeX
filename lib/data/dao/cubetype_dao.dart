@@ -1,5 +1,5 @@
 import '../database/database_helper.dart';
-import '../model/cubetype.dart';
+import '../../model/cubetype.dart';
 
 class CubeTypeDao {
   Future<List<CubeType>> getCubeTypes() async {
