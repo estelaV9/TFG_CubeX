@@ -167,4 +167,33 @@ class SessionDao {
     }
   } // METODO QUE DEVUELVE UNA SESION POR ID DE USUARIO Y NOMBRE DE LA SESION
 
+
+  Future<List<Session>> searchSessionByCubeAndUser(
+      int idUser, int idCubeType) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // BUSCA LA SESION CON EL TIPO DE CUBO Y EL ID PROPORCIONADO
+      final result = await db.query('sessionTime',
+          where: 'idUser = ? AND idCubeType = ?',
+          whereArgs: [idUser, idCubeType]);
+
+      if(result.isNotEmpty){
+        // DEVUELVE LA LISTA DE SESIONES CON ESE TIPO DE CUBO Y ESE USUARIO
+        return result.map((session) {
+          return Session(
+            idSession: session['idSession'] as int,
+            idUser: session['idUser'] as int,
+            sessionName: session['sessionName'] as String,
+            creationDate: session['creationDate'] as String,
+            idCubeType: session['idCubeType'] as int,
+          );
+        }).toList();
+      }
+      return [];
+    } catch (e) {
+      DatabaseHelper.logger.e("Error listar las sesiones por un tipo de cubo de un usuario: $e");
+      return [];
+    }
+  } // METODO PARA BUSCAR EL ID DE LA SESION POR EL NOMBRE DE LA SESION Y ID USUARIO
+
 }
