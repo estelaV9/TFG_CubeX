@@ -10,6 +10,10 @@ class FieldForm extends StatefulWidget {
   final String labelSemantics; // TEXTO QUE TENDRA EL SEMANTIC
   final String hintSemantics; // TEXTO DEL HINT QUE TENDRA EL SEMANTIC
 
+
+  final double? borderSize;
+  final Color? colorBox;
+
   const FieldForm(
       {super.key,
       required this.icon,
@@ -18,7 +22,7 @@ class FieldForm extends StatefulWidget {
       required this.controller,
       required this.validator,
       required this.labelSemantics,
-      required this.hintSemantics});
+      required this.hintSemantics, this.borderSize, this.colorBox});
 
   @override
   _FieldFormState createState() => _FieldFormState();
@@ -27,14 +31,18 @@ class FieldForm extends StatefulWidget {
 class _FieldFormState extends State<FieldForm> {
   @override
   Widget build(BuildContext context) {
+    //ESTABLECEMOS EL BORDE Y EL COLOR SEGUN SI SE HA PASADO EL PARAMETRO O NO
+    final borderSize = widget.borderSize ?? 100;
+    final colorBox = widget.colorBox ?? AppColors.lightVioletColor;
+
     return Row(
       children: [
         Expanded(
             child: Container(
           height: 62,
           decoration: BoxDecoration(
-            color: AppColors.lightVioletColor,
-            borderRadius: BorderRadius.circular(100),
+            color: colorBox,
+            borderRadius: BorderRadius.circular(borderSize),
 
             // AÑADIMOS EL EFECTO DE "drop shadow"
             boxShadow: [

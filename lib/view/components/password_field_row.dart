@@ -12,6 +12,9 @@ class PasswordFieldForm extends StatefulWidget {
   final String labelSemantics; // TEXTO QUE TENDRA EL SEMANTIC
   final String hintSemantics; // TEXTO DEL HINT QUE TENDRA EL SEMANTIC
 
+  final double? borderSize;
+  final Color? colorBox;
+
   const PasswordFieldForm(
       {super.key,
       required this.icon,
@@ -21,7 +24,7 @@ class PasswordFieldForm extends StatefulWidget {
       required this.validator,
       required this.passwordOnSaved,
       required this.labelSemantics,
-      required this.hintSemantics});
+      required this.hintSemantics, this.borderSize, this.colorBox});
 
   @override
   _PasswordFieldFormState createState() => _PasswordFieldFormState();
@@ -33,14 +36,18 @@ class _PasswordFieldFormState extends State<PasswordFieldForm> {
 
   @override
   Widget build(BuildContext context) {
+    //ESTABLECEMOS EL BORDE Y EL COLOR SEGUN SI SE HA PASADO EL PARAMETRO O NO
+    final borderSize = widget.borderSize ?? 100;
+    final colorBox = widget.colorBox ?? AppColors.lightVioletColor;
+
     return Row(
       children: [
         Expanded(
             child: Container(
           height: 62,
           decoration: BoxDecoration(
-            color: AppColors.lightVioletColor,
-            borderRadius: BorderRadius.circular(100),
+            color: colorBox,
+            borderRadius: BorderRadius.circular(borderSize),
 
             // AÑADIMOS EL EFECTO DE "drop shadow"
             boxShadow: [
