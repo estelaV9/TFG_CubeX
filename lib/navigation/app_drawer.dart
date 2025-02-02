@@ -6,7 +6,7 @@ import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../state/current_user.dart';
+import '../viewmodel/current_user.dart';
 import 'bottom_navigation.dart';
 
 class AppDrawer extends StatefulWidget {

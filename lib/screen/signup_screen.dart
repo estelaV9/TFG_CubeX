@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 import '../components/Icon/icon.dart';
 import '../navigation/bottom_navigation.dart';
 import '../components/password_field_row.dart';
-import '../state/current_user.dart';
+import '../viewmodel/current_user.dart';
 import '../utilities/internationalization.dart';
 
 class SignUpScreen extends StatefulWidget {

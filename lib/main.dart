@@ -1,7 +1,7 @@
-import 'package:esteladevega_tfg_cubex/state/current_cube_type.dart';
-import 'package:esteladevega_tfg_cubex/state/current_scramble.dart';
-import 'package:esteladevega_tfg_cubex/state/current_session.dart';
-import 'package:esteladevega_tfg_cubex/state/current_user.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';

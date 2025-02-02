@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../database/database_helper.dart';
 import '../model/cubetype.dart';
-import '../state/current_cube_type.dart';
-import '../state/current_user.dart';
+import '../viewmodel/current_cube_type.dart';
+import '../viewmodel/current_user.dart';
 
 class CubeTypeMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR EL TIPO DE CUBO SELECCIONADO AL COMPONENTE QUE CREA

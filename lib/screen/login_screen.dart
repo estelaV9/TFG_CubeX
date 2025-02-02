@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import '../components/password_field_row.dart';
 import '../model/user.dart';
 import '../navigation/bottom_navigation.dart';
-import '../state/current_user.dart';
+import '../viewmodel/current_user.dart';
 import '../utilities/internationalization.dart';
 
 class LoginScreen extends StatefulWidget {
