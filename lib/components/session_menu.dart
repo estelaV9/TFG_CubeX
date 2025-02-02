@@ -64,12 +64,35 @@ class _SessionMenuState extends State<SessionMenu> {
   }
 
   void sessionList() async {
-    List<Session> result = await sessionDao.sessionList();
-    setState(() {
-      sessions = result;
-    });
-    DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
-  }
+    // OBTENEMOS EL CUBO SELECCIONADO
+    CubeType? selectedCubeType = context.read<CurrentCubeType>().cubeType;
+    int idCubeType = selectedCubeType?.idCube ?? -1;
+
+    if (idCubeType == -1) {
+      DatabaseHelper.logger.e("No se ha seleccionado ningún tipo de cubo.");
+      return;
+    }
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+
+    if (currentUser != null) {
+      // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
+      int idUser = await userDao.getIdUserFromName(currentUser.username);
+
+      // FILTRAMOS LAS SESIONES POR EL ID DEL CUBO
+      List<Session> result = await sessionDao.searchSessionByCubeAndUser(
+          idUser, idCubeType);
+
+      setState(() {
+        sessions = result;
+      });
+
+      DatabaseHelper.logger.i("Sesiones filtradas: \n${result.join('\n')}");
+    } else {
+      DatabaseHelper.logger.e("No se encontró usuario");
+      return null;
+    }
+  } // METODO PARA LISTAR LAS SESIONES DE UN USUARIO Y DE UN TIPO DE CUBO
 
   @override
   void dispose() {
