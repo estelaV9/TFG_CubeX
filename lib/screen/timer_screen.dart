@@ -5,6 +5,7 @@ import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/screen/show_time_screen.dart';
 import 'package:esteladevega_tfg_cubex/state/current_scramble.dart';
+import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/Icon/icon.dart';
@@ -55,23 +56,100 @@ class _TimerScreenState extends State<TimerScreen> {
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
     // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-    int idSession = await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
+    int idSession =
+        await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
     List<TimeTraining> timeTrainings = [
-      TimeTraining(idSession: idSession, scramble: "B F2 D U' L' D' L2 B' R D' U2 F R U' D R' U F' R2 L' R' U2 F", timeInSeconds: 1.4, comments: null, penalty: "+2"),
-      TimeTraining(idSession: idSession, scramble: "U' D L' R2 F2 D' L' B' F R' D2 U2 F' U D2 R' L2", timeInSeconds: 2.1, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "F' R' L2 D R' F' U2 L2 F2 U' R' U2 L", timeInSeconds: 3.0, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "L D' F' R2 L' R' F2 D U' F' L", timeInSeconds: 2.5, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "R F2 L2 U R' D' F' U' D' L2", timeInSeconds: 4.2, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "U' L2 D' F R2 L' B' U D F'", timeInSeconds: 3.5, comments: null, penalty: "+2"),
-      TimeTraining(idSession: idSession, scramble: "B' F D2 L' R U F2 U' L", timeInSeconds: 5.0, comments: null, penalty: "+2"),
-      TimeTraining(idSession: idSession, scramble: "U F' R' D B' F' U2 R' L D'", timeInSeconds: 2.8, comments: null, penalty: "DNF"),
-      TimeTraining(idSession: idSession, scramble: "D L2 F U' B2 F R D' L R", timeInSeconds: 3.6, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "F D' L B' R2 D L2 F' U", timeInSeconds: 4.7, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "B' U2 D' L' F U' D2 F' R", timeInSeconds: 6.0, comments: null, penalty: "+2"),
-      TimeTraining(idSession: idSession, scramble: "R2 F2 D' B2 U' R F L' D2", timeInSeconds: 3.2, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "D2 R B2 U' L2 F' D2", timeInSeconds: 5.3, comments: null, penalty: "DNF"),
-      TimeTraining(idSession: idSession, scramble: "U' R' D F L' B U2 R' F2 L", timeInSeconds: 4.1, comments: null,),
-      TimeTraining(idSession: idSession, scramble: "F2 R2 L2 D U' R2 F D'", timeInSeconds: 3.8, comments: null,),
+      TimeTraining(
+          idSession: idSession,
+          scramble:
+              "B F2 D U' L' D' L2 B' R D' U2 F R U' D R' U F' R2 L' R' U2 F",
+          timeInSeconds: 1.4,
+          comments: null,
+          penalty: "+2"),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "U' D L' R2 F2 D' L' B' F R' D2 U2 F' U D2 R' L2",
+        timeInSeconds: 2.1,
+        comments: null,
+      ),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "F' R' L2 D R' F' U2 L2 F2 U' R' U2 L",
+        timeInSeconds: 3.0,
+        comments: null,
+      ),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "L D' F' R2 L' R' F2 D U' F' L",
+        timeInSeconds: 2.5,
+        comments: null,
+      ),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "R F2 L2 U R' D' F' U' D' L2",
+        timeInSeconds: 4.2,
+        comments: null,
+      ),
+      TimeTraining(
+          idSession: idSession,
+          scramble: "U' L2 D' F R2 L' B' U D F'",
+          timeInSeconds: 3.5,
+          comments: null,
+          penalty: "+2"),
+      TimeTraining(
+          idSession: idSession,
+          scramble: "B' F D2 L' R U F2 U' L",
+          timeInSeconds: 5.0,
+          comments: null,
+          penalty: "+2"),
+      TimeTraining(
+          idSession: idSession,
+          scramble: "U F' R' D B' F' U2 R' L D'",
+          timeInSeconds: 2.8,
+          comments: null,
+          penalty: "DNF"),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "D L2 F U' B2 F R D' L R",
+        timeInSeconds: 3.6,
+        comments: null,
+      ),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "F D' L B' R2 D L2 F' U",
+        timeInSeconds: 4.7,
+        comments: null,
+      ),
+      TimeTraining(
+          idSession: idSession,
+          scramble: "B' U2 D' L' F U' D2 F' R",
+          timeInSeconds: 6.0,
+          comments: null,
+          penalty: "+2"),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "R2 F2 D' B2 U' R F L' D2",
+        timeInSeconds: 3.2,
+        comments: null,
+      ),
+      TimeTraining(
+          idSession: idSession,
+          scramble: "D2 R B2 U' L2 F' D2",
+          timeInSeconds: 5.3,
+          comments: null,
+          penalty: "DNF"),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "U' R' D F L' B U2 R' F2 L",
+        timeInSeconds: 4.1,
+        comments: null,
+      ),
+      TimeTraining(
+        idSession: idSession,
+        scramble: "F2 R2 L2 D U' R2 F D'",
+        timeInSeconds: 3.8,
+        comments: null,
+      ),
     ];
 
     for (var timeTraining in timeTrainings) {
@@ -96,8 +174,8 @@ class _TimerScreenState extends State<TimerScreen> {
     // INICIA LAS ESTADISTICAS
     initTimeStatistics();
   }
-  
-  void initTimeStatistics() async{
+
+  void initTimeStatistics() async {
     final userDao = UserDao();
     final sessionDao = SessionDao();
     TimeTrainingDao timeTrainingDao = TimeTrainingDao();
@@ -112,10 +190,11 @@ class _TimerScreenState extends State<TimerScreen> {
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
     // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-    int idSession = await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
+    int idSession =
+        await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
 
     var timesList = await timeTrainingDao.getTimesOfSession(idSession);
-    
+
     // VALORES DE LAS ESTADISTICAS DE LA SESION
     final worst = await timeTrainingDao.getWorstTimeBySession(timesList);
     final pb = await timeTrainingDao.getPbTimeBySession(timesList);
@@ -139,8 +218,10 @@ class _TimerScreenState extends State<TimerScreen> {
   String _finalTime = "0.00";
 
   // KEY DEL ScrambleContainer
-  final GlobalKey<ScrambleContainerState> _scrambleKey = GlobalKey<ScrambleContainerState>();
+  final GlobalKey<ScrambleContainerState> _scrambleKey =
+      GlobalKey<ScrambleContainerState>();
   Scramble scramble = Scramble();
+
   // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
   int random = (Random().nextInt(25 - 20 + 1) + 20);
 
@@ -170,8 +251,8 @@ class _TimerScreenState extends State<TimerScreen> {
     }
   } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
 
-
-  Future<void> _saveTimeToDatabase(double timeInSeconds, String scramble) async {
+  Future<void> _saveTimeToDatabase(
+      double timeInSeconds, String scramble) async {
     final userDao = UserDao();
     final sessionDao = SessionDao();
     final timeTrainingDao = TimeTrainingDao();
@@ -187,7 +268,8 @@ class _TimerScreenState extends State<TimerScreen> {
       } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
       // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-      int idSession = await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
+      int idSession =
+          await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
 
       final timeTraining = TimeTraining(
         idSession: idSession,
@@ -199,7 +281,7 @@ class _TimerScreenState extends State<TimerScreen> {
       // INSERTAR EL TIEMPO EN LA BASE DE DATOS
       final success = await timeTrainingDao.insertNewTime(timeTraining);
 
-     // MOSTRAR UNA LISTA CON LOS TIEMPOS
+      // MOSTRAR UNA LISTA CON LOS TIEMPOS
       final result = await timeTrainingDao.getTimesOfSession(idSession);
       DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
 
@@ -210,10 +292,10 @@ class _TimerScreenState extends State<TimerScreen> {
         DatabaseHelper.logger.e("Error al guardar el tiempo.");
       } // VERIFICAR QUE SI SE INSERTO CORRECTAMENTE
     } catch (e) {
-      DatabaseHelper.logger.e("Error al guardar el tiempo en la base de datos: $e");
+      DatabaseHelper.logger
+          .e("Error al guardar el tiempo en la base de datos: $e");
     }
   } // METODO PARA GUARDAR EL TIEMPO REALIZADO
-
 
   void logicComment() {} // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
 
@@ -291,12 +373,18 @@ class _TimerScreenState extends State<TimerScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          _finalTime,
-                          style: const TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.darkPurpleColor,
+                        Semantics(
+                          label: Internationalization.internationalization
+                              .getLocalizations(context, "time_label"),
+                          hint: Internationalization.internationalization
+                              .getLocalizations(context, "time_hint"),
+                          child: Text(
+                            _finalTime,
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.darkPurpleColor,
+                            ),
                           ),
                         ),
                         Row(
@@ -305,25 +393,39 @@ class _TimerScreenState extends State<TimerScreen> {
                             IconClass.iconButton(logicComment, "Add comments",
                                 Icons.add_comment_rounded),
                             TextButton(
-                                onPressed: () {},
-                                child: const Text(
-                                  "DNF",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor,
-                                  ),
-                                )),
+                              onPressed: () {},
+                              child:
+                                  // DNF
+                                  Internationalization.internationalization
+                                      .createLocalizedSemantics(
+                                context,
+                                "dnf_label",
+                                "dnf_hint",
+                                "dnf",
+                                const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.darkPurpleColor,
+                                ),
+                              ),
+                            ),
                             TextButton(
-                                onPressed: () {},
-                                child: const Text(
-                                  "+2",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor,
-                                  ),
-                                )),
+                              onPressed: () {},
+                              child:
+                                  // +2
+                                  Internationalization.internationalization
+                                      .createLocalizedSemantics(
+                                context,
+                                "plus_two_label",
+                                "plus_two_hint",
+                                "plus_two",
+                                const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.darkPurpleColor,
+                                ),
+                              ),
+                            ),
                             IconClass.iconButton(
                                 logicDeleteTime, "Delete time", Icons.close),
                           ],

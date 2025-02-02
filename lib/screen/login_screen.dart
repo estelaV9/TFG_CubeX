@@ -14,6 +14,7 @@ import '../components/password_field_row.dart';
 import '../model/user.dart';
 import '../navigation/bottom_navigation.dart';
 import '../state/current_user.dart';
+import '../utilities/internationalization.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,12 +41,15 @@ class _LoginScreenState extends State<LoginScreen> {
       final encryptedPassword = EncryptPassword.encryptPassword(password);
 
       // SE CREA UN USUARIO
-      final newUser =
-      User(username: usernameOrEmail, mail: usernameOrEmail, password: encryptedPassword);
+      final newUser = User(
+          username: usernameOrEmail,
+          mail: usernameOrEmail,
+          password: encryptedPassword);
 
       if (await userDao.validateLogin(usernameOrEmail, encryptedPassword)) {
         // GUARDAR LOS DATOS DEL USURAIO EN EL ESTADO GLOBAL
-        final currentUser = Provider.of<CurrentUser>(this.context, listen: false);
+        final currentUser =
+            Provider.of<CurrentUser>(this.context, listen: false);
         currentUser.setUser(newUser); // SE ACTUALIZA EL ESTADO GLOBAL
 
         // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
@@ -92,9 +96,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      const Text(
-                        "Login",
-                        style: TextStyle(
+                      // Log in
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "login_label",
+                        "login_hint",
+                        "login_label",
+                        const TextStyle(
                             fontFamily: 'Gluten',
                             fontSize: 70,
                             color: AppColors.lightPurpleColor),
@@ -107,20 +116,41 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             FieldForm(
-                              icon: IconClass.iconMaker(Icons.person, "Username"),
-                              labelText: 'Username',
-                              hintText: 'Enter your username',
+                              icon:
+                                  IconClass.iconMaker(Icons.person, "Username"),
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_hint"),
                               controller: _usernameController,
                               validator: Validator.validateUsernameOrEmail,
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_hint"),
                             ),
                             const SizedBox(height: 10),
                             PasswordFieldForm(
                               icon: IconClass.iconMaker(Icons.lock, "Password"),
-                              labelText: 'Password',
-                              hintText: 'Enter your password',
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_hint"),
                               controller: _passwordController,
                               validator: Validator.validatePassword,
                               passwordOnSaved: (value) => _password = value!,
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_hint"),
                             ),
                           ],
                         ),
@@ -130,31 +160,44 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // SE ALIMEA EL TEXTO A LA DERECHA
                       Align(
-                          alignment: Alignment.centerRight,
-                          // SE USA TEXT BUTTON PARA CUANDO PULSE EL TEXTO HAGA UNA ACCION
-                          child: TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "Forgot your password?",
-                              style: TextStyle(
-                                  color: AppColors.darkPurpleColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
-                            ),
-                          )),
+                        alignment: Alignment.centerRight,
+                        // SE USA TEXT BUTTON PARA CUANDO PULSE EL TEXTO HAGA UNA ACCION
+                        child: TextButton(
+                          onPressed: () {},
+                          child:
+                              // Forgot your password?
+                              Internationalization.internationalization
+                                  .createLocalizedSemantics(
+                            context,
+                            "forgot_password_label",
+                            "forgot_password_hint",
+                            "forgot_password",
+                            const TextStyle(
+                                color: AppColors.darkPurpleColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ),
+                      ),
 
                       const SizedBox(height: 40),
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Sign in",
-                            style: TextStyle(
+                          // Sign in
+                          Internationalization.internationalization
+                              .createLocalizedSemantics(
+                            context,
+                            "sign_in_label",
+                            "sign_in_hint",
+                            "sign_in",
+                            const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 45,
                                 color: AppColors.darkPurpleColor),
                           ),
+
                           const SizedBox(width: 14),
                           ElevatedButton(
                               onPressed: () {
@@ -164,7 +207,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: IconClass.iconMaker(Icons.arrow_forward, "Enter app")),
+                              child: IconClass.iconMaker(
+                                  Icons.arrow_forward, "Enter app")),
                         ],
                       ),
                       const SizedBox(height: 70),
@@ -172,9 +216,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Don't have an account?",
-                            style: TextStyle(
+                          // Don't have an acccount?
+                          Internationalization.internationalization
+                              .createLocalizedSemantics(
+                            context,
+                            "no_account_label",
+                            "no_account_hint",
+                            "no_account",
+                            const TextStyle(
                                 color: AppColors.darkPurpleColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15),
@@ -186,13 +235,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ChangeScreen.changeScreen(
                                     const SignUpScreen(), context);
                               },
-                              child: const Text(
-                                "Sign up",
-                                style: TextStyle(
+                              child:
+                                  // Sign Up
+                                  Internationalization.internationalization
+                                      .createLocalizedSemantics(
+                                context,
+                                "sign_up_button_label",
+                                "sign_up_button_hint",
+                                "sign_up_button",
+                                const TextStyle(
                                     fontSize: 15,
                                     color: AppColors.darkPurpleColor,
                                     decoration: TextDecoration.underline),
-                              ))
+                              )),
                         ],
                       )
                     ],
