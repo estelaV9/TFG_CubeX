@@ -1,10 +1,11 @@
 import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../database/database_helper.dart';
 import '../model/cubetype.dart';
 import '../state/current_cube_type.dart';
@@ -32,7 +33,7 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     });
   } // METODO PARA SETTEAR EL NUMERO DE TIPOS DE CUBOS
 
-  void insertNewType(String name, int idUser) async {
+  Future<void> insertNewType(String name, int idUser) async {
     if (!await cubeTypeDao.isExistsCubeTypeName(name)) {
       if (await cubeTypeDao.insertNewType(name, idUser)) {
         getTotalCubes(); // RECARGAMOS LA LISTA DE TIPOS DE CUBOS
@@ -166,7 +167,7 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                     // ESPACIO ENTRE EL LISTVIEW Y EL BOTON
                     const SizedBox(height: 10),
 
-                    // BOTON PARA CREAR NUEVA SESION
+                    // BOTON PARA CREAR NUEVO TIPO DE CUBO
                     ElevatedButton(
                         onPressed: () async {
                           String? name = await AlertUtil.showAlertForm(
@@ -177,8 +178,29 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                           UserDao userDao = UserDao();
                           // OBTENEMOS LOS DATOS DEL USUARIO
                           final currentUser = context.read<CurrentUser>().user;
-                          int idUser = await userDao.getIdUserFromName(currentUser!.username);
-                          insertNewType(name!, idUser);
+                          int idUser = await userDao
+                              .getIdUserFromName(currentUser!.username);
+                          await insertNewType(name!, idUser);
+
+                          // CREAR SU SESION POR DEFECTO
+                          SessionDao sessionDao = SessionDao();
+                          CubeType cubeNewType =
+                              await cubeTypeDao.cubeTypeDefault(name);
+                          if(cubeNewType.idCube == -1){
+                            DatabaseHelper.logger.e("No se pudo conseguir el tipo de cubo al buscarlo por su nombre");
+                          } else {
+                            Session newSession = Session(
+                                idUser: idUser,
+                                sessionName: "Normal",
+                                idCubeType: cubeNewType.idCube!);
+                            if (await sessionDao.insertSession(newSession)) {
+                              DatabaseHelper.logger.i(
+                                  "Se creó la sesión por defecto correctament");
+                            } else {
+                              DatabaseHelper.logger.e(
+                                  "Ocurrió un error al crear la sesion por defecto");
+                            } // VERIFICAR SI SE CREO LA SESION POR DEFECTO CORRECTMANTE
+                          } // VERIFICAR QUE SE OBTIENE BIEN EL TIPO DE CUBO
                         },
                         child: const Text("Create a new cube type"))
                   ],
