@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:esteladevega_tfg_cubex/components/Icon/icon.dart';
-import 'package:esteladevega_tfg_cubex/state/current_scramble.dart';
+import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../utilities/ScrambleGenerator.dart';
+import '../../utilities/ScrambleGenerator.dart';
 
 class ScrambleContainer extends StatefulWidget {
   const ScrambleContainer({super.key});
@@ -35,6 +35,10 @@ class ScrambleContainerState extends State<ScrambleContainer> {
       }); // SE SETTEA EL NOMBRE DEL SCRAMBLE AL AÑADIDO
       // SE MUESTRA UN ALERT DE CONFIRMACION
       AlertUtil.showSnackBarInformation(context, "Scramble added successful");
+
+      // ESTABLECEMOS EL SCRAMBLE ACTUAL
+      final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
+      currentScramble.setScramble(scrambleName);
     } // VALIDA SI EL SCRAMBLE AÑADIDO ES NULO O NO
   } // METODO PARA CUANDO PULSE EL ICONO DE AÑADIR SCRAMBLE
 

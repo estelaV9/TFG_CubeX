@@ -1,16 +1,16 @@
-import 'package:esteladevega_tfg_cubex/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
-import 'package:esteladevega_tfg_cubex/state/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../database/database_helper.dart';
-import '../model/session.dart';
-import '../state/current_user.dart';
+import '../../data/database/database_helper.dart';
+import '../../model/session.dart';
+import '../../viewmodel/current_user.dart';
 
 class SessionMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR LA SESION SELECCIONADA AL COMPONENTE QUE CREA
@@ -64,12 +64,35 @@ class _SessionMenuState extends State<SessionMenu> {
   }
 
   void sessionList() async {
-    List<Session> result = await sessionDao.sessionList();
-    setState(() {
-      sessions = result;
-    });
-    DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
-  }
+    // OBTENEMOS EL CUBO SELECCIONADO
+    CubeType? selectedCubeType = context.read<CurrentCubeType>().cubeType;
+    int idCubeType = selectedCubeType?.idCube ?? -1;
+
+    if (idCubeType == -1) {
+      DatabaseHelper.logger.e("No se ha seleccionado ningún tipo de cubo.");
+      return;
+    }
+    // OBTENEMOS LOS DATOS DEL USUARIO
+    final currentUser = context.read<CurrentUser>().user;
+
+    if (currentUser != null) {
+      // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
+      int idUser = await userDao.getIdUserFromName(currentUser.username);
+
+      // FILTRAMOS LAS SESIONES POR EL ID DEL CUBO
+      List<Session> result = await sessionDao.searchSessionByCubeAndUser(
+          idUser, idCubeType);
+
+      setState(() {
+        sessions = result;
+      });
+
+      DatabaseHelper.logger.i("Sesiones filtradas: \n${result.join('\n')}");
+    } else {
+      DatabaseHelper.logger.e("No se encontró usuario");
+      return null;
+    }
+  } // METODO PARA LISTAR LAS SESIONES DE UN USUARIO Y DE UN TIPO DE CUBO
 
   @override
   void dispose() {

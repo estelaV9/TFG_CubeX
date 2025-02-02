@@ -1,22 +1,22 @@
 import 'dart:math';
 
-import 'package:esteladevega_tfg_cubex/components/cube_header_container.dart';
-import 'package:esteladevega_tfg_cubex/components/scramble_container.dart';
-import 'package:esteladevega_tfg_cubex/navigation/app_drawer.dart';
-import 'package:esteladevega_tfg_cubex/screen/show_time_screen.dart';
-import 'package:esteladevega_tfg_cubex/state/current_scramble.dart';
+import 'package:esteladevega_tfg_cubex/view/components/cube_header_container.dart';
+import 'package:esteladevega_tfg_cubex/view/components/scramble_container.dart';
+import 'package:esteladevega_tfg_cubex/view/navigation/app_drawer.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/show_time_screen.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/Icon/icon.dart';
-import '../dao/session_dao.dart';
-import '../dao/time_training_dao.dart';
-import '../dao/user_dao.dart';
-import '../database/database_helper.dart';
-import '../model/time_training.dart';
-import '../state/current_user.dart';
-import '../utilities/ScrambleGenerator.dart';
-import '../utilities/app_color.dart';
+import '../../data/dao/session_dao.dart';
+import '../../data/dao/time_training_dao.dart';
+import '../../data/dao/user_dao.dart';
+import '../../data/database/database_helper.dart';
+import '../../model/time_training.dart';
+import '../../viewmodel/current_user.dart';
+import '../../utilities/ScrambleGenerator.dart';
+import '../../utilities/app_color.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({super.key});

@@ -1,5 +1,5 @@
 import '../database/database_helper.dart';
-import '../model/cubetype.dart';
+import '../../model/cubetype.dart';
 
 class CubeTypeDao {
   Future<List<CubeType>> getCubeTypes() async {
@@ -9,8 +9,10 @@ class CubeTypeDao {
       final result = await db.query('cubeType');
       // MAPEAR LOS RESULTADOS A UNA LISTA DE OBJETOS CubeType
       return result
-          .map((map) =>
-              CubeType(idCube: map['idCubeType'] as int, cubeName: map['cubeName'] as String))
+          .map((map) => CubeType(
+              idCube: map['idCubeType'] as int,
+              cubeName: map['cubeName'] as String,
+              idUser: map['idUser'] as int))
           .toList();
     } catch (e) {
       DatabaseHelper.logger.e("Error al obtener los tipos de cubos: $e");
@@ -30,10 +32,13 @@ class CubeTypeDao {
 
       if (result.isNotEmpty) {
         // CONVIERTE EL PRIMER RESULTADO EN UN OBJETO
-        return CubeType(idCube: result.first['idCubeType'] as int,
-            cubeName: result.first['cubeName'] as String);
+        return CubeType(
+            idCube: result.first['idCubeType'] as int,
+            cubeName: result.first['cubeName'] as String,
+            idUser: result.first['idUser'] as int);
       } else {
         // SI NO ENCUENTRA EL CUBO, DEVUELVE UN TIPO DE CUBO DE EROOR
+        DatabaseHelper.logger.w("No se encontró ningún cubo con nombre: $name");
         return CubeType(idCube: -1, cubeName: "ErrorCube");
       } // SI LA CONSULTA NO ES NULA Y DEVUELVE UN RESULTADO
     } catch (e) {
@@ -70,7 +75,8 @@ class CubeTypeDao {
   Future<bool> insertNewType(String name, int idUser) async {
     final db = await DatabaseHelper.database;
     try {
-      final result = await db.insert('cubeType', {'cubeName': name, 'idUser': idUser});
+      final result =
+          await db.insert('cubeType', {'cubeName': name, 'idUser': idUser});
 
       if (result > 0) {
         return true; // SE INSERTO CORRECTAMENTE
@@ -83,13 +89,12 @@ class CubeTypeDao {
     }
   } // METODO PARA INSERTAR UN NUEVO TIPO DE CUBO
 
-
-  Future<bool> deleteCubeType(String cubeName) async{
+  Future<bool> deleteCubeType(String cubeName) async {
     final db = await DatabaseHelper.database;
     try {
       // SE ELIMINA EL TIPO DE CUBO CON EL NOMBRE PROPORCIONADO
-      final deleteCube = await db.delete('cubeType',
-          where: 'cubeName = ?', whereArgs: [cubeName]);
+      final deleteCube = await db
+          .delete('cubeType', where: 'cubeName = ?', whereArgs: [cubeName]);
 
       // DEVUELVE TRUE/FALSE SI SE ELIMINO CORRECTAMENTE O NO
       return deleteCube > 0;

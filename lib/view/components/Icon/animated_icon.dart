@@ -1,8 +1,8 @@
-import 'package:esteladevega_tfg_cubex/components/cube_type_menu.dart';
+import 'package:esteladevega_tfg_cubex/view/components/cube_type_menu.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
-import '../../model/cubetype.dart';
+import '../../../model/cubetype.dart';
 
 class AnimatedIconWidget extends StatefulWidget {
   final AnimatedIconData animatedIconData;

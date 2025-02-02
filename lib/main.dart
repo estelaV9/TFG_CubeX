@@ -1,14 +1,14 @@
-import 'package:esteladevega_tfg_cubex/state/current_cube_type.dart';
-import 'package:esteladevega_tfg_cubex/state/current_scramble.dart';
-import 'package:esteladevega_tfg_cubex/state/current_session.dart';
-import 'package:esteladevega_tfg_cubex/state/current_user.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
-import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
-import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/signup_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'database/database_helper.dart';
+import 'data/database/database_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -44,7 +44,7 @@ class CubeXApp extends StatelessWidget {
           Locale('es'),
           Locale('en')
         ],
-        locale: Locale('es'),
+        locale: Locale('en'),
         debugShowCheckedModeBanner: false,
         // QUITAR MARCA DEBUG
         home: IntroScreen());

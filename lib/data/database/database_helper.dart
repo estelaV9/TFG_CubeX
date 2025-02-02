@@ -62,11 +62,11 @@ class DatabaseHelper {
 
     // OBTENER LA RUTA DE LA BASE DE DATOS EN LA CARPETA DATABASE
     final dbPath =
-        join(Directory.current.path, 'lib', 'database', 'database_schema.db');
+        join(Directory.current.path, 'lib', 'data/database', 'database_schema.db');
 
     // RUTA DEL ARCHIVO DONDE SE ENCUENTRA LA BASE DE DATOS
     final dbFilePath =
-    join(Directory.current.path, 'lib', 'database', 'databaseCubeX.db');
+    join(Directory.current.path, 'lib', 'data/database', 'databaseCubeX.db');
 
     final db = await databaseFactory.openDatabase(dbPath);
     logger.i("Se creo correctamente la base de datos"); // SE MUESTRA UN MENSAJE
