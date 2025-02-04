@@ -16,11 +16,13 @@ dependencies:
   provider: ^6.1.2
   flutter_markdown: ^0.6.17
   url_launcher: ^6.0.10
+  image_picker: ^1.0.4
   flutter_localizations:
     sdk: flutter
   intl: any
   flutter:
     sdk: flutter
+  file_picker: ^8.3.1
 
 dev_dependencies:
   flutter_test:
@@ -34,7 +36,6 @@ flutter:
     - assets/app_logo.png
     - assets/default_user_image.png
     - assets/session_icon.png
-    - assets/markdown/about_app.md
   fonts:
     - family: JollyLodger
       fonts:

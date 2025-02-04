@@ -70,73 +70,84 @@ class _SignUpScreenState extends State<SignUpScreen> {
             int idUser =
                 await userDao.getIdUserFromName(currentUser.user!.username);
 
-            print(idUser );
             if (idUser != -1) {
               // CUANDO SE INSERTA UN NUEVO USUARIO SE LE ASIGNA CUBOS POR DEFECTO
               CubeTypeDao cubeTypeDao = CubeTypeDao();
-              cubeTypeDao.insertNewType("2x2x2", idUser);
-              cubeTypeDao.insertNewType("3x3x3", idUser);
-              cubeTypeDao.insertNewType("4x4x4", idUser);
-              cubeTypeDao.insertNewType("5x5x5", idUser);
-              cubeTypeDao.insertNewType("6x6x6", idUser);
-              cubeTypeDao.insertNewType("7x7x7", idUser);
-              cubeTypeDao.insertNewType("PYRAMINX", idUser);
-              cubeTypeDao.insertNewType("SKEWB", idUser);
-              cubeTypeDao.insertNewType("MEGAMINX", idUser);
-              cubeTypeDao.insertNewType("SQUARE-1", idUser);
-
-              /*List<CubeType> result = await cubeTypeDao.getCubeTypes();
-              DatabaseHelper.logger.i("TIPOS DE CUBOS obtenidas: \n${result.join('\n')}");*/
-
-              // Y SE INSERTA LA SESION POR DEFECTO "Normal"
               SessionDao sessionDao = SessionDao();
-              // BUSCAMOS EL ID DEL TIPO DE CUBO 3X3
-              CubeType cubeType = await cubeTypeDao.cubeTypeDefault("3x3x3");
-              int? idCubeType = cubeType.idCube;
-              if (idCubeType != null) {
-                Session session = Session(
+
+              List<String> cubeTypes = [
+                "2x2x2",
+                "3x3x3",
+                "4x4x4",
+                "5x5x5",
+                "6x6x6",
+                "7x7x7",
+                "PYRAMINX",
+                "SKEWB",
+                "MEGAMINX",
+                "SQUARE-1"
+              ];
+
+              for (String type in cubeTypes) {
+                cubeTypeDao.insertNewType(type, idUser);
+              } // INSETAMOS LOS TIPOS DE CUBO EN LA BD
+
+              for (String type in cubeTypes) {
+                CubeType? cubeType = await cubeTypeDao.cubeTypeDefault(type);
+                if (cubeType.idCube != null) {
+                  Session session = Session(
                     idUser: idUser,
                     sessionName: "Normal",
-                    idCubeType: idCubeType);
-                sessionDao.insertSession(session);
+                    idCubeType: cubeType.idCube!,
+                  ); // CREAMOS LA SESION
+                  await sessionDao.insertSession(session);
+                } else {
+                  DatabaseHelper.logger
+                      .e("Error al obtener el tipo de cubo: $type");
+                } // VALIDAMOS QUE EL ID DE TIPO DE CUBO NO SEA NULO
+              } // CREAMOS UNA SESION POR DEFECTO "NORMAL"PARA CADA TIPO DE CUBO
 
+              List<Session> result = await sessionDao.sessionList();
+              DatabaseHelper.logger.i("Sesiones: \n${result.join('\n')}");
+
+              /*List<CubeType> result = await cubeTypeDao.getCubeTypes();
+              DatabaseHelper.logger.i("TIPOS DE CUBOS obtenidas: \n${result.join('\n')}");
                 // MENSAJE CON LA SESION
-                DatabaseHelper.logger.w(session.sessionName);
+                DatabaseHelper.logger.w(session.sessionName);*/
 
-                // CAMBIA A LA PANTALLA PRINCIPAL
-                ChangeScreen.changeScreen(
-                    const BottomNavigation(), this.context);
-              } else {
-                // SE MUESTRA UN ERROR SI ES NULO
-                DatabaseHelper.logger
-                    .e("Error al pillar el id de tipo de cubo 3x3");
-                // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR PORQUE ES NULO
-                AlertUtil.showSnackBarError(this.context,
-                    "An error occurred while creating the account.");
-              } // VERIFICA SI EL ID DEL TIPO DE CUBO ES NULO
+              // CAMBIA A LA PANTALLA PRINCIPAL
+              ChangeScreen.changeScreen(const BottomNavigation(), this.context);
             } else {
-              DatabaseHelper.logger.e("Error la obtener el id del usuario");
-              // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR AL BUSCAR EL ID
+              // SE MUESTRA UN ERROR SI ES NULO
+              DatabaseHelper.logger
+                  .e("Error al pillar el id de tipo de cubo 3x3");
+              // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR PORQUE ES NULO
               AlertUtil.showSnackBarError(this.context,
                   "An error occurred while creating the account.");
-            } // VERIFICAR EL ID DEL USUARIO
+            } // VERIFICA SI EL ID DEL TIPO DE CUBO ES NULO
           } else {
-            // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
+            DatabaseHelper.logger.e("Error la obtener el id del usuario");
+            // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR AL BUSCAR EL ID
             AlertUtil.showSnackBarError(
                 this.context, "An error occurred while creating the account.");
-          } // INSERTAR AL USUARIO
+          } // VERIFICAR EL ID DEL USUARIO
         } else {
-          // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
+          // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
           AlertUtil.showSnackBarError(
-              this.context, "An account with this email already exists.");
-        } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
+              this.context, "An error occurred while creating the account.");
+        } // INSERTAR AL USUARIO
       } else {
-        // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DEL USUARIO YA EXISTE
+        // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
         AlertUtil.showSnackBarError(
-            this.context, "This username is already in use.");
-      } // VALIDAR QUE EL NOMBRE DE USUARIO NO EXISTA
-    } // SI TODOS LOS CAMPOS DEL FORMULARIO ESTAN CORRECTOS
-  } // METODO PARA CREAR UNA CUENTA
+            this.context, "An account with this email already exists.");
+      } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
+    } else {
+      // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DEL USUARIO YA EXISTE
+      AlertUtil.showSnackBarError(
+          this.context, "This username is already in use.");
+    } // VALIDAR QUE EL NOMBRE DE USUARIO NO EXISTA
+  } // SI TODOS LOS CAMPOS DEL FORMULARIO ESTAN CORRECTOS
+//} // METODO PARA CREAR UNA CUENTA
 
   @override
   Widget build(BuildContext context) {
