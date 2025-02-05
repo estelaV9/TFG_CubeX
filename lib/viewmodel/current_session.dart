@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import '../model/session.dart';
 
 class CurrentSession with ChangeNotifier {
-  String _sessionName = "";
+  Session? _session;
 
-  String get sessionName => _sessionName;
+  Session? get session => _session;
 
-  set sessionName(String newSessionName) {
-    _sessionName = newSessionName;
+  void setSession(Session newSessionName) {
+    _session = newSessionName;
     // SE NOTIFICA A TODOS LOS LISTENERS CUANDO EL NOMBRE DE LA SESION CAMBIE
     notifyListeners();
   }
