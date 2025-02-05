@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../viewmodel/current_cube_type.dart';
+import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_user.dart';
 
 class CubeTypeMenu extends StatefulWidget {
@@ -131,14 +132,47 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                                 } // SE ELIMINA EL TIPO DE CUBO
                               });
                             },
-                            onTap: () {
+                            onTap: () async {
+                              SessionDao sessionDao = SessionDao();
+                              UserDao userDao = UserDao();
+
                               // SE ACTUALIZA EL TIPO DE CUBO EN EL PROVIDER
                               final currentCubeType = Provider.of<CurrentCubeType>(this.context, listen: false);
                               currentCubeType.setCubeType(cubeTypes[index]); // SE ACTUALIZA EL ESTADO GLOBAL
-                              print(currentCubeType);
-                              widget.onCubeTypeSelected(cubeTypes[index]);
-                              // SE CIERRA EL MENU UNA VEZ ELIJA
-                              Navigator.of(context).pop();
+
+                              CubeType? cubeType = await cubeTypeDao.cubeTypeDefault(currentCubeType.cubeType!.cubeName);
+                              if (cubeType == null) {
+                                DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
+                                return;
+                              } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
+
+
+                              // CUANDO SE CAMBIE EL TIPO DE CUBO, SE CAMBIA LA SESION A LA DE POR DEFECTO
+                              // OBTENER EL USUARIO ACTUAL
+                              final currentUser = context.read<CurrentUser>().user;
+                              // OBTENER EL ID DEL USUARIO
+                              int idUser = await userDao.getIdUserFromName(currentUser!.username);
+                              if (idUser == -1) {
+                                DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+                                return;
+                              } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+                              // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
+                              final currentSession = Provider.of<CurrentSession>(
+                                  this.context,
+                                  listen: false);
+                              Session? sessionDefault =
+                                await sessionDao.getSessionByUserCubeName(idUser, "Normal", cubeType.idCube);
+
+                              if(sessionDefault != null){
+                                // SE ACTUALIZA EL ESTADO GLOBAL
+                                currentSession.setSession(sessionDefault);
+                                widget.onCubeTypeSelected(cubeTypes[index]);
+                                // SE CIERRA EL MENU UNA VEZ ELIJA
+                                Navigator.of(context).pop();
+                              } else{
+                                DatabaseHelper.logger.e("No se encontro la sesion ${sessionDefault.toString()} del tipo de cubo ${cubeType.toString()}");
+                              } // VERIFICA QUE LA SESION POR DEFECTO DE ESE TIPO DE CUBO NO SEA NULO
                             }, // ACCION AL TOCAR
                             child: Container(
                               decoration: BoxDecoration(
