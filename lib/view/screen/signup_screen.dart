@@ -12,6 +12,8 @@ import 'package:esteladevega_tfg_cubex/view/components/icon_image_fieldrow.dart'
 import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/encrypt_password.dart';
 import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -101,16 +103,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     idCubeType: cubeType.idCube!,
                   ); // CREAMOS LA SESION
                   await sessionDao.insertSession(session);
+
+                  if (type == "3x3x3") {
+                    // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
+                    final currentSession = Provider.of<CurrentSession>(
+                        this.context, listen: false);
+                    // SE ACTUALIZA EL ESTADO GLOBAL
+                    currentSession.setSession(session);
+
+                    int idSession =
+                        await sessionDao.searchIdSessionByNameAndUser(
+                            idUser, currentSession.session!.sessionName);
+
+                    // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
+                    final currentCube = Provider.of<CurrentCubeType>(
+                        this.context, listen: false);
+                    // SE ACTUALIZA EL ESTADO GLOBAL
+                    currentCube.setCubeType(cubeType);
+
+                    if (idSession != -1) {
+                      // SE MUESTRA UN MENSAJE DE QUE SE HA SETTEADO CORRECTAMENTE
+                      DatabaseHelper.logger.i(
+                          "Se han setteado correctamente el tipo de cubo y sesion acutales"
+                          "\nSession actual: ${currentSession.session.toString()} con su id $idSession"
+                          "\nTipo de cubo actual: ${currentCube.cubeType.toString()}");
+                    } else {
+                      DatabaseHelper.logger.e(
+                          "No se encontro el id de la session actual: $idSession");
+                    } // SE VERIFICA QUE SE BUSCO BIEN EL ID
+                  } // SI EL TIPO DE CUBO ES 3X3 SE PONE SU SESION Y EL TIPO COMO LOS ACTUALES
                 } else {
                   DatabaseHelper.logger
                       .e("Error al obtener el tipo de cubo: $type");
                 } // VALIDAMOS QUE EL ID DE TIPO DE CUBO NO SEA NULO
               } // CREAMOS UNA SESION POR DEFECTO "NORMAL"PARA CADA TIPO DE CUBO
 
-              List<Session> result = await sessionDao.sessionList();
+              /*List<Session> result = await sessionDao.sessionList();
               DatabaseHelper.logger.i("Sesiones: \n${result.join('\n')}");
 
-              /*List<CubeType> result = await cubeTypeDao.getCubeTypes();
+              List<CubeType> result = await cubeTypeDao.getCubeTypes();
               DatabaseHelper.logger.i("TIPOS DE CUBOS obtenidas: \n${result.join('\n')}");
                 // MENSAJE CON LA SESION
                 DatabaseHelper.logger.w(session.sessionName);*/
