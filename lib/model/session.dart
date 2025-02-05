@@ -6,7 +6,7 @@ class Session {
   int idCubeType;
 
   Session({
-    int? idSession,
+    this.idSession,
     required this.idUser,
     required this.sessionName,
     String? creationDate,

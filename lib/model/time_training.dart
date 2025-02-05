@@ -1,6 +1,6 @@
 class TimeTraining {
   final int? idTimeTraining;
-  final int idSession;
+  final int? idSession;
   final String scramble;
   final double timeInSeconds;
   final String? comments; // POR DEFECTO SERA NULO
