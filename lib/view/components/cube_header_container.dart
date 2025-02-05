@@ -4,6 +4,7 @@ import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
@@ -100,6 +101,10 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
   @override
   Widget build(BuildContext context) {
+    // OBTENEMOS LA SESION Y EL TIPO DE CUBO ACTUAL
+    final currentSession = context.read<CurrentSession>().session;
+    final currentCube = context.read<CurrentCubeType>().cubeType;
+
     // USA MediaQuery PARA OBTENER EL ANCHO DE LA VENTANA
     final screenWidth = MediaQuery.sizeOf(context).width;
     // WIDTH INICIAL DEL CONTAINER DEL HEADER
@@ -134,12 +139,12 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
                 children: [
                   Text(
-                    cubeType.cubeName,
+                    currentCube!.cubeName,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: AppColors.darkPurpleColor),
                   ),
-                  Text(session.sessionName)
+                  Text(currentSession!.sessionName)
                 ],
               ),
             ),
