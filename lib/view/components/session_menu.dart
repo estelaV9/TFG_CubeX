@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/database/database_helper.dart';
 import '../../model/session.dart';
+import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_user.dart';
 
 class SessionMenu extends StatefulWidget {
@@ -80,8 +81,8 @@ class _SessionMenuState extends State<SessionMenu> {
       int idUser = await userDao.getIdUserFromName(currentUser.username);
 
       // FILTRAMOS LAS SESIONES POR EL ID DEL CUBO
-      List<Session> result = await sessionDao.searchSessionByCubeAndUser(
-          idUser, idCubeType);
+      List<Session> result =
+          await sessionDao.searchSessionByCubeAndUser(idUser, idCubeType);
 
       setState(() {
         sessions = result;
@@ -267,7 +268,43 @@ class _SessionMenuState extends State<SessionMenu> {
                               } // BUSCAR EL ID DEL USUARIO
                             });
                           },
-                          onTap: () {
+                          onTap: () async {
+                            // OBTENER EL USUARIO ACTUAL
+                            final currentUser = context.read<CurrentUser>().user;
+                            // OBTENER EL ID DEL USUARIO
+                            int idUser = await userDao.getIdUserFromName(currentUser!.username);
+                            if (idUser == -1) {
+                              DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+                              return;
+                            } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+
+                            // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
+                            final currentSession = Provider.of<CurrentSession>(
+                                this.context,
+                                listen: false);
+                            // SE ACTUALIZA EL ESTADO GLOBAL
+                            currentSession.setSession(sessions[index]);
+
+                            // BUSCAMOS EL TIPO DE CUBO QUE TIENE ESA SESION
+                            Session? sessionTipoActual =
+                              await sessionDao.getSessionByUserAndName(idUser, currentSession.session!.sessionName);
+
+                            // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
+                            final currentCube = Provider.of<CurrentCubeType>(
+                                this.context,
+                                listen: false);
+
+                            // SE BUSCA ESE TIPO DE CUBO POR ESE ID
+                            CubeType? cubeType = await cubeTypeDao.getCubeById(sessionTipoActual!.idCubeType);
+                            if(cubeType.idCube != -1){
+                              // SE ACTUALIZA EL ESTADO GLOBAL
+                              currentCube.setCubeType(cubeType);
+                            } else{
+                              DatabaseHelper.logger.e("No se encontro el tipo de cubo: ${cubeType.toString()}");
+                            } // SE VERIFICA QUE SE HA RETORNADO EL TIPO DE CUBO CORRECTAMENTE
+
+
                             setState(() {
                               widget.onSessionSelected(
                                   sessions[index].sessionName);
