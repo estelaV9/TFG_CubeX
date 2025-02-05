@@ -60,7 +60,7 @@
   "time_label": "Tiempo registrado",
   "time_hint": "Se muestra el tiempo registrado",
 
-  "dnf": "DFN",
+  "dnf": "DNF",
   "dnf_label": "Botón No Terminó",
   "dnf_hint": "Indica que la acción no se completó y no se obtuvo un resultado.",
 
