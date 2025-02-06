@@ -1,13 +1,19 @@
 import 'dart:math';
 
+import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/cube_header_container.dart';
 import 'package:esteladevega_tfg_cubex/view/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/view/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/show_time_screen.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../model/cubetype.dart';
+import '../../model/session.dart';
+import '../../viewmodel/current_cube_type.dart';
+import '../../viewmodel/current_session.dart';
 import '../components/Icon/icon.dart';
 import '../../data/dao/session_dao.dart';
 import '../../data/dao/time_training_dao.dart';
@@ -178,6 +184,7 @@ class _TimerScreenState extends State<TimerScreen> {
   void initTimeStatistics() async {
     final userDao = UserDao();
     final sessionDao = SessionDao();
+    final cubeDao = CubeTypeDao();
     TimeTrainingDao timeTrainingDao = TimeTrainingDao();
 
     // OBTENER EL USUARIO ACTUAL
@@ -190,25 +197,36 @@ class _TimerScreenState extends State<TimerScreen> {
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
     // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-    int idSession =
-        await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
 
-    var timesList = await timeTrainingDao.getTimesOfSession(idSession);
+    final currentSession = context.read<CurrentSession>().session;
+    final currentCubeType = context.read<CurrentCubeType>().cubeType;
 
-    // VALORES DE LAS ESTADISTICAS DE LA SESION
-    final worst = await timeTrainingDao.getWorstTimeBySession(timesList);
-    final pb = await timeTrainingDao.getPbTimeBySession(timesList);
-    int count = await timeTrainingDao.getCountBySession(timesList);
+    final cubeType = await cubeDao.cubeTypeDefault(currentCubeType!.cubeName);
+
+    final session = await sessionDao.getSessionByUserCubeName(idUser, currentSession!.sessionName, cubeType.idCube);
+
+    var timesList = await timeTrainingDao.getTimesOfSession(session!.idSession);
+
+    final currentStatistics = context.read<CurrentStatistics>();
+    // SE ACTUALIZA EL ESTADO GLOBAL
+    currentStatistics.updateStatistics(timesListUpdate: timesList);
+
+    String pb = await currentStatistics.getPbValue();
+    String worst = await currentStatistics.getWorstValue();
+    String count = await currentStatistics.getCountValue();
+    /*String ao5 = await currentStatistics.getAo5Value();
+    String ao12 = await currentStatistics.getAo12Value();
+    String ao50 = await currentStatistics.getAo50Value();
+    String ao100 = await currentStatistics.getAo100Value();*/
 
     setState(() {
-      // averageValue = await timeTrainingDao.;
       pbValue = pb;
       worstValue = worst;
-      countValue = count.toString();
-      // ao5Value = await timeTrainingDao.;
-      // ao12Value = await timeTrainingDao.;
-      // ao50Value = await timeTrainingDao.;
-      // ao100Value = await timeTrainingDao.;
+      countValue = count;
+      ao5Value = ao5Value;
+      ao12Value = ao12Value;
+      ao50Value = ao50Value;
+      ao100Value = ao100Value;
     }); // SETTEA EL ESTADO DE LAS ESTADISTICAS
   } // INICIALIZAR/ACTUALIZAR LAS ESTADISTICA
 
@@ -256,6 +274,7 @@ class _TimerScreenState extends State<TimerScreen> {
     final userDao = UserDao();
     final sessionDao = SessionDao();
     final timeTrainingDao = TimeTrainingDao();
+    CubeTypeDao cubeTypeDao = CubeTypeDao();
 
     try {
       // OBTENER EL USUARIO ACTUAL
@@ -267,12 +286,27 @@ class _TimerScreenState extends State<TimerScreen> {
         return;
       } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
+
+      // OBTENER LA SESSION Y EL TIPO DE CUBO ACTUAL
+      final currentSession = context.read<CurrentSession>().session;
+      final currentCube = context.read<CurrentCubeType>().cubeType;
+      CubeType? cubeType = await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
+      if (cubeType == null) {
+        DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
+        return;
+      } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
+
       // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
       int idSession =
           await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
 
+      Session? session =
+      await sessionDao.getSessionByUserCubeName(
+          idUser, currentSession!.sessionName, cubeType.idCube);
+
+
       final timeTraining = TimeTraining(
-        idSession: idSession,
+        idSession: session!.idSession,
         scramble: scramble,
         timeInSeconds: timeInSeconds,
         comments: null,

@@ -60,7 +60,7 @@
   "time_label": "Recorded time",
   "time_hint": "Show the recorded time",
 
-  "dnf": "Did Not Finish",
+  "dnf": "DNF",
   "dnf_label": "Did Not Finish Button",
   "dnf_hint": "Indicates that the action was not completed and no result was achieved.",
 

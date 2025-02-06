@@ -1,5 +1,6 @@
 import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
@@ -10,7 +11,10 @@ import 'package:provider/provider.dart';
 
 import '../../data/database/database_helper.dart';
 import '../../model/session.dart';
+import '../../viewmodel/current_session.dart';
+import '../../viewmodel/current_statistics.dart';
 import '../../viewmodel/current_user.dart';
+import '../screen/timer_screen.dart';
 
 class SessionMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR LA SESION SELECCIONADA AL COMPONENTE QUE CREA
@@ -31,6 +35,7 @@ class _SessionMenuState extends State<SessionMenu> {
   SessionDao sessionDao = SessionDao();
   UserDao userDao = UserDao();
   CubeTypeDao cubeTypeDao = CubeTypeDao();
+  TimeTrainingDao timeTrainingDao = TimeTrainingDao();
   String sessionName = "";
 
   Future<void> getSessionOfUser() async {
@@ -80,8 +85,8 @@ class _SessionMenuState extends State<SessionMenu> {
       int idUser = await userDao.getIdUserFromName(currentUser.username);
 
       // FILTRAMOS LAS SESIONES POR EL ID DEL CUBO
-      List<Session> result = await sessionDao.searchSessionByCubeAndUser(
-          idUser, idCubeType);
+      List<Session> result =
+          await sessionDao.searchSessionByCubeAndUser(idUser, idCubeType);
 
       setState(() {
         sessions = result;
@@ -267,7 +272,56 @@ class _SessionMenuState extends State<SessionMenu> {
                               } // BUSCAR EL ID DEL USUARIO
                             });
                           },
-                          onTap: () {
+                          onTap: () async {
+                            // OBTENER EL USUARIO ACTUAL
+                            final currentUser = context.read<CurrentUser>().user;
+                            // OBTENER EL ID DEL USUARIO
+                            int idUser = await userDao.getIdUserFromName(currentUser!.username);
+                            if (idUser == -1) {
+                              DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+                              return;
+                            } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+
+                            // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
+                            final currentSession = Provider.of<CurrentSession>(
+                                this.context,
+                                listen: false);
+                            // SE ACTUALIZA EL ESTADO GLOBAL
+                            currentSession.setSession(sessions[index]);
+
+                            // BUSCAMOS EL TIPO DE CUBO QUE YA ESTABA ESTABLECIDO
+                            final tipoCuboEstablecido = context.read<CurrentCubeType>().cubeType;
+                            final cubo = await cubeTypeDao.cubeTypeDefault(tipoCuboEstablecido!.cubeName);
+
+                            // BUSCAMOS EL TIPO DE CUBO QUE TIENE ESA SESION
+                            Session? sessionTipoActual =
+                              await sessionDao.getSessionByUserCubeName(idUser, currentSession.session!.sessionName, cubo.idCube);
+
+                            // CUANDO SELECCIONE UNA SESION, SE BUSCA EL TIPO DE CUBO DE ESA SESION
+                            // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
+                            final currentCube = Provider.of<CurrentCubeType>(
+                                this.context,
+                                listen: false);
+
+                            // SE BUSCA ESE TIPO DE CUBO POR ESE ID
+                            CubeType? cubeType = await cubeTypeDao.getCubeById(sessionTipoActual!.idCubeType);
+                            if(cubeType.idCube != -1){
+                              // SE ACTUALIZA EL ESTADO GLOBAL
+                              currentCube.setCubeType(cubeType);
+                            } else{
+                              DatabaseHelper.logger.e("No se encontro el tipo de cubo: ${cubeType.toString()}");
+                            } // SE VERIFICA QUE SE HA RETORNADO EL TIPO DE CUBO CORRECTAMENTE
+
+                            var timesList = await timeTrainingDao.getTimesOfSession(sessionTipoActual!.idSession);
+
+                            // GUARDAR LOS DATOS DE LAS ESTADISTICAS EN EL ESTADO GLOBAL
+                            final currentStatistics = Provider.of<CurrentStatistics>(
+                                this.context, listen: false);
+                            // SE ACTUALIZA EL ESTADO GLOBAL
+                            currentStatistics.updateStatistics(timesListUpdate: timesList);
+
+
                             setState(() {
                               widget.onSessionSelected(
                                   sessions[index].sessionName);

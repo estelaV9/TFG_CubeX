@@ -120,7 +120,7 @@ class SessionDao {
           where: 'idUser = ? AND sessionName = ?',
           whereArgs: [idUser, sessionName]);
 
-      if(result.isNotEmpty){
+      if (result.isNotEmpty) {
         return result.first['idSession'] as int;
       } else {
         DatabaseHelper.logger.e("No hay resultados de esa sesion");
@@ -177,7 +177,7 @@ class SessionDao {
           where: 'idUser = ? AND idCubeType = ?',
           whereArgs: [idUser, idCubeType]);
 
-      if(result.isNotEmpty){
+      if (result.isNotEmpty) {
         // DEVUELVE LA LISTA DE SESIONES CON ESE TIPO DE CUBO Y ESE USUARIO
         return result.map((session) {
           return Session(
@@ -196,4 +196,39 @@ class SessionDao {
     }
   } // METODO PARA BUSCAR EL ID DE LA SESION POR EL NOMBRE DE LA SESION Y ID USUARIO
 
+  Future<Session?> getSessionByUserCubeName(
+      int idUser, String sessionName, int? idCubeType) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // CONSULTA PARA OBTENER LA SESION BASADA EN EL ID DEL USUARIO, EL NOMBRE DE LA SESION
+      // Y TIPO DE CUBO
+      final result = await db.query(
+        'sessionTime',
+        where: 'idUser = ? AND sessionName = ? AND idCubeType = ?',
+        whereArgs: [idUser, sessionName, idCubeType],
+      );
+
+      if (result.isNotEmpty) {
+        // SI SE ENCUENTRA LA SESION, SE MAPEA LOS DATOS Y SE DEVOLVE LA SESION
+        final session = result.first;
+        return Session(
+          idSession: session['idSession'] as int?,
+          idUser: session['idUser'] as int,
+          sessionName: session['sessionName'] as String,
+          idCubeType: session['idCubeType'] as int,
+          creationDate: session['creationDate'] as String,
+        );
+      } else {
+        // SI NO SE ENCONTRO NINGUNA SESION, RETORNAMOS NULL
+        DatabaseHelper.logger.w(
+            "No se encontro la sesion para el usuario con id $idUser, nombre de sesion $sessionName y id de tipo de cubo $idCubeType");
+        return null;
+      } // VERIFICAMOS SI EL RESULTADO ES NULO O NO
+    } catch (e) {
+      // SI DA ERROR, DEVOLVEMOS NULL
+      DatabaseHelper.logger.e(
+          "Error para encontrar la sesion para el usuario con id $idUser, nombre de sesion $sessionName y id de tipo de cubo $idCubeType");
+      return null;
+    }
+  } // METODO QUE DEVUELVE UNA SESION POR ID DE USUARIO, NOMBRE DE LA SESION Y TIPO DE CUBO
 }

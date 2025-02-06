@@ -1,8 +1,10 @@
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/about_app_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/my_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -164,7 +166,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   listTileGenerator(
                       Icons.palette, "App theme", const BottomNavigation()),
                   listTileGenerator(
-                      Icons.person, "My profile", const BottomNavigation()),
+                      Icons.person, "My profile", const MyProfileScreen()),
 
                   // VERSUS
                   textTitleListTile("Championship"),
@@ -176,7 +178,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   listTileGenerator(
                       Icons.settings, "Settings", const BottomNavigation()),
                   listTileGenerator(
-                      Icons.info, "About the app", const BottomNavigation()),
+                      Icons.info, "About the app", const AboutAppScreen()),
                 ],
               ),
             ),

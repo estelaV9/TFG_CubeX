@@ -103,4 +103,33 @@ class CubeTypeDao {
       return false;
     }
   } // METODO PARA ELIMINAR UN TIPO DE CUBO POR SU NOMBRE
+
+  Future<CubeType> getCubeById(int id) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // REALIZA LA CONSULTA A LA BASE DE DATOS
+      final result = await db.query(
+        'cubeType',
+        where: 'idCubeType = ?',
+        whereArgs: [id],
+      );
+
+      if (result.isNotEmpty) {
+        // CONVIERTE EL PRIMER RESULTADO EN UN OBJETO
+        return CubeType(
+            idCube: result.first['idCubeType'] as int,
+            cubeName: result.first['cubeName'] as String,
+            idUser: result.first['idUser'] as int);
+      } else {
+        // SI NO ENCUENTRA EL ID, DEVUELVE UN TIPO DE CUBO DE EROOR
+        DatabaseHelper.logger.w("No se encontró ningún cubo con ese id: $id");
+        return CubeType(idCube: -1, cubeName: "ErrorCube");
+      } // SI LA CONSULTA NO ES NULA Y DEVUELVE UN RESULTADO
+    } catch (e) {
+      DatabaseHelper.logger
+          .e("Error al obtener el tipo de cubo por su id: $e");
+      // RETORNA UN ERROR TIPO DE CUBO EN CASO DE ERROR
+      return CubeType(idCube: -1, cubeName: "ErrorCube");
+    }
+  } // METODO PARA BUSCAR UN TIPO DE CUBO POR SU ID
 }

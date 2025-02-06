@@ -6,7 +6,7 @@ import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import '../database/database_helper.dart';
 
 class TimeTrainingDao {
-  Future<List<TimeTraining>> getTimesOfSession(int idSession) async {
+  Future<List<TimeTraining>> getTimesOfSession(int? idSession) async {
     final db = await DatabaseHelper.database;
     try {
       // CONSULTA PARA OBTENER TODOS LOS TIEMPOS DE UNA SESION
