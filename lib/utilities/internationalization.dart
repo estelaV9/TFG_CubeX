@@ -138,6 +138,182 @@ class Internationalization {
       case 'plus_two_hint':
         return l10n.plus_two_hint;
 
+      case 'delete_cube_type_label':
+        return l10n.delete_cube_type_label;
+
+      case 'delete_cube_type_hint':
+        return l10n.delete_cube_type_hint;
+
+      case 'cube_type_deleted_successful':
+        return l10n.cube_type_deleted_successful;
+      case 'cube_type_deletion_failed':
+        return l10n.cube_type_deletion_failed;
+
+      case 'insert_new_type_label':
+        return l10n.insert_new_type_label;
+      case 'insert_new_type_hint':
+        return l10n.insert_new_type_hint;
+      case 'create_new_cube_type':
+        return l10n.create_new_cube_type;
+      case 'select_cube_type':
+        return l10n.select_cube_type;
+
+      case 'enter_new_cube_type':
+        return l10n.enter_new_cube_type;
+
+      case 'add_custom_scramble_label':
+        return l10n.add_custom_scramble_label;
+
+      case 'enter_new_scramble':
+        return l10n.enter_new_scramble;
+
+      case 'delete_session_label':
+        return l10n.delete_session_label;
+      case 'delete_session_hint':
+        return l10n.delete_session_hint;
+
+      case 'session_not_found':
+        return l10n.session_not_found;
+
+      case 'session_deleted_successful':
+        return l10n.session_deleted_successful;
+      case 'session_deletion_failed':
+        return l10n.session_deletion_failed;
+
+      case 'select_session_label':
+        return l10n.select_session_label;
+      case 'create_new_session_label':
+        return l10n.create_new_session_label;
+      case 'create_new_session_button':
+        return l10n.create_new_session_button;
+      case 'create_new_session_hint':
+        return l10n.create_new_session_hint;
+      case 'type_session_name':
+        return l10n.type_session_name;
+
+      case 'account_created_successfully':
+        return l10n.account_created_successfully;
+
+      case 'accept_label':
+        return l10n.accept_label;
+
+      case 'accept_hint':
+        return l10n.accept_hint;
+      case 'cancel_label':
+        return l10n.cancel_label;
+      case 'cancel_hint':
+        return l10n.cancel_hint;
+
+      case 'copied_successfully':
+        return l10n.copied_successfully;
+
+      case 'new_type_inserted_successful':
+        return l10n.new_type_inserted_successful;
+      case 'chosen_name_already_exists':
+        return l10n.chosen_name_already_exists;
+
+      case 'add_scramble_empty':
+        return l10n.add_scramble_empty;
+      case 'scramble_added_successful':
+        return l10n.scramble_added_successful;
+
+      case 'add_session_name_empty':
+        return l10n.add_session_name_empty;
+      case 'session_added_successful':
+        return l10n.session_added_successful;
+
+      case 'failed_create_session':
+        return l10n.failed_create_session;
+
+      case 'incorrect_username_password':
+        return l10n.incorrect_username_password;
+
+      case 'error_creating_account':
+        return l10n.error_creating_account;
+      case 'account_email_exists':
+        return l10n.account_email_exists;
+      case 'username_already_in_use':
+        return l10n.username_already_in_use;
+
+      case 'general':
+        return l10n.general;
+      case 'timer':
+        return l10n.timer;
+      case 'app_theme':
+        return l10n.app_theme;
+      case 'my_profile':
+        return l10n.my_profile;
+
+      case 'championship':
+        return l10n.championship;
+      case 'versus':
+        return l10n.versus;
+
+      case 'other':
+        return l10n.other;
+      case 'settings':
+        return l10n.settings;
+      case 'about_the_app':
+        return l10n.about_the_app;
+
+      case 'log_out':
+        return l10n.log_out;
+
+      case 'show_password':
+        return l10n.show_password;
+      case 'hide_password':
+        return l10n.hide_password;
+      case 'github':
+        return l10n.github;
+      case 'go_github':
+        return l10n.go_github;
+      case 'enter_app':
+        return l10n.enter_app;
+      case 'delete_account':
+        return l10n.delete_account;
+      case 'save_data':
+        return l10n.save_data;
+      case 'edit_button':
+        return l10n.edit_button;
+
+      case 'delete_time':
+        return l10n.delete_time;
+      case 'add_comment':
+        return l10n.add_comment;
+      case 'add_scramble_manual':
+        return l10n.add_scramble_manual;
+      case 'more_option':
+        return l10n.more_option;
+      case 'add_new_time':
+        return l10n.add_new_time;
+      case 'add_penalty':
+        return l10n.add_penalty;
+      case 'date':
+        return l10n.date;
+      case 'search_time':
+        return l10n.search_time;
+      case 'choose_session':
+        return l10n.choose_session;
+      case 'choose_cube_type':
+        return l10n.choose_cube_type;
+
+      case 'description':
+        return l10n.description;
+      case 'open_source':
+        return l10n.open_source;
+      case 'version':
+        return l10n.version;
+      case 'developer_name':
+        return l10n.developer_name;
+      case 'developer_email':
+        return l10n.developer_email;
+      case 'developer':
+        return l10n.developer;
+      case 'tools':
+        return l10n.tools;
+      case 'tools_list':
+        return l10n.tools_list;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;
