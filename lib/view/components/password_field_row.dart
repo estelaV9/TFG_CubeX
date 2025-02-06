@@ -99,10 +99,10 @@ class _PasswordFieldFormState extends State<PasswordFieldForm> {
                     });
                   },
                   icon: _isObscure
-                      ? IconClass.iconMaker(
-                          Icons.visibility_off, "Show password")
-                      : IconClass.iconMaker(
-                          Icons.remove_red_eye, "Hide password"),
+                      ? IconClass.iconMaker(context,
+                          Icons.visibility_off, "show_password")
+                      : IconClass.iconMaker(context,
+                          Icons.remove_red_eye, "hide_password"),
                   tooltip: _isObscure ? "Show password" : "Hide password",
                 )
               ],

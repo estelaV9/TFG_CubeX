@@ -1,5 +1,6 @@
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/about_app_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
@@ -74,9 +75,13 @@ class _AppDrawerState extends State<AppDrawer> {
             // PADDING
             contentPadding: const EdgeInsets.only(left: 30),
             leading: Icon(icon, color: AppColors.darkPurpleColor),
-            title: Text(
+            title: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context,
               text,
-              style: const TextStyle(
+              text,
+              text,
+              const TextStyle(
                 color: AppColors.darkPurpleColor,
               ),
             ),
@@ -94,7 +99,7 @@ class _AppDrawerState extends State<AppDrawer> {
     return Padding(
       padding: const EdgeInsets.only(left: 20.0),
       child: Text(
-        text,
+        Internationalization.internationalization.getLocalizations(context, text),
         style: const TextStyle(
           fontSize: 15,
           color: AppColors.darkPurpleColor,
@@ -160,25 +165,25 @@ class _AppDrawerState extends State<AppDrawer> {
               child: ListView(
                 children: [
                   // OPCIONES GENERALES
-                  textTitleListTile("General"),
+                  textTitleListTile("general"),
                   listTileGenerator(
-                      Icons.timer, "Timer", const BottomNavigation()),
+                      Icons.timer, "timer", const BottomNavigation()),
                   listTileGenerator(
-                      Icons.palette, "App theme", const BottomNavigation()),
+                      Icons.palette, "app_theme", const BottomNavigation()),
                   listTileGenerator(
-                      Icons.person, "My profile", const MyProfileScreen()),
+                      Icons.person, "my_profile", const MyProfileScreen()),
 
                   // VERSUS
-                  textTitleListTile("Championship"),
+                  textTitleListTile("championship"),
                   listTileGenerator(
-                      Icons.sports_kabaddi, "Versus", const BottomNavigation()),
+                      Icons.sports_kabaddi, "versus", const BottomNavigation()),
 
                   // OTRAS OPCIONES
-                  textTitleListTile("Other"),
+                  textTitleListTile("other"),
                   listTileGenerator(
-                      Icons.settings, "Settings", const BottomNavigation()),
+                      Icons.settings, "settings", const BottomNavigation()),
                   listTileGenerator(
-                      Icons.info, "About the app", const AboutAppScreen()),
+                      Icons.info, "about_the_app", const AboutAppScreen()),
                 ],
               ),
             ),
@@ -196,7 +201,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 color: AppColors.darkPurpleColor),
 
             // BOTON PARA CERRAR SESION
-            listTileGenerator(Icons.logout, "Log out", const LoginScreen()),
+            listTileGenerator(Icons.logout, "log_out", const LoginScreen()),
           ],
         ),
       ),

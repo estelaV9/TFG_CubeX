@@ -92,7 +92,15 @@ class AboutAppScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Descripción
+                // DESCRIPCION
+                Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  "description",
+                  "description",
+                  "description",
+                  const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
                 const Text(
                   'CubeX es una aplicación diseñada para speedcubers, '
                       'ofreciendo herramientas avanzadas para entrenar y mejorar tiempos.',
@@ -130,7 +138,7 @@ class AboutAppScreen extends StatelessWidget {
                           throw 'No se pudo abrir la URL';
                           } // VERIFICA SI LA URL ES VALIDA
                         },
-                        child: IconClass.iconMaker(Icons.exit_to_app_sharp, "Go to the github")
+                        child: IconClass.iconMaker(context, Icons.exit_to_app_sharp, "go_github")
                       ),
                     ],
                   ),
@@ -198,7 +206,7 @@ class AboutAppScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    IconClass.iconMaker(Icons.account_circle_sharp, "My Github", 40),
+                    IconClass.iconMaker(context, Icons.account_circle_sharp, "github", 40),
                     TextButton(onPressed: () async {
                       // CUANDO PULSE IRA A MI GITHUB
                       const url = 'https://github.com/estelaV9';

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
+import '../../utilities/internationalization.dart';
 import '../../viewmodel/current_cube_type.dart';
 import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_user.dart';
@@ -43,7 +44,7 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
       } else {
         // SI NO SE INSERTO CORRECTAMENTE SE MUESTRA UN ERROR
         AlertUtil.showSnackBarError(
-            context, "Failed to insert the new type. Try again, please.");
+            context, "cube_type_deletion_failed");
       } // INSERTAR TIPO DE CUBO
     } else {
       // SI EL NOMBRE YA EXISTE SE MUESTRA UN ERROR
@@ -74,9 +75,13 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center, // CENTRADO
                   children: [
-                    const Text(
-                      "Select a cube type",
-                      style: TextStyle(
+                    Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context,
+                      "select_cube_type",
+                      "select_cube_type",
+                      "select_cube_type",
+                      const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.darkPurpleColor,
                           fontSize: 25),
@@ -116,19 +121,19 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
                               AlertUtil.showDeleteSessionOrCube(
                                   context,
-                                  "Delete Cube Type",
-                                  "Are you sure you want to delete all your saved times with that cube?",
+                                  "delete_cube_type_label",
+                                  "delete_cube_type_hint",
                                   () async {
                                 String cubeName = cubeTypes[index].cubeName;
 
                                 if (await cubeTypeDao
                                     .deleteCubeType(cubeName)) {
                                   AlertUtil.showSnackBarInformation(
-                                      context, "Cube type deleted successful");
+                                      context, "cube_type_deleted_successful");
                                   getTotalCubes(); // VOLVEMOS A CARGAR LOS TIPOS DE CUBO
                                 } else {
                                   AlertUtil.showSnackBarError(context,
-                                      "Cube type deletion failed. Please try again.");
+                                      "cube_type_deletion_failed");
                                 } // SE ELIMINA EL TIPO DE CUBO
                               });
                             },
@@ -205,9 +210,9 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                     ElevatedButton(
                         onPressed: () async {
                           String? name = await AlertUtil.showAlertForm(
-                              "Insert a new type",
-                              "Insert a new type",
-                              "Enter a new cube type",
+                              "insert_new_type_label",
+                              "insert_new_type_label",
+                              "enter_new_cube_type",
                               context);
                           UserDao userDao = UserDao();
                           // OBTENEMOS LOS DATOS DEL USUARIO
@@ -236,7 +241,15 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                             } // VERIFICAR SI SE CREO LA SESION POR DEFECTO CORRECTMANTE
                           } // VERIFICAR QUE SE OBTIENE BIEN EL TIPO DE CUBO
                         },
-                        child: const Text("Create a new cube type"))
+                        child: Internationalization.internationalization
+                            .createLocalizedSemantics(
+                          context,
+                          "create_new_cube_type",
+                          "create_new_cube_type",
+                          "create_new_cube_type",
+                          const TextStyle(
+                              fontSize: 16),
+                        ),)
                   ],
                 ),
               ),

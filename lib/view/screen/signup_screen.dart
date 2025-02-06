@@ -67,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             // SE MUESTRA UN SNACKBAR DE QUE SE HA CREADO CORRECTAMENTE
             // Y SE REDIRIGE A LA PANTALLA PRINCIPAL
             AlertUtil.showSnackBarInformation(
-                this.context, "Account created successfully.");
+                this.context, "account_created_successfully");
 
             int idUser =
                 await userDao.getIdUserFromName(currentUser.user!.username);
@@ -154,28 +154,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   .e("Error al pillar el id de tipo de cubo 3x3");
               // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR PORQUE ES NULO
               AlertUtil.showSnackBarError(this.context,
-                  "An error occurred while creating the account.");
+                  "error_creating_account");
             } // VERIFICA SI EL ID DEL TIPO DE CUBO ES NULO
           } else {
             DatabaseHelper.logger.e("Error la obtener el id del usuario");
             // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR AL BUSCAR EL ID
             AlertUtil.showSnackBarError(
-                this.context, "An error occurred while creating the account.");
+                this.context, "error_creating_account");
           } // VERIFICAR EL ID DEL USUARIO
         } else {
           // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
           AlertUtil.showSnackBarError(
-              this.context, "An error occurred while creating the account.");
+              this.context, "error_creating_account");
         } // INSERTAR AL USUARIO
       } else {
         // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
         AlertUtil.showSnackBarError(
-            this.context, "An account with this email already exists.");
+            this.context, "account_email_exists");
       } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
     } else {
       // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DEL USUARIO YA EXISTE
       AlertUtil.showSnackBarError(
-          this.context, "This username is already in use.");
+          this.context, "username_already_in_use");
     } // VALIDAR QUE EL NOMBRE DE USUARIO NO EXISTA
   } // SI TODOS LOS CAMPOS DEL FORMULARIO ESTAN CORRECTOS
 //} // METODO PARA CREAR UNA CUENTA
@@ -230,7 +230,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           child: Column(children: [
                             FieldForm(
                               icon:
-                                  IconClass.iconMaker(Icons.person, "Username"),
+                                  IconClass.iconMaker(context, Icons.person, "username"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "username"),
@@ -252,7 +252,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             FieldForm(
-                              icon: IconClass.iconMaker(Icons.mail, "Mail"),
+                              icon: IconClass.iconMaker(context, Icons.mail, "mail"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "mail"),
@@ -274,7 +274,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             PasswordFieldForm(
-                              icon: IconClass.iconMaker(Icons.lock, "Password"),
+                              icon: IconClass.iconMaker(context, Icons.lock, "password"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "password"),
@@ -297,8 +297,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             PasswordFieldForm(
-                              icon: IconClass.iconMaker(
-                                  Icons.check, "Confirm Password"),
+                              icon: IconClass.iconMaker(context,
+                                  Icons.check, "confirm_password"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(
@@ -347,8 +347,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: IconClass.iconMaker(
-                                  Icons.arrow_forward, "Enter app")),
+                              child: IconClass.iconMaker(context,
+                                  Icons.arrow_forward, "enter_app")),
                         ],
                       ),
                       const SizedBox(height: 15),

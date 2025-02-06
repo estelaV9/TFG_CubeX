@@ -50,7 +50,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
                 onPressed: () {
                   _scaffoldKey.currentState?.openDrawer(); // ABRE EL DRAWER
                 },
-                icon: IconClass.iconMaker(Icons.settings, "Settings", 30)),
+                icon: IconClass.iconMaker(context, Icons.settings, "settings", 30)),
           ),
 
           // CONTAINER DEL TIPO DE CUBO Y LA SESION UN POCO MAS ABAJO A LA DERECHA

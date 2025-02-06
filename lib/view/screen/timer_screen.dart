@@ -369,7 +369,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 onPressed: () {
                   _scaffoldKey.currentState?.openDrawer(); // ABRE EL DRAWER
                 },
-                icon: IconClass.iconMaker(Icons.settings, "Settings", 30)),
+                icon: IconClass.iconMaker(context, Icons.settings, "settings", 30)),
           ),
 
           // CONTAINER DEL TIPO DE CUBO Y LA SESION UN POCO MAS ABAJO A LA DERECHA
@@ -424,7 +424,7 @@ class _TimerScreenState extends State<TimerScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            IconClass.iconButton(logicComment, "Add comments",
+                            IconClass.iconButton(context, logicComment, "add_comment",
                                 Icons.add_comment_rounded),
                             TextButton(
                               onPressed: () {},
@@ -460,8 +460,8 @@ class _TimerScreenState extends State<TimerScreen> {
                                 ),
                               ),
                             ),
-                            IconClass.iconButton(
-                                logicDeleteTime, "Delete time", Icons.close),
+                            IconClass.iconButton(context,
+                                logicDeleteTime, "delete_time", Icons.close),
                           ],
                         )
                       ],

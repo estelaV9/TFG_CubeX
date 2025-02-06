@@ -14,7 +14,6 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _mailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -26,7 +25,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile'),
+        title: Text(Internationalization.internationalization.getLocalizations(context, "my_profile")),
         backgroundColor: AppColors.lightVioletColor,
       ),
       body: Container(
@@ -69,7 +68,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           radius: 18,
                           // FONDO BLACNO DEL ICONO
                           backgroundColor: Colors.white,
-                          child: IconClass.iconMaker(Icons.edit, "Edit button"),
+                          child: IconClass.iconMaker(context, Icons.edit, "edit_button"),
                         ),
                       ),
                     ),
@@ -77,17 +76,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 40,
               ),
               Align(
                   alignment: Alignment.centerRight,
-                  child: IconClass.iconMaker(Icons.save, "Save data", 30)),
-              SizedBox(height: 10),
+                  child: IconClass.iconMaker(context, Icons.save, "save_data", 30)),
+              const SizedBox(height: 10),
               Form(
                   child: Column(children: [
                 FieldForm(
-                    icon: IconClass.iconMaker(Icons.person, "Username"),
+                    icon: IconClass.iconMaker(context, Icons.person, "username"),
                     labelText: Internationalization.internationalization
                         .getLocalizations(context, "username"),
                     hintText: Internationalization.internationalization
@@ -105,7 +104,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 const SizedBox(height: 10),
 
                 FieldForm(
-                    icon: IconClass.iconMaker(Icons.mail, "Mail"),
+                    icon: IconClass.iconMaker(context, Icons.mail, "mail"),
                     labelText: Internationalization.internationalization
                         .getLocalizations(context, "mail"),
                     hintText: Internationalization.internationalization
@@ -123,7 +122,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 const SizedBox(height: 10),
 
                 PasswordFieldForm(
-                    icon: IconClass.iconMaker(Icons.lock, "Password"),
+                    icon: IconClass.iconMaker(context, Icons.lock, "password"),
                     labelText: Internationalization.internationalization
                         .getLocalizations(context, "password"),
                     hintText: Internationalization.internationalization
@@ -142,7 +141,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 const SizedBox(height: 10),
 
                 PasswordFieldForm(
-                    icon: IconClass.iconMaker(Icons.check, "Confirm Password"),
+                    icon: IconClass.iconMaker(context, Icons.check, "Confirm confirm_password"),
                     labelText: Internationalization.internationalization
                         .getLocalizations(context, "confirm_password"),
                     hintText: Internationalization.internationalization
@@ -164,7 +163,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               Expanded(child: Container()),
 
               Padding(
-                padding: EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 20),
                 child: GestureDetector(
                   onTap: () {},
                   child: Container(
@@ -191,7 +190,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: [
-                          IconClass.iconMaker(Icons.delete, "Delete account"),
+                          IconClass.iconMaker(context, Icons.delete, "delete_account"),
                           const SizedBox(
                             width: 10,
                           ),

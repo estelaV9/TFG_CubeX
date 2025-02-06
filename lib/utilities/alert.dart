@@ -5,28 +5,48 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
+import 'internationalization.dart';
+
 class AlertUtil {
-  static void showAlert(String title, String content, BuildContext context) {
+  static void showAlert(String key, String contentKey, String title, String content, BuildContext context) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(title),
-            content: Text(content),
+            title: Internationalization.internationalization.createLocalizedSemantics(
+              context,
+              '${key}_label',
+              '${key}_hint',
+              key,
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Internationalization.internationalization.createLocalizedSemantics(
+              context,
+              '${contentKey}_label',
+              '${contentKey}_hint',
+              contentKey,
+              const TextStyle(fontSize: 16),
+            ),
             actions: [
               TextButton(
                 onPressed: () {
                   // SE CIERRA EL DIALOGO CUANDO PULSE "aceptar"
                   Navigator.of(context).pop();
                 },
-                child: const Text("Accept"),
+                child: Internationalization.internationalization.createLocalizedSemantics(
+                  context,
+                  'accept_label',
+                  'accept_hint',
+                  'accept_label',
+                  const TextStyle(fontSize: 16, color: Colors.blue),
+                ),
               ),
             ],
           );
         });
   } // METODO PARA MOSTRAR UNA ALERTA
 
-  static Future<String?> showAlertForm(String title, String content,
+  static Future<String?> showAlertForm(String titleKey, String contentKey,
       String labelText, BuildContext context) async {
     final TextEditingController controller = TextEditingController();
 
@@ -35,17 +55,29 @@ class AlertUtil {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(title),
+          title: Internationalization.internationalization.createLocalizedSemantics(
+            context,
+            '${titleKey}_label',
+            '${titleKey}_hint',
+            titleKey,
+            const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min, // AJUSTE DE TAMAÑO DEL CONTENIDO
             children: [
-              Text(content),
-              SizedBox(height: 10),
+              Internationalization.internationalization.createLocalizedSemantics(
+                context,
+                '${contentKey}_label',
+                '${contentKey}_hint',
+                contentKey,
+                const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 10),
               TextField(
                 controller: controller,
                 decoration: InputDecoration(
-                  labelText: labelText,
-                  border: OutlineInputBorder(),
+                  labelText: Internationalization.internationalization.getLocalizations(context, labelText),
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ],
@@ -60,7 +92,13 @@ class AlertUtil {
                   Navigator.of(context).pop(); // SE ESTA VACIO, NO RETORNA NADA
                 }
               },
-              child: const Text("Accept"),
+              child: Internationalization.internationalization.createLocalizedSemantics(
+                context,
+                'accept_label',
+                'accept_hint',
+                'accept_label',
+                const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
             ),
           ],
         );
@@ -68,30 +106,54 @@ class AlertUtil {
     );
   } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO
 
-  static showDeleteSessionOrCube(
-      BuildContext context, String title, String content, Function delete) {
+  static showDeleteSessionOrCube(BuildContext context, String key, String contentKey,
+       Function delete) {
     // SE MUESTRA EL DIALOG
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             // TITULO DE LA ALERTA
-            title: Text(title),
-            content: Text(content),
+            title: Internationalization.internationalization.createLocalizedSemantics(
+              context,
+              '${key}_label',
+              '${key}_hint',
+              key,
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Internationalization.internationalization.createLocalizedSemantics(
+              context,
+              '${contentKey}_label',
+              '${contentKey}_hint',
+              contentKey,
+              const TextStyle(fontSize: 16),
+            ),
             actions: <Widget>[
               // BOTONES PARA CANCELAR O DARLE OK
               TextButton(
                 onPressed: () {
                   Navigator.pop(context, 'Cancel');
                 },
-                child: const Text('Cancel'),
+                child:Internationalization.internationalization.createLocalizedSemantics(
+                  context,
+                  'cancel_label',
+                  'cancel_hint',
+                  'cancel_label',
+                  const TextStyle(fontSize: 16, color: Colors.blue),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context, 'OK');
                   delete(); // FUNCION PARA ELIMINAR SI PULSA OK
                 },
-                child: const Text('OK'),
+                child: Internationalization.internationalization.createLocalizedSemantics(
+                  context,
+                  'accept_label',
+                  'accept_hint',
+                  'accept_label',
+                  const TextStyle(fontSize: 16, color: Colors.blue),
+                ),
               ),
             ],
           );
@@ -117,7 +179,7 @@ class AlertUtil {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconClass.iconButton((){}, "Add a penalty", Icons.block),
+                IconClass.iconButton(context, (){}, "add_penalty", Icons.block),
 
                 Text(
                   timeTraining.timeInSeconds.toString(),
@@ -128,7 +190,7 @@ class AlertUtil {
                   ),
                 ),
 
-                IconClass.iconButton((){}, "Delete time", Icons.delete)
+                IconClass.iconButton(context, (){}, "delete_time", Icons.delete)
               ],
             ),
             content: Column(
@@ -137,7 +199,7 @@ class AlertUtil {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconClass.iconButton((){}, "Date", Icons.calendar_month),
+                    IconClass.iconButton(context, (){}, "date", Icons.calendar_month),
                     Text(
                       DateFormat('dd/MM/yyyy').format(DateTime.now()),
                       style: const TextStyle(
@@ -155,7 +217,7 @@ class AlertUtil {
                   color: AppColors.darkPurpleColor,
                 ),
 
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
 
                 Row(
                   children: [
@@ -189,7 +251,7 @@ class AlertUtil {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: 100,
                       height: 30,
                       child: Card(
@@ -218,15 +280,15 @@ class AlertUtil {
                       width: 190,
                       child: Text(
                         timeTraining.scramble,
-                        style: TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
-                    IconClass.iconButton(() async {
+                    IconClass.iconButton(context,() async {
                       await Clipboard.setData(
                           ClipboardData(text: timeTraining.scramble));
                       // MUESTRA MENSAJE DE QUE SE COPIO CORRECTAMENTE
-                      showSnackBarInformation(context, "Copied successfully");
-                    }, "Copy scramble", Icons.copy)
+                      showSnackBarInformation(context, "copied_successfully");
+                    }, "copy_scramble", Icons.copy)
                   ],
                 )
               ],
@@ -242,7 +304,7 @@ class AlertUtil {
       behavior: SnackBarBehavior.floating,
       backgroundColor: color, // COLOR DE FONDO
       action: SnackBarAction(
-        label: "Accept", // TEXTO DEL BOTON DE ACCION
+        label: Internationalization.internationalization.getLocalizations(context, "accept_label"), // TEXTO DEL BOTON DE ACCION
         textColor: Colors.yellow, // COLOR DEL TEXTO DEL BOTON
         onPressed: () {
           // SE CIERRA EL SNACKBAR CUANDO PULSE "Accept"
@@ -274,11 +336,13 @@ class AlertUtil {
     });
   } // MOSTRAR UN SNACKBAR
 
-  static showSnackBarError(BuildContext context, String message) {
+  static showSnackBarError(BuildContext context, String messageKey) {
+    final message = Internationalization.internationalization.getLocalizations(context, messageKey);
     showSnackBar(context, Icons.error, message, Colors.redAccent);
   } // SNACKBAR PARA MOSTRAR UN ERROR
 
-  static showSnackBarInformation(BuildContext context, String message) {
+  static showSnackBarInformation(BuildContext context, String messageKey) {
+    final message = Internationalization.internationalization.getLocalizations(context, messageKey);
     showSnackBar(context, Icons.info, message, Colors.green);
   } // SNACKBAR PARA MOSTRAR UNA INFORMACION
 }
