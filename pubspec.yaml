@@ -17,6 +17,7 @@ dependencies:
   flutter_markdown: ^0.6.17
   url_launcher: ^6.0.10
   image_picker: ^1.0.4
+  shared_preferences: ^2.2.2
   flutter_localizations:
     sdk: flutter
   intl: any
@@ -27,6 +28,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
+  mockito: ^5.0.0
   flutter_lints: ^4.0.0
 
 flutter:
@@ -43,4 +47,7 @@ flutter:
     - family: Gluten
       fonts:
         - asset: assets/fonts/Gluten-Bold.otf
+    - family: Broadway
+      fonts:
+        - asset: assets/fonts/BroadwayFlat.ttf
   uses-material-design: true

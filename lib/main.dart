@@ -1,4 +1,6 @@
+import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
@@ -16,10 +18,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   // SE INICIALIZA LA BASE DE DATOS
   await DatabaseHelper.initDatabase();
+  await SettingsScreenState.startPreferences();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CurrentCubeType()),
+        ChangeNotifierProvider(create: (_) => CurrentLanguage()),
         ChangeNotifierProvider(create: (_) => CurrentStatistics()),
         ChangeNotifierProvider(create: (_) => CurrentScramble()),
         ChangeNotifierProvider(create: (_) => CurrentSession()),
@@ -35,21 +39,24 @@ class CubeXApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        localizationsDelegates: [
+    // ESTABLECER IDIOMA
+    final locale = context.watch<CurrentLanguage>().locale;
+
+    return MaterialApp(
+        localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate
         ],
-        supportedLocales: [
+        supportedLocales: const [
           Locale('es'),
           Locale('en')
         ],
-        locale: Locale('es'),
+        locale: locale,
         debugShowCheckedModeBanner: false,
         // QUITAR MARCA DEBUG
-        home: IntroScreen());
+        home: const IntroScreen());
   }
 }
 
