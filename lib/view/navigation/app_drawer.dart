@@ -6,6 +6,7 @@ import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/my_profile_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -181,7 +182,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   // OTRAS OPCIONES
                   textTitleListTile("other"),
                   listTileGenerator(
-                      Icons.settings, "settings", const BottomNavigation()),
+                      Icons.settings, "settings", const SettingsScreen()),
                   listTileGenerator(
                       Icons.info, "about_the_app", const AboutAppScreen()),
                 ],
