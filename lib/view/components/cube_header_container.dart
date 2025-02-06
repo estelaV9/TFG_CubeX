@@ -165,14 +165,14 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
                   const SizedBox(width: 5),
 
-                  IconClass.iconButtonImage(() {
+                  IconClass.iconButtonImage(context, () {
                     showModalBottomSheet(
                       context: context,
                       builder: (context) => SessionMenu(
                         onSessionSelected: onSessionSelected,
                       ),
                     );
-                  }, "assets/session_icon.png", "Choose session"),
+                  }, "assets/session_icon.png", "choose_session"),
                 ],
               ),
             )

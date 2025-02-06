@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/database/database_helper.dart';
 import '../../model/session.dart';
+import '../../utilities/internationalization.dart';
 import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_statistics.dart';
 import '../../viewmodel/current_user.dart';
@@ -114,15 +115,15 @@ class _SessionMenuState extends State<SessionMenu> {
     print(idCubeType);
 
     String? newSession = await AlertUtil.showAlertForm(
-        "Create a new session",
-        "Please enter a name for your new session",
-        "Type the session name",
+        "create_new_session_label",
+        "create_new_session_hint",
+        "type_session_name",
         context);
 
     if (newSession == null) {
       // MENSAJE DE ERROR POR SI DEJA EL FORMULARIO VACIO
       AlertUtil.showSnackBarError(
-          context, "Please add a session name that isn't empty.");
+          context, "add_session_name_empty");
     } else {
       setState(() {
         sessionName = newSession;
@@ -131,8 +132,6 @@ class _SessionMenuState extends State<SessionMenu> {
       if (currentUser != null) {
         // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
         int idUser = await userDao.getIdUserFromName(currentUser.username);
-        print('********************** $idUser');
-        print('********************** $currentUser');
 
         Session newSession = Session(
             idUser: idUser, sessionName: sessionName, idCubeType: idCubeType);
@@ -142,12 +141,12 @@ class _SessionMenuState extends State<SessionMenu> {
         if (sessionInserted) {
           // SE MUESTRA UN ALERT DE CONFIRMACION
           AlertUtil.showSnackBarInformation(
-              context, "Session added successfully");
+              context, "session_added_successful");
           sessionList(); // RECARGAMOS LA LISTA DE SESIONES
         } else {
           // MENSAJE DE ERROR SI LA SESION NO SE PUDO GUARDAR
           AlertUtil.showSnackBarError(
-              context, "Failed to create the session. Please try again.");
+              context, "failed_create_session");
         } // VALIDAR SI SE HA INSERTADO BIEN
       } else {
         // MENSAJE INTERNO DE ERROR
@@ -173,9 +172,13 @@ class _SessionMenuState extends State<SessionMenu> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // CENTRADO
               children: [
-                const Text(
-                  "Select a session",
-                  style: TextStyle(
+                Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  "select_session_label",
+                  "select_session_label",
+                  "select_session_label",
+                  const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.darkPurpleColor,
                       fontSize: 25),
@@ -235,8 +238,8 @@ class _SessionMenuState extends State<SessionMenu> {
                             // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
                             AlertUtil.showDeleteSessionOrCube(
                                 context,
-                                "Delete Session",
-                                "Are you sure you want to delete all your saved times?",
+                                "delete_session_label",
+                                "delete_session_hint",
                                 () async {
                               String sessionName = sessions[index].sessionName;
                               // OBTENEMOS LOS DATOS DEL USUARIO
@@ -257,16 +260,16 @@ class _SessionMenuState extends State<SessionMenu> {
                                 if (idSession == -1) {
                                   // SI NO SE ENCUENTRA EL ID DE LA SESION S EMUESTRA UN MENSAJE
                                   AlertUtil.showSnackBarError(
-                                      context, "Session not found");
+                                      context, "session_not_found");
                                 } else {
                                   if (await sessionDao
                                       .deleteSession(idSession)) {
                                     AlertUtil.showSnackBarInformation(
-                                        context, "Session deleted successful");
+                                        context, "session_deleted_successful");
                                     sessionList(); // VOLVEMOS A CARGAR LAS SESIONES
                                   } else {
                                     AlertUtil.showSnackBarError(context,
-                                        "Session deletion failed. Please try again.");
+                                        "session_deletion_failed");
                                   } // SE ELIMINA LA SESION
                                 } // BUSCAR EL ID DE LA SESION
                               } // BUSCAR EL ID DEL USUARIO
@@ -343,7 +346,15 @@ class _SessionMenuState extends State<SessionMenu> {
                     onPressed: () {
                       createNewSession();
                     },
-                    child: const Text("Create a new session"))
+                    child: Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context,
+                      "create_new_session_label",
+                      "create_new_session_button",
+                      "create_new_session_label",
+                      const TextStyle(
+                          fontSize: 16),
+                    ))
               ],
             ),
           ),

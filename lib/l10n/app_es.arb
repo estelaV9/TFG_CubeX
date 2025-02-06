@@ -51,7 +51,7 @@
 
   "password": "Contraseña",
   "password_label": "Campo de contraseña",
-  "password_hint": "Escribe tu contaseña",
+  "password_hint": "Escribe tu contraseña",
 
   "confirm_password": "Confirmar contraseña",
   "confirm_password_label": "Campo para confirmar la contraseña",
@@ -66,5 +66,98 @@
 
   "plus_two": "+2",
   "plus_two_label": "Botón +2",
-  "plus_two_hint": "Indica una penalización de dos segundos añadidos al tiempo."
+  "plus_two_hint": "Indica una penalización de dos segundos añadidos al tiempo.",
+
+  "delete_cube_type_label": "Eliminar tipo de cubo",
+  "delete_cube_type_hint": "¿Estás seguro de que deseas eliminar todos tus tiempos guardados con ese cubo?",
+  "cube_type_deleted_successful": "Tipo de cubo eliminado con éxito",
+  "cube_type_deletion_failed": "Error al eliminar el tipo de cubo. Por favor, inténtalo de nuevo.",
+
+  "insert_new_type_label": "Insertar un nuevo tipo",
+  "insert_new_type_hint": "Insertar un nuevo tipo",
+  "enter_new_cube_type": "Introduce un nuevo tipo de cubo",
+  "create_new_cube_type": "Crear un nuevo tipo de cubo",
+  "select_cube_type": "Selecciona un tipo de cubo",
+
+  "add_custom_scramble_label": "Agregar un scramble personalizado",
+  "enter_new_scramble": "Introduce un nuevo scramble",
+
+  "delete_session_label": "Eliminar sesión",
+  "delete_session_hint": "¿Estás seguro de que deseas eliminar todos tus tiempos guardados?",
+  "session_not_found": "Sesión no encontrada",
+  "session_deleted_successful": "Sesión eliminada con éxito",
+  "session_deletion_failed": "Error al eliminar la sesión. Por favor, inténtalo de nuevo.",
+
+  "select_session_label": "Selecciona una sesión",
+  "create_new_session_label": "Crear una nueva sesión",
+  "create_new_session_button": "Boton para crear una sesión",
+  "create_new_session_hint": "Por favor, introduce un nombre para tu nueva sesión",
+  "type_session_name": "Escribe el nombre de la sesión",
+
+  "account_created_successfully": "Cuenta creada con éxito",
+
+  "accept_label": "Aceptar",
+  "accept_hint": "Presiona para aceptar",
+  "cancel_label": "Cancelar",
+  "cancel_hint": "Presiona para cancelar",
+
+  "copied_successfully": "Copiado con éxito",
+  "copy_scramble": "Botón copiar scramble",
+  
+  "new_type_inserted_successful": "El nuevo tipo se insertó con éxito.",
+  "chosen_name_already_exists": "El nombre elegido ya existe.",
+  
+  "add_scramble_empty": "Por favor, agrega un scramble que no esté vacío.",
+  "scramble_added_successful": "Scramble agregado con éxito.",
+  "add_session_name_empty": "Por favor, agrega un nombre de sesión que no esté vacío.",
+  "session_added_successful": "Sesión agregada con éxito.",
+  "failed_create_session": "Error al crear la sesión. Por favor, inténtalo de nuevo.",
+  "incorrect_username_password": "El nombre de usuario o la contraseña que ingresaste son incorrectos. Por favor, inténtalo de nuevo.",
+  
+  "error_creating_account": "Ocurrió un error al crear la cuenta.",
+  "account_email_exists": "Ya existe una cuenta con este correo electrónico.",
+  "username_already_in_use": "Este nombre de usuario ya está en uso.",
+  
+  "general": "General",
+  "timer": "Temporizador",
+  "app_theme": "Tema de la app",
+  "my_profile": "Mi perfil",
+  
+  "championship": "Campeonato",
+  "versus": "Versus",
+  
+  "other": "Otros",
+  "settings": "Configuraciones",
+  "about_the_app": "Acerca de la app",
+  
+  "log_out": "Cerrar sesión",
+
+  "show_password": "Mostrar contraseña",
+  "hide_password": "Ocultar contraseña",
+  "github": "Mi github",
+  "go_github": "Ir al github",
+  "enter_app": "Entrar a la app",
+  "delete_account": "Eliminar cuenta",
+  "save_data": "Guardar datos",
+  "edit_button": "Botón de editar",
+
+  "delete_time": "Botón eliminar tiempo",
+  "add_comment": "Botón agregar comentarios",
+  "add_scramble_manual": "Botón agregar scramble manualmente",
+  "more_option": "Botón más opciones",
+  "add_new_time": "Botón agregar nuevo tiempo",
+  "add_penalty": "Botón agregar penalización",
+  "date": "Botón fecha",
+  "search_time": "Buscar tiempo",
+  "choose_session": "Elije la sesión",
+  "choose_cube_type": "Elije el tipo de cubo",
+
+  "description": "CubeX es una aplicación diseñada para speedcubers, ofreciendo herramientas avanzadas para entrenar y mejorar tiempos..",
+  "open_source": "CubeX es una aplicación de código abierto",
+  "version": "Version 1.0.0",
+  "developer_name": "Estela de Vega Martín",
+  "developer_email": "Email: esteladevega.dev9@gmail.com",
+  "developer": "Desarrollador Principal",
+  "tools": "Herramientas Principales",
+  "tools_list": "• Flutter\n• SQLite\n• IntelliJ IDEA"
 }

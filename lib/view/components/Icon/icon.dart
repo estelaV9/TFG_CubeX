@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
 
 import '../../../utilities/app_color.dart';
+import '../../../utilities/internationalization.dart';
 
 class IconClass {
 
-  static Tooltip iconMaker(IconData icon, String messageTooltip, [double? size]){
+  static Tooltip iconMaker(BuildContext context, IconData icon, String messageKey, [double? size]){
     size ??= 25; // SI NO SE INTRODUCE UN TAMAÑO, POR DEFECTO SERA 25
+    final messageTooltip = Internationalization.internationalization.getLocalizations(context, messageKey);
     return Tooltip(
       message: messageTooltip,
       child: Icon(icon, color: AppColors.darkPurpleColor, size: size),
     );
   } // METODO QUE DEVUELVE UN ICONO CON UN TOOLTIP
 
-  static IconButton iconButton(
+  static IconButton iconButton(BuildContext context,
       VoidCallback function, String tooltip, IconData icon) {
+    final messageTooltip = Internationalization.internationalization.getLocalizations(context, tooltip);
+
     return IconButton(
         onPressed: () {
           function();
         },
         color: AppColors.darkPurpleColor,
-        tooltip: tooltip,
+        tooltip: messageTooltip,
         icon: Icon(icon));
   } // METODO QUE DEVUELVE UN ICONBUTTON
 
-  static Tooltip iconButtonImage(
-      VoidCallback function, String filePath, String messageTooltip) {
+  static Tooltip iconButtonImage(BuildContext context,
+      VoidCallback function, String filePath, String messageKey) {
+    final messageTooltip = Internationalization.internationalization.getLocalizations(context, messageKey);
+
     return Tooltip(
       // CUANDO SE PASE EL MOUSE SALDRA UN TEXTO
       message: messageTooltip,
@@ -39,7 +45,7 @@ class IconClass {
             // SE QUITA EL PADDIN QUE TIENE ALREDEDOR
             padding: EdgeInsets.zero,
             // SE LE DA UN TAMAÑO AL BOTON
-            minimumSize: Size(5, 40),
+            minimumSize: const Size(5, 40),
           ),
           child: SizedBox(
               child: Image.asset(

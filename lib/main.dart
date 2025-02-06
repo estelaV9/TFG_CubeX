@@ -46,7 +46,7 @@ class CubeXApp extends StatelessWidget {
           Locale('es'),
           Locale('en')
         ],
-        locale: Locale('en'),
+        locale: Locale('es'),
         debugShowCheckedModeBanner: false,
         // QUITAR MARCA DEBUG
         home: IntroScreen());

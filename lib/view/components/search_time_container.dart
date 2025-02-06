@@ -2,6 +2,8 @@ import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
+import '../../utilities/internationalization.dart';
+
 class SearchTimeContainer extends StatefulWidget {
   const SearchTimeContainer({super.key});
 
@@ -15,20 +17,20 @@ class _SearchTimeContainerState extends State<SearchTimeContainer> {
     return Container(
         decoration: BoxDecoration(
           color: AppColors.lightVioletColor.withOpacity(0.7),
-          borderRadius: BorderRadius.all(Radius.circular(100)),
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            IconClass.iconButton((){}, "Add new time", Icons.add_alarm),
+            IconClass.iconButton(context, (){}, "add_new_time", Icons.add_alarm),
 
             Text(
-              "Search time",
-              style: TextStyle(fontSize: 16, color: Colors.black),
+                Internationalization.internationalization.getLocalizations(context, "search_time"),
+              style: const TextStyle(fontSize: 16, color: Colors.black),
             ),
 
-            IconClass.iconButton((){}, "More options", Icons.more_vert)
+            IconClass.iconButton(context, (){}, "more_option", Icons.more_vert)
           ],
         ),
     );

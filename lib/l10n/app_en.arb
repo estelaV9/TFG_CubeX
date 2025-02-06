@@ -66,5 +66,101 @@
 
   "plus_two": "+2",
   "plus_two_label": "Plus Two Button",
-  "plus_two_hint": "Indicates a penalty of two seconds added to the time."
+  "plus_two_hint": "Indicates a penalty of two seconds added to the time.",
+
+  "delete_cube_type_label": "Delete Cube Type",
+  "delete_cube_type_hint": "Are you sure you want to delete all your saved times with that cube?",
+  "cube_type_deleted_successful": "Cube type deleted successfully",
+  "cube_type_deletion_failed": "Cube type deletion failed. Please try again.",
+
+  "insert_new_type_label": "Insert a new type",
+  "enter_new_cube_type": "Enter a new cube type",
+  "create_new_cube_type": "Create a new cube type",
+  "select_cube_type": "Select a cube type",
+
+  "add_custom_scramble_label": "Add a custom scramble",
+  "enter_new_scramble": "Enter a new scramble",
+
+  "delete_session_label": "Delete Session",
+  "delete_session_hint": "Are you sure you want to delete all your saved times?",
+  "session_not_found": "Session not found",
+  "session_deleted_successful": "Session deleted successfully",
+  "session_deletion_failed": "Session deletion failed. Please try again.",
+
+  "select_session_label": "Select a session",
+  "create_new_session_label": "Create a new session",
+  "create_new_session_button": "Create a new session button",
+  "create_new_session_hint": "Please enter a name for your new session",
+  "type_session_name": "Type the session name",
+
+  "account_created_successfully": "Account created successfully",
+
+  "accept_label": "Accept",
+  "accept_hint": "Press to accept",
+  "cancel_label": "Cancel",
+  "cancel_hint": "Press to cancel",
+
+  "copied_successfully": "Copied successfully",
+  "copy_scramble": "Copy scramble button",
+
+  "insert_new_type_hint": "Enter a new cube type",
+
+  "new_type_inserted_successful": "The new type was successfully inserted.",
+  "chosen_name_already_exists": "The chosen name already exists.",
+  
+  "add_scramble_empty": "Please add a scramble that isn't empty.",
+  "scramble_added_successful": "Scramble added successful.",
+  "add_session_name_empty": "Please add a session name that isn't empty.",
+  "session_added_successful": "Session added successfully.",
+  "failed_create_session": "Failed to create the session. Please try again.",
+  "incorrect_username_password": "The username or password you entered is incorrect. Please try again.",
+  
+  "error_creating_account": "An error occurred while creating the account.",
+  "account_email_exists": "An account with this email already exists.",
+  "username_already_in_use": "This username is already in use.",
+
+  "general": "General",
+  "timer": "Timer",
+  "app_theme": "App theme",
+  "my_profile": "My profile",
+
+  "championship": "Championship",
+  "versus": "Versus",
+
+  "other": "Other",
+  "settings": "Settings",
+  "about_the_app": "About the app",
+
+  "log_out": "Log out",
+
+  "show_password": "Show password",
+  "hide_password": "Hide password",
+  "github": "My github",
+  "go_github": "Go to the github",
+  "enter_app": "Enter app",
+  "delete_account": "Delete account",
+  "save_data": "Save data",
+  "edit_button": "Edit button",
+
+  "delete_time": "Delete time button",
+  "add_comment": "Add comments button",
+  "add_scramble_manual": "Add scramble manually button",
+  "more_option": "More options button",
+  "add_new_time": "Add new time button",
+  "add_penalty": "Add a penalty button",
+  "date": "Date button",
+  "search_time": "Search time",
+  "choose_session": "Choose session",
+  "choose_cube_type": "Choose cube type",
+
+  "description": "CubeX is an app designed for speedcubers, offering advanced tools to train and improve times.",
+  "open_source": "CubeX is an open-source app",
+  "go_github": "Go to GitHub",
+  "developer": "Main Developer",
+  "version": "Version 1.0.0",
+  "developer_name": "Estela de Vega Martín",
+  "developer_email": "Email: esteladevega.dev9@gmail.com",
+  "tools": "Main Tools",
+  "tools_list": "• Flutter\n• SQLite\n• IntelliJ IDEA",
+  "github": "My GitHub"
 }

@@ -25,16 +25,16 @@ class ScrambleContainerState extends State<ScrambleContainer> {
 
   void logicAddScramble() async {
     // SE MUESTRA UNA ALERTA DE FORMULARIO
-    String? newScramble = await AlertUtil.showAlertForm("Add a custom scramble", "", "Enter a new scramble", context);
+    String? newScramble = await AlertUtil.showAlertForm("add_custom_scramble_label", "add_custom_scramble_label", "enter_new_scramble", context);
     if(newScramble == null){
       // MENSAJE DE ERROR POR SI DEJA EL FORMULARIO VACIO
-      AlertUtil.showSnackBarError(context, "Please add a scramble that isn't empty.");
+      AlertUtil.showSnackBarError(context, "add_scramble_empty");
     } else {
       setState(() {
         scrambleName = newScramble;
       }); // SE SETTEA EL NOMBRE DEL SCRAMBLE AL AÑADIDO
       // SE MUESTRA UN ALERT DE CONFIRMACION
-      AlertUtil.showSnackBarInformation(context, "Scramble added successful");
+      AlertUtil.showSnackBarInformation(context, "scramble_added_successful");
 
       // ESTABLECEMOS EL SCRAMBLE ACTUAL
       final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
@@ -105,8 +105,8 @@ class ScrambleContainerState extends State<ScrambleContainer> {
           Positioned(
               bottom: 10,
               right: 10,
-              child: IconClass.iconButton(logicAddScramble,
-                  "Add scramble manually", Icons.add_circle_outline))
+              child: IconClass.iconButton(context, logicAddScramble,
+                  "add_scramble_manual", Icons.add_circle_outline))
         ],
       ),
     );

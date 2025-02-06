@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         // SI LAS CREDENCIALES FALLAN, SE MUESTRA UNA ALERTA
         AlertUtil.showSnackBarError(context,
-            "The username or password you entered is incorrect. Please try again.");
+            "incorrect_username_password");
       }
     }
   } // FUNCION LOGIN
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             FieldForm(
                               icon:
-                                  IconClass.iconMaker(Icons.person, "Username"),
+                                  IconClass.iconMaker(context, Icons.person, "username"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "username"),
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 10),
                             PasswordFieldForm(
-                              icon: IconClass.iconMaker(Icons.lock, "Password"),
+                              icon: IconClass.iconMaker(context, Icons.lock, "password"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "password"),
@@ -207,8 +207,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: IconClass.iconMaker(
-                                  Icons.arrow_forward, "Enter app")),
+                              child: IconClass.iconMaker(context,
+                                  Icons.arrow_forward, "enter_app")),
                         ],
                       ),
                       const SizedBox(height: 70),

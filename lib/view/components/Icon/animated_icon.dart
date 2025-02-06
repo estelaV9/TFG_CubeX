@@ -3,6 +3,7 @@ import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/cubetype.dart';
+import '../../../utilities/internationalization.dart';
 
 class AnimatedIconWidget extends StatefulWidget {
   final AnimatedIconData animatedIconData;
@@ -36,7 +37,7 @@ class _AnimatedIconWidgetState extends State<AnimatedIconWidget>
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      tooltip: "Choose cube type",
+      tooltip: Internationalization.internationalization.getLocalizations(context, "choose_cube_type"),
       // SE CREA EL ICONO CON UNA ANIMACION DE ABRIR Y CERRAR EL MENU
       icon: AnimatedIcon(
         icon: widget.animatedIconData,
