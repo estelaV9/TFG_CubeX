@@ -125,7 +125,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   if (type == "3x3x3") {
                     // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
                     final currentSession = Provider.of<CurrentSession>(
-                        this.context, listen: false);
+                        this.context,
+                        listen: false);
                     // SE ACTUALIZA EL ESTADO GLOBAL
                     currentSession.setSession(session);
 
@@ -135,7 +136,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
                     final currentCube = Provider.of<CurrentCubeType>(
-                        this.context, listen: false);
+                        this.context,
+                        listen: false);
                     // SE ACTUALIZA EL ESTADO GLOBAL
                     currentCube.setCubeType(cubeType);
 
@@ -171,35 +173,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
               DatabaseHelper.logger
                   .e("Error al pillar el id de tipo de cubo 3x3");
               // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR PORQUE ES NULO
-              AlertUtil.showSnackBarError(this.context,
-                  "error_creating_account");
+              AlertUtil.showSnackBarError(
+                  this.context, "error_creating_account");
             } // VERIFICA SI EL ID DEL TIPO DE CUBO ES NULO
           } else {
             DatabaseHelper.logger.e("Error la obtener el id del usuario");
             // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR AL BUSCAR EL ID
-            AlertUtil.showSnackBarError(
-                this.context, "error_creating_account");
+            AlertUtil.showSnackBarError(this.context, "error_creating_account");
           } // VERIFICAR EL ID DEL USUARIO
         } else {
           // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERRO AL CREAR USUARIO
-          AlertUtil.showSnackBarError(
-              this.context, "error_creating_account");
+          AlertUtil.showSnackBarError(this.context, "error_creating_account");
         } // INSERTAR AL USUARIO
       } else {
         // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
-        AlertUtil.showSnackBarError(
-            this.context, "account_email_exists");
+        AlertUtil.showSnackBarError(this.context, "account_email_exists");
       } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
     } else {
       // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DEL USUARIO YA EXISTE
-      AlertUtil.showSnackBarError(
-          this.context, "username_already_in_use");
+      AlertUtil.showSnackBarError(this.context, "username_already_in_use");
     } // VALIDAR QUE EL NOMBRE DE USUARIO NO EXISTA
   } // SI TODOS LOS CAMPOS DEL FORMULARIO ESTAN CORRECTOS
 //} // METODO PARA CREAR UNA CUENTA
 
   @override
   Widget build(BuildContext context) {
+    // SE OBTIENE EL IDIOMA ACTUAL
+    Locale currentLocale = Localizations.localeOf(context);
+    // SI ES ESPAÑOL, SE BAJA EL TAMAÑO PARA NO CAUSAR OVERFLOW
+    double fontSize = currentLocale.languageCode == 'es' ? 50 : 70;
+    double fontSizeByButton = currentLocale.languageCode == 'es' ? 35 : 45;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -231,24 +235,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       // Sign up
-                      Internationalization.internationalization
-                          .createLocalizedSemantics(
-                        context,
-                        "sign_up_button_label",
-                        "sign_up_button_hint",
-                        "sign_up_button",
-                        const TextStyle(
-                            fontFamily: 'Gluten',
-                            fontSize: 70,
-                            color: AppColors.lightPurpleColor),
-                      ),
+                      Flexible(
+                          child: Container(
+                        // LIMITA EL ANCHO
+                        constraints: const BoxConstraints(maxWidth: 250),
+                        child: Text(
+                          Internationalization.internationalization
+                              .getLocalizations(
+                                  context, "sign_up_button"),
+                          style: TextStyle(
+                              fontFamily: 'Gluten',
+                              fontSize: fontSize,
+                              color: AppColors.lightPurpleColor),
+                          // AÑADE PUNTOS SUSPNESIVOS
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )),
                       const SizedBox(height: 10),
                       Form(
                           key: _formKey,
                           child: Column(children: [
                             FieldForm(
-                              icon:
-                                  IconClass.iconMaker(context, Icons.person, "username"),
+                              icon: IconClass.iconMaker(
+                                  context, Icons.person, "username"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "username"),
@@ -270,7 +280,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             FieldForm(
-                              icon: IconClass.iconMaker(context, Icons.mail, "mail"),
+                              icon: IconClass.iconMaker(
+                                  context, Icons.mail, "mail"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "mail"),
@@ -292,7 +303,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             PasswordFieldForm(
-                              icon: IconClass.iconMaker(context, Icons.lock, "password"),
+                              icon: IconClass.iconMaker(
+                                  context, Icons.lock, "password"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "password"),
@@ -315,8 +327,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 10),
 
                             PasswordFieldForm(
-                              icon: IconClass.iconMaker(context,
-                                  Icons.check, "confirm_password"),
+                              icon: IconClass.iconMaker(
+                                  context, Icons.check, "confirm_password"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(
@@ -340,7 +352,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       context, "confirm_password_hint"),
                             ),
                           ])),
-                      const SizedBox(height: 15),
+
+                      // ANCLAMOS AL FINAL DE LA PANTALLA
+                      Expanded(child: Container()),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -351,9 +365,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "sign_up_button_label",
                             "sign_up_button_hint",
                             "sign_up_button",
-                            const TextStyle(
+                            TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 45,
+                                fontSize: fontSizeByButton,
                                 color: AppColors.darkPurpleColor),
                           ),
                           const SizedBox(width: 14),
@@ -365,8 +379,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: IconClass.iconMaker(context,
-                                  Icons.arrow_forward, "enter_app")),
+                              child: IconClass.iconMaker(
+                                  context, Icons.arrow_forward, "enter_app")),
                         ],
                       ),
                       const SizedBox(height: 15),
