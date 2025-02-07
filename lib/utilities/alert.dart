@@ -1,9 +1,11 @@
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'internationalization.dart';
 
@@ -296,6 +298,34 @@ class AlertUtil {
           );
         });
   } // METODO PARA MOSTRAR DETALLES DEL TIEMPO SELECCIONADO
+
+
+  static showChangeLanguague(BuildContext context, String key,) {
+    // SE MUESTRA EL DIALOG
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: AppColors.lightVioletColor,
+            // TITULO DE LA ALERTA
+            title: Text("Select a language:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Column(
+              // NOS ASEGURAMOS QUE EL TAMAÑO SEA EL MINIMO
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(onPressed: (){
+                  context.read<CurrentLanguage>().cambiarIdioma('es');
+                }, child: Text("Spanish")),
+                TextButton(onPressed: (){
+                  context.read<CurrentLanguage>().cambiarIdioma('en');
+                }, child: Text("English")),
+              ],
+            ),
+          );
+        });
+  } // ALERTA PARA ESTABLECER EL IDOMA
 
   static showSnackBar(
       BuildContext context, IconData icon, String message, Color color) {
