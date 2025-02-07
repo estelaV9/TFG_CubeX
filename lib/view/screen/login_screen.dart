@@ -1,3 +1,5 @@
+import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/icon_image_fieldrow.dart';
@@ -10,6 +12,12 @@ import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/dao/session_dao.dart';
+import '../../data/database/database_helper.dart';
+import '../../model/cubetype.dart';
+import '../../model/session.dart';
+import '../../viewmodel/current_cube_type.dart';
+import '../../viewmodel/current_session.dart';
 import '../components/password_field_row.dart';
 import '../../model/user.dart';
 import '../../view/navigation/bottom_navigation.dart';
@@ -65,6 +73,46 @@ class _LoginScreenState extends State<LoginScreen> {
         final currentUser =
             Provider.of<CurrentUser>(this.context, listen: false);
         currentUser.setUser(newUser); // SE ACTUALIZA EL ESTADO GLOBAL
+
+        // OBTENER EL ID DEL USUARIO
+        int idUser = await userDao.getIdUserFromName(currentUser.user!.username);
+        if (idUser == -1) {
+          DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+        } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+        // SETEAMOS EL ESTADO GLOBAL DEL TIPO DE CUBO Y SESION Y LO
+        // PONEMOS POR DEFECTO AL PRIMER TIPO DE CUBO
+        final cubeTypeDao = CubeTypeDao();
+        // LISTAMOS TODOS LOS TIPOS DE CUBO DEL USUARIO PARA COGER EL PRIMERO
+        List<CubeType> listCube = await cubeTypeDao.getCubeTypes(idUser);
+
+        print(listCube.toString());
+        CubeType? cubeType = listCube[0];
+        // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
+        final currentCube = Provider.of<CurrentCubeType>(
+            this.context,
+            listen: false);
+        // SE ACTUALIZA EL ESTADO GLOBAL
+        currentCube.setCubeType(cubeType);
+
+        if (cubeType.idCube != null) {
+          // EL TIPO DE SESION ES LA DE POR DEFECTO 'Normal'
+          Session session = Session(
+            idUser: idUser,
+            sessionName: "Normal",
+            idCubeType: cubeType.idCube!,
+          ); // CREAMOS LA SESION
+
+          // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
+          final currentSession = Provider.of<CurrentSession>(
+              this.context,
+              listen: false);
+          // SE ACTUALIZA EL ESTADO GLOBAL
+          currentSession.setSession(session);
+        } else {
+          print('deberia controlar que no se pueda eliminar todos los tipos de cubo y todas las sesiones');
+        } // VERIFICAR QUE HAY UN TIPO DE CUBO
+
 
         // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
         ChangeScreen.changeScreen(const BottomNavigation(), context);

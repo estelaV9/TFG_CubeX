@@ -35,12 +35,21 @@ class CubeTypeMenu extends StatefulWidget {
 
 class _CubeTypeMenuState extends State<CubeTypeMenu> {
   CubeTypeDao cubeTypeDao = CubeTypeDao();
+  UserDao userDao = UserDao();
   List<CubeType> cubeTypes = [];
 
   /// Obtiene todos los tipos de cubos desde la base de datos y los carga en la
   /// lista `cubeTypes`.
   void getTotalCubes() async {
-    List<CubeType> result = await cubeTypeDao.getCubeTypes();
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    List<CubeType> result = await cubeTypeDao.getCubeTypes(idUser);
     setState(() {
       cubeTypes = result;
     });
