@@ -162,5 +162,20 @@
   "developer_email": "Email: esteladevega.dev9@gmail.com",
   "tools": "Main Tools",
   "tools_list": "• Flutter\n• SQLite\n• IntelliJ IDEA",
-  "name_github": "estelaV9"
+  "name_github": "estelaV9",
+
+  "time_configuration": "Time Configuration",
+  "account": "Account",
+  "languages": "Languages",
+  "notification": "Notifications",
+  "select_notification": "Select notifications",
+  "select_languages": "Select languages",
+  "configure_timer": "Configure timer",
+
+  "spanish": "Spanish",
+  "spanish_hint": "Select the Spanish language",
+  "english": "English",
+  "english_hint": "Select the English language"
+
+
 }

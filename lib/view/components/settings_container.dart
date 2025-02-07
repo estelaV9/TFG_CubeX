@@ -2,6 +2,8 @@ import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:flutter/material.dart';
 
+import '../../utilities/internationalization.dart';
+
 class SettingsContainer extends StatefulWidget {
   final void Function() functionArrow;
   final IconData icon;

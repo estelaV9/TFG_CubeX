@@ -316,6 +316,30 @@ class Internationalization {
       case 'name_github':
         return l10n.name_github;
 
+      case 'time_configuration':
+        return l10n.time_configuration;
+      case 'account':
+        return l10n.account;
+      case 'languages':
+        return l10n.languages;
+      case 'notification':
+        return l10n.notification;
+      case 'select_notification':
+        return l10n.select_notification;
+      case 'select_languages':
+        return l10n.select_languages;
+      case 'configure_timer':
+        return l10n.configure_timer;
+
+      case 'spanish':
+        return l10n.spanish;
+      case 'spanish_hint':
+        return l10n.spanish_hint;
+      case 'english':
+        return l10n.english;
+      case 'english_hint':
+        return l10n.english_hint;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;
