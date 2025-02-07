@@ -185,6 +185,9 @@
   "add_time_form_label": "Añade el tiempo",
   "add_time_form_hint": "Campo para rellanar con el tiempo",
 
-  "add_time_succesfully": "Se añadio el tiempo correctamente",
-   "add_time_error": "Ocurrio un error al añadir el tiempo"
+  "add_time_successfully": "Se añadio el tiempo correctamente",
+  "add_time_error": "Ocurrio un error al añadir el tiempo",
+
+   "delete_user_successfully": "Se eliminó el usuario correctamente",
+   "delete_user_error": "Ocurrió un error al eliminar usuario"
 }

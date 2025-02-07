@@ -187,6 +187,9 @@
   "add_time_form_label": "Add the time",
   "add_time_form_hint": "Field to fill with the time",
 
-  "add_time_succesfully": "The time was added successfully",
-  "add_time_error": "An error occurred while adding the time"
+  "add_time_successfully": "The time was added successfully",
+  "add_time_error": "An error occurred while adding the time",
+
+  "delete_user_successfully": "The user was deleted successfully",
+  "delete_user_error": "An error occurred while deleting the user"
 }

@@ -115,4 +115,20 @@ class UserDao {
       return "";
     }
   } // METODO PARA DEVOLVER EL MAIL POR NOMBRE DE USUARIO
+
+  Future<bool> deleteUser(int idUser) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // SE ELIMINA EL USUARIO CON EL ID PROPORCIONADO
+      final deleteTime = await db.delete('user',
+          where: 'idUser = ?', whereArgs: [idUser]);
+
+      // DEVUELVE TRUE/FALSE SI SE ELIMINO CORRECTAMENTE O NO
+      return deleteTime > 0;
+    } catch (e) {
+      // RETORNA FALSE Y UN MENSAJE SI OCURRE UN ERROR
+      DatabaseHelper.logger.e("Error al eliminar el usuario: $e");
+      return false;
+    }
+  } // METODO PARA ELIMINAR UN USUARIO POR EL ID DEL TIEMPO
 }
