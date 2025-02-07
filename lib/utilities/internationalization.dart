@@ -358,10 +358,15 @@ class Internationalization {
       case 'add_time_form_hint':
         return l10n.add_time_form_hint;
 
-      case 'add_time_succesfully':
-        return l10n.add_time_succesfully;
+      case 'add_time_successfully':
+        return l10n.add_time_successfully;
       case 'add_time_error':
         return l10n.add_time_error;
+
+      case 'delete_user_successfully':
+        return l10n.delete_user_successfully;
+      case 'delete_user_error':
+        return l10n.delete_user_error;
 
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
