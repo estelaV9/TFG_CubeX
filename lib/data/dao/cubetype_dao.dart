@@ -7,18 +7,21 @@ import '../../model/cubetype.dart';
 /// eliminar o verificar la existencia de tipos de cubos. Utiliza la clase `DatabaseHelper`
 /// para realizar las consultas y operaciones necesarias sobre la base de datos.
 class CubeTypeDao {
-  /// Método que obtiene todos los tipos de cubos desde la base de datos.
+  /// Método que obtiene todos los tipos de cubos desde la base de datos según el ID de usuario.
+  ///
+  /// Parámetros:
+  /// - `idUser`: ID del usuario.
   ///
   /// Realiza una consulta para obtener todos los registros
   /// de la tabla 'cubeType'. Devuelve una lista de objetos `CubeType`.
   ///
   /// Retorna:
   /// - `List<CubeType>`: Lista de todos los tipos de cubos encontrados.
-  Future<List<CubeType>> getCubeTypes() async {
+  Future<List<CubeType>> getCubeTypes(int idUser) async {
     final db = await DatabaseHelper.database;
     try {
       // CONSULTA PARA OBTENER TODOS LOS TIPOS DE CUBOS
-      final result = await db.query('cubeType');
+      final result = await db.query('cubeType', where: 'idUser = ?', whereArgs: [idUser]);
       // MAPEAR LOS RESULTADOS A UNA LISTA DE OBJETOS CubeType
       return result
           .map((map) => CubeType(
