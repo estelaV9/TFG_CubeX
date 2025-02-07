@@ -1,12 +1,22 @@
+import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../data/dao/user_dao.dart';
+import '../data/database/database_helper.dart';
+import '../model/cubetype.dart';
+import '../model/session.dart';
+import '../viewmodel/current_user.dart';
 import 'internationalization.dart';
 
 class AlertUtil {
@@ -116,6 +126,131 @@ class AlertUtil {
     );
   } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO
 
+  static Future<String?> showAlertFormAddTime(
+      String titleKey,
+      String addScrambleKey,
+      String addTimeKey,
+      String scrambleLabelText,
+      String timeLabelText,
+      BuildContext context) async {
+    final TextEditingController controllerScramble = TextEditingController();
+    final TextEditingController controllerTime = TextEditingController();
+    final cubeTypeDao = CubeTypeDao();
+    final sessionDao = SessionDao();
+    final userDao = UserDao();
+    final timeTrainingDao = TimeTrainingDao();
+
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    // BUSCAMOS EL TIPO DE CUBO QUE YA ESTABA ESTABLECIDO
+    final tipoCuboEstablecido = context.read<CurrentCubeType>().cubeType;
+    final currentSession = context.read<CurrentSession>().session;
+    final cubo =
+        await cubeTypeDao.cubeTypeDefault(tipoCuboEstablecido!.cubeName);
+
+    // BUSCAMOS EL TIPO DE CUBO QUE TIENE ESA SESION
+    Session? sessionTipoActual = await sessionDao.getSessionByUserCubeName(
+        idUser, currentSession!.sessionName, cubo.idCube);
+
+    // CUANDO SELECCIONE UNA SESION, SE BUSCA EL TIPO DE CUBO DE ESA SESION
+    // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
+    final currentCube = Provider.of<CurrentCubeType>(context, listen: false);
+
+    // SE BUSCA ESE TIPO DE CUBO POR ESE ID
+    CubeType? cubeType =
+        await cubeTypeDao.getCubeById(sessionTipoActual!.idCubeType);
+    if (cubeType.idCube != -1) {
+      // SE ACTUALIZA EL ESTADO GLOBAL
+      currentCube.setCubeType(cubeType);
+    } else {
+      DatabaseHelper.logger
+          .e("No se encontro el tipo de cubo: ${cubeType.toString()}");
+    } // SE VERIFICA QUE SE HA RETORNADO EL TIPO DE CUBO CORRECTAMENTE
+
+    // MOSTRAR EL DIALOG
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Internationalization.internationalization
+              .createLocalizedSemantics(
+            context,
+            '${titleKey}_label',
+            '${titleKey}_hint',
+            '${titleKey}_label',
+            const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // AJUSTE DE TAMAÑO DEL CONTENIDO
+            children: [
+              TextField(
+                controller: controllerScramble,
+                decoration: InputDecoration(
+                  labelText: Internationalization.internationalization
+                      .getLocalizations(context, scrambleLabelText),
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextField(
+                controller: controllerTime,
+                decoration: InputDecoration(
+                  labelText: Internationalization.internationalization
+                      .getLocalizations(context, timeLabelText),
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async{
+                String scramble = controllerScramble.text.trim();
+                String time = controllerTime.text.trim();
+                if (scramble.isNotEmpty && time.isNotEmpty) {
+                  TimeTraining timeTraining = TimeTraining(
+                      idSession: sessionTipoActual.idSession,
+                      scramble: scramble,
+                      timeInSeconds: double.parse(time));
+
+                  // INSERTAR EL TIEMPO
+                  bool isInsert = await timeTrainingDao.insertNewTime(timeTraining);
+                  if(isInsert){
+                    // SI SE INSERTO CORRECTAMENTE SE MUESTRA UN SNACKBAR
+                    AlertUtil.showSnackBarInformation(context, "add_time_succesfully");
+                  } else {
+                    // SI SE INSERTO CORRECTAMENTE SE MUESTRA UN SNACKBAR
+                    AlertUtil.showSnackBarInformation(context, "add_time_error");
+                  } // VERIFICAR SI SE INSERTA EL TIEMPO CORRECTAMENTE
+                  Navigator.of(context).pop(); // CIERRA EL DIALOG
+                } else {
+                  Navigator.of(context).pop(); // SE ESTA VACIO, NO RETORNA NADA
+                }
+              },
+              child: Internationalization.internationalization
+                  .createLocalizedSemantics(
+                context,
+                'accept_label',
+                'accept_hint',
+                'accept_label',
+                const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO PARA AÑADIR UN TIEMPO
+
   static showDeleteSessionOrCube(
       BuildContext context, String key, String contentKey, Function delete) {
     // SE MUESTRA EL DIALOG
@@ -174,8 +309,8 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA DE SI DESEA ELIMINAR LA SESION O EL TIPO DE CUBO
 
-  static showDetailsTime(
-      BuildContext context, Future<void> Function() deleteTime, TimeTraining timeTraining) {
+  static showDetailsTime(BuildContext context,
+      Future<void> Function() deleteTime, TimeTraining timeTraining) {
     var colorPressed = AppColors.purpleButton;
     var isTextPressed = false;
     // SE MUESTRA EL DIALOG
@@ -204,8 +339,9 @@ class AlertUtil {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                IconClass.iconButton(
-                    context, () async { await deleteTime(); }, "delete_time", Icons.delete)
+                IconClass.iconButton(context, () async {
+                  await deleteTime();
+                }, "delete_time", Icons.delete)
               ],
             ),
             content: Column(

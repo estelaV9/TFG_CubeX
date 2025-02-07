@@ -1,3 +1,5 @@
+import 'package:esteladevega_tfg_cubex/model/time_training.dart';
+import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,9 @@ class _SearchTimeContainerState extends State<SearchTimeContainer> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            IconClass.iconButton(context, (){}, "add_new_time", Icons.add_alarm),
+            IconClass.iconButton(context, (){
+              AlertUtil.showAlertFormAddTime("add_time", "add_scramble_form", "add_time_form", "add_scramble_form_label", "add_time_form_label", context);
+            }, "add_new_time", Icons.add_alarm),
 
             Text(
                 Internationalization.internationalization.getLocalizations(context, "search_time"),
