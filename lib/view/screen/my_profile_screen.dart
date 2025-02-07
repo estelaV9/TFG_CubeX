@@ -1,7 +1,14 @@
+import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/icon_image_fieldrow.dart';
 import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
+import 'package:provider/provider.dart';
+import '../../data/database/database_helper.dart';
+import '../../viewmodel/current_user.dart';
 import '../components/Icon/icon.dart';
 import '../components/password_field_row.dart';
 import '../../utilities/internationalization.dart';
@@ -20,12 +27,36 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   String _password = ''; // ATRIBUTO PARA GUARDAR LA CONTRASEÑA
+  UserDao userDao = UserDao();
+
+  void deleteUser() async {
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    bool isDelete = await userDao.deleteUser(idUser);
+
+    if (isDelete) {
+      // SI SE ELIMINA CORRECTAMENTE MUESTRA UN MENSAJE Y SE CIERRA LA SESION
+      AlertUtil.showSnackBarInformation(context, "delete_user_successfully");
+      // CIERRA LA SESION Y VA A LA PANTALLA DEL LOGIN
+      ChangeScreen.changeScreen(const LoginScreen(), context);
+    } else {
+      // SI HAY UN ERROR SE MUESTRA UN MENSAJE
+      AlertUtil.showSnackBarInformation(context, "delete_user_error");
+    } // VALIDA SI SE ELIMINA CORRECTAMENTE EL USUARIO
+  } // METODO PARA ELIMINAR EL USUARIO
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Internationalization.internationalization.getLocalizations(context, "my_profile")),
+        title: Text(Internationalization.internationalization
+            .getLocalizations(context, "my_profile")),
         backgroundColor: AppColors.lightVioletColor,
       ),
       body: Container(
@@ -68,7 +99,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           radius: 18,
                           // FONDO BLACNO DEL ICONO
                           backgroundColor: Colors.white,
-                          child: IconClass.iconMaker(context, Icons.edit, "edit_button"),
+                          child: IconClass.iconMaker(
+                              context, Icons.edit, "edit_button"),
                         ),
                       ),
                     ),
@@ -81,12 +113,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
               Align(
                   alignment: Alignment.centerRight,
-                  child: IconClass.iconMaker(context, Icons.save, "save_data", 30)),
+                  child: IconClass.iconMaker(
+                      context, Icons.save, "save_data", 30)),
               const SizedBox(height: 10),
               Form(
                   child: Column(children: [
                 FieldForm(
-                    icon: IconClass.iconMaker(context, Icons.person, "username"),
+                    icon:
+                        IconClass.iconMaker(context, Icons.person, "username"),
                     labelText: Internationalization.internationalization
                         .getLocalizations(context, "username"),
                     hintText: Internationalization.internationalization
@@ -141,7 +175,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 const SizedBox(height: 10),
 
                 PasswordFieldForm(
-                    icon: IconClass.iconMaker(context, Icons.check, "Confirm confirm_password"),
+                    icon: IconClass.iconMaker(
+                        context, Icons.check, "confirm_password"),
                     labelText: Internationalization.internationalization
                         .getLocalizations(context, "confirm_password"),
                     hintText: Internationalization.internationalization
@@ -188,20 +223,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          IconClass.iconMaker(context, Icons.delete, "delete_account"),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Text(
-                            "Delete account",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: AppColors.darkPurpleColor,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ],
+                      child: GestureDetector(
+                        onTap: deleteUser,
+                        child: Row(
+                          children: [
+                            IconClass.iconMaker(
+                                context, Icons.delete, "delete_account"),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "Delete account",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.darkPurpleColor,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
