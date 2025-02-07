@@ -5,10 +5,24 @@ import 'package:flutter/material.dart';
 import '../../../model/cubetype.dart';
 import '../../../utilities/internationalization.dart';
 
+/// Icono animado.
+///
+/// Esta clase representa un widget que muestra un `IconButton` animado. Al hacer clic
+/// en el icono, se muestra un menú con opciones para seleccionar el tipo de cubo.
+///
+/// El icono se anima para abrir y cerrar el menú.
 class AnimatedIconWidget extends StatefulWidget {
+  /// El tipo de icono animado que se usará para el botón.
   final AnimatedIconData animatedIconData;
+
+  /// Función que se ejecuta cuando se selecciona un tipo de cubo.
   final void Function(CubeType selectedCubeType) onCubeTypeSelected;
 
+  /// Constructor de la clase.
+  ///
+  /// - `animatedIconData`: El tipo de icono animado que se mostrará.
+  /// - `onCubeTypeSelected`: La función que se ejecutará cuando el usuario
+  /// seleccione un tipo de cubo.
   const AnimatedIconWidget({
     super.key,
     required this.animatedIconData,

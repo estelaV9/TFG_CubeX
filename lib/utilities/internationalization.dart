@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+/// Clase encargada de gestionar la **internacionalización** de la aplicación.
+///
+/// Esta clase permite la traducción de textos según el idioma seleccionado por el usuario.
+/// A través de esta clase se accede a los textos localizados en la aplicación.
+/// Se utiliza principalmente para gestionar la creación de textos traducidos en los
+/// widgets de la UI.
+///
+/// También incluye soporte para la accesibilidad, proporcionando una integración
+/// con los `semantics` para mejorar la experiencia de los usuarios con discapacidades.
 class Internationalization {
   static Internationalization internationalization = Internationalization();
 
+  /// Crea un widget `Semantics` con el texto traducido y accesibilidad.
+  ///
+  /// Este método genera un widget `Semantics` que incluye las traducciones
+  /// correspondientes a los parámetros proporcionados (etiqueta)
+  /// y representa con un `Text()` con estilos.
+  ///
+  /// [context] El contexto para obtener las traducciones.
+  /// [label] La clave de la etiqueta de accesibilidad.
+  /// [hint] La clave del hint de accesibilidad.
+  /// [l10nKey] La clave para obtener la traducción del texto mostrado.
+  /// [style] El estilo del texto.
   Semantics createLocalizedSemantics(BuildContext context, String label,
       String hint, String l10nKey, TextStyle style) {
     // OBTIENE LAS TRADUCCIONES DEL CONTEXTO
@@ -16,7 +36,17 @@ class Internationalization {
     );
   } // METODO PARA GENERAR UN SEMANTICS CON UN TEXTO PARA LA INTERNALIONALIZACION
 
+  /// Obtiene la traducción para una clave específica.
+  ///
+  /// Este método busca la traducción correspondiente a la clave proporcionada
+  /// dentro de las traducciones localizadas.
+  ///
+  /// [l10n] El objeto de localización que contiene las traducciones.
+  /// [key] La clave para buscar la traducción.
+  ///
+  /// Retorna el texto traducido o la clave si no se encuentra la traducción.
   String _getLocalizedString(AppLocalizations l10n, String key) {
+    // (igual es buena idea meterlo en un mapa)
     switch (key) {
       case 'cube_x':
         return l10n.cube_x;
@@ -374,6 +404,14 @@ class Internationalization {
     } // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
   } // METODO QUE OBTIENE LA TRADUCCION SEGUN LA CLASE (metodo axuliar)
 
+
+  /// Devuelve solo el texto traducido de la clave proporcionada.
+  ///
+  /// Este método se utiliza cuando solo quieres obtener la traducción sin
+  /// utilizar un widget `Semantics` completo.
+  ///
+  /// [context] El contexto para obtener las traducciones.
+  /// [key] La clave para obtener la traducción.
   String getLocalizations(BuildContext context, String key) {
     // OBTIENE LAS TRADUCCIONES DEL CONTEXTO
     final l10n = AppLocalizations.of(context)!;

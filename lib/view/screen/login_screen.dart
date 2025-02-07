@@ -16,6 +16,12 @@ import '../../view/navigation/bottom_navigation.dart';
 import '../../viewmodel/current_user.dart';
 import '../../utilities/internationalization.dart';
 
+/// Pantalla de inicio de sesión.
+///
+/// Esta pantalla permite a los usuarios iniciar sesión en la aplicación utilizando
+/// su nombre de usuario o correo electrónico y su contraseña. Si las credenciales
+/// son correctas, se redirige al usuario a la pantalla principal. Si las credenciales
+/// son incorrectas, se muestra una alerta de error.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -34,6 +40,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   String _password = '';
 
+  /// Método encargado de validar las credenciales de inicio de sesión.
+  ///
+  /// Valida el formulario, encripta la contraseña ingresada, y verifica si las
+  /// credenciales (nombre de usuario/correo electrónico y contraseña) son correctas.
+  ///
+  /// Si las credenciales son válidas, actualiza el estado global con los datos del
+  /// usuario y redirige a la pantalla principal. Si son incorrectas, muestra un mensaje
+  /// de error.
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       final usernameOrEmail = _usernameController.text;

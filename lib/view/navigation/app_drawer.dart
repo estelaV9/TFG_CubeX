@@ -13,6 +13,12 @@ import 'package:provider/provider.dart';
 import '../../viewmodel/current_user.dart';
 import '../../view/navigation/bottom_navigation.dart';
 
+/// Widget que representa el `Drawer` (menú lateral) de la aplicación.
+///
+/// El `AppDrawer` contiene información sobre el usuario, su avatar y correo,
+/// y un conjunto de opciones que redirigen a diferentes pantallas de la aplicación.
+/// Las opciones están localizadas, lo que significa que se ajustan según el idioma
+/// seleccionado en la aplicación.
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
 
@@ -25,12 +31,21 @@ class _AppDrawerState extends State<AppDrawer> {
   UserDao userDao = UserDao();
   String mail = "";
 
+  /// Método para obtener el nombre del usuario actualmente logueado.
+  ///
+  /// Obtiene el nombre del usuario desde el estado actual del contexto de la aplicación.
+  /// Si el usuario no está definido, se devuelve "error".
   String returnName() {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;
     return currentUser?.username ?? "error";
   } // METODO PARA RETORNAR EL NOMBRE DEL USUARIO QUE ACCEDIO
 
+  /// Método para obtener el correo electrónico del usuario.
+  ///
+  /// Utiliza el `UserDao` para obtener el correo del usuario desde la base de datos.
+  /// Luego, actualiza el estado con el correo del usuario. Si el correo es vacío,
+  /// se muestra un mensaje de error en los logs.
   void returnMail() async {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;
@@ -49,6 +64,15 @@ class _AppDrawerState extends State<AppDrawer> {
     returnMail();
   }
 
+  /// Método para generar un `ListTile` con un ícono, texto y una pantalla de destino.
+  ///
+  /// Este método sirve para evitar la duplicación de código al crear las opciones
+  /// del menú lateral. Al pasar un ícono, texto y destino, genera un `ListTile` con un hover
+  /// que cambia de pantalla al ser tocado.
+  ///
+  /// @param icon El ícono que representa la opción.
+  /// @param text La clave del texto que será traducido.
+  /// @param nameScreen La pantalla a la que se redirige al tocar la opción.
   Widget listTileGenerator(IconData icon, String text, Widget nameScreen) {
     bool isHovered = false; // ESTADO PARA DETECTAR EL HOVER
     // 'StatefulBuilder' PARA MANTENER EL ESTADO LOCAL EN CADA LISTTILE
@@ -96,6 +120,13 @@ class _AppDrawerState extends State<AppDrawer> {
     });
   } // METODO QUE DEVUELVA UN LISTTILE Y ASI NO DUPLICAR CODIGO
 
+  /// Método para generar un `Text` que actúa como título de una sección en el Drawer,
+  /// evitando así, la duplicación de código.
+  ///
+  /// Este método se encarga de mostrar los títulos de las secciones en el Drawer
+  /// (por ejemplo, "Opciones generales", "Versus", etc.), localizados según el idioma.
+  ///
+  /// @param text La clave del texto a mostrar como título.
   Padding textTitleListTile(String text) {
     return Padding(
       padding: const EdgeInsets.only(left: 20.0),

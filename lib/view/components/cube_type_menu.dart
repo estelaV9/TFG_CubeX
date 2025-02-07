@@ -13,9 +13,18 @@ import '../../viewmodel/current_cube_type.dart';
 import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_user.dart';
 
+/// Componente de menú para seleccionar un tipo de cubo.
+///
+/// Este componente permite al usuario seleccionar entre diferentes tipos de cubos
+/// o crear un nuevo tipo de cubo. Además, permite la gestión de los tipos de cubos
+/// como la creación, selección y eliminación de los tipos de cubos.
+///
+/// Se utiliza en un contexto de base de datos para gestionar los
+/// tipos de cubos y las sesiones asociadas a estos.
 class CubeTypeMenu extends StatefulWidget {
-  // FUNCION PARA ENVIAR EL TIPO DE CUBO SELECCIONADO AL COMPONENTE QUE CREA
-  // EL CubeTypeMenu
+  /// Función de devolución de llamada que se ejecuta cuando se selecciona un tipo de cubo.
+  ///
+  /// El tipo de cubo seleccionado se pasa como argumento a la función.
   final void Function(CubeType selectedCubeType) onCubeTypeSelected;
 
   const CubeTypeMenu({super.key, required this.onCubeTypeSelected});
@@ -28,6 +37,8 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
   CubeTypeDao cubeTypeDao = CubeTypeDao();
   List<CubeType> cubeTypes = [];
 
+  /// Obtiene todos los tipos de cubos desde la base de datos y los carga en la
+  /// lista `cubeTypes`.
   void getTotalCubes() async {
     List<CubeType> result = await cubeTypeDao.getCubeTypes();
     setState(() {
@@ -35,6 +46,12 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     });
   } // METODO PARA SETTEAR EL NUMERO DE TIPOS DE CUBOS
 
+  /// Inserta un nuevo tipo de cubo en la base de datos.
+  ///
+  /// Si el nombre del tipo de cubo no existe, lo inserta y recarga la lista de
+  /// tipos de cubos.
+  ///
+  /// Se muestra un `SnackBar` si se insertó correctamente o no.
   Future<void> insertNewType(String name, int idUser) async {
     if (!await cubeTypeDao.isExistsCubeTypeName(name)) {
       if (await cubeTypeDao.insertNewType(name, idUser)) {

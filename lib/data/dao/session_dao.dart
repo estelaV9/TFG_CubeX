@@ -2,7 +2,22 @@ import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 
 import '../../model/session.dart';
 
+/// Clase encargada de gestionar las operaciones CRUD sobre las **sesiones**.
+///
+/// Esta clase permite interactuar con la base de datos para obtener, insertar,
+/// eliminar o verificar la existencia de sesiones. Utiliza la clase `DatabaseHelper`
+/// para realizar las consultas y operaciones necesarias sobre la base de datos.
 class SessionDao {
+  /// Método para insertar una nueva sesión en la base de datos.
+  ///
+  /// Este método recibe un objeto [Session] que contiene los detalles de la sesión a insertar,
+  /// como el [idUser], [sessionName], [idCubeType], y [creationDate].
+  ///
+  /// Parámetros:
+  /// - `session`: Objeto de tipo [Session] que contiene los datos de la sesión a insertar.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si la inserción fue exitosa, `false` si ocurrió un error.
   Future<bool> insertSession(Session session) async {
     final db = await DatabaseHelper.database;
     try {
@@ -24,6 +39,12 @@ class SessionDao {
     }
   } // METODO PARA INSERTAR UNA SESSION
 
+  /// Método que obtiene todas las sesiones de la base de datos.
+  ///
+  /// Realiza una consulta a la tabla `sessionTime` y mapea los resultados a una lista de objetos [Session].
+  ///
+  /// Retorna:
+  /// - `List<Session>`: Lista de todas las sesiones encontradas en la base de datos.
   Future<List<Session>> sessionList() async {
     final db = await DatabaseHelper.database;
     try {
@@ -47,6 +68,16 @@ class SessionDao {
     }
   } // METODO QUE DEVUELVE LAS SESIONES QUE HAY
 
+  /// Método para verificar si existe una sesión con un nombre específico.
+  ///
+  /// Este método realiza una consulta en la base de datos para verificar si ya existe una sesión
+  /// con el nombre proporcionado en la tabla `sessionTime`.
+  ///
+  /// Parámetros:
+  /// - `name`: Nombre de la sesión a verificar.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si la sesión ya existe, `false` si no existe.
   Future<bool> isExistsSessionName(String name) async {
     final db = await DatabaseHelper.database;
     try {
@@ -67,7 +98,16 @@ class SessionDao {
     }
   } // METODO PARA BUSCAR SI EL NOMBRE DE LA SESION YA EXISTE
 
-
+  /// Método que obtiene todas las sesiones de un usuario específico.
+  ///
+  /// Este método recibe un [idUser] (ID del usuario) y devuelve todas las sesiones asociadas
+  /// a ese usuario desde la base de datos.
+  ///
+  /// Parámetros:
+  /// - `idUser`: ID del usuario cuyo sesiones se desean obtener.
+  ///
+  /// Retorna:
+  /// - `List<Session>`: Lista de sesiones asociadas al usuario.
   Future<List<Session>> getSessionOfUser(int idName) async {
     final db = await DatabaseHelper.database;
     List<Session> sessionError = [];
@@ -96,6 +136,15 @@ class SessionDao {
     }
   } // METODO PARA OBTENER LAS SESSIONES DE UN USUARIO
 
+  /// Método para eliminar una sesión por su ID.
+  ///
+  /// Este método elimina una sesión específica de la base de datos utilizando el [idSession].
+  ///
+  /// Parámetros:
+  /// - `idSession`: ID de la sesión a eliminar.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si la sesión fue eliminada correctamente, `false` si ocurrió un error.
   Future<bool> deleteSession(int idSession) async {
     final db = await DatabaseHelper.database;
     try {
@@ -111,6 +160,16 @@ class SessionDao {
     }
   } // METODO PARA ELIMINAR UNA SESION
 
+  /// Método para buscar el ID de una sesión a partir del nombre y ID del usuario.
+  ///
+  /// Este método busca el [idSession] utilizando el [idUser] y [sessionName].
+  ///
+  /// Parámetros:
+  /// - `idUser`: ID del usuario.
+  /// - `sessionName`: Nombre de la sesión.
+  ///
+  /// Retorna:
+  /// - `int`: El [idSession] encontrado, o `-1` si no se encuentra la sesión.
   Future<int> searchIdSessionByNameAndUser(
       int idUser, String sessionName) async {
     final db = await DatabaseHelper.database;
@@ -132,7 +191,17 @@ class SessionDao {
     }
   } // METODO PARA BUSCAR EL ID DE LA SESION POR EL NOMBRE DE LA SESION Y ID USUARIO
 
-
+  /// Método para obtener una sesión específica por el ID de usuario y el nombre de la sesión.
+  ///
+  /// Este método obtiene una sesión asociada a un usuario específico utilizando el [idUser]
+  /// y el [sessionName].
+  ///
+  /// Parámetros:
+  /// - `idUser`: ID del usuario.
+  /// - `sessionName`: Nombre de la sesión.
+  ///
+  /// Retorna:
+  /// - `Session?`: Objeto [Session] encontrado, o `null` si no se encuentra la sesión.
   Future<Session?> getSessionByUserAndName(int idUser, String sessionName) async {
     final db = await DatabaseHelper.database;
     try {
@@ -167,7 +236,17 @@ class SessionDao {
     }
   } // METODO QUE DEVUELVE UNA SESION POR ID DE USUARIO Y NOMBRE DE LA SESION
 
-
+  /// Método para buscar las sesiones asociadas a un tipo de cubo y un usuario específico.
+  ///
+  /// Este método recibe el [idUser] y [idCubeType], y retorna todas las sesiones
+  /// correspondientes a esos parámetros.
+  ///
+  /// Parámetros:
+  /// - `idUser`: ID del usuario.
+  /// - `idCubeType`: ID del tipo de cubo.
+  ///
+  /// Retorna:
+  /// - `List<Session>`: Lista de sesiones asociadas al usuario y tipo de cubo.
   Future<List<Session>> searchSessionByCubeAndUser(
       int idUser, int idCubeType) async {
     final db = await DatabaseHelper.database;
@@ -196,6 +275,18 @@ class SessionDao {
     }
   } // METODO PARA BUSCAR EL ID DE LA SESION POR EL NOMBRE DE LA SESION Y ID USUARIO
 
+  /// Método para obtener una sesión específica utilizando el ID de usuario, el nombre de la sesión y el tipo de cubo.
+  ///
+  /// Este método devuelve una sesión asociada a un usuario y un tipo de cubo específico, buscando
+  /// por el [idUser], [sessionName] y [idCubeType].
+  ///
+  /// Parámetros:
+  /// - `idUser`: ID del usuario.
+  /// - `sessionName`: Nombre de la sesión.
+  /// - `idCubeType`: ID del tipo de cubo.
+  ///
+  /// Retorna:
+  /// - `Session?`: Objeto [Session] encontrado, o `null` si no se encuentra la sesión.
   Future<Session?> getSessionByUserCubeName(
       int idUser, String sessionName, int? idCubeType) async {
     final db = await DatabaseHelper.database;

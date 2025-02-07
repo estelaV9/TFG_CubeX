@@ -1,4 +1,25 @@
+/// Clase que se utiliza para la **validación de campos** en formularios.
+///
+/// Proporciona métodos estáticos para validar:
+/// - Contraseñas.
+/// - Confirmación de contraseñas.
+/// - Nombres de usuario.
+/// - Correos electrónicos.
+/// - Combinación de nombres de usuarios y correos.
+/// Su objetivo es evitar la repetición del código de validación en diferentes pantallas de la aplicación.
 class Validator {
+  /// Validar el campo de contraseña.
+  ///
+  /// - [value]: La contraseña ingresada por el usuario.
+  ///
+  /// Retorna un mensaje de error si la contraseña no cumple con:
+  /// - No estar vacía.
+  /// - Tener al menos 8 caracteres.
+  /// - No contener espacios en blanco.
+  /// - Incluir al menos un carácter especial.
+  /// - Incluir al menos un número.
+  ///
+  /// Retorna `null` si la validación es exitosa.
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please fill in this field.';
@@ -23,6 +44,15 @@ class Validator {
     return null;
   } // VALIDACION PARA EL CAMPO DE CONTRASEÑA
 
+  /// Validar la confirmación de la contraseña.
+  ///
+  /// - [value]: La contraseña de confirmación ingresada.
+  /// - [password]: La contraseña original con la que se debe comparar.
+  ///
+  /// Realiza las mismas validaciones que `validatePassword` y, adicionalmente,
+  /// verifica que ambas contraseñas coincidan.
+  ///
+  /// Retorna un mensaje de error si la validación falla o `null` si es exitosa.
   static String? validateConfirmPassword(String? value, String password) {
     if (value == null || value.isEmpty) {
       return 'Please fill in this field.';
@@ -51,6 +81,14 @@ class Validator {
     return null;
   } // VALIDACION PARA CONFIRMAR EL CAMPO DE CONTRASEÑA
 
+  /// Validar un campo que puede ser un nombre de usuario o un correo electrónico.
+  ///
+  /// - [value]: El valor ingresado por el usuario.
+  ///
+  /// Si contiene un '@', se valida como correo electrónico.
+  /// Si no, se verifica que el nombre de usuario no exceda los 12 caracteres.
+  ///
+  /// Retorna un mensaje de error si la validación falla o `null` si es exitosa.
   static String? validateUsernameOrEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please fill in this field.';
@@ -69,6 +107,13 @@ class Validator {
     return null;
   } // VALIDACION PARA EL CAMPO DEL NOMBRE E EMAIL DEL USUARIO
 
+  /// Validar un correo electrónico.
+  ///
+  /// - [value]: El correo electrónico ingresado por el usuario.
+  ///
+  /// Verifica que el campo no esté vacío y que el formato sea válido.
+  ///
+  /// Retorna un mensaje de error si la validación falla o `null` si es exitosa.
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please fill in this field.';
@@ -82,6 +127,13 @@ class Validator {
     return null;
   } // VALIDACION PARA EL CAMPO DEL EMAIL DEL USUARIO
 
+  /// Validar un nombre de usuario.
+  ///
+  /// - [value]: El nombre de usuario ingresado por el usuario.
+  ///
+  /// Verifica que el campo no esté vacío y que no exceda los 12 caracteres.
+  ///
+  /// Retorna un mensaje de error si la validación falla o `null` si es exitosa.
   static String? validateUsername(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please fill in this field.';

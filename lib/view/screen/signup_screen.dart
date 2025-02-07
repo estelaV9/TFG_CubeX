@@ -23,6 +23,16 @@ import '../components/password_field_row.dart';
 import '../../viewmodel/current_user.dart';
 import '../../utilities/internationalization.dart';
 
+/// Pantalla de registro de usuario.
+///
+/// Esta pantalla permite a los usuarios crear una cuenta en la aplicación.
+///
+/// Solicita el nombre de usuario, el correo electrónico, la contraseña y la confirmación de esa contraseña.
+/// Valida los datos ingresados, y si son correctos, crea un nuevo usuario
+/// y lo guarda en la base de datos.
+///
+/// Se configura unos tipos de cubos por defecto con su respectiva sesión por defecto 'Normal'
+/// por cada usuario.
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -41,6 +51,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  /// Método encargado de registrar un nuevo usuario.
+  ///
+  /// Valida los campos del formulario, encripta la contraseña y guarda los datos
+  /// del usuario en la base de datos.
+  /// Si la creación es exitosa, configura una sesión por defecto y crea los tipos de
+  /// cubos asociados al usuario.
+  /// Además, maneja la navegación hacia la pantalla principal y muestra mensajes de
+  /// éxito o error.
   Future<void> _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
       // EJECUTA LAS FUNCIONES onSvaed DE LOS CAMPOS DEL FORMULARIO PORQUE

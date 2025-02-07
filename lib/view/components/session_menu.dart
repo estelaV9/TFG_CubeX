@@ -17,6 +17,10 @@ import '../../viewmodel/current_statistics.dart';
 import '../../viewmodel/current_user.dart';
 import '../screen/timer_screen.dart';
 
+/// Menú de sesión.
+///
+/// Esta clase muestra el menú de sesiones de ese tipo de cubo para el usuario.
+/// Permite seleccionar una sesión existente o crear una nueva sesión.
 class SessionMenu extends StatefulWidget {
   // FUNCION PARA ENVIAR LA SESION SELECCIONADA AL COMPONENTE QUE CREA
   // EL SessionMenu
@@ -32,6 +36,7 @@ class SessionMenu extends StatefulWidget {
 }
 
 class _SessionMenuState extends State<SessionMenu> {
+  /// Lista de sesiones asociadas al usuario y al tipo de cubo.
   List<Session> sessions = [];
   SessionDao sessionDao = SessionDao();
   UserDao userDao = UserDao();
@@ -39,36 +44,13 @@ class _SessionMenuState extends State<SessionMenu> {
   TimeTrainingDao timeTrainingDao = TimeTrainingDao();
   String sessionName = "";
 
-  Future<void> getSessionOfUser() async {
-    // OBTENEMOS LOS DATOS DEL USUARIO
-    final currentUser = context.read<CurrentUser>().user;
-
-    if (currentUser != null) {
-      // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
-      int idUser = await userDao.getIdUserFromName(currentUser.username);
-      // BUSCAR SESION POR ID DE USUARIO
-      List<Session> result = await sessionDao.getSessionOfUser(idUser);
-
-      if (result.isNotEmpty) {
-        setState(() {
-          sessions = result;
-        });
-      } else {
-        // MENSAJE INTERNO DE ERROR
-        DatabaseHelper.logger.e("Lista de sesiones nula");
-      }
-    } else {
-      // MENSAJE INTERNO DE ERROR
-      DatabaseHelper.logger.e("Current user nulo");
-    }
-  } // METODO PARA SETTEAR EL NUMERO DE SESIONES DE UN USUARIO
-
   @override
   void initState() {
     super.initState();
     sessionList();
   }
 
+  /// Filtra las sesiones por el tipo de cubo y las obtiene para el usuario actual.
   void sessionList() async {
     // OBTENEMOS EL CUBO SELECCIONADO
     CubeType? selectedCubeType = context.read<CurrentCubeType>().cubeType;
@@ -105,6 +87,7 @@ class _SessionMenuState extends State<SessionMenu> {
     super.dispose();
   }
 
+  /// Método para crear una nueva sesión y agregarla a la base de datos.
   void createNewSession() async {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;

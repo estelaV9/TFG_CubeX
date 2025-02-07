@@ -1,13 +1,32 @@
+/// Clase que representa un tiempo en una sesión.
 class TimeTraining {
+  /// Identificador único del tiempo (opcional).
   final int? idTimeTraining;
+
+  /// Identificador de la sesión asociada.
   final int? idSession;
+
+  /// Scramble utilizado para la resolución del tiempo.
   final String scramble;
+
+  /// Tiempo registrado en segundos.
   final double timeInSeconds;
-  final String? comments; // POR DEFECTO SERA NULO
-  final String? penalty; // POR DEFECTO SERA "none"
+
+  /// Comentarios adicionales sobre el tiempo registrado (opcional).
+  final String? comments;
+
+  /// Penalización asociada al tiempo (por defecto "none").
+  ///
+  /// La penalización podrá ser:
+  /// - None.
+  /// - DNF (Did Not Finish).
+  /// - +2.
+  final String? penalty;
+
+  /// Fecha de registro del tiempo.
   final String registrationDate;
 
-  // CONSTRUCTOR
+  /// Constructor para inicializar un tiempo de entrenamiento.
   TimeTraining(
       {this.idTimeTraining,
       required this.idSession,

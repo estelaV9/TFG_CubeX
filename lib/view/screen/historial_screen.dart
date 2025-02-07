@@ -7,6 +7,13 @@ import '../../view/components/cube_header_container.dart';
 import '../../view/navigation/app_drawer.dart';
 import '../../utilities/app_color.dart';
 
+/// Pantalla del historial
+///
+/// Esta clase muestra los tiempos de una sesión de un tipo de cubo determinado.
+/// Se encuentra compuesta por:
+/// - El header con la información sobre el tipo de cubo y la sesión que se está usando. Se ubica en la parte superior derecha.
+/// - El contenedor para añadir un tiempo manualmente.
+/// - Una lista de tarjetas que contiene los tiempos registrados para la sesión y cubo seleccionados.
 class HistorialScreen extends StatefulWidget {
   const HistorialScreen({super.key});
 
