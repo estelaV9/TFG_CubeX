@@ -174,7 +174,8 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA DE SI DESEA ELIMINAR LA SESION O EL TIPO DE CUBO
 
-  static showDetailsTime(BuildContext context, TimeTraining timeTraining) {
+  static showDetailsTime(
+      BuildContext context, Future<void> Function() deleteTime, TimeTraining timeTraining) {
     var colorPressed = AppColors.purpleButton;
     var isTextPressed = false;
     // SE MUESTRA EL DIALOG
@@ -204,7 +205,7 @@ class AlertUtil {
                   ),
                 ),
                 IconClass.iconButton(
-                    context, () {}, "delete_time", Icons.delete)
+                    context, () async { await deleteTime(); }, "delete_time", Icons.delete)
               ],
             ),
             content: Column(

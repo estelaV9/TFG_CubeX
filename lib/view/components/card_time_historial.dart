@@ -23,6 +23,35 @@ class CardTimeHistorial extends StatefulWidget {
 
 class _CardTimeHistorialState extends State<CardTimeHistorial> {
   List<TimeTraining> listTimes = [];
+  final timeTrainingDao = TimeTrainingDao();
+  String scramble = "";
+  int? idSession;
+
+  Future<void>  deleteTime() async{
+    // SE CIERRA EL DIALOGO AL ELIMINAR
+    Navigator.of(context).pop();
+
+    final idDeleteTime = await timeTrainingDao.getIdByTime(scramble, idSession!);
+    if(idDeleteTime == -1){
+      // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
+      AlertUtil.showSnackBarInformation(context, "delete_time_error");
+      DatabaseHelper.logger.e("No se obtuvo el tiempo por scramble e idSession: $idDeleteTime");
+      return;
+    } // VERIFICA SI SE HA OBTENIDO BIEN EL ID DEL TIEMPO A ELIMINAR
+
+    final isDeleted = await timeTrainingDao.deleteTime(idDeleteTime);
+    if(isDeleted){
+      // SI SE ELIMINO CORRECTAMENTE SE MUESTRA UN SNCAKBAR PARA CONFIRMAR
+      AlertUtil.showSnackBarInformation(context, "delete_time_correct");
+
+      // VUELVE A CARGAR LOS TIEMPOS
+      _loadTimes();
+    } else {
+      // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
+      AlertUtil.showSnackBarInformation(context, "delete_time_error");
+      DatabaseHelper.logger.e("No se pudo eliminar: $isDeleted");
+    }
+  } // METODO PARA ELIMINAR EL TIEMPO EN CONCRETO
 
   @override
   void initState() {
@@ -31,7 +60,6 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
   }
 
   Future<void> _loadTimes() async {
-    final timeTrainingDao = TimeTrainingDao();
     UserDao userDao = UserDao();
     CubeTypeDao cubeTypeDao = CubeTypeDao();
     SessionDao sessionDao = new SessionDao();
@@ -61,6 +89,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
         idUser, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
+      // perdon por el bucle si no tiene tiempos
       final times =
       await timeTrainingDao.getTimesOfSession(session.idSession); // ID DE SESION
       setState(() {
@@ -110,7 +139,11 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
           height: 50,
           child: GestureDetector(
             onTap: (){
-              AlertUtil.showDetailsTime(context, listTimes[index]);
+              setState(() {
+                scramble = listTimes[index].scramble;
+                idSession = listTimes[index].idSession!;
+              }); // SETTEAMOS LOS DATOS DEL SCRAMBLE E ID
+              AlertUtil.showDetailsTime(context, deleteTime, listTimes[index]);
             },
             child: Card(
               color: AppColors.lightVioletColor,
@@ -120,7 +153,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
               elevation: 4,
               child: Center(
                 child: Text(
-                  "${time.timeInSeconds.toStringAsFixed(2)}",
+                  time.timeInSeconds.toStringAsFixed(2),
                   style:
                       TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
                 ),
