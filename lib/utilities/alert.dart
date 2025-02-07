@@ -428,11 +428,14 @@ class AlertUtil {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 190,
+                    Expanded(
                       child: Text(
                         timeTraining.scramble,
                         style: const TextStyle(fontSize: 14),
+                        // HACE UN SALTO DE LINEA SI ES LARGO
+                        softWrap: true,
+                        // SI TIENE MUCHO OVERFLOW, TRUNCA EL SCRAMBLE Y PONE PUNTOS SUSPENSIVOS
+                        overflow: TextOverflow.fade,
                       ),
                     ),
                     IconClass.iconButton(context, () async {
