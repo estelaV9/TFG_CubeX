@@ -14,6 +14,10 @@ import '../../utilities/internationalization.dart';
 import '../../viewmodel/current_user.dart';
 import '../components/settings_container.dart';
 
+/// Pantalla de configuración de la aplicación.
+///
+/// Esta pantalla permite (por ahora) al usuario cambiar el idioma de la aplicación
+/// entre español e inglés y acceder a su perfil personal.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -29,6 +33,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   // SHARED PREFEERNCES PARA EL IDIOMA
   static late SharedPreferences preferences;
 
+  /// Inicializa las preferencias compartidas para guardar y cargar el idioma preferido.
   static Future<void> startPreferences() async {
     preferences = await SharedPreferences.getInstance();
     if (preferences.getKeys().isEmpty) {
@@ -36,12 +41,20 @@ class SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  /// Obtiene el nombre del usuario actual.
+  ///
+  /// Este método accede al estado global para recuperar el nombre del usuario
+  /// actualmente logueado.
   String returnName() {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;
     return currentUser?.username ?? "error";
   } // METODO PARA RETORNAR EL NOMBRE DEL USUARIO QUE ACCEDIO
 
+  /// Obtiene el correo electrónico del usuario actual.
+  ///
+  /// Este método consulta la base de datos para obtener el correo electrónico del usuario
+  /// y lo actualiza en la interfaz.
   void returnMail() async {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;

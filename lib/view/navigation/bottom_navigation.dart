@@ -1,10 +1,14 @@
-import 'package:esteladevega_tfg_cubex/main.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 import '../screen/historial_screen.dart';
 
+/// Clase que representa la **barra de navegación inferior** de la aplicación.
+///
+/// Esta clase permite al usuario navegar entre diferentes pantallas de la aplicación utilizando
+/// una barra de navegación en la parte inferior de la pantalla.
+/// El índice seleccionado determina qué pantalla se muestra.
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
 
@@ -27,7 +31,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     setState(() {
       _currentIndex = index; // ACTUALIZA EL INDICE
     });
-  }
+  } // METODO PARA CUANDO PULSE EN LA BARRA DE NAVEGACION
 
   @override
   Widget build(BuildContext context) {

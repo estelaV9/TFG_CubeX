@@ -5,7 +5,21 @@ import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 
 import '../database/database_helper.dart';
 
+/// Clase encargada de gestionar las operaciones CRUD y estadísticas sobre los **tiempos de entrenamiento**.
+///
+/// Esta clase interactúa con la base de datos para insertar, eliminar, obtener y
+/// calcular estadísticas relacionadas con los tiempos en las sesiones.
 class TimeTrainingDao {
+  /// Método para obtener los tiempos de una sesión específica.
+  ///
+  /// Este método consulta la base de datos y devuelve una lista de todos los tiempos
+  /// registrados para una sesión específica.
+  ///
+  /// Parámetros:
+  /// - `idSession`: ID de la sesión de la que se desean obtener los tiempos.
+  ///
+  /// Retorna:
+  /// - `List<TimeTraining>`: Lista de objetos [TimeTraining] que contiene los tiempos registrados para esa sesión.
   Future<List<TimeTraining>> getTimesOfSession(int? idSession) async {
     final db = await DatabaseHelper.database;
     try {
@@ -38,6 +52,16 @@ class TimeTrainingDao {
     }
   } // METODO QUE DEVUELVE LOS TIEMPOS QUE HAY EN UNA SESION
 
+  /// Método para insertar un nuevo tiempo de entrenamiento.
+  ///
+  /// Este método inserta un nuevo tiempo de entrenamiento en la base de datos.
+  ///
+  /// Parámetros:
+  /// - `timeTraining`: Objeto de tipo [TimeTraining] que contiene los datos del
+  /// nuevo tiempo de entrenamiento.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si la inserción fue exitosa, `false` si ocurrió un error.
   Future<bool> insertNewTime(TimeTraining timeTraining) async {
     final db = await DatabaseHelper.database;
     try {
@@ -66,6 +90,16 @@ class TimeTrainingDao {
   // averageValue, ao5Value, ao12Value,
   // ao50Value, ao100Value
 
+  /// Método para obtener el mejor tiempo registrado en una sesión.
+  ///
+  /// Este método recorre la lista de tiempos de la sesión y devuelve el mejor tiempo
+  /// en formato "minutos:segundos.decimal".
+  ///
+  /// Parámetros:
+  /// - `timesList`: Lista de tiempos [TimeTraining] para los cuales se calcula el mejor tiempo.
+  ///
+  /// Retorna:
+  /// - `String`: El mejor tiempo en formato "minutos:segundos.decimal".
   Future<String> getPbTimeBySession(List<TimeTraining> timesList) async {
     var pbTime = 0.0; // INICIALIZAR EL MEJOR TIEMPO
     var worstTime = 0.0; // INICIALIZAR EL PEOR TIEMPO
@@ -97,6 +131,17 @@ class TimeTrainingDao {
     } // DEVUELVE ELMEJOR TIEMPO FORMATEADO
   } // METODO PARA OBTENER EL MEJOR TIEMPO DE UNA SESION
 
+  /// Método para obtener el peor tiempo registrado en una sesión.
+  ///
+  /// Este método recorre la lista de tiempos de la sesión y devuelve el peor
+  /// tiempo en formato "minutos:segundos.decimal".
+  ///
+  /// Parámetros:
+  /// - `timesList`: Lista de tiempos [TimeTraining] para los cuales se calcula
+  /// el peor tiempo.
+  ///
+  /// Retorna:
+  /// - `String`: El peor tiempo en formato "minutos:segundos.decimal".
   Future<String> getWorstTimeBySession(List<TimeTraining> timesList) async {
     var worstTime = 0.0; // INICIALIZAR EL PEOR TIEMPO
     int minutes = 0;
@@ -118,6 +163,16 @@ class TimeTrainingDao {
     } // DEVUELVE EL PEOR TIEMPO FORMATEADO
   } // METODO PARA OBTENER EL PEOR TIEMPO DE UNA SESION
 
+  /// Método para obtener el número de tiempos registrados en una sesión.
+  ///
+  /// Este método devuelve la cantidad de tiempos registrados en la lista de
+  /// tiempos de la sesión.
+  ///
+  /// Parámetros:
+  /// - `timesList`: Lista de tiempos [TimeTraining].
+  ///
+  /// Retorna:
+  /// - `int`: El número de tiempos registrados en la lista.
   Future<int> getCountBySession(List<TimeTraining> timesList) async {
     return timesList.length; // DEVUELVE EL TAMAÑO DE LA LISTA DE TIEMPOS
   } // METODO PARA OBTENER LA CANTIDAD DE TIEMPOS QUE HAY EN UNA SESION
@@ -155,6 +210,16 @@ class TimeTrainingDao {
     return "$minutes:$seconds";
   } // METODO PARA HACER LA MEDIA DE x TIEMPOS (5,12,50,100,total)*/
 
+  /// Método para eliminar un tiempo por su ID.
+  ///
+  /// Este método elimina un tiempo registrado en la base de datos
+  /// utilizando el ID del tiempo.
+  ///
+  /// Parámetros:
+  /// - `idTimeTraining`: ID del tiempo de entrenamiento que se desea eliminar.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si el tiempo fue eliminado correctamente, `false` si ocurrió un error.
   Future<bool> deleteTime(int idTimeTraining) async {
     final db = await DatabaseHelper.database;
     try {
@@ -171,6 +236,17 @@ class TimeTrainingDao {
     }
   } // METODO PARA ELIMINAR UN TIEMPO POR EL ID DEL TIEMPO
 
+  /// Método para obtener el ID de un tiempo a partir del scramble y el ID de la sesión.
+  ///
+  /// Este método busca un tiempo en la base de datos utilizando el scramble
+  /// y el ID de la sesión.
+  ///
+  /// Parámetros:
+  /// - `scramble`: El scramble utilizado en la sesión.
+  /// - `idSession`: El ID de la sesión en la que se realizó el tiempo.
+  ///
+  /// Retorna:
+  /// - `int`: El ID del tiempo encontrado o `-1` si no se encuentra.
   Future<int> getIdByTime(String scramble, int idSession) async {
     final db = await DatabaseHelper.database;
     int idTime = -1; // ID DEL TIEMPO RETORNADO

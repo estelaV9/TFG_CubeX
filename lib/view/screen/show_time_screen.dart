@@ -2,6 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../utilities/app_color.dart';
 
+/// Pantalla que muestra un cronómetro con un tiempo de inspección al mantener presionado.
+/// El cronómetro se inicia después de la cuenta atrás y muestra el tiempo transcurrido.
+///
+/// Si pasan 2 segundos del tiempo de inspección se le añade un +2, si se pasa más se le asigna un DNF
 class ShowTimeScreen extends StatefulWidget {
   const ShowTimeScreen({super.key});
 

@@ -13,6 +13,10 @@ import '../components/Icon/icon.dart';
 import '../components/password_field_row.dart';
 import '../../utilities/internationalization.dart';
 
+/// Pantalla que muestra el perfil del usuario.
+///
+/// Esta pantalla permite ver y editar (no implementado) la información del usuario actual
+/// como el nombre de usuario, correo electrónico, contraseña, y eliminar la cuenta.
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
 
@@ -29,6 +33,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   String _password = ''; // ATRIBUTO PARA GUARDAR LA CONTRASEÑA
   UserDao userDao = UserDao();
 
+  /// Método para eliminar el usuario.
+  ///
+  /// Este método obtiene el usuario actual desde el `CurrentUser`,
+  /// luego elimina su cuenta de la base de datos y redirige a la pantalla de login.
   void deleteUser() async {
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;

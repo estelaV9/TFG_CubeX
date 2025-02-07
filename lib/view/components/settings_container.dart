@@ -2,12 +2,17 @@ import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:flutter/material.dart';
 
-import '../../utilities/internationalization.dart';
-
+/// Widget que representa un contenedor de opción de ajustes, con un ícono, un texto y
+/// un botón para redirigir a una pantalla relacionada con la opción seleccionada o
+/// mostrar una alerta.
 class SettingsContainer extends StatefulWidget {
+  /// Función que se ejecuta cuando se presiona el ícono de la opción
   final void Function() functionArrow;
+  /// Ícono que representa la opción de ajustes
   final IconData icon;
+  /// Nombre de la opción en texto
   final String name;
+  /// Tooltip que se muestra cuando se pasa el ratón sobre el ícono
   final String tooltip;
 
   const SettingsContainer(

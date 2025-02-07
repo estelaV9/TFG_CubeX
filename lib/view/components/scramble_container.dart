@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../utilities/ScrambleGenerator.dart';
 
+/// Widget que contiene el contenedor para mostrar el scramble y el botón para añadir manualmente.
 class ScrambleContainer extends StatefulWidget {
   const ScrambleContainer({super.key});
 
@@ -23,6 +24,12 @@ class ScrambleContainerState extends State<ScrambleContainer> {
   // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
   int random = (Random().nextInt(25 - 20 + 1) + 20);
 
+  /// Método que se ejecuta cuando se quiere añadir un scramble personalizado
+  /// de manera manual.
+  ///
+  /// Muestra un formulario donde el usuario puede ingresar su propio scramble.
+  /// Si el usuario deja el campo vacío, muestra un mensaje de error.
+  /// Si el scramble es válido, lo establece como el scramble actual.
   void logicAddScramble() async {
     // SE MUESTRA UNA ALERTA DE FORMULARIO
     String? newScramble = await AlertUtil.showAlertForm("add_custom_scramble_label", "add_custom_scramble_label", "enter_new_scramble", context);
@@ -42,7 +49,9 @@ class ScrambleContainerState extends State<ScrambleContainer> {
     } // VALIDA SI EL SCRAMBLE AÑADIDO ES NULO O NO
   } // METODO PARA CUANDO PULSE EL ICONO DE AÑADIR SCRAMBLE
 
-
+  /// Método que se ejecuta para generar un nuevo scramble aleatorio.
+  ///
+  /// Establece el scramble generado como el scramble actual en el estado global.
   void updateScramble() {
     setState(() {
       scrambleName = scramble.generateScramble(random);  // SE ASIGNA UN NUEVO SCRAMBLE

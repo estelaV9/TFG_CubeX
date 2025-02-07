@@ -14,6 +14,14 @@ import '../../model/time_training.dart';
 import '../../utilities/app_color.dart';
 import '../../viewmodel/current_user.dart';
 
+/// Widget que muestra una lista de tiempos registrados en un cubo de una sesión.
+///
+/// Este widget utiliza un `GridView` para mostrar los tiempos en forma de tarjetas.
+/// Al seleccionar una tarjeta, se muestra un cuadro de diálogo con los detalles del
+/// tiempo y la opción de eliminarlo o copiar el scramble con el que se realizó ese tiempo.
+///
+/// El tiempo se elimina de la base de datos y se actualiza la vista con un mensaje de
+/// éxito o error.
 class CardTimeHistorial extends StatefulWidget {
   const CardTimeHistorial({Key? key}) : super(key: key);
 
@@ -27,6 +35,11 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
   String scramble = "";
   int? idSession;
 
+  /// Método que elimina un tiempo específico de la base de datos.
+  ///
+  /// Este método obtiene el ID del tiempo a eliminar utilizando el scramble y
+  /// el ID de la sesión.
+  /// Si se elimina correctamente o si ocurre un error, se muestra un mensaje de éxito.
   Future<void>  deleteTime() async{
     // SE CIERRA EL DIALOGO AL ELIMINAR
     Navigator.of(context).pop();
@@ -59,6 +72,12 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     _loadTimes();
   }
 
+  /// Método para cargar los tiempos de la sesión y el tipo de cubo actual.
+  ///
+  /// Este método obtiene el ID del usuario actual, la sesión actual y el
+  /// tipo de cubo actual.
+  /// Luego, recupera los tiempos de entrenamiento asociados a esa sesión y
+  /// cubo, y actualiza la lista de tiempos.
   Future<void> _loadTimes() async {
     UserDao userDao = UserDao();
     CubeTypeDao cubeTypeDao = CubeTypeDao();

@@ -15,8 +15,13 @@ import 'data/database/database_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+/// Método principal de la aplicación: Inicio de la app.
+///
+/// Este método inicializa la base de datos y las preferencias,
+/// y luego ejecuta la aplicación en un `MultiProvider` que maneja
+/// el estado global de la aplicación.
 void main() async {
-  // SE INICIALIZA LA BASE DE DATOS
+  // SE INICIALIZA LA BASE DE DATOS Y SE CONFIGURA LAS PREFERENCIAS
   await DatabaseHelper.initDatabase();
   await SettingsScreenState.startPreferences();
   runApp(
@@ -34,6 +39,10 @@ void main() async {
   ); // SE INICIA LA APLICACION DENTRO DE UN PROVIDER PARA GESTIONAR EL USUARIO
 }
 
+/// Clase principal de la aplicación CubeX.
+///
+/// La clase CubeXApp configura el idioma y la pantalla inicial
+/// de la aplicación a través de un `MaterialApp`.
 class CubeXApp extends StatelessWidget {
   const CubeXApp({super.key});
 
@@ -60,6 +69,11 @@ class CubeXApp extends StatelessWidget {
   }
 }
 
+/// Pantalla de introducción de la aplicación.
+///
+/// Esta pantalla se muestra al inicio de la aplicación y contiene
+/// el logo, el nombre de la aplicación y botones para iniciar sesión
+/// o registrarse.
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
 

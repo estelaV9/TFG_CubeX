@@ -15,6 +15,10 @@ import '../../model/cubetype.dart';
 import '../../viewmodel/current_cube_type.dart';
 import 'Icon/animated_icon.dart';
 
+/// Encabezado tipo de cubo y sesión.
+///
+/// Esta clase se basa en un widget que maneja la visualización y la
+/// interacción del encabezado del cubo con el tipo de cubo y la sesión activa.
 class CubeHeaderContainer extends StatefulWidget {
   const CubeHeaderContainer({super.key});
 
@@ -23,17 +27,21 @@ class CubeHeaderContainer extends StatefulWidget {
 }
 
 class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
-  // SE AÑADE EN ESTA CLASE EL OVERLAY DEL MENU SESSION
-  bool isMenuVisible = false; // COMPROBAR SI EL MENU ESTA VISIBLE O NO
-
+  /// Tipo de cubo actual, inicializado con un valor por defecto.
   CubeType cubeType = CubeType(idCube: -1, cubeName: "3x3x3"); // VALOR INCIAL
   CubeTypeDao cubeTypeDao = CubeTypeDao();
   SessionDao sessionDao = SessionDao();
   List<Session> sessions = [];
   UserDao userDao = UserDao();
 
+  /// La sesión activa actual, inicializada con una sesión vacía.
   Session session = Session.empty();
 
+  /// Selección de un tipo de cubo.
+  ///
+  /// Actualiza el estado del widget y el estado global mediante el `Provider`.
+  ///
+  /// - `selectedCubeType`: El tipo de cubo que el usuario ha seleccionado.
   void onCubeTypeSelected(CubeType selectedCubeType) {
     setState(() {
       cubeType = selectedCubeType;
@@ -44,16 +52,21 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
     print(currentCubeType);
   }
 
+  /// Selección de una sesión.
+  ///
+  /// - `sessionName`: El nombre de la sesión seleccionada por el usuario.
   void onSessionSelected(String sessionName) {
     setState(() {
       session.sessionName = sessionName;
     });
   }
 
+  /// Método para inicializar la sesión con el nombre "Normal".
+  ///
+  /// Obtiene los datos del usuario actual, luego busca y establece la sesión activa.
+  ///
+  /// Devuelve el nombre de la sesión si se encuentra, o `null` si ocurre un error.
   Future<String?> initSession() async {
-    UserDao userDao = UserDao();
-    SessionDao sessionDao = SessionDao();
-
     try {
       // OBTENEMOS LOS DATOS DEL USUARIO ACTUAL
       final currentUser = context.read<CurrentUser>().user;

@@ -5,6 +5,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../utilities/internationalization.dart';
 
+/// Pantalla de información acerca de la aplicación.
+///
+/// Esta pantalla muestra información relevante sobre la aplicación, incluyendo
+/// su nombre, logo, versión, una breve descripción, el hecho de que es de código abierto,
+/// el desarrollador de la aplicación, las herramientas utilizadas en su desarrollo y
+/// un enlace al perfil de GitHub del desarrollador.
 class AboutAppScreen extends StatelessWidget {
   const AboutAppScreen({super.key});
 

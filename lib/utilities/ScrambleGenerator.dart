@@ -1,6 +1,15 @@
 import 'dart:math';
 
+/// Clase que genera secuencias aleatorias de movimientos de un cubo Rubik.
+///
+/// El **scramble** se utiliza para generar una secuencia aleatoria de movimientos
+/// que sirven para deshacer el cubo Rubik. Esta secuencia sirve para cronometrar
+/// el tiempo que un usuario tarda en resolver el cubo, ya que ofrece una manera
+/// de "mezclar" el cubo de manera impredecible y controlada.
 class Scramble {
+  /// Lista estática que contiene las caras del cubo Rubik.
+  /// Las caras son representadas por las letras:
+  /// "U" (Up), "R" (Right), "B" (Back), "L" (Left), "D" (Down), "F" (Front).
   static List<String> moves = [
     "U",
     "R",
@@ -10,6 +19,19 @@ class Scramble {
     "F"
   ]; // ARRAY CON LAS CAPAS QUE TIEN EL CUBO
 
+  /// Genera una secuencia aleatoria de movimientos para el cubo Rubik.
+  ///
+  /// Este método genera una secuencia de movimientos aleatorios (sobretodo para la categoría de 3x3),
+  /// donde cada movimiento está compuesto por una de las caras del cubo (de la lista `moves`), y se le añade
+  /// aleatoriamente un giro adicional como `'` o `2` (con probabilidades de 30% y 30% respectivamente).
+  /// El parámetro `random` define cuántos movimientos se generarán en la secuencia.
+  ///
+  /// Se asegura de que no haya movimientos consecutivos repetidos.
+  ///
+  /// [random] El número de movimientos a generar.
+  ///
+  /// Retorna la secuencia de movimientos generada como un String, donde los movimientos
+  /// están separados por un espacio.
   String generateScramble(int random) {
     String lastMove = "";
     List<String> scrambleList = [];

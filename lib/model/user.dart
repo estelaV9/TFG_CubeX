@@ -1,12 +1,28 @@
+/// Clase que representa a un usuario en la aplicación.
 class User {
-  final int? idUser; // SERA AUTOINCREMENTAL
+  /// Identificador único del usuario (opcional).
+  final int? idUser;
+
+  /// Nombre de usuario.
   final String username;
+
+  /// Correo electrónico del usuario.
   final String mail;
+
+  /// Contraseña del usuario.
   final String password;
+
+  /// Fecha de creación del usuario.
   final String creationDate;
+
+  /// URL de la imagen de perfil del usuario.
   final String imageUrl;
 
-  // CONSTRUCTOR
+  /// Constructor para inicializar un usuario.
+  ///
+  /// Si no se especifica los campos de la fecha o de la imagen,
+  /// se estableceran los valores de la fecha actual y de la imagen
+  /// predeterminada.
   User({
     this.idUser,
     required this.username,

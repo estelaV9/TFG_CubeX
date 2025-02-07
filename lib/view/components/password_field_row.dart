@@ -2,18 +2,59 @@ import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
+/// Widget para un campo de formulario de contraseña.
+///
+/// Este widget permite mostrar u ocultar la contraseña mediante un icono de visibilidad
+/// y también incluye validaciones y controladores para gestionar el texto de la contraseña.
+///
+/// La contraseña puede ser validada y guardada utilizando los métodos proporcionados por
+/// los parámetros del formulario. Este widget también permite personalizar el diseño,
+/// incluyendo el color del borde y el tamaño del borde.
 class PasswordFieldForm extends StatefulWidget {
-  final Tooltip icon; // EL ICONO QUE SE VA A USAR
-  final String labelText; // TEXTO DEL FORMULARIO
-  final String hintText; // TEXTO QUE VA A APARECER CUANDO SE PULSA
-  final TextEditingController controller; // PASAMOS TAMBIEN EL CONTROLADOR
-  final FormFieldValidator<String> validator; // PASAMOS LA VALIDACION
-  final FormFieldValidator<String> passwordOnSaved;
-  final String labelSemantics; // TEXTO QUE TENDRA EL SEMANTIC
-  final String hintSemantics; // TEXTO DEL HINT QUE TENDRA EL SEMANTIC
+  /// El icono que se mostrará junto al campo de texto.
+  ///
+  /// Este ícono se puede personalizar según la personalización del formulario.
+  final Tooltip icon;
 
+  /// El texto que se mostrará en el campo de formulario.
+  ///
+  /// Este texto aparece como la descripción del campo cuando está vacío.
+  final String labelText;
+
+  /// El texto de sugerencia (hint) que aparece cuando el campo está vacío.
+  ///
+  /// Este texto es opcional y puede dar pistas al usuario sobre el tipo de información
+  /// que se debe ingresar en el campo.
+  final String hintText;
+
+  /// Controlador que gestiona el texto ingresado en el campo.
+  final TextEditingController controller;
+
+  /// Validador para verificar si el valor ingresado es válido.
+  final FormFieldValidator<String> validator;
+
+  /// Texto que se utiliza para la accesibilidad, proporcionando una descripción del campo.
+  ///
+  /// Se usa en la propiedad `label` de `Semantics` para ayudar a los usuarios con discapacidad visual.
+  final String labelSemantics;
+
+  /// Texto que se utiliza para la accesibilidad, proporcionando una pista sobre el contenido del campo.
+  ///
+  /// Se usa en la propiedad `hint` de `Semantics` para ayudar a los usuarios con discapacidad visual.
+  final String hintSemantics;
+
+  /// Tamaño de los bordes del campo de texto (opcional).
+  ///
+  /// Si no se proporciona, el tamaño del borde será el predeterminado de 100.
   final double? borderSize;
+
+  /// Color de fondo del campo de texto (opcional).
+  ///
+  /// Si no se proporciona, el color de fondo será el predeterminado (violeta claro).
   final Color? colorBox;
+
+  /// Función que guarda la contraseña cuando el formulario es enviado y validado correctamente.
+  final FormFieldValidator<String> passwordOnSaved;
 
   const PasswordFieldForm(
       {super.key,
