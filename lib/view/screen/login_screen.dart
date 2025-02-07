@@ -70,14 +70,19 @@ class _LoginScreenState extends State<LoginScreen> {
         ChangeScreen.changeScreen(const BottomNavigation(), context);
       } else {
         // SI LAS CREDENCIALES FALLAN, SE MUESTRA UNA ALERTA
-        AlertUtil.showSnackBarError(context,
-            "incorrect_username_password");
+        AlertUtil.showSnackBarError(context, "incorrect_username_password");
       }
     }
   } // FUNCION LOGIN
 
   @override
   Widget build(BuildContext context) {
+    // SE OBTIENE EL IDIOMA ACTUAL
+    Locale currentLocale = Localizations.localeOf(context);
+    // SI ES ESPAÑOL, SE BAJA EL TAMAÑO PARA NO CAUSAR OVERFLOW
+    double fontSize = currentLocale.languageCode == 'es' ? 50 : 70;
+    double fontSizeByButton = currentLocale.languageCode == 'es' ? 35 : 45;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -111,16 +116,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       // Log in
-                      Internationalization.internationalization
-                          .createLocalizedSemantics(
-                        context,
-                        "login_label",
-                        "login_hint",
-                        "login_label",
-                        const TextStyle(
-                            fontFamily: 'Gluten',
-                            fontSize: 70,
-                            color: AppColors.lightPurpleColor),
+                      Flexible(
+                        child: Container(
+                          // LIMITA EL ANCHO
+                          constraints: const BoxConstraints(maxWidth: 250),
+                          child: Text(
+                            Internationalization.internationalization.getLocalizations(context, "login_label"),
+                            style: TextStyle(
+                              fontFamily: 'Gluten',
+                              fontSize: fontSize,
+                              color: AppColors.lightPurpleColor,
+                            ),
+                            // AÑADE PUNTOS SUSPENSIVOS
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 10),
@@ -130,8 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             FieldForm(
-                              icon:
-                                  IconClass.iconMaker(context, Icons.person, "username"),
+                              icon: IconClass.iconMaker(
+                                  context, Icons.person, "username"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "username"),
@@ -149,7 +160,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 10),
                             PasswordFieldForm(
-                              icon: IconClass.iconMaker(context, Icons.lock, "password"),
+                              icon: IconClass.iconMaker(
+                                  context, Icons.lock, "password"),
                               labelText: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "password"),
@@ -200,17 +212,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           // Sign in
-                          Internationalization.internationalization
-                              .createLocalizedSemantics(
-                            context,
-                            "sign_in_label",
-                            "sign_in_hint",
-                            "sign_in",
-                            const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 45,
-                                color: AppColors.darkPurpleColor),
-                          ),
+                        Internationalization.internationalization
+                                .createLocalizedSemantics(
+                              context,
+                              "sign_in_label",
+                              "sign_in_hint",
+                              "sign_in",
+                              TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: fontSizeByButton,
+                                  color: AppColors.darkPurpleColor),
+                            ),
 
                           const SizedBox(width: 14),
                           ElevatedButton(
@@ -221,12 +233,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // LE QUITAMOS EL PADDING DE DENTRO DEL BTON
                                 padding: EdgeInsets.zero,
                               ),
-                              child: IconClass.iconMaker(context,
-                                  Icons.arrow_forward, "enter_app")),
+                              child: IconClass.iconMaker(
+                                  context, Icons.arrow_forward, "enter_app")),
                         ],
                       ),
-                      const SizedBox(height: 70),
 
+                      // ANCLAMOS AL FINAL DE LA PANTALLA
+                      Expanded(child: Container()),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
