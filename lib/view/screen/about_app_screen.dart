@@ -12,7 +12,8 @@ class AboutAppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About the App'),
+        title: Text(Internationalization.internationalization
+            .getLocalizations(context, "about_the_app")),
         backgroundColor: AppColors.lightVioletColor,
       ),
       body: Container(
@@ -83,11 +84,15 @@ class AboutAppScreen extends StatelessWidget {
                 ),
 
                 // VERSION
-                const Align(
+                Align(
                   alignment: Alignment.center,
-                  child: Text(
-                    'Version 1.0.0',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    "version",
+                    "version",
+                    "version",
+                    const TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -101,15 +106,10 @@ class AboutAppScreen extends StatelessWidget {
                   "description",
                   const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
-                const Text(
-                  'CubeX es una aplicación diseñada para speedcubers, '
-                      'ofreciendo herramientas avanzadas para entrenar y mejorar tiempos.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.black87),
-                ),
+
                 const SizedBox(height: 20),
 
-                // Código abierto con el enlace de GitHub
+                // CODIGO ABIERTO
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -119,27 +119,31 @@ class AboutAppScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'CubeX es una aplicación de código abierto',
-                        style: TextStyle(
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "open_source",
+                        "open_source",
+                        "open_source",
+                        const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
-                        onTap: () async {
-                          // CUANDO PULSE IRA A MI GITHUB
-                          const url = 'https://github.com/estelaV9/TFG_CubeX';
+                          onTap: () async {
+                            // CUANDO PULSE IRA A MI GITHUB
+                            const url = 'https://github.com/estelaV9/TFG_CubeX';
 
-                          if (await canLaunch(url)) {
-                          await launch(url);
-                          } else {
-                          throw 'No se pudo abrir la URL';
-                          } // VERIFICA SI LA URL ES VALIDA
-                        },
-                        child: IconClass.iconMaker(context, Icons.exit_to_app_sharp, "go_github")
-                      ),
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'No se pudo abrir la URL';
+                            } // VERIFICA SI LA URL ES VALIDA
+                          },
+                          child: IconClass.iconMaker(
+                              context, Icons.exit_to_app_sharp, "go_github")),
                     ],
                   ),
                 ),
@@ -155,19 +159,41 @@ class AboutAppScreen extends StatelessWidget {
                     color: AppColors.lightVioletColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      Text(
-                        'Desarrollador Principal',
-                        style: TextStyle(
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "developer",
+                        "developer",
+                        "developer",
+                        const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text('Estela de Vega Martín'),
-                      SizedBox(height: 5),
-                      Text('Correo: esteladevega.dev9@gmail.com'),
+                      const SizedBox(height: 10),
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "developer_name",
+                        "developer_name",
+                        "developer_name",
+                        const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "developer_email",
+                        "developer_email",
+                        "developer_email",
+                        const TextStyle(
+                          fontSize: 16,
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -183,19 +209,30 @@ class AboutAppScreen extends StatelessWidget {
                     color: AppColors.lightVioletColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      Text(
-                        'Herramientas Principales',
-                        style: TextStyle(
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "tools",
+                        "tools",
+                        "tools",
+                        const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text('• Flutter'),
-                      Text('• SQLite'),
-                      Text('• IntelliJ IDEA'),
+                      const SizedBox(height: 10),
+                      Internationalization.internationalization
+                          .createLocalizedSemantics(
+                        context,
+                        "tools_list",
+                        "tools_list",
+                        "tools_list",
+                        const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -206,21 +243,31 @@ class AboutAppScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    IconClass.iconMaker(context, Icons.account_circle_sharp, "github", 40),
-                    TextButton(onPressed: () async {
-                      // CUANDO PULSE IRA A MI GITHUB
-                      const url = 'https://github.com/estelaV9';
+                    IconClass.iconMaker(
+                        context, Icons.account_circle_sharp, "github", 40),
+                    TextButton(
+                        onPressed: () async {
+                          // CUANDO PULSE IRA A MI GITHUB
+                          const url = 'https://github.com/estelaV9';
 
-                      if (await canLaunch(url)) {
-                      await launch(url);
-                      } else {
-                      throw 'No se pudo abrir la URL';
-                      } // VERIFICA SI LA URL ES VALIDA
-                    }, child: const Text("estelaV9", style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkPurpleColor,
-                      fontSize: 30,
-                    ),))
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'No se pudo abrir la URL';
+                          } // VERIFICA SI LA URL ES VALIDA
+                        },
+                        child: Internationalization.internationalization
+                            .createLocalizedSemantics(
+                          context,
+                          "name_github",
+                          "name_github",
+                          "name_github",
+                          const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.darkPurpleColor,
+                            fontSize: 30,
+                          ),
+                        ))
                   ],
                 )
               ],

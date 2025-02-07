@@ -313,6 +313,8 @@ class Internationalization {
         return l10n.tools;
       case 'tools_list':
         return l10n.tools_list;
+      case 'name_github':
+        return l10n.name_github;
 
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
