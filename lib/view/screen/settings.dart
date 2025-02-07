@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
+import '../../utilities/internationalization.dart';
 import '../../viewmodel/current_user.dart';
 import '../components/settings_container.dart';
 
@@ -34,7 +35,6 @@ class SettingsScreenState extends State<SettingsScreen> {
       await preferences.setString("language", "es");
     }
   }
-
 
   String returnName() {
     // OBTENEMOS LOS DATOS DEL USUARIO
@@ -64,9 +64,13 @@ class SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Settings',
-          style: TextStyle(fontFamily: 'Broadway', fontSize: 35),
+        title:
+            Internationalization.internationalization.createLocalizedSemantics(
+          context,
+          "settings",
+          "settings",
+          "settings",
+          const TextStyle(fontFamily: 'Broadway', fontSize: 35),
         ),
         centerTitle: true,
         backgroundColor: AppColors.lightVioletColor,
@@ -135,11 +139,15 @@ class SettingsScreenState extends State<SettingsScreen> {
             ),
 
             // GENERAL
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "General",
-                style: TextStyle(
+              child: Internationalization.internationalization
+                  .createLocalizedSemantics(
+                context,
+                "general",
+                "general",
+                "general",
+                const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: AppColors.lightVioletColor),
@@ -151,9 +159,9 @@ class SettingsScreenState extends State<SettingsScreen> {
               functionArrow: () {
                 AlertUtil.showChangeLanguague(context, "dsaf");
               },
-              name: 'Languages',
+              name: Internationalization.internationalization.getLocalizations(context, "languages"),
               icon: Icons.language,
-              tooltip: "Select languages",
+              tooltip: Internationalization.internationalization.getLocalizations(context, "select_languages"),
             ),
 
             const SizedBox(
@@ -163,20 +171,24 @@ class SettingsScreenState extends State<SettingsScreen> {
             // NOTIFICACIONES
             SettingsContainer(
               functionArrow: () {},
-              name: 'Notifications',
+              name: Internationalization.internationalization.getLocalizations(context, "notification"),
               icon: Icons.notifications,
-              tooltip: "Select notifications",
+              tooltip: Internationalization.internationalization.getLocalizations(context, "select_notification"),
             ),
 
             const SizedBox(
               height: 20,
             ),
 
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Time Configuration",
-                style: TextStyle(
+              child: Internationalization.internationalization
+                  .createLocalizedSemantics(
+                context,
+                "time_configuration",
+                "time_configuration",
+                "time_configuration",
+                const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: AppColors.lightVioletColor),
@@ -186,20 +198,24 @@ class SettingsScreenState extends State<SettingsScreen> {
             // CONFIGURAR TIMER
             SettingsContainer(
               functionArrow: () {},
-              name: 'Configure timer',
+              name: Internationalization.internationalization.getLocalizations(context, "configure_timer"),
               icon: Icons.timer,
-              tooltip: "Configure timer",
+              tooltip: Internationalization.internationalization.getLocalizations(context, "configure_timer"),
             ),
 
             const SizedBox(
               height: 20,
             ),
 
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Account",
-                style: TextStyle(
+              child: Internationalization.internationalization
+                  .createLocalizedSemantics(
+                context,
+                "account",
+                "account",
+                "account",
+                const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: AppColors.lightVioletColor),
@@ -211,9 +227,9 @@ class SettingsScreenState extends State<SettingsScreen> {
               functionArrow: () {
                 ChangeScreen.changeScreen(const MyProfileScreen(), context);
               }, // CUANDO PULSE IRA A LA PANTALLA DE PERFIL
-              name: 'My profile',
+              name: Internationalization.internationalization.getLocalizations(context, "my_profile"),
               icon: Icons.person,
-              tooltip: "My profile",
+              tooltip: Internationalization.internationalization.getLocalizations(context, "my_profile"),
             ),
 
             // COLOCAMOS UN EXPANDED PARA OCUPAR EL ESPACIO RESSTANTE Y
@@ -238,9 +254,13 @@ class SettingsScreenState extends State<SettingsScreen> {
                         throw 'No se pudo abrir la URL';
                       } // VERIFICA SI LA URL ES VALIDA
                     },
-                    child: const Text(
-                      "estelaV9",
-                      style: TextStyle(
+                    child: Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context,
+                      "name_github",
+                      "name_github",
+                      "name_github",
+                      const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: AppColors.darkPurpleColor,
                         fontSize: 30,

@@ -159,5 +159,19 @@
   "developer_email": "Email: esteladevega.dev9@gmail.com",
   "developer": "Desarrollador Principal",
   "tools": "Herramientas Principales",
-  "tools_list": "• Flutter\n• SQLite\n• IntelliJ IDEA"
+  "tools_list": "• Flutter\n• SQLite\n• IntelliJ IDEA",
+  "name_github": "estelaV9",
+
+  "time_configuration": "Configuración del tiempo",
+  "account": "Cuenta",
+  "languages": "Idiomas",
+  "notification": "Notificaciones",
+  "select_notification": "Selecciona las notificaciones",
+  "select_languages": "Selecciona un idioma",
+  "configure_timer": "Configurar timer",
+
+  "spanish": "Español",
+  "spanish_hint": "Selecciona el idioma español",
+  "english": "Inglés",
+  "english_hint": "Selecciona el idoma inglés"
 }

@@ -10,19 +10,22 @@ import 'package:provider/provider.dart';
 import 'internationalization.dart';
 
 class AlertUtil {
-  static void showAlert(String key, String contentKey, String title, String content, BuildContext context) {
+  static void showAlert(String key, String contentKey, String title,
+      String content, BuildContext context) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Internationalization.internationalization.createLocalizedSemantics(
+            title: Internationalization.internationalization
+                .createLocalizedSemantics(
               context,
               '${key}_label',
               '${key}_hint',
               key,
               const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            content: Internationalization.internationalization.createLocalizedSemantics(
+            content: Internationalization.internationalization
+                .createLocalizedSemantics(
               context,
               '${contentKey}_label',
               '${contentKey}_hint',
@@ -35,7 +38,8 @@ class AlertUtil {
                   // SE CIERRA EL DIALOGO CUANDO PULSE "aceptar"
                   Navigator.of(context).pop();
                 },
-                child: Internationalization.internationalization.createLocalizedSemantics(
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
                   context,
                   'accept_label',
                   'accept_hint',
@@ -57,7 +61,8 @@ class AlertUtil {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Internationalization.internationalization.createLocalizedSemantics(
+          title: Internationalization.internationalization
+              .createLocalizedSemantics(
             context,
             '${titleKey}_label',
             '${titleKey}_hint',
@@ -67,7 +72,8 @@ class AlertUtil {
           content: Column(
             mainAxisSize: MainAxisSize.min, // AJUSTE DE TAMAÑO DEL CONTENIDO
             children: [
-              Internationalization.internationalization.createLocalizedSemantics(
+              Internationalization.internationalization
+                  .createLocalizedSemantics(
                 context,
                 '${contentKey}_label',
                 '${contentKey}_hint',
@@ -78,7 +84,8 @@ class AlertUtil {
               TextField(
                 controller: controller,
                 decoration: InputDecoration(
-                  labelText: Internationalization.internationalization.getLocalizations(context, labelText),
+                  labelText: Internationalization.internationalization
+                      .getLocalizations(context, labelText),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -94,7 +101,8 @@ class AlertUtil {
                   Navigator.of(context).pop(); // SE ESTA VACIO, NO RETORNA NADA
                 }
               },
-              child: Internationalization.internationalization.createLocalizedSemantics(
+              child: Internationalization.internationalization
+                  .createLocalizedSemantics(
                 context,
                 'accept_label',
                 'accept_hint',
@@ -108,22 +116,24 @@ class AlertUtil {
     );
   } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO
 
-  static showDeleteSessionOrCube(BuildContext context, String key, String contentKey,
-       Function delete) {
+  static showDeleteSessionOrCube(
+      BuildContext context, String key, String contentKey, Function delete) {
     // SE MUESTRA EL DIALOG
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             // TITULO DE LA ALERTA
-            title: Internationalization.internationalization.createLocalizedSemantics(
+            title: Internationalization.internationalization
+                .createLocalizedSemantics(
               context,
               '${key}_label',
               '${key}_hint',
               key,
               const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            content: Internationalization.internationalization.createLocalizedSemantics(
+            content: Internationalization.internationalization
+                .createLocalizedSemantics(
               context,
               '${contentKey}_label',
               '${contentKey}_hint',
@@ -136,7 +146,8 @@ class AlertUtil {
                 onPressed: () {
                   Navigator.pop(context, 'Cancel');
                 },
-                child:Internationalization.internationalization.createLocalizedSemantics(
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
                   context,
                   'cancel_label',
                   'cancel_hint',
@@ -149,7 +160,8 @@ class AlertUtil {
                   Navigator.pop(context, 'OK');
                   delete(); // FUNCION PARA ELIMINAR SI PULSA OK
                 },
-                child: Internationalization.internationalization.createLocalizedSemantics(
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
                   context,
                   'accept_label',
                   'accept_hint',
@@ -181,8 +193,8 @@ class AlertUtil {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconClass.iconButton(context, (){}, "add_penalty", Icons.block),
-
+                IconClass.iconButton(
+                    context, () {}, "add_penalty", Icons.block),
                 Text(
                   timeTraining.timeInSeconds.toString(),
                   style: const TextStyle(
@@ -191,8 +203,8 @@ class AlertUtil {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
-                IconClass.iconButton(context, (){}, "delete_time", Icons.delete)
+                IconClass.iconButton(
+                    context, () {}, "delete_time", Icons.delete)
               ],
             ),
             content: Column(
@@ -201,7 +213,8 @@ class AlertUtil {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconClass.iconButton(context, (){}, "date", Icons.calendar_month),
+                    IconClass.iconButton(
+                        context, () {}, "date", Icons.calendar_month),
                     Text(
                       DateFormat('dd/MM/yyyy').format(DateTime.now()),
                       style: const TextStyle(
@@ -285,7 +298,7 @@ class AlertUtil {
                         style: const TextStyle(fontSize: 14),
                       ),
                     ),
-                    IconClass.iconButton(context,() async {
+                    IconClass.iconButton(context, () async {
                       await Clipboard.setData(
                           ClipboardData(text: timeTraining.scramble));
                       // MUESTRA MENSAJE DE QUE SE COPIO CORRECTAMENTE
@@ -299,8 +312,10 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR DETALLES DEL TIEMPO SELECCIONADO
 
-
-  static showChangeLanguague(BuildContext context, String key,) {
+  static showChangeLanguague(
+    BuildContext context,
+    String key,
+  ) {
     // SE MUESTRA EL DIALOG
     return showDialog(
         context: context,
@@ -308,19 +323,48 @@ class AlertUtil {
           return AlertDialog(
             backgroundColor: AppColors.lightVioletColor,
             // TITULO DE LA ALERTA
-            title: Text("Select a language:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            title: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context,
+              "select_languages",
+              "select_languages",
+              "select_languages",
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             content: Column(
               // NOS ASEGURAMOS QUE EL TAMAÑO SEA EL MINIMO
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextButton(onPressed: (){
-                  context.read<CurrentLanguage>().cambiarIdioma('es');
-                }, child: Text("Spanish")),
-                TextButton(onPressed: (){
-                  context.read<CurrentLanguage>().cambiarIdioma('en');
-                }, child: Text("English")),
+                TextButton(
+                  onPressed: () {
+                    context.read<CurrentLanguage>().cambiarIdioma('es');
+                  },
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    "spanish",
+                    "spanish_hint",
+                    "spanish",
+                    const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.read<CurrentLanguage>().cambiarIdioma('en');
+                  },
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    "english",
+                    "english_hint",
+                    "english",
+                    const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
               ],
             ),
           );
@@ -334,7 +378,8 @@ class AlertUtil {
       behavior: SnackBarBehavior.floating,
       backgroundColor: color, // COLOR DE FONDO
       action: SnackBarAction(
-        label: Internationalization.internationalization.getLocalizations(context, "accept_label"), // TEXTO DEL BOTON DE ACCION
+        label: Internationalization.internationalization.getLocalizations(
+            context, "accept_label"), // TEXTO DEL BOTON DE ACCION
         textColor: Colors.yellow, // COLOR DEL TEXTO DEL BOTON
         onPressed: () {
           // SE CIERRA EL SNACKBAR CUANDO PULSE "Accept"
@@ -367,12 +412,14 @@ class AlertUtil {
   } // MOSTRAR UN SNACKBAR
 
   static showSnackBarError(BuildContext context, String messageKey) {
-    final message = Internationalization.internationalization.getLocalizations(context, messageKey);
+    final message = Internationalization.internationalization
+        .getLocalizations(context, messageKey);
     showSnackBar(context, Icons.error, message, Colors.redAccent);
   } // SNACKBAR PARA MOSTRAR UN ERROR
 
   static showSnackBarInformation(BuildContext context, String messageKey) {
-    final message = Internationalization.internationalization.getLocalizations(context, messageKey);
+    final message = Internationalization.internationalization
+        .getLocalizations(context, messageKey);
     showSnackBar(context, Icons.info, message, Colors.green);
   } // SNACKBAR PARA MOSTRAR UNA INFORMACION
 }
