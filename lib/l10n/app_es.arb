@@ -173,5 +173,18 @@
   "spanish": "Español",
   "spanish_hint": "Selecciona el idioma español",
   "english": "Inglés",
-  "english_hint": "Selecciona el idoma inglés"
+  "english_hint": "Selecciona el idoma inglés",
+
+  "delete_time_correct": "Se eliminó el tiempo correctamente",
+  "delete_time_error": "Ocurrió un error al eliminar el tiempo",
+
+  "add_time_label": "Añade un tiempo manualmente",
+  "add_time_hint": "Formulario para añadir un tiempo manualmente",
+  "add_scramble_form_label": "Añade el scramble del tiempo",
+  "add_scramble_form_hint": "Campo para rellenar con el scramble del tiempo",
+  "add_time_form_label": "Añade el tiempo",
+  "add_time_form_hint": "Campo para rellanar con el tiempo",
+
+  "add_time_succesfully": "Se añadio el tiempo correctamente",
+   "add_time_error": "Ocurrio un error al añadir el tiempo"
 }

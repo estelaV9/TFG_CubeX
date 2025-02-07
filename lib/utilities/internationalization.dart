@@ -340,6 +340,29 @@ class Internationalization {
       case 'english_hint':
         return l10n.english_hint;
 
+      case 'delete_time_correct':
+        return l10n.delete_time_correct;
+      case 'delete_time_error':
+        return l10n.delete_time_error;
+
+      case 'add_time_label':
+        return l10n.add_time_label;
+      case 'add_time_hint':
+        return l10n.add_time_hint;
+      case 'add_scramble_form_label':
+        return l10n.add_scramble_form_label;
+      case 'add_scramble_form_hint':
+        return l10n.add_scramble_form_hint;
+      case 'add_time_form_label':
+        return l10n.add_time_form_label;
+      case 'add_time_form_hint':
+        return l10n.add_time_form_hint;
+
+      case 'add_time_succesfully':
+        return l10n.add_time_succesfully;
+      case 'add_time_error':
+        return l10n.add_time_error;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;

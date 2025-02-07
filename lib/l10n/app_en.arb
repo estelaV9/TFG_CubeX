@@ -175,7 +175,18 @@
   "spanish": "Spanish",
   "spanish_hint": "Select the Spanish language",
   "english": "English",
-  "english_hint": "Select the English language"
+  "english_hint": "Select the English language",
 
+  "delete_time_correct": "The time was deleted successfully",
+  "delete_time_error": "An error occurred while deleting the time",
 
+  "add_time_label": "Add a time manually",
+  "add_time_hint": "Form to add a time manually",
+  "add_scramble_form_label": "Add the scramble of the time",
+  "add_scramble_form_hint": "Field to fill with the scramble of the time",
+  "add_time_form_label": "Add the time",
+  "add_time_form_hint": "Field to fill with the time",
+
+  "add_time_succesfully": "The time was added successfully",
+  "add_time_error": "An error occurred while adding the time"
 }

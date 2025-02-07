@@ -97,7 +97,6 @@ class TimeTrainingDao {
     } // DEVUELVE ELMEJOR TIEMPO FORMATEADO
   } // METODO PARA OBTENER EL MEJOR TIEMPO DE UNA SESION
 
-
   Future<String> getWorstTimeBySession(List<TimeTraining> timesList) async {
     var worstTime = 0.0; // INICIALIZAR EL PEOR TIEMPO
     int minutes = 0;
@@ -119,11 +118,9 @@ class TimeTrainingDao {
     } // DEVUELVE EL PEOR TIEMPO FORMATEADO
   } // METODO PARA OBTENER EL PEOR TIEMPO DE UNA SESION
 
-
   Future<int> getCountBySession(List<TimeTraining> timesList) async {
     return timesList.length; // DEVUELVE EL TAMAÑO DE LA LISTA DE TIEMPOS
   } // METODO PARA OBTENER LA CANTIDAD DE TIEMPOS QUE HAY EN UNA SESION
-
 
   /*Future<String> getAoX(List<TimeTraining> timesList, int numAvg) async {
     if (timesList.length < numAvg) {
@@ -157,4 +154,51 @@ class TimeTrainingDao {
 
     return "$minutes:$seconds";
   } // METODO PARA HACER LA MEDIA DE x TIEMPOS (5,12,50,100,total)*/
+
+  Future<bool> deleteTime(int idTimeTraining) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // SE ELIMINA EL TIEMPO CON EL ID PROPORCIONADO
+      final deleteTime = await db.delete('timeTraining',
+          where: 'idTimeTraining = ?', whereArgs: [idTimeTraining]);
+
+      // DEVUELVE TRUE/FALSE SI SE ELIMINO CORRECTAMENTE O NO
+      return deleteTime > 0;
+    } catch (e) {
+      // RETORNA FALSE Y UN MENSAJE SI OCURRE UN ERROR
+      DatabaseHelper.logger.e("Error al eliminar el tiempo: $e");
+      return false;
+    }
+  } // METODO PARA ELIMINAR UN TIEMPO POR EL ID DEL TIEMPO
+
+  Future<int> getIdByTime(String scramble, int idSession) async {
+    final db = await DatabaseHelper.database;
+    int idTime = -1; // ID DEL TIEMPO RETORNADO
+    try {
+      // REALIZA LA CONSULTA A LA BASE DE DATOS
+      final result = await db.query(
+        'timeTraining',
+        where: 'scramble = ? AND idSession = ?',
+        whereArgs: [scramble, idSession],
+      );
+
+      if (result.isNotEmpty) {
+        // RETORNA EL ID DEL TIEMPO OBTENIDO
+        idTime = result.first['idTimeTraining'] as int;
+      } else {
+        // SI NO ENCUENTRA EL TIEMPO, DEVUELVE UN -1
+        DatabaseHelper.logger.w(
+            "No se encontró ningún tiempo con ese scramble: $scramble y el id de sesión: $idSession");
+      } // SI LA CONSULTA NO ES NULA Y DEVUELVE -1
+
+      return idTime; // RETORNA EL IDTIME
+    } catch (e) {
+      // SI OCURRE UN ERROR MUESTRA UN MENSAJE DE ERROR
+      DatabaseHelper.logger.e(
+          "Error al obtener el tiempo por su scramble: $scramble y el id de sesión: $idSession");
+      // RETORNA -1 EN CASO DE ERROR
+      return idTime;
+    }
+  } // METODO PARA BUSCAR UN TIEMPO POR SU SCRAMBLE Y EL ID DE LA SESION
+// (como el scramble suele ser unico se busca por eso y para ser mas exactos se busca por la sesion en concreto)
 }
