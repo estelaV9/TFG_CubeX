@@ -340,6 +340,11 @@ class Internationalization {
       case 'english_hint':
         return l10n.english_hint;
 
+      case 'delete_time_correct':
+        return l10n.delete_time_correct;
+      case 'delete_time_error':
+        return l10n.delete_time_error;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;

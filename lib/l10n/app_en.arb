@@ -175,7 +175,8 @@
   "spanish": "Spanish",
   "spanish_hint": "Select the Spanish language",
   "english": "English",
-  "english_hint": "Select the English language"
+  "english_hint": "Select the English language",
 
-
+  "delete_time_correct": "The time was deleted successfully",
+  "delete_time_error": "An error occurred while deleting the time"
 }

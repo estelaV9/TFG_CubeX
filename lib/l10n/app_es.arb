@@ -173,5 +173,8 @@
   "spanish": "Español",
   "spanish_hint": "Selecciona el idioma español",
   "english": "Inglés",
-  "english_hint": "Selecciona el idoma inglés"
+  "english_hint": "Selecciona el idoma inglés",
+
+  "delete_time_correct": "Se eliminó el tiempo correctamente",
+  "delete_time_error": "Ocurrió un error al eliminar el tiempo"
 }
