@@ -115,6 +115,7 @@ class _PasswordFieldFormState extends State<PasswordFieldForm> {
                     label: widget.labelSemantics,
                     hint: widget.hintSemantics,
                     child: TextFormField(
+                        key: widget.key,
                         controller: widget.controller,
                         obscureText: _isObscure,
                         decoration: InputDecoration(

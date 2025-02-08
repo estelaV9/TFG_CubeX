@@ -106,6 +106,7 @@ class _FieldFormState extends State<FieldForm> {
                     label: widget.labelSemantics,
                     hint: widget.hintSemantics,
                     child: TextFormField(
+                        key: widget.key,
                         controller: widget.controller,
                         decoration: InputDecoration(
                           labelText: widget.labelText,

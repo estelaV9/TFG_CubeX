@@ -132,6 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
     double fontSizeByButton = currentLocale.languageCode == 'es' ? 35 : 45;
 
     return Scaffold(
+      key: const Key('loginScreenKey'),
       body: Stack(
         children: [
           Container(
@@ -189,6 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             FieldForm(
+                              key: const Key('usernameField'),
                               icon: IconClass.iconMaker(
                                   context, Icons.person, "username"),
                               labelText: Internationalization
@@ -208,6 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 10),
                             PasswordFieldForm(
+                              key: const Key('passwordField'),
                               icon: IconClass.iconMaker(
                                   context, Icons.lock, "password"),
                               labelText: Internationalization
@@ -274,6 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           const SizedBox(width: 14),
                           ElevatedButton(
+                              key: const Key('loginButton'),
                               onPressed: () {
                                 _login();
                               },
