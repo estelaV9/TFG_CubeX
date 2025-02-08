@@ -19,7 +19,14 @@ import '../model/session.dart';
 import '../viewmodel/current_user.dart';
 import 'internationalization.dart';
 
+/// Clase **AlertUtil** que sirve para mostrar diversos tipos de alertas
+/// en la aplicación, con soporte para internacionalización.
 class AlertUtil {
+  /// Muestra una alerta simple con título y contenido.
+  ///
+  /// Los parámetros [key] y [contentKey] se utilizan para obtener los textos
+  /// localizados a través de claves. El parámetro [title] define el título de la alerta,
+  /// y el parámetro [content] define el contenido que se muestra en el cuerpo.
   static void showAlert(String key, String contentKey, String title,
       String content, BuildContext context) {
     showDialog(
@@ -62,6 +69,12 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA
 
+  /// Muestra un formulario con un campo de texto para que el usuario ingrese información.
+  ///
+  /// El parámetro [titleKey] se usa para localizar el título del diálogo.
+  /// [contentKey] se usa para localizar el contenido del diálogo, y [labelText]
+  /// es el texto que se muestra en la etiqueta del campo de texto.
+  /// Si el campo no está vacío, el valor ingresado se retorna.
   static Future<String?> showAlertForm(String titleKey, String contentKey,
       String labelText, BuildContext context) async {
     final TextEditingController controller = TextEditingController();
@@ -126,6 +139,11 @@ class AlertUtil {
     );
   } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO
 
+  /// Muestra un formulario para agregar un nuevo tiempo y scramble.
+  ///
+  /// Los parámetros [titleKey], [addScrambleKey] y [addTimeKey] se usan para localizar los textos
+  /// del título y contenido del diálogo. [scrambleLabelText] y [timeLabelText] son los textos
+  /// que se muestran como etiquetas en los campos de texto para ingresar el scramble y el tiempo.
   static Future<String?> showAlertFormAddTime(
       String titleKey,
       String addScrambleKey,
@@ -251,6 +269,14 @@ class AlertUtil {
     );
   } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO PARA AÑADIR UN TIEMPO
 
+  /// Método para mostrar un cuadro de diálogo que permite confirmar la
+  /// eliminación de una sesión o cubo.
+  ///
+  /// Parametros:
+  /// `context`: El contexto de la aplicación para poder mostrar el diálogo.
+  /// `key`: La clave que se usa para obtener las traducciones del título de la alerta.
+  /// `contentKey`: La clave para obtener el contenido de la alerta.
+  /// `delete`: Función que se ejecutará si el usuario confirma la eliminación.
   static showDeleteSessionOrCube(
       BuildContext context, String key, String contentKey, Function delete) {
     // SE MUESTRA EL DIALOG
@@ -309,6 +335,12 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA DE SI DESEA ELIMINAR LA SESION O EL TIPO DE CUBO
 
+  /// Método para mostrar los detalles de un tiempo seleccionado.
+  ///
+  /// Parametros:
+  /// `context`: El contexto de la aplicación para poder mostrar el diálogo.
+  /// `deleteTime`: Función que se ejecutará si el usuario confirma la eliminación del tiempo.
+  /// `timeTraining`: Objeto que contiene los detalles del tiempo.
   static showDetailsTime(BuildContext context,
       Future<void> Function() deleteTime, TimeTraining timeTraining) {
     var colorPressed = AppColors.purpleButton;
@@ -449,6 +481,11 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR DETALLES DEL TIEMPO SELECCIONADO
 
+  /// Método para mostrar un cuadro de diálogo para cambiar el idioma de la aplicación.
+  ///
+  /// Parámetros:
+  /// `context`: El contexto de la aplicación para mostrar el diálogo.
+  /// `key`: Clave para obtener la traducción de la interfaz del diálogo.
   static showChangeLanguague(
     BuildContext context,
     String key,
@@ -508,6 +545,13 @@ class AlertUtil {
         });
   } // ALERTA PARA ESTABLECER EL IDOMA
 
+  /// Método para mostrar un Snackbar con un mensaje personalizado.
+  ///
+  /// Parámetros:
+  /// `context`: El contexto de la aplicación para mostrar el Snackbar.
+  /// `icon`: El icono que se mostrará junto al mensaje.
+  /// `message`: El mensaje que se mostrará en el Snackbar.
+  /// `color`: El color de fondo del Snackbar.
   static showSnackBar(
       BuildContext context, IconData icon, String message, Color color) {
     // CREAMOS EL SNACKBAR
@@ -548,12 +592,23 @@ class AlertUtil {
     });
   } // MOSTRAR UN SNACKBAR
 
+  /// Método para mostrar un Snackbar de error.
+  ///
+  /// Parametros:
+  /// `context`: El contexto de la aplicación.
+  /// `messageKey`: La clave para obtener el mensaje de error.
   static showSnackBarError(BuildContext context, String messageKey) {
     final message = Internationalization.internationalization
         .getLocalizations(context, messageKey);
     showSnackBar(context, Icons.error, message, Colors.redAccent);
   } // SNACKBAR PARA MOSTRAR UN ERROR
 
+
+  /// Método para mostrar un Snackbar con información.
+  ///
+  /// Parámetros:
+  /// `context`: El contexto de la aplicación.
+  /// `messageKey`: La clave para obtener el mensaje informativo.
   static showSnackBarInformation(BuildContext context, String messageKey) {
     final message = Internationalization.internationalization
         .getLocalizations(context, messageKey);

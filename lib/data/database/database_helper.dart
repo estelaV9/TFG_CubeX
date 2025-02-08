@@ -5,11 +5,21 @@ import 'package:path/path.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/services.dart';
 
+/// Esta clase sirve maneja la inicialización y administración de la base de datos en la aplicación,
+/// proporcionando métodos para manejar la base de datos tanto en dispositivos móviles como en
+/// entornos de escritorio (usando SQLite).
+///
+/// Se adapta a las plataformas Android, iOS y Desktop (usando sqflite-ffi para escritorio).
 // ESTA CLASE EMULA, TANTO EN DESKTOP COMO EN MOVIL
 class DatabaseHelper {
   static Database? _database;
   static final logger = Logger();
 
+  /// Método para inicializar la base de datos, que se adapta según la plataforma.
+  /// Si la plataforma es Android o iOS, se inicializa la base de datos móvil, de lo contrario,
+  /// se inicializa la base de datos para escritorio.
+  ///
+  /// Devuelve una instancia de la base de datos.
   static Future<Database> initDatabase() async {
     if (Platform.isAndroid || Platform.isIOS) {
       return _initMobileDatabase(); // INICIA EN MOVILES
@@ -18,6 +28,13 @@ class DatabaseHelper {
     } // SEGUN EL ENTORNO (SI ES MOVIL O DESKTOP) SE EJECUTA DE UNA MANERA
   } // FUNCION PARA INICIALIZAR LA BASE DE DATOS
 
+  /// Método para inicializar la base de datos en dispositivos móviles.
+  ///
+  /// - Obtiene la ruta del sistema de archivos donde la base de datos debe estar ubicada.
+  /// - Si la base de datos no existe, la copia desde los recursos del proyecto.
+  /// - Abre la base de datos y activa las claves foráneas.
+  ///
+  /// Devuelve la instancia de la base de datos.
   static Future<Database> _initMobileDatabase() async {
     // OBTENER LA RUTA DE LA BASE DE DATOS PARA MOVIL
     final dbPath = await getDatabasesPath();
@@ -58,6 +75,13 @@ class DatabaseHelper {
     return db;
   } // MOVILES: FUNCION PARA INICIALIZAR LA BASE DE DATOS DESDE EL ARCHIVO DE "databaseCubeX.db"
 
+  /// Método para inicializar la base de datos en entornos de escritorio.
+  ///
+  /// - Inicializa sqflite-ffi para permitir la interacción con SQLite en escritorio.
+  /// - Obtiene la ruta donde la base de datos debe estar ubicada.
+  /// - Abre la base de datos y activa las claves foráneas.
+  ///
+  /// Devuelve la instancia de la base de datos.
   static Future<Database> _initDesktopDatabase() async {
     sqfliteFfiInit(); // INICIALIZAR EL sqflite PARA ESCRITORIO
     databaseFactory = databaseFactoryFfi;
@@ -86,6 +110,12 @@ class DatabaseHelper {
     return db;
   } // DESKTOP: FUNCION PARA INICIALIZAR LA BASE DE DATOS DESDE EL ARCHIVO DE "databaseCubeX.db"
 
+  /// Método para crear las tablas en la base de datos.
+  ///
+  /// Crea varias tablas `user`, `cubeType`, `sessionTime`, `timeTraining`,
+  /// `versusCompetition`, `timeCompetition`, y `average`. Si alguna tabla ya existe, no se
+  /// vuelve a crear.
+  /// Utiliza transacciones para ejecutar las consultas SQL.
   static Future<void> _createTables(Database db) async {
     try {
       // SE CREAN LAS TABLAS
@@ -191,6 +221,8 @@ class DatabaseHelper {
     }
   } // METODO PARA CREAR LAS TABLAS
 
+  /// Método que devuelve la instancia de la base de datos.
+  /// Si la base de datos aún no está inicializada, la inicializa.
   static Future<Database> get database async {
     _database ??=
         await initDatabase(); // SI LA BD NO ESTA INICIALIZADA, SE INICIALIZA
