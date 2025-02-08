@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../utilities/app_color.dart';
-import '../../../utilities/internationalization.dart';
+import '../../../view/utilities/app_color.dart';
+import '../../utilities/internationalization.dart';
 
 /// Esta clase proporciona métodos estáticos para crear diferentes tipos de iconos
 /// con Tooltips, como `Icon`, `IconButton` e `IconButton` con imágenes.

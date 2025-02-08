@@ -4,14 +4,14 @@ import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
-import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/database/database_helper.dart';
 import '../../model/session.dart';
-import '../../utilities/internationalization.dart';
+import '../utilities/internationalization.dart';
 import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_statistics.dart';
 import '../../viewmodel/current_user.dart';

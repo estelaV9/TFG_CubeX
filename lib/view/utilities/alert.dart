@@ -3,7 +3,7 @@ import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
@@ -12,11 +12,11 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../data/dao/user_dao.dart';
-import '../data/database/database_helper.dart';
-import '../model/cubetype.dart';
-import '../model/session.dart';
-import '../viewmodel/current_user.dart';
+import '../../data/dao/user_dao.dart';
+import '../../data/database/database_helper.dart';
+import '../../model/cubetype.dart';
+import '../../model/session.dart';
+import '../../viewmodel/current_user.dart';
 import 'internationalization.dart';
 
 /// Clase **AlertUtil** que sirve para mostrar diversos tipos de alertas

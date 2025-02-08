@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
 /// Pantalla que muestra un cronómetro con un tiempo de inspección al mantener presionado.
 /// El cronómetro se inicia después de la cuenta atrás y muestra el tiempo transcurrido.

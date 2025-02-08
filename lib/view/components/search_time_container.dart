@@ -1,9 +1,9 @@
-import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
-import '../../utilities/internationalization.dart';
+import '../utilities/internationalization.dart';
 
 /// Widget contenedor que muestra un botón para añadir un tiempo manualmente.
 ///

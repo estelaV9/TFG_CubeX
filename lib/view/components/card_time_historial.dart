@@ -1,7 +1,7 @@
 import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
-import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/session.dart';
 import '../../model/time_training.dart';
-import '../../utilities/app_color.dart';
+import '../../view/utilities/app_color.dart';
 import '../../viewmodel/current_user.dart';
 
 /// Widget que muestra una lista de tiempos registrados en un cubo de una sesión.
