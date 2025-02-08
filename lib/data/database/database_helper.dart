@@ -24,8 +24,7 @@ class DatabaseHelper {
     final dbFullPath = join(dbPath, 'database_schema.db');
 
     // RUTA DEL ARCHIVO DONDE SE ENCUENTRA LA BASE DE DATOS
-    final dbFilePath =
-    join(dbPath, 'databaseCubeX.db');
+    final dbFilePath = join(dbPath, 'databaseCubeX.db');
 
     logger.i("Ruta de la base de datos: $dbFilePath");
 
@@ -46,9 +45,12 @@ class DatabaseHelper {
     final db = await openDatabase(dbFullPath);
     logger.i("Se creo correctamente la base de datos"); // SE MUESTRA UN MENSAJE
 
+    // HABILITAR CLASE FORANEAS
+    await db.execute('PRAGMA foreign_keys = ON;');
+
     try {
       // SE EJECUTA EL ARCHIVO QUE CONTIENE TODA LA BASE DE DATOS
-      await _createTables(db, dbFilePath);
+      await _createTables(db);
     } catch (e) {
       logger.e("Error al crear las tablas: $e");
     }
@@ -61,19 +63,22 @@ class DatabaseHelper {
     databaseFactory = databaseFactoryFfi;
 
     // OBTENER LA RUTA DE LA BASE DE DATOS EN LA CARPETA DATABASE
-    final dbPath =
-        join(Directory.current.path, 'lib', 'data/database', 'database_schema.db');
+    final dbPath = join(
+        Directory.current.path, 'lib', 'data/database', 'database_schema.db');
 
     // RUTA DEL ARCHIVO DONDE SE ENCUENTRA LA BASE DE DATOS
-    final dbFilePath =
-    join(Directory.current.path, 'lib', 'data/database', 'databaseCubeX.db');
+    final dbFilePath = join(
+        Directory.current.path, 'lib', 'data/database', 'databaseCubeX.db');
 
     final db = await databaseFactory.openDatabase(dbPath);
-    logger.i("Se creo correctamente la base de datos"); // SE MUESTRA UN MENSAJE
+    logger.i("Se creó correctamente la base de datos"); // SE MUESTRA UN MENSAJE
+
+    // HABILITAR CLASE FORANEAS
+    await db.execute('PRAGMA foreign_keys = ON;');
 
     try {
       // SE EJECUTA EL ARCHIVO QUE CONTIENE TODA LA BASE DE DATOS
-      await _createTables(db, dbFilePath);
+      await _createTables(db);
     } catch (e) {
       logger.e("Error al crear las tablas: $e");
     }
@@ -81,34 +86,109 @@ class DatabaseHelper {
     return db;
   } // DESKTOP: FUNCION PARA INICIALIZAR LA BASE DE DATOS DESDE EL ARCHIVO DE "databaseCubeX.db"
 
-  static Future<void> _createTables(Database db, String dbFilePath) async {
-    final file = File(dbFilePath); // SE CONVIERTE A ARCHIVO
+  static Future<void> _createTables(Database db) async {
+    try {
+      // SE CREAN LAS TABLAS
+      await db.transaction((txn) async {
+        // EJECUTAR LAS SENTENCIAS SQL PARA CREAR TODAS LAS TABLAS
+        await txn.execute('''
+            CREATE TABLE IF NOT EXISTS user (
+              idUser INTEGER PRIMARY KEY AUTOINCREMENT,
+              username TEXT(12) NOT NULL UNIQUE, 
+              mail TEXT NOT NULL UNIQUE, 
+              passwordHash TEXT NOT NULL,
+              creationDate TIME NOT NULL,
+              imageUrl TEXT NOT NULL
+            );
+          ''');
 
-    if (!file.existsSync()) {
-      logger.e("Archivo DB no encontrado: $dbFilePath");
-      return; // DETIENE LA EJECUCIÓN SI EL ARCHIVO NO EXISTE
-    } // SI NO EXISTE SE MUESTRA UN ERROR
+        await txn.execute('''
+            INSERT OR REPLACE INTO user (username, mail, passwordHash, creationDate, imageUrl)
+            VALUES ('admin', 'admin@admin.com', '12345678(', CURRENT_TIMESTAMP, 'imagen');
+          ''');
 
-    final dbContent = await file.readAsString(); // LEE CONTENIDO DEL ARCHIVO
+        await txn.execute('''
+            CREATE TABLE IF NOT EXISTS cubeType (
+              idCubeType INTEGER PRIMARY KEY AUTOINCREMENT,
+              cubeName TEXT NOT NULL, 
+              idUser INTEGER NOT NULL, 
+              UNIQUE (idUser, cubeName)
+            );
+          ''');
 
-    // SEPARA EL CONTENIDO EN SENTENCIAS
-    final dbStatements =
-        // SE DIVIDE EL CONTENIDO DEL ARCHIVO DB EN SENTENCIAS SEPARADAS POR ';',
-        dbContent
-            .split(';')
-            // SE ELIMINAN LOS ESPACIOS AL PRINCIPIO Y FINAL DE CADA SENTENCIA,
-            .map((stmt) => stmt.trim())
-            // Y SE FILTRAN AQUELLOS ELEMENTOS VACÍOS (EN CASO DE QUE HAYA SENTENCIAS VACÍAS)
-            .where((stmt) => stmt.isNotEmpty);
+        await txn.execute('''
+            CREATE TABLE IF NOT EXISTS sessionTime (
+              idSession INTEGER PRIMARY KEY AUTOINCREMENT,
+              idUser INTEGER NOT NULL,
+              sessionName TEXT NOT NULL,
+              creationDate TIME NOT NULL,
+              idCubeType INTEGER NOT NULL,
+              FOREIGN KEY (idUser) REFERENCES user (idUser),
+              FOREIGN KEY (idCubeType) REFERENCES cubeType (idCubeType),
+              UNIQUE (idUser, sessionName, idCubeType)
+            );
+          ''');
 
-    await db.transaction((txn) async {
-      for (final statement in dbStatements) {
-        await txn.execute(statement);
-      }
-    }); // SE EJECUTA CADA SENTENCIA DENTRO DE UNA TRANSACCION
+        await txn.execute('''
+            CREATE TABLE IF NOT EXISTS timeTraining (
+              idTimeTraining INTEGER PRIMARY KEY AUTOINCREMENT,
+              idSession INTEGER NOT NULL,
+              scramble TEXT NOT NULL,
+              timeInSeconds REAL NOT NULL,
+              comments TEXT DEFAULT NULL,
+              penalty TEXT CHECK(penalty IN ('none', 'DNF', '+2')) DEFAULT 'none',
+              registrationDate TIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY (idSession) REFERENCES sessionTime (idSession)
+            );
+          ''');
 
-    logger.i(
-        "Base de datos inicializada correctamente desde archivo de la base de datos.");
+        await txn.execute('''
+            CREATE TABLE IF NOT EXISTS versusCompetition (
+              idVersusCompe INTEGER PRIMARY KEY AUTOINCREMENT,
+              idUser INTEGER NOT NULL,
+              cuber1Name TEXT NOT NULL,
+              cuber2Name TEXT NOT NULL,
+              winner TEXT NOT NULL,
+              registrationDate TIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY (idUser) REFERENCES user (idUser)
+            );
+          ''');
+
+        await txn.execute('''
+            CREATE TABLE IF NOT EXISTS timeCompetition (
+              idTimeCompetition INTEGER PRIMARY KEY AUTOINCREMENT,
+              idVersusCompe INTEGER NOT NULL,
+              scramble TEXT NOT NULL,
+              timeCuber1InSeconds REAL NOT NULL,
+              timeCuber2InSeconds REAL NOT NULL,
+              commentsCuber1 TEXT DEFAULT NULL,
+              commentsCuber2 TEXT DEFAULT NULL,
+              penaltyCuber1 TEXT CHECK(penaltyCuber1 IN ('none', 'DNF', '+2')) DEFAULT 'none',
+              penaltyCuber2 TEXT CHECK(penaltyCuber2 IN ('none', 'DNF', '+2')) DEFAULT 'none',
+              registrationDate TIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              idCubeType INTEGER NOT NULL,
+              FOREIGN KEY (idCubeType) REFERENCES cubeType (idCubeType), 
+              FOREIGN KEY (idVersusCompe) REFERENCES versusCompetition (idVersusCompe)
+            );
+          ''');
+
+        await txn.execute('''
+            CREATE TABLE IF NOT EXISTS average (
+              idAverage INTEGER PRIMARY KEY AUTOINCREMENT,
+              idSession INTEGER NOT NULL,
+              avgTimeInSeconds REAL DEFAULT NULL,
+              numberOfSolves INTEGER DEFAULT NULL,
+              pbTimeInSeconds REAL DEFAULT NULL,
+              worstTimeInSeconds REAL DEFAULT NULL,
+              FOREIGN KEY (idSession) REFERENCES sessionTime (idSession)
+            );
+          ''');
+
+        logger.i("Tablas creadas correctamente.");
+      });
+    } catch (e) {
+      logger.e("Error al crear las tablas: $e");
+    }
   } // METODO PARA CREAR LAS TABLAS
 
   static Future<Database> get database async {
