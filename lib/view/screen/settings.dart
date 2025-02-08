@@ -1,6 +1,6 @@
-import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
-import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/my_profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
-import '../../utilities/internationalization.dart';
+import '../utilities/internationalization.dart';
 import '../../viewmodel/current_user.dart';
 import '../components/settings_container.dart';
 
@@ -37,7 +37,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   static Future<void> startPreferences() async {
     preferences = await SharedPreferences.getInstance();
     if (preferences.getKeys().isEmpty) {
-      await preferences.setString("language", "es");
+      await preferences.setString("language", "en");
     }
   }
 

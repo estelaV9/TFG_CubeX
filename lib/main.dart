@@ -5,10 +5,10 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/signup_screen.dart';
-import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'data/database/database_helper.dart';
@@ -21,6 +21,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 /// y luego ejecuta la aplicación en un `MultiProvider` que maneja
 /// el estado global de la aplicación.
 void main() async {
+  // ASEGURA LA INICIACION DE LOS BINDING
+  WidgetsFlutterBinding.ensureInitialized();
   // SE INICIALIZA LA BASE DE DATOS Y SE CONFIGURA LAS PREFERENCIAS
   await DatabaseHelper.initDatabase();
   await SettingsScreenState.startPreferences();

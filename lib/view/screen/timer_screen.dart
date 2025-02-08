@@ -6,7 +6,7 @@ import 'package:esteladevega_tfg_cubex/view/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/view/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/show_time_screen.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
-import 'package:esteladevega_tfg_cubex/utilities/internationalization.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,9 +21,16 @@ import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
 import '../../viewmodel/current_user.dart';
-import '../../utilities/ScrambleGenerator.dart';
-import '../../utilities/app_color.dart';
+import '../utilities/ScrambleGenerator.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
+/// Pantalla principal del temporizador del cubo.
+///
+/// Esta pantalla permite al usuario cronometrar sus tiempos de un cubo,
+/// mostrando estadísticas como el mejor tiempo (PB), el peor tiempo (worst),
+/// entre otras estadísticas.
+///
+/// Además, permite insertar sesiones y tipos de cubos.
 class TimerScreen extends StatefulWidget {
   const TimerScreen({super.key});
 
@@ -47,6 +54,9 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao50Value = "--:--.--";
   var ao100Value = "--:--.--";
 
+  /// Método para insertar tiempos de prueba en la base de datos.
+  ///
+  /// No se utiliza.
   void insertTimes() async {
     final userDao = UserDao();
     final sessionDao = SessionDao();
@@ -181,6 +191,11 @@ class _TimerScreenState extends State<TimerScreen> {
     initTimeStatistics();
   }
 
+  /// Método para inicializar las estadísticas de tiempo.
+  ///
+  /// Este método obtiene los tiempos almacenados en la base de datos para la sesión actual
+  /// y actualiza, actualmentem las estadísticas como el mejor tiempo (PB), el peor tiempo y
+  /// el número de tiempos que hay en la sesión.
   void initTimeStatistics() async {
     final userDao = UserDao();
     final sessionDao = SessionDao();
@@ -243,6 +258,10 @@ class _TimerScreenState extends State<TimerScreen> {
   // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
   int random = (Random().nextInt(25 - 20 + 1) + 20);
 
+  /// Abre la pantalla [ShowTimeScreen] y espera el tiempo final del usuario.
+  ///
+  /// Una vez que el usuario termine de resolver el cubo, se guarda el tiempo
+  /// en la base de datos y se actualiza el scramble mostrado.
   void _openShowTimerScreen(BuildContext context) async {
     // OBTENEMOS EL SCRAMBLE ACTUAL ANTES DE ABRIR LA PANTALLA DE SHOWTIME
     final currentScramble = context.read<CurrentScramble>().scramble.toString();
@@ -269,6 +288,10 @@ class _TimerScreenState extends State<TimerScreen> {
     }
   } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
 
+  /// Guarda el tiempo realizado en la base de datos.
+  ///
+  /// Este método recibe el tiempo final en segundos y el scramble utilizado,
+  /// luego guarda el tiempo en la base de datos en la tabla correspondiente.
   Future<void> _saveTimeToDatabase(
       double timeInSeconds, String scramble) async {
     final userDao = UserDao();
@@ -413,6 +436,7 @@ class _TimerScreenState extends State<TimerScreen> {
                           hint: Internationalization.internationalization
                               .getLocalizations(context, "time_hint"),
                           child: Text(
+                            key: const Key('timer_display'),
                             _finalTime,
                             style: const TextStyle(
                               fontSize: 40,

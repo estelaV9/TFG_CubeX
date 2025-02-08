@@ -1,5 +1,5 @@
 import 'package:esteladevega_tfg_cubex/view/screen/timer_screen.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 import '../screen/historial_screen.dart';

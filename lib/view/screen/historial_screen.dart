@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../components/Icon/icon.dart';
 import '../../view/components/cube_header_container.dart';
 import '../../view/navigation/app_drawer.dart';
-import '../../utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
 /// Pantalla del historial
 ///

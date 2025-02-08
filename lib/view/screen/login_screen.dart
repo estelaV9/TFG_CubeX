@@ -1,18 +1,16 @@
 import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/icon_image_fieldrow.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/signup_screen.dart';
-import 'package:esteladevega_tfg_cubex/utilities/alert.dart';
-import 'package:esteladevega_tfg_cubex/utilities/change_screen.dart';
-import 'package:esteladevega_tfg_cubex/utilities/encrypt_password.dart';
-import 'package:esteladevega_tfg_cubex/utilities/validator.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/encrypt_password.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/dao/session_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/session.dart';
@@ -22,7 +20,7 @@ import '../components/password_field_row.dart';
 import '../../model/user.dart';
 import '../../view/navigation/bottom_navigation.dart';
 import '../../viewmodel/current_user.dart';
-import '../../utilities/internationalization.dart';
+import '../utilities/internationalization.dart';
 
 /// Pantalla de inicio de sesión.
 ///
@@ -132,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
     double fontSizeByButton = currentLocale.languageCode == 'es' ? 35 : 45;
 
     return Scaffold(
+      key: const Key('loginScreenKey'),
       body: Stack(
         children: [
           Container(
@@ -189,6 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             FieldForm(
+                              key: const Key('usernameField'),
                               icon: IconClass.iconMaker(
                                   context, Icons.person, "username"),
                               labelText: Internationalization
@@ -208,6 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 10),
                             PasswordFieldForm(
+                              key: const Key('passwordField'),
                               icon: IconClass.iconMaker(
                                   context, Icons.lock, "password"),
                               labelText: Internationalization
@@ -274,6 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           const SizedBox(width: 14),
                           ElevatedButton(
+                              key: const Key('loginButton'),
                               onPressed: () {
                                 _login();
                               },

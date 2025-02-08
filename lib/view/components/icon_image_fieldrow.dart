@@ -1,4 +1,4 @@
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 /// Componente de formulario con un **campo de texto**.
@@ -106,6 +106,7 @@ class _FieldFormState extends State<FieldForm> {
                     label: widget.labelSemantics,
                     hint: widget.hintSemantics,
                     child: TextFormField(
+                        key: widget.key,
                         controller: widget.controller,
                         decoration: InputDecoration(
                           labelText: widget.labelText,

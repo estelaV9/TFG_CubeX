@@ -1,5 +1,5 @@
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 /// Widget para un campo de formulario de contraseña.
@@ -115,6 +115,7 @@ class _PasswordFieldFormState extends State<PasswordFieldForm> {
                     label: widget.labelSemantics,
                     hint: widget.hintSemantics,
                     child: TextFormField(
+                        key: widget.key,
                         controller: widget.controller,
                         obscureText: _isObscure,
                         decoration: InputDecoration(

@@ -1,9 +1,9 @@
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../utilities/internationalization.dart';
+import '../utilities/internationalization.dart';
 
 /// Pantalla de información acerca de la aplicación.
 ///
