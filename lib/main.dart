@@ -21,6 +21,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 /// y luego ejecuta la aplicación en un `MultiProvider` que maneja
 /// el estado global de la aplicación.
 void main() async {
+  // ASEGURA LA INICIACION DE LOS BINDING
+  WidgetsFlutterBinding.ensureInitialized();
   // SE INICIALIZA LA BASE DE DATOS Y SE CONFIGURA LAS PREFERENCIAS
   await DatabaseHelper.initDatabase();
   await SettingsScreenState.startPreferences();
