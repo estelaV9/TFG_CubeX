@@ -235,10 +235,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       // Sign up
-                      Flexible(
-                          child: Container(
+                      Container(
                         // LIMITA EL ANCHO
-                        constraints: const BoxConstraints(maxWidth: 250),
+                        constraints: const BoxConstraints(maxWidth: 300),
                         child: Text(
                           Internationalization.internationalization
                               .getLocalizations(
@@ -251,7 +250,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      )),
+                      ),
                       const SizedBox(height: 10),
                       Form(
                           key: _formKey,
