@@ -1,20 +1,38 @@
-import 'package:esteladevega_tfg_cubex/state/current_cube_type.dart';
-import 'package:esteladevega_tfg_cubex/state/current_session.dart';
-import 'package:esteladevega_tfg_cubex/state/current_user.dart';
-import 'package:esteladevega_tfg_cubex/utilities/app_color.dart';
-import 'package:esteladevega_tfg_cubex/screen/login_screen.dart';
-import 'package:esteladevega_tfg_cubex/screen/signup_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/signup_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'database/database_helper.dart';
+import 'data/database/database_helper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
+/// Método principal de la aplicación: Inicio de la app.
+///
+/// Este método inicializa la base de datos y las preferencias,
+/// y luego ejecuta la aplicación en un `MultiProvider` que maneja
+/// el estado global de la aplicación.
 void main() async {
-  // SE INICIALIZA LA BASE DE DATOS
+  // ASEGURA LA INICIACION DE LOS BINDING
+  WidgetsFlutterBinding.ensureInitialized();
+  // SE INICIALIZA LA BASE DE DATOS Y SE CONFIGURA LAS PREFERENCIAS
   await DatabaseHelper.initDatabase();
+  await SettingsScreenState.startPreferences();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CurrentCubeType()),
+        ChangeNotifierProvider(create: (_) => CurrentLanguage()),
+        ChangeNotifierProvider(create: (_) => CurrentStatistics()),
+        ChangeNotifierProvider(create: (_) => CurrentScramble()),
         ChangeNotifierProvider(create: (_) => CurrentSession()),
         ChangeNotifierProvider(create: (context) => CurrentUser()),
       ],
@@ -23,17 +41,41 @@ void main() async {
   ); // SE INICIA LA APLICACION DENTRO DE UN PROVIDER PARA GESTIONAR EL USUARIO
 }
 
+/// Clase principal de la aplicación CubeX.
+///
+/// La clase CubeXApp configura el idioma y la pantalla inicial
+/// de la aplicación a través de un `MaterialApp`.
 class CubeXApp extends StatelessWidget {
   const CubeXApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        debugShowCheckedModeBanner: false, // QUITAR MARCA DEBUG
-        home: IntroScreen());
+    // ESTABLECER IDIOMA
+    final locale = context.watch<CurrentLanguage>().locale;
+
+    return MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
+        supportedLocales: const [
+          Locale('es'),
+          Locale('en')
+        ],
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        // QUITAR MARCA DEBUG
+        home: const IntroScreen());
   }
 }
 
+/// Pantalla de introducción de la aplicación.
+///
+/// Esta pantalla se muestra al inicio de la aplicación y contiene
+/// el logo, el nombre de la aplicación y botones para iniciar sesión
+/// o registrarse.
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
 
@@ -57,21 +99,26 @@ class _IntroScreenState extends State<IntroScreen> {
       ),
       child: Column(
         children: [
-          const Stack(
+          Stack(
             children: [
               Padding(
                 // SE DESPLAZA LA POSICIÓN PARA QUE SE VEA EL OTRO TEXTO
-                padding: EdgeInsets.only(right: 10),
-                child: Text(
-                  "CubeX",
-                  style: TextStyle(
+                padding: const EdgeInsets.only(right: 10),
+                // CubeX
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  "cube_x",
+                  "cube_x",
+                  "cube_x",
+                  const TextStyle(
                     fontFamily: 'JollyLodger',
                     fontSize: 132,
                     color: AppColors.purpleIntroColor,
                   ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(left: 7),
                 child: Text(
                   "CubeX",
@@ -91,9 +138,14 @@ class _IntroScreenState extends State<IntroScreen> {
             child: Column(
               children: [
                 Image.asset("assets/app_logo.png"),
-                const Text(
-                  "Take your skills to the next level.",
-                  style: TextStyle(
+                // Take your skills to the next level.
+                Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  "main_title",
+                  "main_title_hint",
+                  "main_title",
+                  const TextStyle(
                     fontFamily: 'Berlin Sans FB',
                     color: Colors.white,
                     fontSize: 30,
@@ -134,9 +186,14 @@ class _IntroScreenState extends State<IntroScreen> {
                                         width: 1), // BORDE NEGRO
                                   ),
                                 ),
-                                child: const Text(
-                                  "Log in",
-                                  style: TextStyle(
+                                // Log in
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context,
+                                  "login_label",
+                                  "login_hint",
+                                  "login_label",
+                                  const TextStyle(
                                     fontFamily: 'JollyLodger',
                                     fontSize: 35,
                                     color: Colors.black87,
@@ -175,9 +232,14 @@ class _IntroScreenState extends State<IntroScreen> {
                                         width: 1), // BORDE NEGRO
                                   ),
                                 ),
-                                child: const Text(
-                                  "Sign up",
-                                  style: TextStyle(
+                                // Sign up
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context,
+                                  "signup_label",
+                                  "signup_hint",
+                                  "signup_label",
+                                  const TextStyle(
                                     fontFamily: 'JollyLodger',
                                     fontSize: 35,
                                     color: Colors.black87,
