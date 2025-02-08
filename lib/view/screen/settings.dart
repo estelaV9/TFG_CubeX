@@ -37,7 +37,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   static Future<void> startPreferences() async {
     preferences = await SharedPreferences.getInstance();
     if (preferences.getKeys().isEmpty) {
-      await preferences.setString("language", "es");
+      await preferences.setString("language", "en");
     }
   }
 
