@@ -8,6 +8,7 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  stroke_text: any
   sqflite: ^2.4.1
   sqflite_common_ffi: ^2.3.4+3
   path: ^1.8.0
