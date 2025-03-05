@@ -229,19 +229,21 @@ class _TimerScreenState extends State<TimerScreen> {
     String pb = await currentStatistics.getPbValue();
     String worst = await currentStatistics.getWorstValue();
     String count = await currentStatistics.getCountValue();
-    /*String ao5 = await currentStatistics.getAo5Value();
+    String ao5 = await currentStatistics.getAo5Value();
     String ao12 = await currentStatistics.getAo12Value();
     String ao50 = await currentStatistics.getAo50Value();
-    String ao100 = await currentStatistics.getAo100Value();*/
+    String ao100 = await currentStatistics.getAo100Value();
+    String average = await currentStatistics.getAoXValue(timesList.length);
 
     setState(() {
+      averageValue = average;
       pbValue = pb;
       worstValue = worst;
       countValue = count;
-      ao5Value = ao5Value;
-      ao12Value = ao12Value;
-      ao50Value = ao50Value;
-      ao100Value = ao100Value;
+      ao5Value = ao5;
+      ao12Value = ao12;
+      ao50Value = ao50;
+      ao100Value = ao100;
     }); // SETTEA EL ESTADO DE LAS ESTADISTICAS
   } // INICIALIZAR/ACTUALIZAR LAS ESTADISTICA
 
