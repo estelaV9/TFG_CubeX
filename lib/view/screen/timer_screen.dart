@@ -24,6 +24,8 @@ import '../../viewmodel/current_user.dart';
 import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
+import '../utilities/alert.dart';
+
 /// Pantalla principal del temporizador del cubo.
 ///
 /// Esta pantalla permite al usuario cronometrar sus tiempos de un cubo,
@@ -218,7 +220,8 @@ class _TimerScreenState extends State<TimerScreen> {
 
     final cubeType = await cubeDao.cubeTypeDefault(currentCubeType!.cubeName);
 
-    final session = await sessionDao.getSessionByUserCubeName(idUser, currentSession!.sessionName, cubeType.idCube);
+    final session = await sessionDao.getSessionByUserCubeName(
+        idUser, currentSession!.sessionName, cubeType.idCube);
 
     var timesList = await timeTrainingDao.getTimesOfSession(session!.idSession);
 
@@ -311,11 +314,11 @@ class _TimerScreenState extends State<TimerScreen> {
         return;
       } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
-
       // OBTENER LA SESSION Y EL TIPO DE CUBO ACTUAL
       final currentSession = context.read<CurrentSession>().session;
       final currentCube = context.read<CurrentCubeType>().cubeType;
-      CubeType? cubeType = await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
+      CubeType? cubeType =
+          await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
       if (cubeType == null) {
         DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
         return;
@@ -325,10 +328,8 @@ class _TimerScreenState extends State<TimerScreen> {
       int idSession =
           await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
 
-      Session? session =
-      await sessionDao.getSessionByUserCubeName(
+      Session? session = await sessionDao.getSessionByUserCubeName(
           idUser, currentSession!.sessionName, cubeType.idCube);
-
 
       final timeTraining = TimeTraining(
         idSession: session!.idSession,
@@ -356,7 +357,10 @@ class _TimerScreenState extends State<TimerScreen> {
     }
   } // METODO PARA GUARDAR EL TIEMPO REALIZADO
 
-  void logicComment() {} // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
+  void logicComment() {
+    // APARECERA UNA ALERTA PARA QUE INTRODUZCA UN COMENTARIO
+    AlertUtil.showCommentsTime(context);
+  } // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
 
   void
       logicDeleteTime() {} // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
@@ -394,7 +398,8 @@ class _TimerScreenState extends State<TimerScreen> {
                 onPressed: () {
                   _scaffoldKey.currentState?.openDrawer(); // ABRE EL DRAWER
                 },
-                icon: IconClass.iconMaker(context, Icons.settings, "settings", 30)),
+                icon: IconClass.iconMaker(
+                    context, Icons.settings, "settings", 30)),
           ),
 
           // CONTAINER DEL TIPO DE CUBO Y LA SESION UN POCO MAS ABAJO A LA DERECHA
@@ -422,145 +427,144 @@ class _TimerScreenState extends State<TimerScreen> {
               }, // CUANDO MANTIENE PULSADO ABRE LA PANTALLA DE MOSTRAR TIMER
               child: Column(
                 children: [
-                  Container(
-                    padding:
-                        // TODO_EL ESPACIO QUE OCUPA EL ESPACIO DEL TIMER
-                        const EdgeInsets.symmetric(
-                            vertical: 80, horizontal: 20),
-                    child: Column(
-                      // SE CENTRA
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Semantics(
-                          label: Internationalization.internationalization
-                              .getLocalizations(context, "time_label"),
-                          hint: Internationalization.internationalization
-                              .getLocalizations(context, "time_hint"),
-                          child: Text(
-                            key: const Key('timer_display'),
-                            _finalTime,
-                            style: const TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.darkPurpleColor,
+                  // EXPANDE EL CONTENEDOR CON EL TIMER PARA QUE OCUPE TODO_EL ESPACIO
+                  // DISPONIBLE ENTRE EL SCRAMBLE Y LAS ESTADISTICAS
+                  Expanded(
+                    child: Container(
+                      // SOLO SE PONE PADDING HORIZONTAL PARA NO DEJAR FIJO EL VERTICAL
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        // SE CENTRA
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Semantics(
+                            label: Internationalization.internationalization
+                                .getLocalizations(context, "time_label"),
+                            hint: Internationalization.internationalization
+                                .getLocalizations(context, "time_hint"),
+                            child: Text(
+                              key: const Key('timer_display'),
+                              _finalTime,
+                              style: const TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.darkPurpleColor,
+                              ),
                             ),
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconClass.iconButton(context, logicComment, "add_comment",
-                                Icons.add_comment_rounded),
-                            TextButton(
-                              onPressed: () {},
-                              child:
-                                  // DNF
-                                  Internationalization.internationalization
-                                      .createLocalizedSemantics(
-                                context,
-                                "dnf_label",
-                                "dnf_hint",
-                                "dnf",
-                                const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconClass.iconButton(context, logicComment,
+                                  "add_comment", Icons.add_comment_rounded),
+                              TextButton(
+                                onPressed: () {},
+                                child:
+                                    // DNF
+                                    Internationalization.internationalization
+                                        .createLocalizedSemantics(
+                                  context,
+                                  "dnf_label",
+                                  "dnf_hint",
+                                  "dnf",
+                                  const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.darkPurpleColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child:
-                                  // +2
-                                  Internationalization.internationalization
-                                      .createLocalizedSemantics(
-                                context,
-                                "plus_two_label",
-                                "plus_two_hint",
-                                "plus_two",
-                                const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor,
+                              TextButton(
+                                onPressed: () {},
+                                child:
+                                    // +2
+                                    Internationalization.internationalization
+                                        .createLocalizedSemantics(
+                                  context,
+                                  "plus_two_label",
+                                  "plus_two_hint",
+                                  "plus_two",
+                                  const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.darkPurpleColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                            IconClass.iconButton(context,
-                                logicDeleteTime, "delete_time", Icons.close),
-                          ],
-                        )
-                      ],
+                              IconClass.iconButton(context, logicDeleteTime,
+                                  "delete_time", Icons.close),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
 
-                  // EXPANDE EL CONTENEDOR CON LOS TEXTOS PARA QUE OCUPE TODO_EL ESPACIO
-                  // DISPONIBLE ENTRE EL TIMER Y LOS TEXTOS
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Row(
-                              // ESPACIO ENTRE LAS COLUMNAS
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // COLUMNA IZQUIERDA
-                                Column(
-                                  // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Average: $averageValue",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Pb: $pbValue",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Worst: $worstValue",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Count: $countValue",
-                                      style: style,
-                                    ),
-                                  ],
-                                ),
+                  // ESTADISTICAS
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            // ESPACIO ENTRE LAS COLUMNAS
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // COLUMNA IZQUIERDA
+                              Column(
+                                // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Average: $averageValue",
+                                    style: style,
+                                  ),
+                                  Text(
+                                    "Pb: $pbValue",
+                                    style: style,
+                                  ),
+                                  Text(
+                                    "Worst: $worstValue",
+                                    style: style,
+                                  ),
+                                  Text(
+                                    "Count: $countValue",
+                                    style: style,
+                                  ),
+                                ],
+                              ),
 
-                                //COLUMNA DERECHA
-                                Column(
-                                  // EMPIEZA DESDE ARRIBA A LA DERECHA
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "Ao5: $ao5Value",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Ao12: $ao12Value",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Ao50: $ao50Value",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Ao100: $ao100Value",
-                                      style: style,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              //COLUMNA DERECHA
+                              Column(
+                                // EMPIEZA DESDE ARRIBA A LA DERECHA
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "Ao5: $ao5Value",
+                                    style: style,
+                                  ),
+                                  Text(
+                                    "Ao12: $ao12Value",
+                                    style: style,
+                                  ),
+                                  Text(
+                                    "Ao50: $ao50Value",
+                                    style: style,
+                                  ),
+                                  Text(
+                                    "Ao100: $ao100Value",
+                                    style: style,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
