@@ -5,6 +5,7 @@ import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
+import 'package:esteladevega_tfg_cubex/view/components/wave_container_painter.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
@@ -16,6 +17,7 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stroke_text/stroke_text.dart';
 
 import '../components/Icon/icon.dart';
 import '../../view/navigation/bottom_navigation.dart';
@@ -215,40 +217,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
           ),
+
+          // SE DEJA UN HUECO DONDE SE VE UN POCO LA PARTE DE ARRIBA
+
           Positioned.fill(
-              top: 150,
-              // SE DEJA UN HUECO DONDE SE VE UN POCO LA PARTE DE ARRIBA
-              child: Container(
-                decoration: const BoxDecoration(
-                  // COLOR DEGRADADO PARA EL FONDO
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter, // DESDE ARRIBA
-                    end: Alignment.bottomCenter, // HASTA ABAJO
-                    colors: [
-                      AppColors.upLinearColor, // COLOR DE ARRIBA DEL DEGRADADO
-                      AppColors.downLinearColor, // COLOR DE ABAJO DEL DEGRADADO
-                    ],
-                  ),
-                ),
+              child: CustomPaint(
+                painter: WaveContainerPainter(),
+                // FORMULARIO
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 65),
                   child: Column(
                     children: [
+                      // AÑADE UN ESPACIO GRANDE
+                      const Spacer(),
                       // Sign up
                       Container(
+                        margin: const EdgeInsets.only(top: 60),
                         // LIMITA EL ANCHO
                         constraints: const BoxConstraints(maxWidth: 300),
-                        child: Text(
-                          Internationalization.internationalization
+                        child: StrokeText(
+                          text: Internationalization.internationalization
                               .getLocalizations(
                                   context, "sign_up_button"),
-                          style: TextStyle(
+                          textStyle: TextStyle(
                               fontFamily: 'Gluten',
                               fontSize: fontSize,
                               color: AppColors.lightPurpleColor),
                           // AÑADE PUNTOS SUSPNESIVOS
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
+
+                          // DA CONTORNO AL TEXTO
+                          strokeColor: AppColors.darkPurpleColor,
+                          strokeWidth: 5,
                         ),
                       ),
                       const SizedBox(height: 10),
