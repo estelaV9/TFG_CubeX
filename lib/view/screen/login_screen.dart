@@ -158,6 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Log in
                   Flexible(
                     child: Container(
+                      margin: const EdgeInsets.only(top: 40),
                       // LIMITA EL ANCHO
                       constraints: const BoxConstraints(maxWidth: 250),
                       // SE UTILIZA EL WIDGET STROKETEXT PARA DARLE CONTORNO AL TEXTO
