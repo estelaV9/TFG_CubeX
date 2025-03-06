@@ -21,6 +21,7 @@ import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
 import '../../viewmodel/current_user.dart';
+import '../components/small_wave_container_painter.dart';
 import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
@@ -390,21 +391,38 @@ class _TimerScreenState extends State<TimerScreen> {
             ),
           )),
 
-          // BOTON DE CONFIGURACION ARRIBA A LA IZQUIERDA
           Positioned(
-            top: 20,
-            left: 20,
-            child: IconButton(
-                onPressed: () {
-                  _scaffoldKey.currentState?.openDrawer(); // ABRE EL DRAWER
-                },
-                icon: IconClass.iconMaker(
-                    context, Icons.settings, "settings", 30)),
+            // UBICARLO EN LA ESQUINA SUPERIOR IZQUIERDA
+            top: 0,
+            left: 0,
+            child: CustomPaint(
+              painter: SmallWaveContainerPainter(
+                backgroundColor: AppColors.lightVioletColor,
+              ),
+              child: SizedBox(
+                width: 190, // ANCHO
+                height: 97, // ALTO
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 7, top: 0),
+                    child: IconButton(
+                      onPressed: () {
+                        _scaffoldKey.currentState?.openDrawer();
+                      },
+                      icon: IconClass.iconMaker(
+                          context, Icons.settings, "settings", 26
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
 
           // CONTAINER DEL TIPO DE CUBO Y LA SESION UN POCO MAS ABAJO A LA DERECHA
           const Positioned(
-            top: 40,
+            top: 43,
             right: 20,
             child: CubeHeaderContainer(),
           ),
