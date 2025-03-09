@@ -360,7 +360,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   void logicComment() {
     // APARECERA UNA ALERTA PARA QUE INTRODUZCA UN COMENTARIO
-    AlertUtil.showCommentsTime(context);
+    // AlertUtil.showCommentsTime(context);
   } // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
 
   void
