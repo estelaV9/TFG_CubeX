@@ -20,7 +20,7 @@ import '../components/password_field_row.dart';
 import '../../model/user.dart';
 import '../../view/navigation/bottom_navigation.dart';
 import '../../viewmodel/current_user.dart';
-import '../components/wave_container_painter.dart';
+import '../components/waves_painter/wave_container_painter.dart';
 import '../utilities/internationalization.dart';
 
 /// Pantalla de inicio de sesión.

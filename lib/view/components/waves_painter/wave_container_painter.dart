@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utilities/app_color.dart';
+import '../../utilities/app_color.dart';
 
 /// Clase que dibuja una wave personalizada con un degradado y una sombra violeta.
 ///

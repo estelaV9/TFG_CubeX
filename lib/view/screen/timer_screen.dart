@@ -21,7 +21,7 @@ import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
 import '../../viewmodel/current_user.dart';
-import '../components/small_wave_container_painter.dart';
+import '../components/waves_painter/small_wave_container_painter.dart';
 import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 

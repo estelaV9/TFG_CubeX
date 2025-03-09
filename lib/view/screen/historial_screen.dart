@@ -7,7 +7,7 @@ import '../../view/components/cube_header_container.dart';
 import '../../view/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
-import '../components/small_wave_container_painter.dart';
+import '../components/waves_painter/small_wave_container_painter.dart';
 
 /// Pantalla del historial
 ///

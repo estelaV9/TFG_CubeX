@@ -5,7 +5,7 @@ import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
-import 'package:esteladevega_tfg_cubex/view/components/wave_container_painter.dart';
+import 'package:esteladevega_tfg_cubex/view/components/waves_painter/wave_container_painter.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
