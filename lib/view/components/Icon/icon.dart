@@ -63,8 +63,11 @@ class IconClass {
   /// - `filePath`: La ruta del archivo de la imagen que se va a mostrar en el botón.
   /// - `messageKey`: La clave de mensaje para obtener el texto del Tooltip.
   static Tooltip iconButtonImage(BuildContext context,
-      VoidCallback function, String filePath, String messageKey) {
+      VoidCallback function, String filePath, String messageKey, [double? size]) {
     final messageTooltip = Internationalization.internationalization.getLocalizations(context, messageKey);
+
+    // SI EL TAMAÑO ES NULO, SE LE AÑADE UN VALOR POR DEFECTO
+    size ??= 40;
 
     return Tooltip(
       // CUANDO SE PASE EL MOUSE SALDRA UN TEXTO
@@ -85,8 +88,8 @@ class IconClass {
           child: SizedBox(
               child: Image.asset(
             // SE LE DA UN TAMAÑO A LA IMAGEN
-            width: 40,
-            height: 40,
+            width: size,
+            height: size,
             filePath,
             color: AppColors.darkPurpleColor,
           ))),
