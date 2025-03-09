@@ -259,6 +259,31 @@ class TimeTrainingDao {
     }
   } // METODO PARA ELIMINAR UN TIEMPO POR EL ID DEL TIEMPO
 
+  /// Método para eliminar todos los tiempos de una sesión.
+  ///
+  /// Este método elimina todos los tiempos registrados en la base de datos
+  /// utilizando el ID de la sesión.
+  ///
+  /// Parámetros:
+  /// - `idSession`: ID de la sesión a la que se quieren eliminar todos los tiempos.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si todos los tiempos fueron eliminados correctamente, `false` si ocurrió un error.
+  Future<bool> deleteAllTimeBySession(int? idSession) async {
+    final db = await DatabaseHelper.database;
+    try{
+      // SE ELIMINAN TODOS LOS TIEMPOS DE LA SESION
+      final deleteAllTime = await db.delete('timeTraining', where: 'idSession = ?', whereArgs: [idSession]);
+
+      // DEVUELVE TRUE/FALSE SI SE ELIMINARON CORRECTAMENTE O NO
+      return deleteAllTime > 0;
+    } catch (e){
+      // RETORNA FALSE Y UN MENSAJE SI OCURRE UN ERROR
+      DatabaseHelper.logger.e("Error al eliminar todos los tiempos de la sesión $idSession: $e");
+      return false;
+    }
+  } // METODO PARA ELIMINAR TODOS LOS TIEMPOS DE UNA SESION
+
   /// Método para obtener el ID de un tiempo a partir del scramble y el ID de la sesión.
   ///
   /// Este método busca un tiempo en la base de datos utilizando el scramble
