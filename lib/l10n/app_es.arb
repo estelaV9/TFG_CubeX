@@ -189,5 +189,13 @@
   "add_time_error": "Ocurrio un error al añadir el tiempo",
 
    "delete_user_successfully": "Se eliminó el usuario correctamente",
-   "delete_user_error": "Ocurrió un error al eliminar usuario"
+   "delete_user_error": "Ocurrió un error al eliminar usuario",
+
+
+   "delete_all_times_label": "Eliminar todos los tiempos de la sesión",
+   "delete_all_times_hint": "¿Estás seguro de que deseas eliminar todos tus tiempos guardados con esta sesión?",
+   "all_times_deleted_successful": "Todos los tiempos eliminados con éxito",
+   "all_times_deletion_failed": "Error al eliminar todos los tiempos. Por favor, inténtalo de nuevo.",
+
+   "search_time_or_comments": "Buscar tiempo o comentarios..."
 }

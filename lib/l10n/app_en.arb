@@ -191,5 +191,12 @@
   "add_time_error": "An error occurred while adding the time",
 
   "delete_user_successfully": "The user was deleted successfully",
-  "delete_user_error": "An error occurred while deleting the user"
+  "delete_user_error": "An error occurred while deleting the user",
+
+  "delete_all_times_label": "Delete all session times",
+  "delete_all_times_hint": "Are you sure you want to delete all your saved times for this session?",
+  "all_times_deleted_successful": "All times successfully deleted",
+  "all_times_deletion_failed": "Failed to delete all times. Please try again.",
+
+  "search_time_or_comments": "Search time or comment..."
 }

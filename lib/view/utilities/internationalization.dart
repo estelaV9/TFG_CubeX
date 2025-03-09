@@ -398,6 +398,18 @@ class Internationalization {
       case 'delete_user_error':
         return l10n.delete_user_error;
 
+      case 'all_times_deletion_failed':
+        return l10n.all_times_deletion_failed;
+      case 'all_times_deleted_successful':
+        return l10n.all_times_deleted_successful;
+      case 'delete_all_times_hint':
+        return l10n.delete_all_times_hint;
+      case 'delete_all_times_label':
+        return l10n.delete_all_times_label;
+
+      case 'search_time_or_comments':
+        return l10n.search_time_or_comments;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;
