@@ -47,23 +47,66 @@ class CurrentStatistics extends ChangeNotifier {
   } // METODO PARA OBTENER EL TOTAL DE TIEMPOS EN LA SESION
 
 
-  /*Future<String> getAoXValue(int numAvg) async {
+  /// Obtiene la **media de X tiempos (AoX)** de la sesión actual.
+  ///
+  /// Este método utiliza la función `getAoX()` del DAO para calcular la media
+  /// de los **X tiempos más recientes**, eliminando el mejor y peor tiempo.
+  ///
+  /// Parámetros:
+  /// - `numAvg`: Número de tiempos para calcular la media.
+  ///
+  /// Retorna:
+  /// - Media de tiempos en formato `"mm:ss.ss"` si hay suficientes tiempos.
+  /// - `"--:--.--"` si no hay suficientes tiempos para calcular la media.
+  Future<String> getAoXValue(int numAvg) async {
     return await TimeTrainingDao().getAoX(_timesList, numAvg);
   } // METODO AUXILIAR OBTENER LA MEDIA DE LOS X TIEMPOS DE LA SESION
 
+  /// Obtiene la **Average of 5 (Ao5)** de los tiempos más recientes.
+  ///
+  /// Calcula la media de los últimos **5 tiempos registrados**, eliminando
+  /// el mejor y peor tiempo.
+  ///
+  /// Retorna:
+  /// - `"mm:ss.ss"` si hay al menos 5 tiempos.
+  /// - `"--:--.--"` si hay menos de 5 tiempos.
   Future<String> getAo5Value() async {
     return await getAoXValue(5);
   } // OBTIENE LA MEDIA DE LOS 5 TIEMPOS MAS RECIENTES
 
+  /// Obtiene la **Average of 12 (Ao12)** de los tiempos más recientes.
+  ///
+  /// Calcula la media de los últimos **12 tiempos registrados**, eliminando
+  /// el mejor y peor tiempo.
+  ///
+  /// Retorna:
+  /// - `"mm:ss.ss"` si hay al menos 12 tiempos.
+  /// - `"--:--.--"` si hay menos de 12 tiempos.
   Future<String> getAo12Value() async {
     return await getAoXValue(12);
   } // OBTENER LA MEDIA DE LOS 12 TIEMPOS MAS RECIENTES
 
+  /// Obtiene la **Average of 50 (Ao50)** de los tiempos más recientes.
+  ///
+  /// Calcula la media de los últimos **50 tiempos registrados**, eliminando
+  /// el mejor y peor tiempo.
+  ///
+  /// Retorna:
+  /// - `"mm:ss.ss"` si hay al menos 50 tiempos.
+  /// - `"--:--.--"` si hay menos de 50 tiempos.
   Future<String> getAo50Value() async {
     return await getAoXValue(50);
   } // METODO PARA OBTENER LA MEDIA DE LOS 50 TIEMPOS MAS RECIENTES
 
+  /// Obtiene la **Average of 100 (Ao100)** de los tiempos más recientes.
+  ///
+  /// Calcula la media de los últimos **100 tiempos registrados**, eliminando
+  /// el mejor y peor tiempo.
+  ///
+  /// Retorna:
+  /// - `"mm:ss.ss"` si hay al menos 100 tiempos.
+  /// - `"--:--.--"` si hay menos de 100 tiempos.
   Future<String> getAo100Value() async {
     return await getAoXValue(100);
-  } // METODO PARA OBTENER LA MEDIA DE LOS 100 TIEMPOS MAS RECIENTES*/
+  } // METODO PARA OBTENER LA MEDIA DE LOS 100 TIEMPOS MAS RECIENTES
 }

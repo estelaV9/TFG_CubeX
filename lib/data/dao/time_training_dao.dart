@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:math';
-
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 
 import '../database/database_helper.dart';
@@ -177,17 +174,26 @@ class TimeTrainingDao {
     return timesList.length; // DEVUELVE EL TAMAÑO DE LA LISTA DE TIEMPOS
   } // METODO PARA OBTENER LA CANTIDAD DE TIEMPOS QUE HAY EN UNA SESION
 
-  /*Future<String> getAoX(List<TimeTraining> timesList, int numAvg) async {
+  /// Metodo para calcular la **media de X tiempos (AoX)** de una sesión.
+  ///
+  /// Este metodo calcula la media de los **X tiempos más recientes** registrados en la sesión,
+  /// eliminando el mejor y el peor tiempo.
+  ///
+  /// Parametros:
+  /// - `timesList`: Lista de tiempos [TimeTraining] registrados.
+  /// - `numAvg`: Número de tiempos que se usan para calcular la media.
+  ///
+  /// Retorna:
+  /// - **String**: Tiempo medio en formato `"mm:ss.ss"` si hay suficientes tiempos.
+  /// - `"--:--.--"` si hay menos tiempos de los necesarios para calcular la media.
+  Future<String> getAoX(List<TimeTraining> timesList, int numAvg) async {
     if (timesList.length < numAvg) {
       return "--:--.--";
     } // SI NO HAY LOS x TIEMPOS PARA HACER ESA MEDIA, DEVUELVE EL STRING POR DEFECTO
 
     double avgTimeInSeconds = 0.0;
 
-    int minutes = 0;
-    double seconds = 0.0;
-
-    // ORDENAMOS POR FECHA MAS RECIENTE
+    // ORDENAMOS LA LISTA POR FECHA MAS RECIENTE
     timesList.sort((a, b) {
       // CONVERTIMOS LAS FECHAS A DATETIME PARA HACER LA COMPARACION
       DateTime dateA = DateTime.parse(a.registrationDate);
@@ -197,18 +203,35 @@ class TimeTrainingDao {
       return dateB.compareTo(dateA); // SE ORDENA DE MAS RECIENTE
     });
 
-    for (int i = 0; i <= numAvg; i++) {
-      avgTimeInSeconds += timesList[i].timeInSeconds; // SUMAMOS EL TIEMPO
-    } // RECORRE LOS TIEMPOS HASTA EL NUMERO PROPORCIONADO
+    // COGEMOS SOLO LOS x TIEMPOS MAS RECIENTES QUE QUEREMOS USAR EN LA MEDIA
+    // (.take devuelve los primeros numAvg elementos de la lista)
+    List<TimeTraining> recentTimes = timesList.take(numAvg).toList();
 
-    double aux = avgTimeInSeconds;
-    while (aux % 60 > 9) {
-      minutes++;
-      aux % 10;
-    }
+    // ORDENAMOS POR TIEMPO PARA SACAR EL MEJOR Y EL PEOR
+    recentTimes.sort((a, b) => a.timeInSeconds.compareTo(b.timeInSeconds));
 
-    return "$minutes:$seconds";
-  } // METODO PARA HACER LA MEDIA DE x TIEMPOS (5,12,50,100,total)*/
+    // QUITAMOS EL MEJOR TIEMPO (PRIMERO) Y EL PEOR TIEMPO (ULTIMO)
+    recentTimes.removeAt(0); // MEJOR
+    recentTimes.removeLast(); // PEOR
+
+
+    for (var time in recentTimes) {
+      avgTimeInSeconds += time.timeInSeconds;
+    } // SUMAMOS LOS TIEMPOS RESTANTES
+
+    // HACEMOS LA MEDIA DIVIDIENDO POR LOS TIEMPOS QUE QUEDAN
+    avgTimeInSeconds = avgTimeInSeconds / recentTimes.length;
+
+    // SACAMOS MINUTOS Y SEGUNDOS
+    int minutes = avgTimeInSeconds ~/ 60; // MINUTOS
+    double seconds = avgTimeInSeconds % 60; // SEGUNDOS
+
+    // DEVOLVEMOS EL RESULTADO FORMATEADO mm:ss.ss
+    // (se usa padLeft para asegura que el string tenga siempre 5 caracteres
+    // rellenando con ceros a la izquierda si hace falta. Y se redondea a 2
+    // decimales)
+    return "$minutes:${seconds.toStringAsFixed(2).padLeft(5, '0')}";
+  } // METODO PARA HACER LA MEDIA DE x TIEMPOS (5,12,50,100,total)
 
   /// Método para eliminar un tiempo por su ID.
   ///

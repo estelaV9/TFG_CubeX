@@ -11,6 +11,7 @@ import 'package:esteladevega_tfg_cubex/view/screen/signup_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stroke_text/stroke_text.dart';
 import 'data/database/database_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -100,9 +101,10 @@ class _IntroScreenState extends State<IntroScreen> {
       child: Column(
         children: [
           Stack(
+            alignment: Alignment.center,
             children: [
               Padding(
-                // SE DESPLAZA LA POSICIÓN PARA QUE SE VEA EL OTRO TEXTO
+                // SE DESPLAZA LA POSICION PARA QUE SE VEA EL OTRO TEXTO
                 padding: const EdgeInsets.only(right: 10),
                 // CubeX
                 child: Internationalization.internationalization
@@ -120,13 +122,17 @@ class _IntroScreenState extends State<IntroScreen> {
               ),
               const Padding(
                 padding: EdgeInsets.only(left: 7),
-                child: Text(
-                  "CubeX",
-                  style: TextStyle(
+                child: StrokeText(
+                  text: "CubeX",
+                  textStyle: TextStyle(
                     fontFamily: 'JollyLodger',
                     fontSize: 132,
                     color: AppColors.titlePurple,
                   ),
+                  strokeColor: AppColors.darkPurpleColor,
+                  strokeWidth: 4,
+                  // CENTRAR TEXTO
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],

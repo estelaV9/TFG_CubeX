@@ -26,10 +26,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: "6199c74e3db4fbfbd04f66d739e72fe11c8a8957d5f219f1f4482dbde6420b5a"
+      sha256: "0c64e928dcbefddecd234205422bcfc2b5e6d31be0b86fef0d0dd48d7b4c9742"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.4"
   args:
     dependency: transitive
     description:
@@ -74,10 +74,10 @@ packages:
     dependency: transitive
     description:
       name: built_value
-      sha256: "28a712df2576b63c6c005c465989a348604960c0958d28be5303ba9baa841ac2"
+      sha256: "8b158ab94ec6913e480dc3f752418348b5ae099eb75868b5f4775f0572999c61"
       url: "https://pub.dev"
     source: hosted
-    version: "8.9.3"
+    version: "8.9.4"
   characters:
     dependency: transitive
     description:
@@ -194,10 +194,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: c9943dd7d702ab4199d199bc151a2d79c86db031a02ad84566dab58c494d2adc
+      sha256: ab13ae8ef5580a411c458d6207b6774a6c237d77ac37011b13994879f68a8810
       url: "https://pub.dev"
     source: hosted
-    version: "8.3.1"
+    version: "8.3.7"
   file_selector_linux:
     dependency: transitive
     description:
@@ -226,10 +226,10 @@ packages:
     dependency: transitive
     description:
       name: file_selector_windows
-      sha256: "8f5d2f6590d51ecd9179ba39c64f722edc15226cc93dcc8698466ad36a4a85a4"
+      sha256: "320fcfb6f33caa90f0b58380489fc5ac05d99ee94b61aa96ec2bff0ba81d3c2b"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.3+3"
+    version: "0.9.3+4"
   fixnum:
     dependency: transitive
     description:
@@ -281,10 +281,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "615a505aef59b151b46bbeef55b36ce2b6ed299d160c51d84281946f0aa0ce0e"
+      sha256: "5a1e6fb2c0561958d7e4c33574674bda7b77caaca7a33b758876956f2902eea3"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.24"
+    version: "2.0.27"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -344,10 +344,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: "8346ad4b5173924b5ddddab782fc7d8a6300178c8b1dc427775405a01701c4a6"
+      sha256: "13d3349ace88f12f4a0d175eb5c12dcdd39d35c4c109a8a13dfeb6d0bd9e31c3"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.2"
+    version: "4.5.3"
   image_picker:
     dependency: "direct main"
     description:
@@ -360,10 +360,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: b62d34a506e12bb965e824b6db4fbf709ee4589cf5d3e99b45ab2287b008ee0c
+      sha256: "82652a75e3dd667a91187769a6a2cc81bd8c111bbead698d8e938d2b63e5e89a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.12+20"
+    version: "0.8.12+21"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -677,18 +677,18 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: "688ee90fbfb6989c980254a56cb26ebe9bb30a3a2dff439a78894211f73de67a"
+      sha256: "846849e3e9b68f3ef4b60c60cf4b3e02e9321bc7f4d8c4692cf87ffa82fc8a3a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.2"
   shared_preferences_android:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "650584dcc0a39856f369782874e562efd002a9c94aec032412c9eb81419cce1f"
+      sha256: a768fc8ede5f0c8e6150476e14f38e2417c0864ca36bb4582be8e21925a03c22
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.6"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -717,10 +717,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_web
-      sha256: d2ca4132d3946fec2184261726b355836a82c33d7d5b67af32692aff18a4684e
+      sha256: c49bd060261c9a3f0ff445892695d6212ff603ef3115edbb448509d407600019
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.3"
   shared_preferences_windows:
     dependency: transitive
     description:
@@ -834,10 +834,10 @@ packages:
     dependency: transitive
     description:
       name: sqflite_darwin
-      sha256: "96a698e2bc82bd770a4d6aab00b42396a7c63d9e33513a56945cbccb594c2474"
+      sha256: "22adfd9a2c7d634041e96d6241e6e1c8138ca6817018afc5d443fef91dcefa9c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.1+1"
   sqflite_platform_interface:
     dependency: transitive
     description:
@@ -850,10 +850,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: cb7f4e9dc1b52b1fa350f7b3d41c662e75fc3d399555fa4e5efcf267e9a4fbb5
+      sha256: "32b632dda27d664f85520093ed6f735ae5c49b5b75345afb8b19411bc59bb53d"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.0"
+    version: "2.7.4"
   stack_trace:
     dependency: transitive
     description:
@@ -878,6 +878,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  stroke_text:
+    dependency: "direct main"
+    description:
+      name: stroke_text
+      sha256: b5231282d7e93df3bc28d458ba25fd2dc2acaca77f2771cec4cffe8b6a08850e
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   sync_http:
     dependency: transitive
     description:
@@ -1026,10 +1034,10 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: cd3543bd5798f6ad290ea73d210f423502e71900302dde696f8bff84bf89a1cb
+      sha256: "868d88a33d8a87b18ffc05f9f030ba328ffefba92d6c127917a2ba740f9cfe4a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   web_socket:
     dependency: transitive
     description:
