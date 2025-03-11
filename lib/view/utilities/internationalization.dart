@@ -410,6 +410,16 @@ class Internationalization {
       case 'search_time_or_comments':
         return l10n.search_time_or_comments;
 
+      case 'update_user_successfully':
+        return l10n.update_user_successfully;
+      case 'update_user_error':
+        return l10n.update_user_error;
+
+      case 'exit_without_saving':
+        return l10n.exit_without_saving;
+      case 'unsaved_changes_message':
+        return l10n.unsaved_changes_message;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;

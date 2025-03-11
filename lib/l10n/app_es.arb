@@ -197,5 +197,11 @@
    "all_times_deleted_successful": "Todos los tiempos eliminados con éxito",
    "all_times_deletion_failed": "Error al eliminar todos los tiempos. Por favor, inténtalo de nuevo.",
 
-   "search_time_or_comments": "Buscar tiempo o comentarios..."
+   "search_time_or_comments": "Buscar tiempo o comentarios...",
+
+   "update_user_successfully": "Se actualizó la información correctamente",
+   "update_user_error": "Ocurrió un error al actualizar información del usuario",
+
+   "exit_without_saving": "Salir sin guardar",
+   "unsaved_changes_message": "Tienes cambios sin guardar. ¿Quieres salir?"
 }

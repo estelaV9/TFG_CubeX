@@ -198,5 +198,12 @@
   "all_times_deleted_successful": "All times successfully deleted",
   "all_times_deletion_failed": "Failed to delete all times. Please try again.",
 
-  "search_time_or_comments": "Search time or comment..."
+  "search_time_or_comments": "Search time or comment...",
+
+  "update_user_successfully": "User information was updated successfully",
+  "update_user_error": "An error occurred while updating the user information",
+
+  "exit_without_saving": "Exit without saving",
+  "unsaved_changes_message": "You have unsaved changes. Do you want to leave?"
+
 }
