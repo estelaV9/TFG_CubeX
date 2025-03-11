@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../viewmodel/current_user.dart';
 import '../../view/navigation/bottom_navigation.dart';
+import '../components/waves_painter/drawer_wave.dart';
 
 /// Widget que representa el `Drawer` (menú lateral) de la aplicación.
 ///
@@ -91,6 +92,7 @@ class _AppDrawerState extends State<AppDrawer> {
         },
         // SE USA CONTAINER PARA CAMBIAR EL COLOR DEL FONDO DE LISTTILE
         child: Container(
+          height: 43,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             // CUANDO EL MOUSE PASA POR ENCIMA, SE CAMBIA EL COLOR DE FONDO
@@ -149,22 +151,46 @@ class _AppDrawerState extends State<AppDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LO METEMOS TODO_EN UNA FILA PARA EXPANDIR EL CONTAINER
-            Row(
-              children: [
-                Expanded(
-                  // AVATAR Y NOMBRE
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 20, top: 30),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor: AppColors.imagenBg,
-                          child: Image.asset(rutaImagen), // IAMGEN
-                        ),
-                        const SizedBox(height: 10),
+            // SizedBox CON EL WAVE Y EL CICLERAVATAR
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Stack(
+                children: [
+                  Positioned(
+                    // LA WAVE SE UBICA EN LA PARTE SUPERIOR
+                    top: 0,
+                    left: 0,
+                    child: CustomPaint(
+                      painter: DrawerWave(
+                        backgroundColor: AppColors.lightVioletColor,
+                      ),
+                      // TAMAÑO DEL WAVE
+                      child: const SizedBox(
+                        // OCUPA TODO_EL TAMAÑO DEL DRAWER
+                        width: 200,
+                        height: 110,
+                      ),
+                    ),
+                  ),
+                  // CIRCLEAVATAR
+                  Positioned(
+                    top: 30,
+                    left: 20,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: AppColors.imagenBg,
+                      child: Image.asset(rutaImagen),
+                    ),
+                  ),
 
+                  // NOMBRE Y MAIL DEL USUARIO
+                  Positioned(
+                    top: 140,
+                    left: 20,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         // NOMBRE USUARIO
                         Text(
                           returnName(),
@@ -186,11 +212,11 @@ class _AppDrawerState extends State<AppDrawer> {
                       ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
 
             // OPCIONES DEL MENU
             Expanded(
@@ -205,10 +231,14 @@ class _AppDrawerState extends State<AppDrawer> {
                   listTileGenerator(
                       Icons.person, "my_profile", const MyProfileScreen()),
 
+                  const SizedBox(height: 15),
+
                   // VERSUS
                   textTitleListTile("championship"),
                   listTileGenerator(
                       Icons.sports_kabaddi, "versus", const BottomNavigation()),
+
+                  const SizedBox(height: 15),
 
                   // OTRAS OPCIONES
                   textTitleListTile("other"),

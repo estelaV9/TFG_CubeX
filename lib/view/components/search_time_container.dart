@@ -145,6 +145,7 @@ class _SearchTimeContainerState extends State<SearchTimeContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 55,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: AppColors.lightVioletColor.withOpacity(0.7),

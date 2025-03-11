@@ -18,9 +18,8 @@ plugins {
 
 android {
     namespace = "com.example.esteladevega_tfg_cubex"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
-    compileSdkVersion = 34
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
