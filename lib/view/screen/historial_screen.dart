@@ -91,7 +91,6 @@ class _HistorialScreenState extends State<HistorialScreen> {
             top: 110,
             right: 20,
             left: 20,
-            bottom: 465,
             child: SearchTimeContainer(),
           ),
 
