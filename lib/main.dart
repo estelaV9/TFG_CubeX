@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
@@ -87,6 +89,17 @@ class IntroScreen extends StatefulWidget {
 class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
+    // VERIFICAR SI ES MOVIL O NO
+    bool isMobile = Platform.isAndroid || Platform.isIOS;
+
+    double sizeText = 132;
+
+    if (isMobile) {
+      // SI ES MOVIL SE LE AUMENTA EL TAMAÑO FUENTE YA QUE CON EL STROKE
+      // SE DISMINUYE UN POCO
+      sizeText = 146;
+    }
+
     return Scaffold(
         body: Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -98,53 +111,68 @@ class _IntroScreenState extends State<IntroScreen> {
           fit: BoxFit.cover, // AJUSTAR LA IMAGEN AL TAMAÑO DE LA PANTALLA
         ),
       ),
+
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Stack(
-            alignment: Alignment.center,
+          // SE DIVIDE EN DOSS GRUPOS, LA SUPERIOR Y LA INFERIOR
+          // GRUPO SUPERIOR: COLUMNA CON EL TITULO, Y LA IMAGEN
+          Column(
             children: [
-              Padding(
-                // SE DESPLAZA LA POSICION PARA QUE SE VEA EL OTRO TEXTO
-                padding: const EdgeInsets.only(right: 10),
-                // CubeX
-                child: Internationalization.internationalization
-                    .createLocalizedSemantics(
-                  context,
-                  "cube_x",
-                  "cube_x",
-                  "cube_x",
-                  const TextStyle(
-                    fontFamily: 'JollyLodger',
-                    fontSize: 132,
-                    color: AppColors.purpleIntroColor,
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Padding(
+                    // SE DESPLAZA LA POSICION PARA QUE SE VEA EL OTRO TEXTO
+                    padding: const EdgeInsets.only(right: 10, top: 20),
+                    // CubeX
+                    child: Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context,
+                      "cube_x",
+                      "cube_x",
+                      "cube_x",
+                      const TextStyle(
+                        fontFamily: 'JollyLodger',
+                        fontSize: 132,
+                        color: AppColors.purpleIntroColor,
+                      ),
+                    ),
                   ),
-                ),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 7, top: 20),
+                      child: StrokeText(
+                        text: "CubeX",
+                        textStyle: TextStyle(
+                          fontFamily: 'JollyLodger',
+                          fontSize: sizeText,
+                          color: AppColors.titlePurple,
+                        ),
+                        strokeColor: AppColors.darkPurpleColor,
+                        strokeWidth: 4,
+                        // CENTRAR TEXTO
+                        textAlign: TextAlign.center,
+                      ))
+                ],
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 7),
-                child: StrokeText(
-                  text: "CubeX",
-                  textStyle: TextStyle(
-                    fontFamily: 'JollyLodger',
-                    fontSize: 132,
-                    color: AppColors.titlePurple,
-                  ),
-                  strokeColor: AppColors.darkPurpleColor,
-                  strokeWidth: 4,
-                  // CENTRAR TEXTO
-                  textAlign: TextAlign.center,
-                ),
+
+              // TRANSFORM MUEVE HACIA ARRIBA LOS ELEMENTOS
+              Align(
+                alignment: Alignment.center,
+                child: Image.asset("assets/app_logo.png"),
               ),
             ],
           ),
 
-          // TRANSFORM MUEVE HACIA ARRIBA LOS ELEMENTOS
-          Transform.translate(
-            offset: const Offset(0, -30),
+          const SizedBox(height: 20),
+
+          // GRUPO INFERIOR CON LOS BOTONES Y EL TEXTO
+          // EL OBJETIVO ES FINAR ESTOS ELEMENTOS EN LA PARTE DE ABAJO DE LA PANTALLA
+          Padding(
+            // PADDING BORDE INFERIOR
+            padding: const EdgeInsets.only(bottom: 30),
             child: Column(
               children: [
-                Image.asset("assets/app_logo.png"),
-                // Take your skills to the next level.
                 Internationalization.internationalization
                     .createLocalizedSemantics(
                   context,
@@ -157,106 +185,96 @@ class _IntroScreenState extends State<IntroScreen> {
                     fontSize: 30,
                   ),
                 ),
+
                 const SizedBox(height: 20),
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    // LOS BOTONES SE UBICAN AL FINAL DE LA PANTALLA
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      // UBICAR LOS BOTONES ABAJO
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      // CENTRAR LOS BOTONES
-                      children: [
-                        // BOTÓN LOGIN
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const LoginScreen(),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.purpleIntroColor,
-                                  // COLOR DE FONDO
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
-                                    // BORDES REDONDEADOS
-                                    side: const BorderSide(
-                                        color: Colors.black,
-                                        width: 1), // BORDE NEGRO
-                                  ),
-                                ),
-                                // Log in
-                                child: Internationalization.internationalization
-                                    .createLocalizedSemantics(
-                                  context,
-                                  "login_label",
-                                  "login_hint",
-                                  "login_label",
-                                  const TextStyle(
-                                    fontFamily: 'JollyLodger',
-                                    fontSize: 35,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
 
-                        const SizedBox(height: 10),
-                        // ESPACIO ENTRE LOS BOTONES
-
-                        // BOTÓN SIGN UP
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const SignUpScreen(),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.purpleIntroColor,
-                                  // COLOR DE FONDO
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
-                                    // BORDES REDONDEADOS
-                                    side: const BorderSide(
-                                        color: Colors.black,
-                                        width: 1), // BORDE NEGRO
-                                  ),
-                                ),
-                                // Sign up
-                                child: Internationalization.internationalization
-                                    .createLocalizedSemantics(
-                                  context,
-                                  "signup_label",
-                                  "signup_hint",
-                                  "signup_label",
-                                  const TextStyle(
-                                    fontFamily: 'JollyLodger',
-                                    fontSize: 35,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ),
+                // BOTÓN LOGIN
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const LoginScreen(),
                             ),
-                          ],
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.purpleIntroColor,
+                          // COLOR DE FONDO
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                            // BORDES REDONDEADOS
+                            side: const BorderSide(
+                                color: Colors.black, width: 1), // BORDE NEGRO
+                          ),
                         ),
-                      ],
-                    ))
+                        // Log in
+                        child: Internationalization.internationalization
+                            .createLocalizedSemantics(
+                          context,
+                          "login_label",
+                          "login_hint",
+                          "login_label",
+                          const TextStyle(
+                            fontFamily: 'JollyLodger',
+                            fontSize: 35,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+                // ESPACIO ENTRE LOS BOTONES
+
+                // BOTÓN SIGN UP
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const SignUpScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.purpleIntroColor,
+                          // COLOR DE FONDO
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                            // BORDES REDONDEADOS
+                            side: const BorderSide(
+                                color: Colors.black,
+                                width: 1), // BORDE NEGRO
+                          ),
+                        ),
+                        // Sign up
+                        child: Internationalization.internationalization
+                            .createLocalizedSemantics(
+                          context,
+                          "signup_label",
+                          "signup_hint",
+                          "signup_label",
+                          const TextStyle(
+                            fontFamily: 'JollyLodger',
+                            fontSize: 35,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
