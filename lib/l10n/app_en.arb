@@ -204,6 +204,21 @@
   "update_user_error": "An error occurred while updating the user information",
 
   "exit_without_saving": "Exit without saving",
-  "unsaved_changes_message": "You have unsaved changes. Do you want to leave?"
+  "unsaved_changes_message": "You have unsaved changes. Do you want to leave?",
 
+  "insert_old_pass_label": "",
+  "insert_old_pass_hint": "Form to insert your old password to save",
+  "old_pass_form_label": "",
+  "old_pass_form_hint": "Field to fill with the scramble of the time",
+
+  "insert_old_pass_label": "Enter your old password",
+  "insert_old_pass_hint": "To continue and save changes, please enter your old password.",
+  "old_pass_form_label": "Old Password",
+  "old_pass_form_hint": "Enter the password associated with your account",
+  "old_pass_error": "Incorrect password. Please try again.",
+
+  "field_null": "Field null.",
+
+  "confirm_pass_field_null": "Confirm pass field is null.",
+  "password_mismatch_error": "The passwords do not match. Please try again."
 }

@@ -420,6 +420,25 @@ class Internationalization {
       case 'unsaved_changes_message':
         return l10n.unsaved_changes_message;
 
+      case 'insert_old_pass_label':
+        return l10n.insert_old_pass_label;
+      case 'insert_old_pass_hint':
+        return l10n.insert_old_pass_hint;
+      case 'old_pass_form_label':
+        return l10n.old_pass_form_label;
+      case 'old_pass_form_hint':
+        return l10n.old_pass_form_hint;
+      case 'old_pass_error':
+        return l10n.old_pass_error;
+
+      case 'field_null':
+        return l10n.field_null;
+
+      case 'confirm_pass_field_null':
+        return l10n.confirm_pass_field_null;
+      case 'password_mismatch_error':
+        return l10n.password_mismatch_error;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;
