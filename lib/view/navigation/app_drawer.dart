@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
@@ -20,6 +22,8 @@ import '../components/waves_painter/drawer_wave.dart';
 /// y un conjunto de opciones que redirigen a diferentes pantallas de la aplicación.
 /// Las opciones están localizadas, lo que significa que se ajustan según el idioma
 /// seleccionado en la aplicación.
+/// Además, se podrá visualizar la foto de perfil que tenga el usuario. En caso de no
+/// tener, se visualizará la de por defecto.
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
 
@@ -59,10 +63,42 @@ class _AppDrawerState extends State<AppDrawer> {
     } // SI EL MAIL ES "", MUESTRA UN AVISO
   } // METODO PARA RETORNAR EL MAIL DEL USUARIO QUE ACCEDIO
 
+  // LA URL DE LA IMAGEN DEL USUARIO, QUE SE INICIALIZA CON LA IMAGEN POR DEFECTO
+  String imageUrl = "assets/default_user_image.png";
+
   @override
   void initState() {
     super.initState();
     returnMail();
+    _getImageUrl();
+  }
+
+  /// Método privado para obtener la URL de la imagen de perfil del usuario actual.
+  ///
+  /// Este método busca en la base de datos la imagen asociada al usuario actual y,
+  /// si la encuentra, la asigna a la variable `imageUrl`.
+  ///
+  /// Procedimiento:
+  /// - Obtiene el usuario actual y recupera el ID mediante su nombre.
+  /// - Si el ID es válido, busca la URL de la imagen en la base de datos.
+  /// - Si la imagen no es nula, actualiza el estado con la nueva URL.
+  void _getImageUrl() async {
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+      return;
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    String? image = await userDao.getImageUser(idUser);
+    if (image != null) {
+      setState(() {
+        // SE ASIGNA EL VALOR DE LA URL DE LA IMAGEN
+        imageUrl = image;
+      });
+    } // SI NO ES NULA, SE ASIGNA EL VALOR
   }
 
   /// Método para generar un `ListTile` con un ícono, texto y una pantalla de destino.
@@ -133,7 +169,8 @@ class _AppDrawerState extends State<AppDrawer> {
     return Padding(
       padding: const EdgeInsets.only(left: 20.0),
       child: Text(
-        Internationalization.internationalization.getLocalizations(context, text),
+        Internationalization.internationalization
+            .getLocalizations(context, text),
         style: const TextStyle(
           fontSize: 15,
           color: AppColors.darkPurpleColor,
@@ -177,11 +214,30 @@ class _AppDrawerState extends State<AppDrawer> {
                   Positioned(
                     top: 30,
                     left: 20,
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundColor: AppColors.imagenBg,
-                      child: Image.asset(rutaImagen),
-                    ),
+                    child: // IMAGEN DEL USUARIO
+                        CircleAvatar(
+                            radius: 50,
+                            backgroundColor: AppColors.imagenBg,
+                            // SI EL USUARIO TIENE UNA FOTO
+                            child: imageUrl.isNotEmpty
+                                ? ClipOval(
+                                    child: Image.file(
+                                      File(imageUrl),
+                                      fit: BoxFit.cover,
+                                      width: 140,
+                                      height: 140,
+                                    ),
+                                  )
+                                :
+                                // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
+                                ClipOval(
+                                    child: Image.asset(
+                                      "assets/default_user_image.png",
+                                      fit: BoxFit.cover,
+                                      width: 140,
+                                      height: 140,
+                                    ),
+                                  )),
                   ),
 
                   // NOMBRE Y MAIL DEL USUARIO
