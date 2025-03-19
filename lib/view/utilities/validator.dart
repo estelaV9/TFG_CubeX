@@ -1,3 +1,9 @@
+import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../../model/user.dart';
+import 'encrypt_password.dart';
+
 /// Clase que se utiliza para la **validación de campos** en formularios.
 ///
 /// Proporciona métodos estáticos para validar:
@@ -8,39 +14,67 @@
 /// - Combinación de nombres de usuarios y correos.
 /// Su objetivo es evitar la repetición del código de validación en diferentes pantallas de la aplicación.
 class Validator {
-  /// Validar el campo de contraseña.
+  /// Valida el campo de contraseña.
   ///
+  /// Este método se utiliza en varias partes de la aplicación para evitar duplicación de código.
+  /// Admite varios parámetros opcionales para adaptar la validación según el contexto.
+  ///
+  /// ### Parámetros:
   /// - [value]: La contraseña ingresada por el usuario.
+  /// - [oldPass] (opcional, `false` por defecto): Indica si la validación es para la
+  /// verificación de la contraseña anterior en un diálogo.
+  /// - [profilePass] (opcional, `false` por defecto): Indica si la validación es
+  /// para el formulario del perfil (permite contraseña vacía).
+  /// - [currentUser]: Objeto `User` que representa al usuario actual, usado para
+  /// comparar la contraseña anterior en caso de ser necesario.
+  /// - [context]: Contexto necesario para la internacionalización del mensaje de
+  /// error cuando la contraseña antigua no coincide.
   ///
+  /// ### Reglas de validación:
   /// Retorna un mensaje de error si la contraseña no cumple con:
-  /// - No estar vacía.
+  /// - No estar vacía (excepto en el formulario de perfil).
+  /// - Tener un valor, no estar vacía (por la contraseña del profile).
   /// - Tener al menos 8 caracteres.
   /// - No contener espacios en blanco.
   /// - Incluir al menos un carácter especial.
   /// - Incluir al menos un número.
+  /// - Si es el dialogo de la antigua contraseña, tiene que coincidir el valor
+  /// proporcionado con la contraseña guardada, si no, mostrará un mensaje de error.
   ///
-  /// Retorna `null` si la validación es exitosa.
-  static String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
+  /// Retorna `null` si la contraseña es válida.
+  static String? validatePassword(String? value,
+      [bool oldPass = false,
+      bool profilePass = false,
+      User? currentUser,
+      BuildContext? context]) {
+    if (!profilePass && value == null || value!.isEmpty) {
       return 'Please fill in this field.';
-    } // VALIDAR CAMPOS VACIOS
+    } // VALIDAR CAMPOS VACIOS (EXCEPTO SI ES DEL PROFILE)
 
-    if (value.length < 8) {
-      return "Must be at least 8 characters.";
-    } // VALIDAR QUE LA CONTRASEÑA CONTENGA AL MENSO 8 CARACTERES
+    if (value.isNotEmpty) {
+      if (value.length < 8) {
+        return "Must be at least 8 characters.";
+      } // VALIDAR QUE LA CONTRASEÑA CONTENGA AL MENSO 8 CARACTERES
 
-    if (value.contains(' ')) {
-      return "Must not contain spaces.";
-    } // VALIDAR QUE LA CONTRASEÑA NO CONTENGA ESPACIOS EN BLANCO
+      if (value.contains(' ')) {
+        return "Must not contain spaces.";
+      } // VALIDAR QUE LA CONTRASEÑA NO CONTENGA ESPACIOS EN BLANCO
 
-    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-      return "Must add one special character.";
-    } // DEBE CONTENER AL MENOS UN CARACTER ESPECIAL
+      if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+        return "Must add one special character.";
+      } // DEBE CONTENER AL MENOS UN CARACTER ESPECIAL
 
-    if (!RegExp(r'[0-9]').hasMatch(value)) {
-      return "Must add one number.";
-    } // DEBE CONTENER AL MENOS UN NUMERO
+      if (!RegExp(r'[0-9]').hasMatch(value)) {
+        return "Must add one number.";
+      } // DEBE CONTENER AL MENOS UN NUMERO
+    } // VALIDAR SI HAY UN VALOR (por la contraseña del profile)
 
+    if (oldPass) {
+      if (EncryptPassword.encryptPassword(value) != currentUser!.password) {
+        return Internationalization.internationalization
+            .getLocalizations(context!, "old_pass_error");
+      } // SI LA CONTRASEÑA NO COINCIDE, DEVUELVE MENSAJE DE ERROR
+    } // CONTRASEÑA ANTIGUA
     return null;
   } // VALIDACION PARA EL CAMPO DE CONTRASEÑA
 
@@ -48,36 +82,40 @@ class Validator {
   ///
   /// - [value]: La contraseña de confirmación ingresada.
   /// - [password]: La contraseña original con la que se debe comparar.
+  /// - [isProfile] (`false` por defecto): Indica si la validación
+  ///   es para el formulario del perfil. Si es `true`, el campo puede ser nulo.
   ///
   /// Realiza las mismas validaciones que `validatePassword` y, adicionalmente,
   /// verifica que ambas contraseñas coincidan.
+  /// Si es para uso del Profile, puede ser nula.
   ///
   /// Retorna un mensaje de error si la validación falla o `null` si es exitosa.
-  static String? validateConfirmPassword(String? value, String password) {
-    if (value == null || value.isEmpty) {
+  static String? validateConfirmPassword(String? value, String password, [bool isProfile = false]) {
+    if (!isProfile && (value == null || value.isEmpty)) {
       return 'Please fill in this field.';
-    } // VALIDAR CAMPOS VACIOS
+    } // VALIDAR CAMPOS VACIOS SI NO ES DEL PROFILE
 
-    if (value.length < 8) {
-      return "Must be at least 8 characters.";
-    } // VALIDAR QUE LA CONTRASEÑA CONTENGA AL MENSO 8 CARACTERES
+    if (value!.isNotEmpty) {
+      if (value!.length < 8) {
+        return "Must be at least 8 characters.";
+      } // VALIDAR QUE LA CONTRASEÑA CONTENGA AL MENSO 8 CARACTERES
 
-    if (value.contains(' ')) {
-      return "Must not contain spaces.";
-    } // VALIDAR QUE LA CONTRASEÑA NO CONTENGA ESPACIOS EN BLANCO
+      if (value.contains(' ')) {
+        return "Must not contain spaces.";
+      } // VALIDAR QUE LA CONTRASEÑA NO CONTENGA ESPACIOS EN BLANCO
 
-    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-      return "Must add one special character.";
-    } // DEBE CONTENER AL MENOS UN CARACTER ESPECIAL
+      if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+        return "Must add one special character.";
+      } // DEBE CONTENER AL MENOS UN CARACTER ESPECIAL
 
-    if (!RegExp(r'[0-9]').hasMatch(value)) {
-      return "Must add one number.";
-    } // DEBE CONTENER AL MENOS UN NUMERO
+      if (!RegExp(r'[0-9]').hasMatch(value)) {
+        return "Must add one number.";
+      } // DEBE CONTENER AL MENOS UN NUMERO
 
-    if (value != password) {
-      return "Passwords do not match.";
-    } // VALIDA QUE LAS CONTRASEÑAS COINCIDAN
-
+      if (value != password) {
+        return "Passwords do not match.";
+      } // VALIDA QUE LAS CONTRASEÑAS COINCIDAN
+    } // VALIDAR SI HAY UN VALOR (por el confirmar contraseña del profile)
     return null;
   } // VALIDACION PARA CONFIRMAR EL CAMPO DE CONTRASEÑA
 
@@ -130,16 +168,20 @@ class Validator {
   /// Validar un nombre de usuario.
   ///
   /// - [value]: El nombre de usuario ingresado por el usuario.
+  /// - [isProfile] (opcional, `false` por defecto): Indica si la validación
+  ///   es para el formulario del perfil. Si es `true`, el campo puede ser nulo.
   ///
-  /// Verifica que el campo no esté vacío y que no exceda los 12 caracteres.
+  /// ### Reglas de validación:
+  /// - No estar vacío (excepto en el formulario de perfil).
+  /// - No exceder los 12 caracteres.
   ///
   /// Retorna un mensaje de error si la validación falla o `null` si es exitosa.
-  static String? validateUsername(String? value) {
-    if (value == null || value.isEmpty) {
+  static String? validateUsername(String? value, [bool isProfile = false]) {
+    if (!isProfile && (value == null || value.isEmpty)) {
       return 'Please fill in this field.';
-    } // VALIDAR CAMPOS VACIOS
+    } // VALIDAR CAMPOS VACIOS SI NO ES DEL CAMPO DEL PROFILE
 
-    if (value.length > 12) {
+    if (value!.length > 12) {
       return "Name mustn't exceed 12 characters.";
     } // SE VALIDA QUE LOS CARACTERES QUE COMPONEN EL NOMRBE DEL USUARIO NO
     // SEA MAYOR DE 12 CARACTERES
