@@ -8,6 +8,7 @@ import 'package:esteladevega_tfg_cubex/view/screen/show_time_screen.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../model/cubetype.dart';
@@ -56,6 +57,21 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao12Value = "--:--.--";
   var ao50Value = "--:--.--";
   var ao100Value = "--:--.--";
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
+  String _finalTime = "0.00";
+
+  // KEY DEL ScrambleContainer
+  final GlobalKey<ScrambleContainerState> _scrambleKey =
+      GlobalKey<ScrambleContainerState>();
+  Scramble scramble = Scramble();
+
+  // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
+  int random = (Random().nextInt(25 - 20 + 1) + 20);
+
+  late CurrentTime currentTime;
 
   /// Método para insertar tiempos de prueba en la base de datos.
   ///
@@ -251,19 +267,6 @@ class _TimerScreenState extends State<TimerScreen> {
     }); // SETTEA EL ESTADO DE LAS ESTADISTICAS
   } // INICIALIZAR/ACTUALIZAR LAS ESTADISTICA
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
-  String _finalTime = "0.00";
-
-  // KEY DEL ScrambleContainer
-  final GlobalKey<ScrambleContainerState> _scrambleKey =
-      GlobalKey<ScrambleContainerState>();
-  Scramble scramble = Scramble();
-
-  // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
-  int random = (Random().nextInt(25 - 20 + 1) + 20);
-
   /// Abre la pantalla [ShowTimeScreen] y espera el tiempo final del usuario.
   ///
   /// Una vez que el usuario termine de resolver el cubo, se guarda el tiempo
@@ -298,6 +301,16 @@ class _TimerScreenState extends State<TimerScreen> {
   ///
   /// Este método recibe el tiempo final en segundos y el scramble utilizado,
   /// luego guarda el tiempo en la base de datos en la tabla correspondiente.
+  ///
+  /// **Parámetros**:
+  /// - `timeInSeconds`: El tiempo total en segundos que se ha tomado para completar la resolución.
+  /// - `scramble`: El scramble que fue utilizado para resolver el cubo.
+  ///
+  /// **Caracteristicas**:
+  /// - Se obtiene el usuario, la sesión, el tipo de cubo actual.
+  /// - Se crea un objeto `TimeTraining` con los detalles del tiempo y se guarda en la base de datos.
+  /// - Si la inserción es exitosa, se actualiza el estado global con el nuevo tiempo.
+  /// - Se actualizan las estadísticas de tiempo.
   Future<void> _saveTimeToDatabase(
       double timeInSeconds, String scramble) async {
     final userDao = UserDao();
@@ -348,6 +361,12 @@ class _TimerScreenState extends State<TimerScreen> {
 
       if (success) {
         DatabaseHelper.logger.i("Tiempo guardado correctamente.");
+
+        // GUARDAR LOS DATOS DEL TIEMPO EN EL ESTADO GLOBAL
+        currentTime = Provider.of<CurrentTime>(this.context, listen: false);
+        // SE ACTUALIZA EL ESTADO GLOBAL
+        currentTime.setTimeTraining(timeTraining);
+
         initTimeStatistics(); // ACTUALIZAR LAS ESTADISTICAS
       } else {
         DatabaseHelper.logger.e("Error al guardar el tiempo.");
@@ -363,8 +382,81 @@ class _TimerScreenState extends State<TimerScreen> {
     // AlertUtil.showCommentsTime(context);
   } // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
 
-  void
-      logicDeleteTime() {} // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
+  /// Muestra una alerta para confirmar la eliminación del tiempo actual.
+  ///
+  /// Este método es llamado cuando el usuario intenta eliminar el tiempo actual.
+  /// Si hay un tiempo almacenado en `currentTime`, se muestra una alerta para confirmar la eliminación.
+  /// Esto para que no pueda eliminar un tiempo que todavía no ha hecho.
+  void logicDeleteTime() async {
+    // OBTENER EL TIEMPO ACTUAL
+    currentTime = context.read<CurrentTime>();
+
+    if (currentTime.timeTraining != null) {
+      AlertUtil.showDeleteSessionOrCube(
+        context,
+        "actual_delete_time",
+        "actual_delete_time_content",
+        deleteTime,
+      );
+    } // SI HAY UN TIEMPO ACTUAL, SE MUESTRA LA ALERTA
+  } // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
+
+  /// Elimina el tiempo actual de la base de datos.
+  ///
+  /// Este método elimina un tiempo almacenado en la base de datos a partir de su `scramble` y `idSession`.
+  /// Después de la eliminación, actualiza el estado global y se muestra un mensaje de éxito o error.
+  ///
+  /// **Características**:
+  /// - Se obtiene el tiempo actual de `currentTime`.
+  /// - Busca el `idDeleteTime` a partir del `scramble` y `idSession` del tiempo actual.
+  /// - Si se encuentra el `idDeleteTime`, intenta eliminar el tiempo de la base de datos.
+  /// - Si la eliminación es exitosa, se actualiza el estado global y se pone en 0.0 el tiempo.
+  /// - Si ocurre un error, se muestra un mensaje de error.
+  Future<void> deleteTime() async {
+    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
+
+    // OBTENER EL TIEMPO ACTUAL
+    currentTime = context.read<CurrentTime>();
+
+    // OBTENER EL ID DEL TIEMPO A ELIMINAR
+    final idDeleteTime = await timeTrainingDao.getIdByTime(
+        currentTime.timeTraining!.scramble,
+        currentTime.timeTraining!.idSession!);
+
+    if (idDeleteTime == -1) {
+      // SI OCURRIO UN ERROR, MUESTRA UN SNACKBAR
+      AlertUtil.showSnackBarInformation(context, "delete_time_error");
+      DatabaseHelper.logger
+          .e("No se obtuvo el tiempo por scramble e idSession: $idDeleteTime");
+      return;
+    } // VERIFICAR SI SE HA OBTENIDO EL ID DEL TIEMPO
+
+    try {
+      // ELIMINAR EL TIEMPO
+      final isDeleted = await timeTrainingDao.deleteTime(idDeleteTime);
+
+      if (isDeleted) {
+        // SI SE ELIMINO CORRECTAMENTE SE MUESTRA UN SNACKBAR
+        AlertUtil.showSnackBarInformation(context, "delete_time_correct");
+
+        // ACTUALIZAR EL TIEMPO EN 0.0
+        setState(() {
+          _finalTime = "0.0";
+        });
+
+        // ACTUALIZAR EL TIEMPO ACTUAL EN NULO EN EL ESTADO GLOBAL
+        currentTime.setTimeTrainingNull();
+      } else {
+        // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
+        AlertUtil.showSnackBarInformation(context, "delete_time_error");
+        DatabaseHelper.logger.e("No se pudo eliminar: $isDeleted");
+      } // VERIFICAR SI SE HA ELIMINADO CORRECTAMENTE
+    } catch (e) {
+      // CAPTURAR CUALQUIER ERROR DURANTE LA ELIMINACION
+      AlertUtil.showSnackBarInformation(context, "delete_time_error");
+      DatabaseHelper.logger.e("Error al eliminar el tiempo: $e");
+    }
+  } // METODO PARA ELIMINAR EL TIEMPO ACTUAL
 
   @override
   Widget build(BuildContext context) {
@@ -411,8 +503,7 @@ class _TimerScreenState extends State<TimerScreen> {
                         _scaffoldKey.currentState?.openDrawer();
                       },
                       icon: IconClass.iconMaker(
-                          context, Icons.settings, "settings", 26
-                      ),
+                          context, Icons.settings, "settings", 26),
                     ),
                   ),
                 ),
