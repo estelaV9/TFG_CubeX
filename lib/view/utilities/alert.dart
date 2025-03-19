@@ -3,7 +3,10 @@ import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/validator.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
@@ -16,7 +19,11 @@ import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/session.dart';
+import '../../model/user.dart';
 import '../../viewmodel/current_user.dart';
+import '../components/password_field_row.dart';
+import '../navigation/bottom_navigation.dart';
+import 'encrypt_password.dart';
 import 'internationalization.dart';
 
 /// Clase **AlertUtil** que sirve para mostrar diversos tipos de alertas
@@ -547,6 +554,188 @@ class AlertUtil {
           );
         });
   } // ALERTA PARA ESTABLECER EL IDOMA
+
+  /// Método para mostrar una alerta cuando el usuario intente salir del perfil sin guardar los cambios.
+  ///
+  /// Parámetros:
+  /// - `context`: Contexto de la aplicación donde se mostrará el diálogo.
+  /// - `key`: Clave para la localización del título del diálogo.
+  /// - `contentKey`: Clave para la localización del contenido del diálogo.
+  static showExitConfirmationDialog(
+      BuildContext context, String key, String contentKey) {
+    // SE MUESTRA EL DIALOG
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // TITULO DE LA ALERTA
+            title: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context,
+              '${key}_label',
+              '${key}_hint',
+              key,
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context,
+              '${contentKey}_label',
+              '${contentKey}_hint',
+              contentKey,
+              const TextStyle(fontSize: 16),
+            ),
+            actions: <Widget>[
+              // BOTONES PARA CANCELAR O DARLE OK
+              TextButton(
+                onPressed: () {
+                  // CIERRA LA ALERTA
+                  Navigator.pop(context);
+                },
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  'cancel_label',
+                  'cancel_hint',
+                  'cancel_label',
+                  const TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  // CUANDO ACEPTA SIN GUARDAR LOS CAMBIOS, SE VA AL TIMER
+                  ChangeScreen.changeScreen(const BottomNavigation(), context);
+                },
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  'accept_label',
+                  'accept_hint',
+                  'accept_label',
+                  const TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+            ],
+          );
+        });
+  } // METODO PARA MOSTRAR UNA ALERTA CUANDO SALGA DEL PROFILE SIN GUARDAR
+
+  /// Método para mostrar una alerta de confirmación con la contraseña antigua.
+  ///
+  /// Este método muestra un `AlertDialog` en el que el usuario debe ingresar
+  /// su contraseña actual para confirmar una acción (como cambiar
+  /// la contraseña).
+  ///
+  /// Parámetros:
+  /// - `context`: El contexto de la aplicación donde se mostrará el diálogo.
+  /// - `key`: Clave de localización para personalizar el mensaje del diálogo.
+  /// - `oldPass`: Clave de localización para el campo de la contraseña actual.
+  /// - `currentUser`: Objeto del usuario actual para validar la contraseña.
+  ///
+  /// Devuelve `true` si la contraseña ingresada es correcta, `false` si el usuario cancela
+  /// la acción, y `null` si ocurre un error.
+  ///
+  /// Validaciones:
+  /// - Se valida que la contraseña ingresada cumpla con los requisitos y
+  ///   coincida con la actual.
+  /// - Si la validación es exitosa, se redirige a la pantalla principal.
+  static Future<bool?> showConfirmWithOldPass(
+      BuildContext context, String key, String oldPass, User currentUser) {
+    final oldPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: AppColors.lightVioletColor,
+            title: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context,
+              '${key}_label',
+              '${key}_hint',
+              '${key}_label',
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context,
+              '${oldPass}_form_label',
+              '${oldPass}_form_hint',
+              '${oldPass}_form_hint',
+              const TextStyle(fontSize: 16),
+            ),
+            actions: <Widget>[
+              // CAMPO PARA INTRODUCIR SU VIEJA CONTRASEÑA
+              Form(
+                key: formKey,
+                child: PasswordFieldForm(
+                  icon: IconClass.iconMaker(context, Icons.lock, "password"),
+                  labelText: Internationalization.internationalization
+                      .getLocalizations(context, '${oldPass}_form_label'),
+                  hintText: Internationalization.internationalization
+                      .getLocalizations(context, '${oldPass}_form_label'),
+                  controller: oldPasswordController,
+                  validator: (value) => Validator.validatePassword(
+                      value, true, false, currentUser, context),
+                  labelSemantics: Internationalization.internationalization
+                      .getLocalizations(context, '${oldPass}_form_label'),
+                  hintSemantics: Internationalization.internationalization
+                      .getLocalizations(context, '${oldPass}_form_label'),
+                  borderSize: 15,
+                  colorBox: AppColors.imagenBg,
+                  passwordOnSaved: (String? value) {},
+                ),
+              ),
+
+              const SizedBox(
+                height: 10,
+              ),
+
+              // BOTONES PARA CANCELAR O DARLE OK
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      // CIERRA LA ALERTA Y RETORNA FALSE
+                      Navigator.pop(context, false);
+                    },
+                    child: Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context,
+                      'cancel_label',
+                      'cancel_hint',
+                      'cancel_label',
+                      const TextStyle(fontSize: 16, color: Colors.red),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        // CAMBIAR DE PESTAÑA
+                        Navigator.pop(context, true);
+
+                        ChangeScreen.changeScreen(
+                            const BottomNavigation(), context);
+                      } // VALIDAR SI LOS DATOS ESTAN CORRECTOS
+                    },
+                    child: Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context,
+                      'accept_label',
+                      'accept_hint',
+                      'accept_label',
+                      const TextStyle(fontSize: 16, color: Colors.blue),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          );
+        });
+  }
+
 
   /// Método para mostrar un Snackbar con un mensaje personalizado.
   ///

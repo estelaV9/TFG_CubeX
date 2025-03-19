@@ -197,5 +197,22 @@
    "all_times_deleted_successful": "Todos los tiempos eliminados con éxito",
    "all_times_deletion_failed": "Error al eliminar todos los tiempos. Por favor, inténtalo de nuevo.",
 
-   "search_time_or_comments": "Buscar tiempo o comentarios..."
+   "search_time_or_comments": "Buscar tiempo o comentarios...",
+
+   "update_user_successfully": "Se actualizó la información correctamente",
+   "update_user_error": "Ocurrió un error al actualizar información del usuario",
+
+   "exit_without_saving": "Salir sin guardar",
+   "unsaved_changes_message": "Tienes cambios sin guardar. ¿Quieres salir?",
+
+   "insert_old_pass_label": "Ingresa tu antigüa contraseña",
+   "insert_old_pass_hint": "Para continuar y guardar los cambios, introduce tu antigüa contraseña.",
+   "old_pass_form_label": "Contraseña antigüa",
+   "old_pass_form_hint": "Introduce la contraseña asociada a tu cuenta",
+   "old_pass_error": "Contraseña incorrecta. Inténtalo de nuevo.",
+
+   "field_null": "Campo vacio.",
+
+   "confirm_pass_field_null": "El campo confirmar contraseña esta vacio.",
+   "password_mismatch_error": "Las contraseñas no coinciden. Intenta nuevamente."
 }

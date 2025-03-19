@@ -196,4 +196,70 @@ class UserDao {
       return false;
     }
   } // METODO PARA ELIMINAR UN USUARIO POR EL ID DEL TIEMPO
+
+  /// Método que actualizar la información de un usuario de la base de datos basado en su ID.
+  ///
+  /// Parámetros:
+  /// - `user`: El usuario con los datos nuevos a actualizar.
+  /// - `idUser`: El ID del usuario al que se desea actualiza la información.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si se actualizó al menos una fila, `false`
+  /// si ocurrió un error.
+  Future<bool> updateUserInfo(User user, int idUser) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // MAPA CON LOS VALORES A ACTUALIZAR
+      final Map<String, dynamic> userData = {
+        'idUser': idUser,
+        'username': user.username,
+        'passwordHash': user.password,
+        'imageUrl': user.imageUrl
+      };
+
+      // ACTUALIZAMOS EL USUARIO
+      final result = await db.update(
+        'user',
+        userData, // DATOS A ACTUALIZAR
+        where: 'idUser = ?',
+        whereArgs: [idUser],
+      );
+
+      // DEVUELVE TRUE SI SE ACTUALIZO AL MENOS UNA FILA
+      return result > 0;
+    } catch (e) {
+      // RETORNA FALSE Y MUESTRA UN MENSAJE DE ERROR SI FALLA
+      DatabaseHelper.logger.e(
+          "Error al actualizar la información del usuario ${user.toString()}: $e");
+      return false;
+    }
+  } // METODO PARA ACUTALIZAR LA INFORMACION DEL USUARIO
+
+
+  /// Método que conseguir la imagen de un usuario de la base de datos basado en su ID.
+  ///
+  /// Parámetros:
+  /// - `idUser`: El ID del usuario que se desea conseguir su foto.
+  ///
+  /// Retorna:
+  /// - `String?`: `url` si los datos han sido correctos y, `null`
+  /// si ocurrió un error o no se encontró en la query.
+  Future<String?> getImageUser(int idUser) async {
+    final db = await DatabaseHelper.database;
+    try {
+      final resultImage =
+      await db.query('user', where: 'idUser = ?', whereArgs: [idUser]);
+
+      if (resultImage.isNotEmpty) {
+        return resultImage.first['imageUrl'] as String;
+      } else {
+        return null;
+      } // SI NO ESTA VACIO, RETORNA LA URL DE LA IMAGEN, SI NO DEVUELVE NULL
+    } catch (e) {
+      // SI ALGO FALLA RETORNA NULL Y UN MENSAJE DE ERROR
+      DatabaseHelper.logger
+          .e("Error al conseguir la imagen del usuario con id $idUser: $e");
+      return null;
+    }
+  } // METODO PARA CONSEGUIR LA IMAGEN DEL USUARIO
 }
