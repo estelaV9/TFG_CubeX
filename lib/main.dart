@@ -6,6 +6,7 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
@@ -33,6 +34,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CurrentCubeType()),
+        ChangeNotifierProvider(create: (_) => CurrentTime()),
         ChangeNotifierProvider(create: (_) => CurrentLanguage()),
         ChangeNotifierProvider(create: (_) => CurrentStatistics()),
         ChangeNotifierProvider(create: (_) => CurrentScramble()),
