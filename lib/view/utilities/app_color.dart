@@ -41,4 +41,7 @@ class AppColors {
 
   /// Color utilizado para destacar acciones críticas, como eliminar cuentas.
   static const Color deleteAccount = Color(0xFFf2a0ac);
+
+  /// Color utilizado para destacar deshabilitar botones.
+  static const Color darkPurpleOpacity = Color(0x8041135E);
 }
