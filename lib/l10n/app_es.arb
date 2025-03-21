@@ -214,5 +214,13 @@
    "field_null": "Campo vacio.",
 
    "confirm_pass_field_null": "El campo confirmar contraseña esta vacio.",
-   "password_mismatch_error": "Las contraseñas no coinciden. Intenta nuevamente."
+   "password_mismatch_error": "Las contraseñas no coinciden. Intenta nuevamente.",
+
+   "actual_delete_time": "¿Estás seguro de que deseas eliminar este tiempo?",
+   "actual_delete_time_content": "Una vez eliminado, no podrás recuperar este tiempo.",
+
+   "add_comment_time": "Añadir comentario.",
+   "add_comment_time_content": "Añade un comentario al tiempo registrado.",
+
+   "time_saved_error": "Ocurrió un error al guardar el tiempo"
 }

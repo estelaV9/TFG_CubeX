@@ -220,5 +220,13 @@
   "field_null": "Field null.",
 
   "confirm_pass_field_null": "Confirm pass field is null.",
-  "password_mismatch_error": "The passwords do not match. Please try again."
+  "password_mismatch_error": "The passwords do not match. Please try again.",
+
+  "actual_delete_time": "Are you sure you want to delete this time?",
+  "actual_delete_time_content": "Once deleted, you won't be able to recover this time.",
+
+  "add_comment_time": "Add comment.",
+  "add_comment_time_content": "Add comment to the registred time.",
+
+  "time_saved_error": "An error occurred while saving the time"
 }

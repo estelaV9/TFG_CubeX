@@ -438,13 +438,24 @@ class Internationalization {
         return l10n.confirm_pass_field_null;
       case 'password_mismatch_error':
         return l10n.password_mismatch_error;
+      case 'actual_delete_time':
+        return l10n.actual_delete_time;
+      case 'actual_delete_time_content':
+        return l10n.actual_delete_time_content;
+
+        case 'add_comment_time':
+        return l10n.add_comment_time;
+      case 'add_comment_time_content':
+        return l10n.add_comment_time_content;
+
+      case 'time_saved_error':
+        return l10n.time_saved_error;
 
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;
     } // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
   } // METODO QUE OBTIENE LA TRADUCCION SEGUN LA CLASE (metodo axuliar)
-
 
   /// Devuelve solo el texto traducido de la clave proporcionada.
   ///
