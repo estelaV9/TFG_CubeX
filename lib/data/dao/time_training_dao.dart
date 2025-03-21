@@ -214,7 +214,6 @@ class TimeTrainingDao {
     recentTimes.removeAt(0); // MEJOR
     recentTimes.removeLast(); // PEOR
 
-
     for (var time in recentTimes) {
       avgTimeInSeconds += time.timeInSeconds;
     } // SUMAMOS LOS TIEMPOS RESTANTES
@@ -271,13 +270,14 @@ class TimeTrainingDao {
   /// - `bool`: `true` si todos los tiempos fueron eliminados correctamente, `false` si ocurrió un error.
   Future<bool> deleteAllTimeBySession(int? idSession) async {
     final db = await DatabaseHelper.database;
-    try{
+    try {
       // SE ELIMINAN TODOS LOS TIEMPOS DE LA SESION
-      final deleteAllTime = await db.delete('timeTraining', where: 'idSession = ?', whereArgs: [idSession]);
+      final deleteAllTime = await db.delete('timeTraining',
+          where: 'idSession = ?', whereArgs: [idSession]);
 
       // DEVUELVE TRUE/FALSE SI SE ELIMINARON CORRECTAMENTE O NO
       return deleteAllTime > 0;
-    } catch (e){
+    } catch (e) {
       // RETORNA FALSE Y UN MENSAJE SI OCURRE UN ERROR
       DatabaseHelper.logger.e("Error al eliminar todos los tiempos de la sesión $idSession: $e");
       return false;
@@ -295,7 +295,7 @@ class TimeTrainingDao {
   ///
   /// Retorna:
   /// - `int`: El ID del tiempo encontrado o `-1` si no se encuentra.
-  Future<int> getIdByTime(String scramble, int idSession) async {
+  Future<int> getIdByTime(String scramble, int? idSession) async {
     final db = await DatabaseHelper.database;
     int idTime = -1; // ID DEL TIEMPO RETORNADO
     try {
@@ -325,4 +325,44 @@ class TimeTrainingDao {
     }
   } // METODO PARA BUSCAR UN TIEMPO POR SU SCRAMBLE Y EL ID DE LA SESION
 // (como el scramble suele ser unico se busca por eso y para ser mas exactos se busca por la sesion en concreto)
+
+  /// Método para actualizar un tiempo en la base de datos.
+  ///
+  /// Este método actualiza los datos de un tiempo en la tabla `timeTraining`
+  /// utilizando su ID y un objeto `TimeTraining` con los nuevos valores.
+  /// Sobretodo para actualizar penalizaciones o comentarios.
+  ///
+  /// Parámetros:
+  /// - `idTime`: El ID del tiempo que se actualizará.
+  /// - `time`: Un objeto `TimeTraining` que contiene los nuevos valores para actualizar.
+  ///
+  /// Retorna:
+  /// - `bool`: `true` si la actualización fue exitosa (al menos una fila afectada),
+  ///   `false` si ocurrió un error o no se actualizó ninguna fila.
+  Future<bool> updateTime(int idTime, TimeTraining? time) async {
+    final db = await DatabaseHelper.database;
+    // MAPA CON LOS VALORES A ACTUALIZAR
+    try {
+      // REALIZAR EL UPDATE
+      final Map<String, dynamic> timeData = {
+        'idTimeTraining': idTime,
+        'idSession': time?.idSession,
+        'scramble': time?.scramble,
+        'timeInSeconds': time?.timeInSeconds,
+        'comments': time?.comments,
+        'penalty': time?.penalty,
+      };
+
+      final result = await db.update('timeTraining', timeData,
+          where: 'idTimeTraining = ?', whereArgs: [idTime]);
+
+      // DEVUELVE TRUE SI SE ACTUALIZO AL MENOS UNA FILA
+      return result > 0;
+    } catch (e) {
+      // RETORNA FALSE Y MUESTRA UN MENSAJE DE ERROR SI FALLA
+      DatabaseHelper.logger.e(
+          "Error al actualizar la información del time ${time.toString()}: $e");
+      return false;
+    }
+  } // METODO PARA ACTUALIZAR UN TIEMPO
 }
