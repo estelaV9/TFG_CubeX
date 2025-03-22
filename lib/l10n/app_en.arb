@@ -145,6 +145,7 @@
   "delete_time": "Delete time button",
   "add_comment": "Add comments button",
   "add_scramble_manual": "Add scramble manually button",
+  "reset_scramble": "Reset scramble button",
   "more_option": "More options button",
   "add_new_time": "Add new time button",
   "add_penalty": "Add a penalty button",

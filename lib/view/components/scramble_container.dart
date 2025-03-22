@@ -112,10 +112,17 @@ class ScrambleContainerState extends State<ScrambleContainer> {
 
           // BOTON AÑADIR MANUALMENTE
           Positioned(
-              bottom: 10,
-              right: 10,
+              bottom: 8,
+              right: 35,
               child: IconClass.iconButton(context, logicAddScramble,
-                  "add_scramble_manual", Icons.add_circle_outline))
+                  "add_scramble_manual", Icons.add_circle_outline)),
+
+          // BOTON PARA VOLVER A GENERAR UN NUEVO SCRAMBLE
+          Positioned(
+              bottom: 8,
+              right: 10,
+              child: IconClass.iconButton(context, updateScramble,
+                  "reset_scramble", Icons.refresh))
         ],
       ),
     );

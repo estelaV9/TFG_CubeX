@@ -312,6 +312,8 @@ class Internationalization {
         return l10n.add_comment;
       case 'add_scramble_manual':
         return l10n.add_scramble_manual;
+      case 'reset_scramble':
+        return l10n.reset_scramble;
       case 'more_option':
         return l10n.more_option;
       case 'add_new_time':
