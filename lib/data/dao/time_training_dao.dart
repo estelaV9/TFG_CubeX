@@ -365,4 +365,55 @@ class TimeTrainingDao {
       return false;
     }
   } // METODO PARA ACTUALIZAR UN TIEMPO
+
+
+  /// Método para obtener un tiempo por su ID en la base de datos.
+  ///
+  /// Este método recupera un tiempo especifico en la tabla `timeTraining`
+  /// utilizando su ID. Si encuentra un resultado, mapea los datos y devuelve un
+  /// objeto `TimeTraining`.
+  ///
+  /// Parámetros:
+  /// - `idTime`: El ID del tiempo que se recuperará.
+  ///
+  /// Retorna:
+  /// - Un objeto `TimeTraining` si el tiempo es encontrado en la base de datos.
+  /// - `null` si no existe un tiempo con el `idTime` proporcionado o si ocurre un error.
+  Future<TimeTraining?> getTimeById(int idTime) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // REALIZA LA CONSULTA A LA BASE DE DATOS
+      final result = await db.query(
+        'timeTraining',
+        where: 'idTimeTraining = ?',
+        whereArgs: [idTime],
+      );
+
+      if (result.isNotEmpty) {
+        // SI SE ENCUENTRA EL TIEMPO, SE MAPEA LOS DATOS Y LO DEVOLVE
+        final timeTraining = result.first;
+        return TimeTraining(
+          idTimeTraining: timeTraining['idTimeTraining'] as int?,
+          idSession: timeTraining['idSession'] as int,
+          scramble: timeTraining['scramble'] as String,
+          timeInSeconds: timeTraining['timeInSeconds'] as double,
+          comments: timeTraining['comments'] as String,
+          penalty: timeTraining['penalty'] as String,
+          registrationDate: timeTraining['registrationDate'] as String,
+        );
+      } else {
+        // SI NO ENCUENTRA EL TIEMPO, DEVUELVE UN -1
+        DatabaseHelper.logger.w(
+            "No se encontró ningún tiempo con ese id: $idTime");
+      } // SI LA CONSULTA NO ES NULA Y DEVUELVE -1
+
+      return null; // RETORNA NULL
+    } catch (e) {
+      // SI OCURRE UN ERROR MUESTRA UN MENSAJE DE ERROR
+      DatabaseHelper.logger.e(
+          "Error al obtener el tiempo por id: $idTime");
+      // RETORNA NULL EN CASO DE ERROR
+      return null;
+    }
+  } // METODO PARA BUSCAR UN TIEMPO POR SU ID
 }
