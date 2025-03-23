@@ -229,5 +229,6 @@
   "add_comment_time": "Add comment.",
   "add_comment_time_content": "Add comment to the registred time.",
 
-  "time_saved_error": "An error occurred while saving the time"
+  "time_saved_error": "An error occurred while saving the time",
+  "time_error": "An error occurred with the time"
 }

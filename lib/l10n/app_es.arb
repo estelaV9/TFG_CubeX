@@ -223,5 +223,6 @@
    "add_comment_time": "Añadir comentario.",
    "add_comment_time_content": "Añade un comentario al tiempo registrado.",
 
-   "time_saved_error": "Ocurrió un error al guardar el tiempo"
+   "time_saved_error": "Ocurrió un error al guardar el tiempo",
+   "time_error": "Ocurrió un error con el tiempo"
 }

@@ -452,6 +452,8 @@ class Internationalization {
 
       case 'time_saved_error':
         return l10n.time_saved_error;
+      case 'time_error':
+        return l10n.time_error;
 
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
