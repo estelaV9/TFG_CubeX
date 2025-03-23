@@ -27,6 +27,7 @@ import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
 import '../utilities/alert.dart';
+import '../utilities/app_styles.dart';
 
 /// Pantalla principal del temporizador del cubo.
 ///
@@ -43,10 +44,7 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
-  TextStyle style = const TextStyle(
-      fontSize: 15,
-      fontWeight: FontWeight.bold,
-      color: AppColors.darkPurpleColor);
+  TextStyle statsTextStyle = AppStyles.statsTextStyle;
 
   // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
@@ -59,6 +57,7 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao100Value = "--:--.--";
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TimeTrainingDao timeTrainingDao = TimeTrainingDao();
 
   // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
   String _finalTime = "0.00";
@@ -73,141 +72,27 @@ class _TimerScreenState extends State<TimerScreen> {
 
   late CurrentTime currentTime;
 
-  /// Método para insertar tiempos de prueba en la base de datos.
-  ///
-  /// No se utiliza.
-  void insertTimes() async {
-    final userDao = UserDao();
-    final sessionDao = SessionDao();
-    final timeTrainingDao = TimeTrainingDao();
-
-    // OBTENER EL USUARIO ACTUAL
-    final currentUser = context.read<CurrentUser>().user;
-    // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
-    if (idUser == -1) {
-      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-      return;
-    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-    // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-    int idSession =
-        await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
-    List<TimeTraining> timeTrainings = [
-      TimeTraining(
-          idSession: idSession,
-          scramble:
-              "B F2 D U' L' D' L2 B' R D' U2 F R U' D R' U F' R2 L' R' U2 F",
-          timeInSeconds: 1.4,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "U' D L' R2 F2 D' L' B' F R' D2 U2 F' U D2 R' L2",
-        timeInSeconds: 2.1,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "F' R' L2 D R' F' U2 L2 F2 U' R' U2 L",
-        timeInSeconds: 3.0,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "L D' F' R2 L' R' F2 D U' F' L",
-        timeInSeconds: 2.5,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "R F2 L2 U R' D' F' U' D' L2",
-        timeInSeconds: 4.2,
-        comments: null,
-      ),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "U' L2 D' F R2 L' B' U D F'",
-          timeInSeconds: 3.5,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "B' F D2 L' R U F2 U' L",
-          timeInSeconds: 5.0,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "U F' R' D B' F' U2 R' L D'",
-          timeInSeconds: 2.8,
-          comments: null,
-          penalty: "DNF"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "D L2 F U' B2 F R D' L R",
-        timeInSeconds: 3.6,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "F D' L B' R2 D L2 F' U",
-        timeInSeconds: 4.7,
-        comments: null,
-      ),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "B' U2 D' L' F U' D2 F' R",
-          timeInSeconds: 6.0,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "R2 F2 D' B2 U' R F L' D2",
-        timeInSeconds: 3.2,
-        comments: null,
-      ),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "D2 R B2 U' L2 F' D2",
-          timeInSeconds: 5.3,
-          comments: null,
-          penalty: "DNF"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "U' R' D F L' B U2 R' F2 L",
-        timeInSeconds: 4.1,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "F2 R2 L2 D U' R2 F D'",
-        timeInSeconds: 3.8,
-        comments: null,
-      ),
-    ];
-
-    for (var timeTraining in timeTrainings) {
-      final success = await timeTrainingDao.insertNewTime(timeTraining);
-      if (success) {
-        DatabaseHelper.logger.i("Tiempo insertado: $timeTraining");
-      } else {
-        DatabaseHelper.logger.i("Error al insertar el tiempo: $timeTraining");
-      } // VERIFICAMOS SI SE INSERTO CORRECTAMENTE
-    } // SE INSERTA CADA TIEMPO EN LA BASE DE DATOS
-
-    // MOSTRAR RESULTADOS
-    // final result = await timeTrainingDao.getTimesOfSession(idSession);
-    // DatabaseHelper.logger.i("Tiempos obtenidos: \n${result.join('\n')}");
-  }
+  // ATRIBUTOS PARA SABER SI SE ESTABLECIDO PENALIZACIONES O COMENTARIOS
+  bool isDnfChoose = false, isPlusTwoChoose = false, isComment = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //insertTimes();
     // INICIA LAS ESTADISTICAS
     initTimeStatistics();
+    currentTime = context.read<CurrentTime>();
+    currentTime.setResetTimeTraining();
+  }
+
+  @override
+  void dispose() async {
+    // ACTUALIZA LA INFORMACION DEL TIEMPO ACTUAL
+    // (si ha hecho un tiempo, añadido penalizaciones/comentarios cuando se vaya
+    // a otra pestaña, se guardara)
+    currentTime.updateCurrentTime(context);
+
+    super.dispose();
   }
 
   /// Método para inicializar las estadísticas de tiempo.
@@ -275,6 +160,9 @@ class _TimerScreenState extends State<TimerScreen> {
     // OBTENEMOS EL SCRAMBLE ACTUAL ANTES DE ABRIR LA PANTALLA DE SHOWTIME
     final currentScramble = context.read<CurrentScramble>().scramble.toString();
 
+    DatabaseHelper.logger
+        .i("El tiempo anterior: ${currentTime.timeTraining.toString()}");
+
     // ABRIR LA PANTALLA DE SHOWTIME Y ESPERAR EL RESULTADO
     final result = await Navigator.push(
       context,
@@ -282,6 +170,11 @@ class _TimerScreenState extends State<TimerScreen> {
         builder: (context) => const ShowTimeScreen(),
       ),
     );
+
+    // REESTABLECER VALORES DE PENALIZACION
+    currentTime.isPlusTwoChoose = false;
+    currentTime.isDnfChoose = false;
+    isComment = false;
 
     // SI EL RESULTADO NO ES NULO SE ACTUALIZA EL TIEMPO
     if (result != null) {
@@ -377,9 +270,50 @@ class _TimerScreenState extends State<TimerScreen> {
     }
   } // METODO PARA GUARDAR EL TIEMPO REALIZADO
 
+  /// Muestra una alerta para añadir un comentario al tiempo actual.
+  ///
+  /// Este método es llamado cuando el usuario pulsa el icono de comentarios.
+  /// Se muestra una alerta que permite introducir un comentario, el cual será
+  /// guardado en la base de datos y asociado al tiempo actual.
+  ///
+  /// Si el usuario ya ha introducido un comentario y vuelve a pulsar este icono,
+  /// se establecerá ese mismo comentario introducido.
   void logicComment() {
+    isComment = true;
     // APARECERA UNA ALERTA PARA QUE INTRODUZCA UN COMENTARIO
-    // AlertUtil.showCommentsTime(context);
+    AlertUtil.showCommentsTime(context, "add_comment_time", (String com) async {
+      // ACTUALIZAR EN LA BASE DE DATOS EL COMENTARIO
+      if (currentTime.timeTraining != null) {
+        // AÑADIR NUEVO COMENTARIO
+        TimeTraining updatedTime = TimeTraining(
+          idSession: currentTime.timeTraining!.idSession,
+          scramble: currentTime.timeTraining!.scramble,
+          timeInSeconds: currentTime.timeTraining!.timeInSeconds,
+          comments: com,
+          // ACTUALIZAR COMENTARIO
+          penalty: currentTime.timeTraining!.penalty,
+        );
+
+        // SE ACTUALIZA EN LA BASE DE DATOS
+        int idTime = await timeTrainingDao.getIdByTime(
+            currentTime.timeTraining!.scramble,
+            currentTime.timeTraining!.idSession);
+
+        if (idTime == -1) {
+          AlertUtil.showSnackBarError(context, "time_saved_error");
+          return;
+        } // VALIDAR QUE EL IDTIME NO DE ERROR
+
+        // ACTUALIZAR EL TIEMPO
+        if (await timeTrainingDao.updateTime(idTime, updatedTime) == false) {
+          AlertUtil.showSnackBarError(context, "time_saved_error");
+          return;
+        } // SI FALLA, SE MUESTRA UN ERROR
+
+        // ACTUALIZAR ESTADO GLOBAL
+        currentTime.setTimeTraining(updatedTime);
+      }
+    });
   } // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
 
   /// Muestra una alerta para confirmar la eliminación del tiempo actual.
@@ -396,70 +330,17 @@ class _TimerScreenState extends State<TimerScreen> {
         context,
         "actual_delete_time",
         "actual_delete_time_content",
-        deleteTime,
+        () => currentTime.deleteTime(context),
       );
     } // SI HAY UN TIEMPO ACTUAL, SE MUESTRA LA ALERTA
   } // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
 
-  /// Elimina el tiempo actual de la base de datos.
-  ///
-  /// Este método elimina un tiempo almacenado en la base de datos a partir de su `scramble` y `idSession`.
-  /// Después de la eliminación, actualiza el estado global y se muestra un mensaje de éxito o error.
-  ///
-  /// **Características**:
-  /// - Se obtiene el tiempo actual de `currentTime`.
-  /// - Busca el `idDeleteTime` a partir del `scramble` y `idSession` del tiempo actual.
-  /// - Si se encuentra el `idDeleteTime`, intenta eliminar el tiempo de la base de datos.
-  /// - Si la eliminación es exitosa, se actualiza el estado global y se pone en 0.0 el tiempo.
-  /// - Si ocurre un error, se muestra un mensaje de error.
-  Future<void> deleteTime() async {
-    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
-
-    // OBTENER EL TIEMPO ACTUAL
-    currentTime = context.read<CurrentTime>();
-
-    // OBTENER EL ID DEL TIEMPO A ELIMINAR
-    final idDeleteTime = await timeTrainingDao.getIdByTime(
-        currentTime.timeTraining!.scramble,
-        currentTime.timeTraining!.idSession!);
-
-    if (idDeleteTime == -1) {
-      // SI OCURRIO UN ERROR, MUESTRA UN SNACKBAR
-      AlertUtil.showSnackBarInformation(context, "delete_time_error");
-      DatabaseHelper.logger
-          .e("No se obtuvo el tiempo por scramble e idSession: $idDeleteTime");
-      return;
-    } // VERIFICAR SI SE HA OBTENIDO EL ID DEL TIEMPO
-
-    try {
-      // ELIMINAR EL TIEMPO
-      final isDeleted = await timeTrainingDao.deleteTime(idDeleteTime);
-
-      if (isDeleted) {
-        // SI SE ELIMINO CORRECTAMENTE SE MUESTRA UN SNACKBAR
-        AlertUtil.showSnackBarInformation(context, "delete_time_correct");
-
-        // ACTUALIZAR EL TIEMPO EN 0.0
-        setState(() {
-          _finalTime = "0.0";
-        });
-
-        // ACTUALIZAR EL TIEMPO ACTUAL EN NULO EN EL ESTADO GLOBAL
-        currentTime.setTimeTrainingNull();
-      } else {
-        // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
-        AlertUtil.showSnackBarInformation(context, "delete_time_error");
-        DatabaseHelper.logger.e("No se pudo eliminar: $isDeleted");
-      } // VERIFICAR SI SE HA ELIMINADO CORRECTAMENTE
-    } catch (e) {
-      // CAPTURAR CUALQUIER ERROR DURANTE LA ELIMINACION
-      AlertUtil.showSnackBarInformation(context, "delete_time_error");
-      DatabaseHelper.logger.e("Error al eliminar el tiempo: $e");
-    }
-  } // METODO PARA ELIMINAR EL TIEMPO ACTUAL
-
   @override
   Widget build(BuildContext context) {
+    currentTime = context.watch<CurrentTime>();
+    // SE MUESTRA EL TIEMPO FORMATEADO (si tiene penalizacines o no)
+    _finalTime = currentTime.getFormattedTime();
+
     return Scaffold(
       key: _scaffoldKey, // KEY PARA CONTROLLAR EL SCAFFOLD PARA EL DRAWER
       drawer: const AppDrawer(), // DRAWER
@@ -531,7 +412,23 @@ class _TimerScreenState extends State<TimerScreen> {
           Positioned.fill(
             top: 250, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
+                // CUANDO EMPIECE UN TIEMPO NUEVO, SI HA PULSADO ALGUNA PENALIZACION, SE ACTUALIZA EL TIEMPO
+                if (currentTime.isPlusTwoChoose || currentTime.isDnfChoose) {
+                  int idTime = await timeTrainingDao.getIdByTime(
+                      currentTime.timeTraining!.scramble,
+                      currentTime.timeTraining!.idSession);
+
+                  if (idTime == -1) {
+                    AlertUtil.showSnackBarError(context, "time_saved_error");
+                    return;
+                  } // VALIDAR QUE EL IDTIME NO DE ERROR
+
+                  // ACTUALIZAR ESTADO GLOBAL
+                  currentTime.updateCurrentTime(context);
+                  // (no se muestra mensaje de exito, el usuario lo podra ver en el historial)
+                }
+                // ABRIR TIMER
                 _openShowTimerScreen(context);
               }, // CUANDO MANTIENE PULSADO ABRE LA PANTALLA DE MOSTRAR TIMER
               child: Column(
@@ -548,57 +445,98 @@ class _TimerScreenState extends State<TimerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Semantics(
-                            label: Internationalization.internationalization
-                                .getLocalizations(context, "time_label"),
-                            hint: Internationalization.internationalization
-                                .getLocalizations(context, "time_hint"),
-                            child: Text(
-                              key: const Key('timer_display'),
-                              _finalTime,
-                              style: const TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.darkPurpleColor,
-                              ),
-                            ),
-                          ),
+                              label: Internationalization.internationalization
+                                  .getLocalizations(context, "time_label"),
+                              hint: Internationalization.internationalization
+                                  .getLocalizations(context, "time_hint"),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    key: const Key('timer_display'),
+                                    _finalTime,
+                                    style: const TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.darkPurpleColor,
+                                    ),
+                                  ),
+
+                                  // SI HAY UN +2 O COMENTARIOS, SE AÑADE UN PADDING A LA DERECHA
+                                  if (currentTime.isPlusTwoChoose || isComment)
+                                    const Padding(
+                                        padding: EdgeInsets.only(right: 5)),
+
+                                  // SI SOLO ESTA SELECCIONADO EL +2 SIN COMENTARIOS
+                                  if (currentTime.isPlusTwoChoose && !isComment)
+                                    const Text( " +2",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.deleteAccount,
+                                      ),
+                                    ),
+
+                                  // SI SOLO HAY COMENTARIOS, SE MUESTRA SOLO EL ICON
+                                  if (isComment && !currentTime.isPlusTwoChoose)
+                                    IconClass.iconMaker(context, Icons.comment, "fsd", 15),
+
+                                  // SI HAY COMENTARIOS Y +2, SE MUESTRAN EN COLUMNA
+                                  if (isComment && currentTime.isPlusTwoChoose)
+                                    Column(
+                                      children: [
+                                        IconClass.iconMaker(
+                                            context, Icons.comment, "fsd", 15),
+                                        const Text( " +2",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.deleteAccount,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              )),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconClass.iconButton(context, logicComment,
-                                  "add_comment", Icons.add_comment_rounded),
+                              // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
+                              currentTime.timeTraining != null
+                                  ? IconClass.iconButton(context, logicComment,
+                                      "add_comment", Icons.add_comment_rounded)
+                                  : IconClass.iconButton(
+                                      context, () {}, "add_comment",
+                                      Icons.add_comment_rounded,
+                                      AppColors.darkPurpleOpacity),
                               TextButton(
-                                onPressed: () {},
-                                child:
-                                    // DNF
-                                    Internationalization.internationalization
-                                        .createLocalizedSemantics(
-                                  context,
-                                  "dnf_label",
-                                  "dnf_hint",
-                                  "dnf",
-                                  const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor,
-                                  ),
+                                // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
+                                onPressed: currentTime.timeTraining != null
+                                    ? () { currentTime.setPenalty(
+                                            "DNF", !currentTime.isDnfChoose); }
+                                    : () {}, // SE DESHABILITA SI NO HAY TIEMPO ACTUAl
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context, "dnf_label", "dnf_hint", "dnf",
+                                  // APLICAR COLOR SI ESTA O NO PULSADO
+                                  AppStyles.getButtonTextStyle(
+                                      currentTime.isDnfChoose,
+                                      currentTime.timeTraining != null),
                                 ),
                               ),
                               TextButton(
-                                onPressed: () {},
-                                child:
-                                    // +2
-                                    Internationalization.internationalization
-                                        .createLocalizedSemantics(
-                                  context,
-                                  "plus_two_label",
-                                  "plus_two_hint",
-                                  "plus_two",
-                                  const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.darkPurpleColor,
-                                  ),
+                                // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
+                                onPressed: currentTime.timeTraining != null
+                                    ? () { currentTime.setPenalty(
+                                            "+2", !currentTime.isPlusTwoChoose); }
+                                    : () {}, // SE DESHABILITA SI NO HAY TIEMPO ACTUAL
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context, "plus_two_label", "plus_two_hint", "plus_two",
+                                  // APLICAR COLOR SI ESTA O NO PULSADO
+                                  AppStyles.getButtonTextStyle(
+                                      currentTime.isPlusTwoChoose,
+                                      currentTime.timeTraining != null),
                                 ),
                               ),
                               IconClass.iconButton(context, logicDeleteTime,
@@ -630,19 +568,19 @@ class _TimerScreenState extends State<TimerScreen> {
                                 children: [
                                   Text(
                                     "Average: $averageValue",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                   Text(
                                     "Pb: $pbValue",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                   Text(
                                     "Worst: $worstValue",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                   Text(
                                     "Count: $countValue",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                 ],
                               ),
@@ -655,19 +593,19 @@ class _TimerScreenState extends State<TimerScreen> {
                                 children: [
                                   Text(
                                     "Ao5: $ao5Value",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                   Text(
                                     "Ao12: $ao12Value",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                   Text(
                                     "Ao50: $ao50Value",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                   Text(
                                     "Ao100: $ao100Value",
-                                    style: style,
+                                    style: statsTextStyle,
                                   ),
                                 ],
                               ),
