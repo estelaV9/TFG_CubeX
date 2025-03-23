@@ -112,8 +112,12 @@ class _ShowTimeScreenState extends State<ShowTimeScreen> {
         },
         // CUANDO SE PULSA, SE DENIENE EL CRONOMETRO Y SE REGRESA A LA PANTALLA PRINCIPAL
         onTap: () {
-          _timeTimer?.cancel(); // SE DETIENE CRONOMETRO
-          Navigator.pop(context, _showTime); // SE REGRESA CON EL TIEMPO
+          // (controlar que cuando inicia y no ha hecho la inspeccion, el
+          // usuario no de un tap y se salga del timer)
+          if (_auxTime > 0) {
+            _timeTimer?.cancel(); // SE DETIENE CRONOMETRO
+            Navigator.pop(context, _showTime); // SE REGRESA CON EL TIEMPO
+          } // SOLO PERMITE SALIRSE SI EL CRONOMETRO YA COMENZO
         },
         child: Stack(
           children: [

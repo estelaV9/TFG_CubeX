@@ -3,12 +3,15 @@ import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 
 import '../screen/historial_screen.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 /// Clase que representa la **barra de navegación inferior** de la aplicación.
 ///
-/// Esta clase permite al usuario navegar entre diferentes pantallas de la aplicación utilizando
-/// una barra de navegación en la parte inferior de la pantalla.
-/// El índice seleccionado determina qué pantalla se muestra.
+/// Esta clase permite a los usuarios cambiar entre diferentes pantallas de la aplicación
+/// mediante un menú de navegación en la parte inferior de la pantalla.
+///
+/// Implementa `CurvedNavigationBar` para mejorar la estética al usuario.
+/// La selección de un elemento actualiza el estado y muestra la pantalla correspondiente.
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
 
@@ -21,7 +24,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   // LISTA DE WIDGETS PARA CADA PANTALLA
   final List<Widget> _screens = [
-    /// nota: se cambiara, pero se necesita una para que el timer empiece en 1 en el medio
     const HistorialScreen(),
     const TimerScreen(),
     // StatisticScreen()
@@ -33,33 +35,40 @@ class _BottomNavigationState extends State<BottomNavigation> {
     });
   } // METODO PARA CUANDO PULSE EN LA BARRA DE NAVEGACION
 
+  /// Método para generar un `Icon` con un ícono, tamaño y color.
+  ///
+  /// Este método sirve para evitar la duplicación de código al crear los iconos
+  /// del menú inferior. Según su index, pasará del color morado oscuro a blanco
+  /// y tendra un tamaño preestablecido.
+  ///
+  /// Parametros:
+  /// - `iconData`: El icono que se va a mostrar en el menú.
+  /// - `index`: La posición de la opción de menú elegida por el usuario para
+  /// cambiar de morado oscuro a blanco.
+  Icon iconItem(IconData iconData, int index) {
+    return Icon(iconData, size: 30,
+        color: _currentIndex == index ? Colors.white : AppColors.darkPurpleColor);
+  } // METODO QUE DEVUELVE UN ICON CON UN COLOR U OTRO DEPENDIENDO EL INDEX
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.manage_search), label: "Historial"),
-          BottomNavigationBarItem(icon: Icon(Icons.timer), label: "Timer"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.auto_graph), label: "Statistics")
-        ],
-        currentIndex: _currentIndex,
+      bottomNavigationBar: CurvedNavigationBar(
+        index: _currentIndex,
+        height: 60,
+        // FONDO DEL NAVIGATION BAR (el color del espacio que deja el elemento seleccionado)
+        backgroundColor: AppColors.downLinearColor,
+        color: AppColors.lightVioletColor,
+        // COLOR DE LA BARRA
+        animationDuration: const Duration(milliseconds: 350),
+        // ANIMACION
         onTap: _onTap,
-        // COLOR DE FONDO DEL NAVIGATION
-        backgroundColor: AppColors.lightVioletColor,
-
-        // COLOR Y ESTILO DEL ITEM SELECCIONADO
-        selectedItemColor: Colors.white,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-        showSelectedLabels: true,
-        // MUESTRA EL LABEL
-
-        // COLOR Y ESTILO DEL ITEM NO SELECCIONADO
-        unselectedItemColor: AppColors.darkPurpleColor,
-        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
-        showUnselectedLabels: false, // OCULTA LOS LABELS
+        items: <Widget>[
+          iconItem(Icons.manage_search, 0),
+          iconItem(Icons.timer, 1),
+          iconItem(Icons.auto_graph, 2)
+        ],
       ),
     );
   }

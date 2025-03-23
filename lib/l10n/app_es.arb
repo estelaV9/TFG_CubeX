@@ -144,6 +144,7 @@
   "delete_time": "Botón eliminar tiempo",
   "add_comment": "Botón agregar comentarios",
   "add_scramble_manual": "Botón agregar scramble manualmente",
+  "reset_scramble": "Btón restablecer scramble",
   "more_option": "Botón más opciones",
   "add_new_time": "Botón agregar nuevo tiempo",
   "add_penalty": "Botón agregar penalización",
@@ -214,5 +215,14 @@
    "field_null": "Campo vacio.",
 
    "confirm_pass_field_null": "El campo confirmar contraseña esta vacio.",
-   "password_mismatch_error": "Las contraseñas no coinciden. Intenta nuevamente."
+   "password_mismatch_error": "Las contraseñas no coinciden. Intenta nuevamente.",
+
+   "actual_delete_time": "¿Estás seguro de que deseas eliminar este tiempo?",
+   "actual_delete_time_content": "Una vez eliminado, no podrás recuperar este tiempo.",
+
+   "add_comment_time": "Añadir comentario.",
+   "add_comment_time_content": "Añade un comentario al tiempo registrado.",
+
+   "time_saved_error": "Ocurrió un error al guardar el tiempo",
+   "time_error": "Ocurrió un error con el tiempo"
 }
