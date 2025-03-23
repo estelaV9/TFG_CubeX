@@ -38,15 +38,16 @@ class IconClass {
   /// - `function`: La función que se ejecutará cuando el botón sea presionado.
   /// - `tooltip`: La clave de mensaje para obtener el texto del Tooltip.
   /// - `icon`: El icono que se va a mostrar en el `IconButton`.
+  /// - `colors`: Color para el icono opcional, el cual por defecto será un morado oscuro.
   static IconButton iconButton(BuildContext context,
-      VoidCallback function, String tooltip, IconData icon) {
+      VoidCallback function, String tooltip, IconData icon, [Color? colors = AppColors.darkPurpleColor]) {
     final messageTooltip = Internationalization.internationalization.getLocalizations(context, tooltip);
 
     return IconButton(
         onPressed: () {
           function();
         },
-        color: AppColors.darkPurpleColor,
+        color: colors,
         tooltip: messageTooltip,
         icon: Icon(icon));
   } // METODO QUE DEVUELVE UN ICONBUTTON
