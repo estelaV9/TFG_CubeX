@@ -10,6 +10,7 @@ import 'package:esteladevega_tfg_cubex/view/utilities/validator.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -223,7 +224,7 @@ class AlertUtil {
                   border: const OutlineInputBorder(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               TextField(
@@ -726,6 +727,123 @@ class AlertUtil {
                       'accept_label',
                       'accept_hint',
                       'accept_label',
+                      const TextStyle(fontSize: 16, color: Colors.blue),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          );
+        });
+  } // ALERTA PARA PONER LA ANTIGUA CONTRASEÑA
+
+  /// Método para mostrar un diálogo para agregar o editar un comentario asociado a un tiempo registrado.
+  ///
+  /// Este método muestra un `AlertDialog` en el que el usuario puede
+  /// escribir o modificar un comentario relacionado con un tiempo. Si el usuario
+  /// ya había registrado un comentario, se muestra automáticamente en el campo de texto.
+  ///
+  /// Parámetros:
+  /// - `context`: Contexto de la aplicación donde se mostrará el diálogo.
+  /// - `key`: Clave de localización para personalizar el mensaje del diálogo.
+  /// - `addComment`: Función asíncrona que se ejecuta al confirmar, la cual guarda el comentario ingresado.
+  ///
+  /// Devuelve `true` si el usuario confirma y el comentario es válido, `false` si el usuario cancela
+  /// la acción, y `null` si ocurre un error o un cierre.
+  ///
+  /// Validaciones:
+  /// - Se obtiene el `idTime` según `scramble` y la sesión actual.
+  /// - Si el `idTime` no es válido (`-1`), se muestra un mensaje de error y se cancela la operación.
+  /// - Se recupera el comentario previo, si existe, y se muestra en el campo de texto.
+  /// - Se valida que el campo de texto no esté vacío antes de confirmar.
+  static Future<bool?> showCommentsTime(BuildContext context, String key,
+      Future<void> Function(String comment) addComment) async {
+    final commentController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
+    final currentTime = context.read<CurrentTime>();
+
+    // CONSEGUIR EL ID DEL TIEMPO ACTUAL
+    int idTime = await timeTrainingDao.getIdByTime(
+        currentTime.timeTraining!.scramble,
+        currentTime.timeTraining!.idSession);
+
+    if (idTime == -1) {
+      AlertUtil.showSnackBarError(context, "time_saved_error");
+      return false;
+    } // VALIDAR QUE EL IDTIME NO DE ERROR
+
+    // CONSEGUIR EL OBJETO A PARTIR DEL ID DEL TIEMPO
+    TimeTraining? timeTraining = await timeTrainingDao.getTimeById(idTime);
+    if (timeTraining != null) {
+      // SI YA HAY UN COMENTARIO SE SETTEA
+      commentController.text = timeTraining.comments!;
+    } else {
+      // SI ES NULO, MUESTRA UN MENSAJE DE ERROR
+      AlertUtil.showSnackBarError(context, "time_error");
+    } // VALIDAR SI ES NULO O NO EL TIEMPO
+
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: AppColors.lightVioletColor,
+            title: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context, key, key, key,
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Internationalization.internationalization
+                .createLocalizedSemantics(
+              context, '${key}_content', '${key}_content', '${key}_content',
+              const TextStyle(fontSize: 16),
+            ),
+            actions: <Widget>[
+              // CAMPO PARA INTRODUCIR EL COMENTARIO
+              Form(
+                  key: formKey,
+                  child: TextFormField(
+                    controller: commentController,
+                    // SE EXPANDE EL CAMPO INFINITO
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'No se pueden campos vacios';
+                      }
+                      return null;
+                    },
+                  )),
+
+              const SizedBox(
+                height: 10,
+              ),
+
+              // BOTONES PARA CANCELAR O DARLE OK
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      // CIERRA LA ALERTA Y RETORNA FALSE
+                      Navigator.pop(context, false);
+                    },
+                    child: Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context, 'cancel_label', 'cancel_hint', 'cancel_label',
+                      const TextStyle(fontSize: 16, color: Colors.red),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        Navigator.pop(context, true);
+                        addComment(commentController.text);
+                      } // VALIDAR SI LOS DATOS ESTAN CORRECTOS
+                    },
+                    child: Internationalization.internationalization
+                        .createLocalizedSemantics(
+                      context, 'accept_label', 'accept_hint', 'accept_label',
                       const TextStyle(fontSize: 16, color: Colors.blue),
                     ),
                   ),
