@@ -780,7 +780,7 @@ class AlertUtil {
       commentController.text = timeTraining.comments!;
     } else {
       // SI ES NULO, MUESTRA UN MENSAJE DE ERROR
-      AlertUtil.showSnackBarError(context, "time_error");
+      //AlertUtil.showSnackBarError(context, "time_error");
     } // VALIDAR SI ES NULO O NO EL TIEMPO
 
     return showDialog<bool>(
