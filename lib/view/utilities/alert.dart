@@ -372,7 +372,9 @@ class AlertUtil {
                 IconClass.iconButton(
                     context, () {}, "add_penalty", Icons.block),
                 Text(
-                  timeTraining.timeInSeconds.toString(),
+                  timeTraining.penalty == "DNF"
+                    ? timeTraining.penalty.toString()
+                      : timeTraining.timeInSeconds.toString(),
                   style: const TextStyle(
                     color: AppColors.darkPurpleColor,
                     fontSize: 30,

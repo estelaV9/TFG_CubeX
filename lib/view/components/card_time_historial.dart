@@ -40,7 +40,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
   /// Este método obtiene el ID del tiempo a eliminar utilizando el scramble y
   /// el ID de la sesión.
   /// Si se elimina correctamente o si ocurre un error, se muestra un mensaje de éxito.
-  Future<void>  deleteTime() async{
+  Future<void> deleteTime() async {
     // SE CIERRA EL DIALOGO AL ELIMINAR
     Navigator.of(context).pop();
 
@@ -53,7 +53,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     } // VERIFICA SI SE HA OBTENIDO BIEN EL ID DEL TIEMPO A ELIMINAR
 
     final isDeleted = await timeTrainingDao.deleteTime(idDeleteTime);
-    if(isDeleted){
+    if (isDeleted) {
       // SI SE ELIMINO CORRECTAMENTE SE MUESTRA UN SNCAKBAR PARA CONFIRMAR
       AlertUtil.showSnackBarInformation(context, "delete_time_correct");
 
@@ -96,21 +96,21 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     final currentSession = context.read<CurrentSession>().session;
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
-    CubeType? cubeType = await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
+    CubeType? cubeType =
+        await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
     if (cubeType == null) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
       return;
     } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
 
     // OBJETO SESION CON EL ID DEL USUARIO, NOMBRE Y TIPO DE CUBO
-    Session? session =
-    await sessionDao.getSessionByUserCubeName(
+    Session? session = await sessionDao.getSessionByUserCubeName(
         idUser, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
       // perdon por el bucle si no tiene tiempos
-      final times =
-      await timeTrainingDao.getTimesOfSession(session.idSession); // ID DE SESION
+      final times = await timeTrainingDao
+          .getTimesOfSession(session.idSession); // ID DE SESION
       setState(() {
         listTimes = times;
       });
@@ -157,7 +157,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
         return SizedBox(
           height: 50,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               setState(() {
                 scramble = listTimes[index].scramble;
                 idSession = listTimes[index].idSession!;
@@ -172,9 +172,12 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
               elevation: 4,
               child: Center(
                 child: Text(
-                  time.timeInSeconds.toStringAsFixed(2),
-                  style:
-                      TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+                  // SI EL TIEMPO TIENE UNA PENALIZACION DE DNF, SE ESTABLECE EN VEZ DEL TIEMPO
+                  time.penalty == "DNF"
+                      ? time.penalty.toString()
+                      : time.timeInSeconds.toStringAsFixed(2),
+                  style: TextStyle(
+                      fontSize: fontSize, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
