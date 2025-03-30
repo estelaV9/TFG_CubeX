@@ -49,7 +49,6 @@ class CurrentTime extends ChangeNotifier {
     notifyListeners();
   } // ESTABLECER EL TIEMPO ACTUAL EN NULO
 
-
   /// Actualiza el tiempo actual si se ha aplicado una penalización.
   ///
   /// Este método se ejecuta cuando comienza un nuevo tiempo y se ha seleccionado
@@ -107,7 +106,8 @@ class CurrentTime extends ChangeNotifier {
   /// - Obtiene el tiempo actual de `currentTime` y se verifica si el tiempo no es nulo.
   /// - Si la penalización es "+2" y está habilitada, agrega 2 segundos al tiempo actual.
   /// - Si la penalización es "DNF" y está habilitada, establece el tiempo como "DNF".
-  /// - Si la penalización es desmarcada, el tiempo vuelve a su valor original.
+  /// - Si la penalizacion es "none", dehabilita las otras penalizaciones.
+  /// - Si la penalización es desmarcada o es de tipo "none", el tiempo vuelve a su valor original.
   /// - Finalmente, actualiza el estado con el nuevo tiempo.
   ///
   /// **Parámetros**:
@@ -131,7 +131,8 @@ class CurrentTime extends ChangeNotifier {
             idSession: _timeTraining!.idSession,
             scramble: _timeTraining!.scramble,
             comments: _timeTraining!.comments,
-            timeInSeconds: _originalTime!, // RESTAURA EL TIEMPO ORIGINAL
+            timeInSeconds: _originalTime!,
+            // RESTAURA EL TIEMPO ORIGINAL
             penalty: isDnfChoose ? "DNF" : "",
           );
         }
@@ -146,6 +147,11 @@ class CurrentTime extends ChangeNotifier {
       }
     } // SEGUN LA PENALIZACION
 
+    if (penalty == "none") {
+      isDnfChoose = false;
+      isPlusTwoChoose = false;
+    } // SI LA PENALIZACION ES 'none', SE DESACTIVAN LAS OTRAS PENALIZACIONES
+
     // ACTUALIZAR EL TIEMPO EN EL ESTADO FLOBAL
     _timeTraining = TimeTraining(
       idSession: _timeTraining!.idSession,
@@ -153,8 +159,12 @@ class CurrentTime extends ChangeNotifier {
       comments: _timeTraining!.comments,
       // SI SE HA SELECCIONADO "+2", SE SUMAN 2 SEGUNDOS AL TIEMPO ORIGINAL.
       // SI NO, SE USA EL TIEMPO ALMACENADO EN `_timeTraining`.
-      timeInSeconds: isPlusTwoChoose ? (_originalTime! + 2) : (_timeTraining!.timeInSeconds),
-      penalty: isDnfChoose ? "DNF" : (isPlusTwoChoose ? "+2" : ""),
+      timeInSeconds: penalty == "none"
+          ? _originalTime!
+          : (isPlusTwoChoose
+              ? (_originalTime! + 2)
+              : (_timeTraining!.timeInSeconds)),
+      penalty: isDnfChoose ? "DNF" : (isPlusTwoChoose ? "+2" : "none"),
     );
 
     notifyListeners();
