@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
@@ -15,6 +17,7 @@ import '../../viewmodel/current_cube_type.dart';
 import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_user.dart';
 import '../utilities/internationalization.dart';
+import 'animated_tooltip.dart';
 
 /// Widget contenedor que muestra un botón para añadir un tiempo manualmente.
 ///
@@ -145,91 +148,96 @@ class _SearchTimeContainerState extends State<SearchTimeContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: AppColors.lightVioletColor.withOpacity(0.7),
-        borderRadius: const BorderRadius.all(Radius.circular(100)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // SE MEUSTRA EL FORMUALRIO PARA AÑADIR TIEMPO MANUALMENTE
-          IconClass.iconButton(context, () {
-            // SE MEUSTRA EL FORMUALRIO PARA AÑADIR TIEMPO MANUALMENTE
-            AlertUtil.showAlertFormAddTime(
-                "add_time",
-                "add_scramble_form",
-                "add_time_form",
-                "add_scramble_form_label",
-                "add_time_form_label",
-                context);
-          }, "add_new_time", Icons.add_alarm),
+        height: 55,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: AppColors.lightVioletColor.withOpacity(0.7),
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+        ),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // SE MEUSTRA EL FORMUALRIO PARA AÑADIR TIEMPO MANUALMENTE
+              IconClass.iconButton(context, () {
+                // SE MEUSTRA EL FORMUALRIO PARA AÑADIR TIEMPO MANUALMENTE
+                AlertUtil.showAlertFormAddTime(
+                    "add_time",
+                    "add_scramble_form",
+                    "add_time_form",
+                    "add_scramble_form_label",
+                    "add_time_form_label",
+                    context);
+              }, "add_new_time", Icons.add_alarm),
 
-          // CAMPO DE BUSQUEDA (SE MUESTRA SEGUN EL ESTADO)
-          Expanded(
-            child: _isSearching
-                ? TextField(
-                    textAlign: TextAlign.center,
-                    // ASIGNA EL CONTROLADOR AL TEXTFIELD
-                    controller: _searchController,
-                    // ASIGNA EL FOCUS NODE PARA DETECTAR CUANDO SE PIERDE EL FOCO
-                    focusNode: _focusNode,
-                    decoration: InputDecoration(
-                      hintText: Internationalization.internationalization
-                          .getLocalizations(
-                          context, "search_time_or_comments"),
-                      border: InputBorder.none, // QUITAR BORDE
-                    ),
+              // CAMPO DE BUSQUEDA (SE MUESTRA SEGUN EL ESTADO)
+              Expanded(
+                child: _isSearching
+                    ? TextField(
+                        textAlign: TextAlign.center,
+                        // ASIGNA EL CONTROLADOR AL TEXTFIELD
+                        controller: _searchController,
+                        // ASIGNA EL FOCUS NODE PARA DETECTAR CUANDO SE PIERDE EL FOCO
+                        focusNode: _focusNode,
+                        decoration: InputDecoration(
+                          hintText: Internationalization.internationalization
+                              .getLocalizations(
+                                  context, "search_time_or_comments"),
+                          border: InputBorder.none, // QUITAR BORDE
+                        ),
 
-                    // AL PRESIONAR "ENTER", SE CIERRA EL CAMPO DE BUSQUEDA
-                    onSubmitted: (value) {
-                      setState(() {
-                        _isSearching = false;
-                        if (_searchController.text.isNotEmpty) {
-                          // SI HA ESCRITO ALGO, EL TEXTO SERA LO QUE HAYA BUSCADO
-                          _searchText = _searchController.text;
+                        // AL PRESIONAR "ENTER", SE CIERRA EL CAMPO DE BUSQUEDA
+                        onSubmitted: (value) {
+                          setState(() {
+                            _isSearching = false;
+                            if (_searchController.text.isNotEmpty) {
+                              // SI HA ESCRITO ALGO, EL TEXTO SERA LO QUE HAYA BUSCADO
+                              _searchText = _searchController.text;
 
-                          // filtrar por lo que ha escrito
-                        } else {
-                          // SINO, SE VUELVE A PONER "Search time"
-                          _searchText = Internationalization
-                              .internationalization
-                              .getLocalizations(context, "search_time");
-                        } // MOSTRAR UN TEXTO DEPENDIENDO SI EL USUARIO HA BUSCADO ALGO O NO
-                      });
-                    },
-                  )
-                : GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isSearching = true; // CAMBIA AL MODO DE BUSQUEDA
-                      });
-                      // SOLICITA EL FOCO PARA ESCRIBIR AUTOMATICAMENTE
-                      _focusNode.requestFocus();
-                    },
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      _searchText,
-                      style: const TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                  ),
-          ),
+                              // filtrar por lo que ha escrito
+                            } else {
+                              // SINO, SE VUELVE A PONER "Search time"
+                              _searchText = Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "search_time");
+                            } // MOSTRAR UN TEXTO DEPENDIENDO SI EL USUARIO HA BUSCADO ALGO O NO
+                          });
+                        },
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isSearching = true; // CAMBIA AL MODO DE BUSQUEDA
+                          });
+                          // SOLICITA EL FOCO PARA ESCRIBIR AUTOMATICAMENTE
+                          _focusNode.requestFocus();
+                        },
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          _searchText,
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
+                        ),
+                      ),
+              ),
 
-          // BOTON PARA ELIMINAR TODOS LOS TIEMPOS DE UNA SESION
-          IconClass.iconButtonImage(context, () {
-            AlertUtil.showDeleteSessionOrCube(
-                context, "delete_all_times_label", "delete_all_times_hint",
-                () async {
-              await _deleteAllTimes();
-            });
-          }, "assets/trash-list.png", "choose_session", 28),
+              // BOTON PARA ELIMINAR TODOS LOS TIEMPOS DE UNA SESION
+              IconClass.iconButtonImage(context, () {
+                AlertUtil.showDeleteSessionOrCube(
+                    context, "delete_all_times_label", "delete_all_times_hint",
+                    () async {
+                  await _deleteAllTimes();
+                });
+              }, "assets/trash-list.png", "choose_session", 28),
 
-          // BOTON DE OPCIONES ADICIONALES
-          IconClass.iconButton(context, () {}, "more_option", Icons.more_vert),
-        ],
-      ),
-    );
+              // BOTON DE OPCIONES ADICIONALES
+              Align(
+                alignment: Alignment.centerRight,
+                child: CustomPopover(
+                  child: IconClass.iconButton(
+                      context, null, "more_option", Icons.more_vert),
+                ),
+              ),
+            ]));
   }
 }
