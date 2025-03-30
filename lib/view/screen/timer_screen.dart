@@ -226,7 +226,7 @@ class _TimerScreenState extends State<TimerScreen> {
       final currentCube = context.read<CurrentCubeType>().cubeType;
       CubeType? cubeType =
           await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
-      if (cubeType == null) {
+      if (cubeType.idCube == -1) {
         DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
         return;
       } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
