@@ -455,6 +455,17 @@ class Internationalization {
       case 'time_error':
         return l10n.time_error;
 
+      case 'share_not_implemented':
+        return l10n.share_not_implemented;
+      case 'share_error':
+        return l10n.share_error;
+      case 'pdf_generation_error':
+        return l10n.pdf_generation_error;
+      case 'no_times_found':
+        return l10n.no_times_found;
+      case 'pdf_saved_success':
+        return l10n.pdf_saved_success;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;

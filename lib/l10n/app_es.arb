@@ -224,5 +224,11 @@
    "add_comment_time_content": "Añade un comentario al tiempo registrado.",
 
    "time_saved_error": "Ocurrió un error al guardar el tiempo",
-   "time_error": "Ocurrió un error con el tiempo"
+   "time_error": "Ocurrió un error con el tiempo",
+
+   "share_not_implemented": "Compartir no está implementado para esta plataforma",
+   "share_error": "Error al compartir",
+   "pdf_generation_error": "Error al generar el PDF",
+   "no_times_found": "No se encontraron tiempos para esta sesión",
+   "pdf_saved_success": "PDF guardado con éxito."
 }
