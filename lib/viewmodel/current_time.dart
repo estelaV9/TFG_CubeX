@@ -32,6 +32,27 @@ class CurrentTime extends ChangeNotifier {
   /// Obtiene el tiempo de resolución actual.
   TimeTraining? get timeTraining => _timeTraining;
 
+  // ATRIBUTOS PARA LOS PARAMETROS DE BUSQUEDA
+  /// Guarda el comentario que ha introducido el usuario en la búsqueda
+  String? searchComment;
+
+  /// Guarda el tiempo que ha introducido el usuario en la búsqueda
+  String? searchTime;
+
+  /// Establecer el tiempo buscado y notifica a los listeners
+  void setSearchTime(String time){
+    searchTime = time;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  } // SETTEAR EL TIEMPO
+
+  /// Establece el comentario buscado y notifica a los listeners
+  void setSearchComment(String comment){
+    searchComment = comment;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  } // SETTEAR EL COMENTARIO
+
   /// Establece el tiempo actual y notifica a los listeners.
   void setTimeTraining(TimeTraining timeTraining) {
     _timeTraining = timeTraining;
@@ -45,6 +66,8 @@ class CurrentTime extends ChangeNotifier {
     isDnfChoose = false;
     isPlusTwoChoose = false;
     isComment = false;
+    searchComment = null;
+    searchTime = null;
     // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
     notifyListeners();
   } // ESTABLECER EL TIEMPO ACTUAL EN NULO
