@@ -230,5 +230,17 @@
    "share_error": "Error al compartir",
    "pdf_generation_error": "Error al generar el PDF",
    "no_times_found": "No se encontraron tiempos para esta sesión",
-   "pdf_saved_success": "PDF guardado con éxito."
+   "pdf_saved_success": "PDF guardado con éxito.",
+
+   "sort_by": "Ordenar por",
+   "date": "Fecha",
+   "ascending": "Ascendente",
+   "descending": "Descendente",
+   "time": "Tiempo",
+   "close_popover": "Cerrar",
+   "close_popover_hint": "Cerrar dialogo",
+   "ascending_hint": "Botón para ordenar ascendentemente",
+   "descending_hint": "Botón para ordenar descendentemente",
+   "order_date_hint": "Botón para ordenar por fecha",
+   "order_time_hint": "Botón para ordenar por tiempo"
 }

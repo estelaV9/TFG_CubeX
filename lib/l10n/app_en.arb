@@ -236,5 +236,17 @@
   "share_error": "Error sharing",
   "pdf_generation_error": "Error generating the PDF",
   "no_times_found": "No times found for this session",
-  "pdf_saved_success": "PDF saved successfully."
+  "pdf_saved_success": "PDF saved successfully.",
+
+  "sort_by": "Sort by",
+  "date": "Date",
+  "ascending": "Ascending",
+  "descending": "Descending",
+  "time": "Time",
+  "close_popover": "Close",
+  "close_popover_hint": "Close dialog",
+  "ascending_hint": "Button to sort in ascending order",
+  "descending_hint": "Button to sort in descending order",
+  "order_date_hint": "Button to sort by date",
+  "order_time_hint": "Button to sort by time"
 }
