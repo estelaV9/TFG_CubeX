@@ -1,4 +1,6 @@
 import 'package:esteladevega_tfg_cubex/view/components/cube_header_container.dart';
+import 'package:esteladevega_tfg_cubex/view/components/statistics/average_analysis_container.dart';
+import 'package:esteladevega_tfg_cubex/view/components/statistics/general_statistics_container.dart';
 import 'package:esteladevega_tfg_cubex/view/navigation/app_drawer.dart';
 import 'package:flutter/material.dart';
 import '../components/Icon/icon.dart';
@@ -74,6 +76,24 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             right: 20,
             child: CubeHeaderContainer(),
           ),
+
+          const Positioned(
+            top: 113,
+            right: 20,
+            left: 20,
+            bottom: 20,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  GeneralStatisticsContainer(),
+                  SizedBox(height: 30),
+                  AverageAnalysisContainer(),
+                  SizedBox(height: 30),
+                ],
+              ),
+            ),
+          )
+
         ],
       ),
     );
