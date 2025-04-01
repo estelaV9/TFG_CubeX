@@ -45,11 +45,13 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     // SE CIERRA EL DIALOGO AL ELIMINAR
     Navigator.of(context).pop();
 
-    final idDeleteTime = await timeTrainingDao.getIdByTime(scramble, idSession!);
-    if(idDeleteTime == -1){
+    final idDeleteTime =
+        await timeTrainingDao.getIdByTime(scramble, idSession!);
+    if (idDeleteTime == -1) {
       // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
       AlertUtil.showSnackBarInformation(context, "delete_time_error");
-      DatabaseHelper.logger.e("No se obtuvo el tiempo por scramble e idSession: $idDeleteTime");
+      DatabaseHelper.logger
+          .e("No se obtuvo el tiempo por scramble e idSession: $idDeleteTime");
       return;
     } // VERIFICA SI SE HA OBTENIDO BIEN EL ID DEL TIEMPO A ELIMINAR
 
@@ -119,14 +121,23 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
       if (currentTime?.searchComment != null) {
         // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE BUSCA POR COMENTARIOS
         times = await timeTrainingDao.getTimesOfSession(
-            session.idSession, currentTime?.searchComment);
+            session.idSession,
+            currentTime?.searchComment,
+            null,
+            currentTime?.dateAsc,
+            currentTime?.timeAsc);
       } else if (currentTime?.searchTime != null) {
         // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR TIEMPO
         times = await timeTrainingDao.getTimesOfSession(
-            session.idSession, null, currentTime?.searchTime);
+            session.idSession,
+            null,
+            currentTime?.searchTime,
+            currentTime?.dateAsc,
+            currentTime?.timeAsc);
       } else {
         // SI NO SE HA INTRODUCIDO NI COMENTARIO NI TIEMPO, SE BUSCAN TODOS LOS TIEMPOS DE LA SESION
-        times = await timeTrainingDao.getTimesOfSession(session.idSession);
+        times = await timeTrainingDao.getTimesOfSession(session.idSession, null,
+            null, currentTime?.dateAsc, currentTime?.timeAsc);
       }
 
       setState(() {

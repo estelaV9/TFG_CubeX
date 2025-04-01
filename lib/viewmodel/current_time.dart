@@ -39,6 +39,26 @@ class CurrentTime extends ChangeNotifier {
   /// Guarda el tiempo que ha introducido el usuario en la búsqueda
   String? searchTime;
 
+  /// Indica si el usuario ha seleccionado la ordenación por fecha ascendente o descendentemente
+  bool? dateAsc;
+
+  /// Indica si el usuario ha seleccionado la ordenación por fecha ascendente o descendentemente
+  bool? timeAsc;
+
+  /// Establecer si el usuario ha seleccionado la ordenación por fecha ascendente o descendentemente
+  void setDateAsc(bool? isDateAsc){
+    dateAsc = isDateAsc;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  }
+
+  /// Establecer si el usuario ha seleccionado la ordenación por tiempo ascendente o descendentemente
+  void setTimeAsc(bool? isTimeAsc){
+    timeAsc = isTimeAsc;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  }
+
   /// Establecer el tiempo buscado y notifica a los listeners
   void setSearchTime(String time){
     searchTime = time;
