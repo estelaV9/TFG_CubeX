@@ -14,6 +14,7 @@ import 'package:esteladevega_tfg_cubex/view/screen/signup_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'data/database/database_helper.dart';
@@ -64,6 +65,14 @@ class CubeXApp extends StatelessWidget {
     final locale = context.watch<CurrentLanguage>().locale;
 
     return MaterialApp(
+        // OBSERVADOR PARA MANEJAR COMO SE MUESTRAN LOS DIALOGOS CUANDO NAVEGAN
+        // ENTRE PANTALLAS
+        navigatorObservers: [FlutterSmartDialog.observer],
+
+        // SE INICIALIZA EL SISTEMA PARA MOSTRAR DIALOGOS PERSONALIZADOS EN LA APP
+        // ESTOS DOS ATRIBUTOS HACEN QUE FUNCIONE EL FLUTTER SMART DIALOG
+        builder: FlutterSmartDialog.init(),
+
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

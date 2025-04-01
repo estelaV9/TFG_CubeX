@@ -455,6 +455,40 @@ class Internationalization {
       case 'time_error':
         return l10n.time_error;
 
+      case 'share_not_implemented':
+        return l10n.share_not_implemented;
+      case 'share_error':
+        return l10n.share_error;
+      case 'pdf_generation_error':
+        return l10n.pdf_generation_error;
+      case 'no_times_found':
+        return l10n.no_times_found;
+      case 'pdf_saved_success':
+        return l10n.pdf_saved_success;
+
+      case 'sort_by':
+        return l10n.sort_by;
+      case 'date':
+        return l10n.date;
+      case 'ascending':
+        return l10n.ascending;
+      case 'descending':
+        return l10n.descending;
+      case 'time':
+        return l10n.time;
+      case 'close_popover':
+        return l10n.close_popover;
+      case 'close_popover_hint':
+        return l10n.close_popover_hint;
+      case 'ascending_hint':
+        return l10n.ascending_hint;
+      case 'descending_hint':
+        return l10n.descending_hint;
+      case 'order_date_hint':
+        return l10n.order_date_hint;
+      case 'order_time_hint':
+        return l10n.order_time_hint;
+
       // SI NO ENCUENTRA UNA TRADUCCION, DEVUELVE LA CLASE
       default:
         return key;

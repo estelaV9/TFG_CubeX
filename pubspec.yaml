@@ -8,6 +8,17 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  share_plus: ^7.0.0
+  flutter_email_sender: ^5.0.2
+  whatsapp_share: ^2.0.2
+  pdf: ^3.11.3
+  printing: ^5.14.2
+  dropdown_button2: ^2.3.9
+  flutter_smart_dialog: ^4.9.8+7
+  flutter_speed_dial: ^5.1.0
+  popup_menu: ^2.1.0
+  custom_pop_up_menu: any
+  popover: ^0.3.1
   curved_navigation_bar: ^1.0.1
   stroke_text: any
   sqflite: ^2.4.1

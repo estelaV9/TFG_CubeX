@@ -32,6 +32,47 @@ class CurrentTime extends ChangeNotifier {
   /// Obtiene el tiempo de resolución actual.
   TimeTraining? get timeTraining => _timeTraining;
 
+  // ATRIBUTOS PARA LOS PARAMETROS DE BUSQUEDA
+  /// Guarda el comentario que ha introducido el usuario en la búsqueda
+  String? searchComment;
+
+  /// Guarda el tiempo que ha introducido el usuario en la búsqueda
+  String? searchTime;
+
+  /// Indica si el usuario ha seleccionado la ordenación por fecha ascendente o descendentemente
+  bool? dateAsc;
+
+  /// Indica si el usuario ha seleccionado la ordenación por fecha ascendente o descendentemente
+  bool? timeAsc;
+
+  /// Establecer si el usuario ha seleccionado la ordenación por fecha ascendente o descendentemente
+  void setDateAsc(bool? isDateAsc){
+    dateAsc = isDateAsc;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  }
+
+  /// Establecer si el usuario ha seleccionado la ordenación por tiempo ascendente o descendentemente
+  void setTimeAsc(bool? isTimeAsc){
+    timeAsc = isTimeAsc;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  }
+
+  /// Establecer el tiempo buscado y notifica a los listeners
+  void setSearchTime(String time){
+    searchTime = time;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  } // SETTEAR EL TIEMPO
+
+  /// Establece el comentario buscado y notifica a los listeners
+  void setSearchComment(String comment){
+    searchComment = comment;
+    // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
+    notifyListeners();
+  } // SETTEAR EL COMENTARIO
+
   /// Establece el tiempo actual y notifica a los listeners.
   void setTimeTraining(TimeTraining timeTraining) {
     _timeTraining = timeTraining;
@@ -45,10 +86,11 @@ class CurrentTime extends ChangeNotifier {
     isDnfChoose = false;
     isPlusTwoChoose = false;
     isComment = false;
+    searchComment = null;
+    searchTime = null;
     // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
     notifyListeners();
   } // ESTABLECER EL TIEMPO ACTUAL EN NULO
-
 
   /// Actualiza el tiempo actual si se ha aplicado una penalización.
   ///
@@ -107,7 +149,8 @@ class CurrentTime extends ChangeNotifier {
   /// - Obtiene el tiempo actual de `currentTime` y se verifica si el tiempo no es nulo.
   /// - Si la penalización es "+2" y está habilitada, agrega 2 segundos al tiempo actual.
   /// - Si la penalización es "DNF" y está habilitada, establece el tiempo como "DNF".
-  /// - Si la penalización es desmarcada, el tiempo vuelve a su valor original.
+  /// - Si la penalizacion es "none", dehabilita las otras penalizaciones.
+  /// - Si la penalización es desmarcada o es de tipo "none", el tiempo vuelve a su valor original.
   /// - Finalmente, actualiza el estado con el nuevo tiempo.
   ///
   /// **Parámetros**:
@@ -131,7 +174,8 @@ class CurrentTime extends ChangeNotifier {
             idSession: _timeTraining!.idSession,
             scramble: _timeTraining!.scramble,
             comments: _timeTraining!.comments,
-            timeInSeconds: _originalTime!, // RESTAURA EL TIEMPO ORIGINAL
+            timeInSeconds: _originalTime!,
+            // RESTAURA EL TIEMPO ORIGINAL
             penalty: isDnfChoose ? "DNF" : "",
           );
         }
@@ -146,6 +190,11 @@ class CurrentTime extends ChangeNotifier {
       }
     } // SEGUN LA PENALIZACION
 
+    if (penalty == "none") {
+      isDnfChoose = false;
+      isPlusTwoChoose = false;
+    } // SI LA PENALIZACION ES 'none', SE DESACTIVAN LAS OTRAS PENALIZACIONES
+
     // ACTUALIZAR EL TIEMPO EN EL ESTADO FLOBAL
     _timeTraining = TimeTraining(
       idSession: _timeTraining!.idSession,
@@ -153,8 +202,12 @@ class CurrentTime extends ChangeNotifier {
       comments: _timeTraining!.comments,
       // SI SE HA SELECCIONADO "+2", SE SUMAN 2 SEGUNDOS AL TIEMPO ORIGINAL.
       // SI NO, SE USA EL TIEMPO ALMACENADO EN `_timeTraining`.
-      timeInSeconds: isPlusTwoChoose ? (_originalTime! + 2) : (_timeTraining!.timeInSeconds),
-      penalty: isDnfChoose ? "DNF" : (isPlusTwoChoose ? "+2" : ""),
+      timeInSeconds: penalty == "none"
+          ? _originalTime!
+          : (isPlusTwoChoose
+              ? (_originalTime! + 2)
+              : (_timeTraining!.timeInSeconds)),
+      penalty: isDnfChoose ? "DNF" : (isPlusTwoChoose ? "+2" : "none"),
     );
 
     notifyListeners();

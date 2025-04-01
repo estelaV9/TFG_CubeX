@@ -40,13 +40,11 @@ class IconClass {
   /// - `icon`: El icono que se va a mostrar en el `IconButton`.
   /// - `colors`: Color para el icono opcional, el cual por defecto será un morado oscuro.
   static IconButton iconButton(BuildContext context,
-      VoidCallback function, String tooltip, IconData icon, [Color? colors = AppColors.darkPurpleColor]) {
+      Function()? function, String tooltip, IconData icon, [Color? colors = AppColors.darkPurpleColor]) {
     final messageTooltip = Internationalization.internationalization.getLocalizations(context, tooltip);
 
     return IconButton(
-        onPressed: () {
-          function();
-        },
+        onPressed: function,
         color: colors,
         tooltip: messageTooltip,
         icon: Icon(icon));

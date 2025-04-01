@@ -12,6 +12,7 @@ import '../../model/cubetype.dart';
 import '../../model/session.dart';
 import '../../model/time_training.dart';
 import '../../view/utilities/app_color.dart';
+import '../../viewmodel/current_time.dart';
 import '../../viewmodel/current_user.dart';
 
 /// Widget que muestra una lista de tiempos registrados en un cubo de una sesión.
@@ -40,20 +41,22 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
   /// Este método obtiene el ID del tiempo a eliminar utilizando el scramble y
   /// el ID de la sesión.
   /// Si se elimina correctamente o si ocurre un error, se muestra un mensaje de éxito.
-  Future<void>  deleteTime() async{
+  Future<void> deleteTime() async {
     // SE CIERRA EL DIALOGO AL ELIMINAR
     Navigator.of(context).pop();
 
-    final idDeleteTime = await timeTrainingDao.getIdByTime(scramble, idSession!);
-    if(idDeleteTime == -1){
+    final idDeleteTime =
+        await timeTrainingDao.getIdByTime(scramble, idSession!);
+    if (idDeleteTime == -1) {
       // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
       AlertUtil.showSnackBarInformation(context, "delete_time_error");
-      DatabaseHelper.logger.e("No se obtuvo el tiempo por scramble e idSession: $idDeleteTime");
+      DatabaseHelper.logger
+          .e("No se obtuvo el tiempo por scramble e idSession: $idDeleteTime");
       return;
     } // VERIFICA SI SE HA OBTENIDO BIEN EL ID DEL TIEMPO A ELIMINAR
 
     final isDeleted = await timeTrainingDao.deleteTime(idDeleteTime);
-    if(isDeleted){
+    if (isDeleted) {
       // SI SE ELIMINO CORRECTAMENTE SE MUESTRA UN SNCAKBAR PARA CONFIRMAR
       AlertUtil.showSnackBarInformation(context, "delete_time_correct");
 
@@ -74,11 +77,15 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
 
   /// Método para cargar los tiempos de la sesión y el tipo de cubo actual.
   ///
+  /// Parámetros:
+  /// - `currentTime` (String, opcional): se utiliza para filtrar la busqueda por
+  ///   tiempo o por comentario, si se proporciona.
+  ///
   /// Este método obtiene el ID del usuario actual, la sesión actual y el
   /// tipo de cubo actual.
   /// Luego, recupera los tiempos de entrenamiento asociados a esa sesión y
   /// cubo, y actualiza la lista de tiempos.
-  Future<void> _loadTimes() async {
+  Future<void> _loadTimes([CurrentTime? currentTime]) async {
     UserDao userDao = UserDao();
     CubeTypeDao cubeTypeDao = CubeTypeDao();
     SessionDao sessionDao = new SessionDao();
@@ -96,21 +103,43 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     final currentSession = context.read<CurrentSession>().session;
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
-    CubeType? cubeType = await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
+    CubeType? cubeType =
+        await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
     if (cubeType == null) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
       return;
     } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
 
     // OBJETO SESION CON EL ID DEL USUARIO, NOMBRE Y TIPO DE CUBO
-    Session? session =
-    await sessionDao.getSessionByUserCubeName(
+    Session? session = await sessionDao.getSessionByUserCubeName(
         idUser, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
       // perdon por el bucle si no tiene tiempos
-      final times =
-      await timeTrainingDao.getTimesOfSession(session.idSession); // ID DE SESION
+      final times;
+
+      if (currentTime?.searchComment != null) {
+        // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE BUSCA POR COMENTARIOS
+        times = await timeTrainingDao.getTimesOfSession(
+            session.idSession,
+            currentTime?.searchComment,
+            null,
+            currentTime?.dateAsc,
+            currentTime?.timeAsc);
+      } else if (currentTime?.searchTime != null) {
+        // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR TIEMPO
+        times = await timeTrainingDao.getTimesOfSession(
+            session.idSession,
+            null,
+            currentTime?.searchTime,
+            currentTime?.dateAsc,
+            currentTime?.timeAsc);
+      } else {
+        // SI NO SE HA INTRODUCIDO NI COMENTARIO NI TIEMPO, SE BUSCAN TODOS LOS TIEMPOS DE LA SESION
+        times = await timeTrainingDao.getTimesOfSession(session.idSession, null,
+            null, currentTime?.dateAsc, currentTime?.timeAsc);
+      }
+
       setState(() {
         listTimes = times;
       });
@@ -122,7 +151,8 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
 
   @override
   Widget build(BuildContext context) {
-    _loadTimes();
+    final currentTime = context.read<CurrentTime>();
+    _loadTimes(currentTime);
     // USA MediaQuery PARA OBTENER EL ANCHO DE LA VENTANA
     final screenWidth = MediaQuery.sizeOf(context).width;
 
@@ -157,7 +187,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
         return SizedBox(
           height: 50,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               setState(() {
                 scramble = listTimes[index].scramble;
                 idSession = listTimes[index].idSession!;
@@ -172,9 +202,12 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
               elevation: 4,
               child: Center(
                 child: Text(
-                  time.timeInSeconds.toStringAsFixed(2),
-                  style:
-                      TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+                  // SI EL TIEMPO TIENE UNA PENALIZACION DE DNF, SE ESTABLECE EN VEZ DEL TIEMPO
+                  time.penalty == "DNF"
+                      ? time.penalty.toString()
+                      : time.timeInSeconds.toStringAsFixed(2),
+                  style: TextStyle(
+                      fontSize: fontSize, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

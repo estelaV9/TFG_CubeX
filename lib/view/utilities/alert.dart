@@ -1,9 +1,9 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
-import 'package:esteladevega_tfg_cubex/view/screen/timer_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/validator.dart';
@@ -22,14 +22,17 @@ import '../../model/cubetype.dart';
 import '../../model/session.dart';
 import '../../model/user.dart';
 import '../../viewmodel/current_user.dart';
+import '../components/menu_item.dart';
 import '../components/password_field_row.dart';
 import '../navigation/bottom_navigation.dart';
-import 'encrypt_password.dart';
 import 'internationalization.dart';
 
 /// Clase **AlertUtil** que sirve para mostrar diversos tipos de alertas
 /// en la aplicación, con soporte para internacionalización.
 class AlertUtil {
+  /// Icono para las penalizaciones
+  static IconData iconPenalty = Icons.block;
+
   /// Muestra una alerta simple con título y contenido.
   ///
   /// Los parámetros [key] y [contentKey] se utilizan para obtener los textos
@@ -239,7 +242,7 @@ class AlertUtil {
           ),
           actions: [
             TextButton(
-              onPressed: () async{
+              onPressed: () async {
                 String scramble = controllerScramble.text.trim();
                 String time = controllerTime.text.trim();
                 if (scramble.isNotEmpty && time.isNotEmpty) {
@@ -249,13 +252,16 @@ class AlertUtil {
                       timeInSeconds: double.parse(time));
 
                   // INSERTAR EL TIEMPO
-                  bool isInsert = await timeTrainingDao.insertNewTime(timeTraining);
-                  if(isInsert){
+                  bool isInsert =
+                      await timeTrainingDao.insertNewTime(timeTraining);
+                  if (isInsert) {
                     // SI SE INSERTO CORRECTAMENTE SE MUESTRA UN SNACKBAR
-                    AlertUtil.showSnackBarInformation(context, "add_time_succesfully");
+                    AlertUtil.showSnackBarInformation(
+                        context, "add_time_succesfully");
                   } else {
                     // SI SE INSERTO CORRECTAMENTE SE MUESTRA UN SNACKBAR
-                    AlertUtil.showSnackBarInformation(context, "add_time_error");
+                    AlertUtil.showSnackBarInformation(
+                        context, "add_time_error");
                   } // VERIFICAR SI SE INSERTA EL TIEMPO CORRECTAMENTE
                   Navigator.of(context).pop(); // CIERRA EL DIALOG
                 } else {
@@ -345,93 +351,193 @@ class AlertUtil {
 
   /// Método para mostrar los detalles de un tiempo seleccionado.
   ///
+  /// Este método permite visualizar y gestionar un tiempo registrado, mostrando su información
+  /// y permitiendo aplicar penalizaciones, eliminar el tiempo o copiar el scramble asociado.
+  ///
   /// Parametros:
   /// `context`: El contexto de la aplicación para poder mostrar el diálogo.
   /// `deleteTime`: Función que se ejecutará si el usuario confirma la eliminación del tiempo.
   /// `timeTraining`: Objeto que contiene los detalles del tiempo.
   static showDetailsTime(BuildContext context,
-      Future<void> Function() deleteTime, TimeTraining timeTraining) {
-    var colorPressed = AppColors.purpleButton;
-    var isTextPressed = false;
+      Future<void> Function() deleteTime, TimeTraining timeTraining) async {
+    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
+
+    // ATRIBUTO PARA SABER SI ESTA PRESIONADO EL SCRAMBLE O LOS COMMENTS
+    var isTextPressed = true;
+
+    final currentTime = Provider.of<CurrentTime>(context, listen: false);
+    currentTime.setResetTimeTraining();
+    currentTime.setTimeTraining(timeTraining); // SE ACTUALIZA EL ESTADO GLOBAL
+
+    int idTime = await timeTrainingDao.getIdByTime(
+        currentTime.timeTraining!.scramble,
+        currentTime.timeTraining!.idSession);
+
+    if (idTime == -1) {
+      AlertUtil.showSnackBarError(context, "time_saved_error");
+      return;
+    } // VALIDAR QUE EL IDTIME NO DE ERROR
+
+    final timeInSecondsOld = timeTraining.timeInSeconds;
+
     // SE MUESTRA EL DIALOG
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            // SE REDUCE EL PADDING DEL TITULO Y DEL CONTENIDO
-            titlePadding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          return StatefulBuilder(
+            builder: (context, setState) {
+              setState(() {
+                // SEGUN LA PENALIZACION DEL TIEMPO, SE PONE UN ICONO
+                if (currentTime.timeTraining!.penalty == "+2") {
+                  iconPenalty = Icons.timer;
+                } else if (currentTime.timeTraining!.penalty == "DNF") {
+                  iconPenalty = Icons.close;
+                } else if (currentTime.timeTraining!.penalty == "none") {
+                  iconPenalty = Icons.block;
+                } // INICIALIZAR EL ICONO
+              });
+              return AlertDialog(
+                // SE REDUCE EL PADDING DEL TITULO Y DEL CONTENIDO
+                titlePadding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
 
-            backgroundColor: AppColors.lightVioletColor,
-            // TITULO DE LA ALERTA
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconClass.iconButton(
-                    context, () {}, "add_penalty", Icons.block),
-                Text(
-                  timeTraining.timeInSeconds.toString(),
-                  style: const TextStyle(
-                    color: AppColors.darkPurpleColor,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconClass.iconButton(context, () async {
-                  await deleteTime();
-                }, "delete_time", Icons.delete)
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min, // QUE OCUPE EL MINIMO
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                backgroundColor: AppColors.lightVioletColor,
+                // TITULO DE LA ALERTA
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconClass.iconButton(
-                        context, () {}, "date", Icons.calendar_month),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        // BOTON PARA EL DROPDOWN
+                        customButton: IconClass.iconMaker(
+                            context, iconPenalty, "add_penalty"),
+                        // ITEMS DEL DROPDOWN
+                        items: [
+                          ...MenuItems.items.map(
+                            (item) => DropdownMenuItem<MenuItem>(
+                              value: item,
+                              // CONSTRUYE CADA ITEM DEL MENU
+                              child: MenuItems.buildItem(item),
+                            ),
+                          ),
+                        ],
+
+                        // CUANDO SE SELECCIONA UNA OPCION, SE ACTUALIZA EL ICONO Y LA PENALIZACION
+                        onChanged: (value) async {
+                          setState(() {
+                            iconPenalty = value!.icon;
+
+                            // ASIGNAR LA PENALIZACION SEGUN EL ICONO SELECCIONADO
+                            if (iconPenalty == Icons.close) {
+                              // PENALIZACION DNF (NO FINALIZADO)
+                              currentTime.setPenalty("DNF", true);
+                            } else if (iconPenalty == Icons.timer) {
+                              // PENALIZACION +2 SEGUNDOS
+                              currentTime.setPenalty("+2", true);
+                            } else if (iconPenalty == Icons.block) {
+                              currentTime.timeTraining!.timeInSeconds ==
+                                  timeInSecondsOld;
+                              // SIN PENALIZACION
+                              currentTime.setPenalty("none", true);
+                            }
+                          });
+
+                          // ACTUALIZAR EL ESTADO GLOBAL
+                          currentTime.updateCurrentTime(context);
+
+                          // GUARDAR CAMBIOS EN LA BASE DE DATOS
+                          if (await timeTrainingDao.updateTime(
+                                  idTime, currentTime.timeTraining) ==
+                              false) {
+                            // MOSTRAR ERROR SI FALLA LA ACTUALIZACION
+                            AlertUtil.showSnackBarError(
+                                context, "time_saved_error");
+                            return;
+                          }
+                        },
+
+                        dropdownStyleData: DropdownStyleData(
+                          width: 160, // ANCHO DEL MENU DESPLEGABLE
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          decoration: BoxDecoration(
+                            // BORDES REDONDEADOS
+                            borderRadius: BorderRadius.circular(4),
+                            color: AppColors.imagenBg, // COLOR DE FONDO
+                          ),
+                          offset: const Offset(0, 8), // DESPLAZAMIENTO DEL MENU
+                        ),
+                        menuItemStyleData: MenuItemStyleData(
+                          customHeights: [
+                            // ALTURA DE CADA ITEM
+                            ...List<double>.filled(MenuItems.items.length, 48),
+                          ],
+                          // ESPACIADO INTERNO
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                        ),
+                      ),
+                    ),
                     Text(
-                      DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                      // SI LA PENALIZACION ES 'DNF' SE MUESTRA EN VEZ DEL TIEMPO
+                      currentTime.timeTraining!.penalty == "DNF"
+                          ? currentTime.timeTraining!.penalty.toString()
+                          : currentTime.timeTraining!.timeInSeconds.toString(),
                       style: const TextStyle(
-                          color: AppColors.darkPurpleColor, fontSize: 16),
-                    )
+                        color: AppColors.darkPurpleColor,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconClass.iconButton(context, () async {
+                      await deleteTime();
+                    }, "delete_time", Icons.delete)
                   ],
                 ),
-
-                // LINEA DIVISORIA ENTRE EL LA FECHA Y EL CONTENIDO EN SI
-                const Divider(
-                  height: 10,
-                  thickness: 1.3,
-                  indent: 10,
-                  endIndent: 10,
-                  color: AppColors.darkPurpleColor,
-                ),
-
-                const SizedBox(height: 5),
-
-                Row(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min, // QUE OCUPE EL MINIMO
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        isTextPressed = !isTextPressed;
-                      },
-                      child: Container(
-                        width: 95,
-                        height: 30,
-                        color: isTextPressed
-                            ? AppColors.purpleButton
-                            : Colors.transparent,
-                        child: Card(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconClass.iconButton(
+                            context, () {}, "date", Icons.calendar_month),
+                        Text(
+                          DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                          style: const TextStyle(
+                              color: AppColors.darkPurpleColor, fontSize: 16),
+                        )
+                      ],
+                    ),
+
+                    // LINEA DIVISORIA ENTRE LA FECHA Y EL CONTENIDO EN SI
+                    const Divider(
+                      height: 10,
+                      thickness: 1.3,
+                      indent: 10,
+                      endIndent: 10,
+                      color: AppColors.darkPurpleColor,
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Row(
+                      children: [
+                        Card(
+                          // SEGUN SI ESTA PRESIONADO O NO, SE TORNA DE UN COLOR U OTRO
                           color: isTextPressed
-                              ? AppColors.purpleButton
-                              : Colors.transparent,
+                              ? AppColors.downLinearColor
+                              : AppColors.purpleButton,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                           ), // RADIO DEL CARD
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                // SI EL SCRAMBLE ES SELECCIONADO, SE PONE A TRUE
+                                isTextPressed = true;
+                              });
+                            },
                             child: const Text(
                               "Scramble",
                               style: TextStyle(
@@ -441,53 +547,63 @@ class AlertUtil {
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      height: 30,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ), // RADIO DEL CARD
-                        child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "Comments",
-                            style: TextStyle(
-                                color: AppColors.darkPurpleColor,
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold),
+                        Card(
+                          // SI EL SCRAMBLE ESTA PRESIONADO SE CAMBIA DE COLOR EL CARD
+                          color: isTextPressed
+                              ? AppColors.purpleButton
+                              : AppColors.downLinearColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ), // RADIO DEL CARD
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                // CUANDO PRESIONE LOS COMENTAIOS, SE PONE A FALSE
+                                isTextPressed = false;
+                              });
+                            },
+                            child: const Text(
+                              "Comments",
+                              style: TextStyle(
+                                  color: AppColors.darkPurpleColor,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            // SI EL SCRAMBLE ESTA PRESIONADO SE MUESTRA EL SCRAMBLE
+                            // Y SI NO LOS COMENTARIOS
+                            isTextPressed
+                                ? timeTraining.scramble
+                                : (timeTraining.comments ?? "No comments"),
+                            style: const TextStyle(fontSize: 14),
+                            // HACE UN SALTO DE LINEA SI ES LARGO
+                            softWrap: true,
+                            // SI TIENE MUCHO OVERFLOW, TRUNCA EL SCRAMBLE Y PONE PUNTOS SUSPENSIVOS
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                        IconClass.iconButton(context, () async {
+                          await Clipboard.setData(
+                              ClipboardData(text: timeTraining.scramble));
+                          // MUESTRA MENSAJE DE QUE SE COPIO CORRECTAMENTE
+                          showSnackBarInformation(
+                              context, "copied_successfully");
+                        }, "copy_scramble", Icons.copy)
+                      ],
+                    )
                   ],
                 ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        timeTraining.scramble,
-                        style: const TextStyle(fontSize: 14),
-                        // HACE UN SALTO DE LINEA SI ES LARGO
-                        softWrap: true,
-                        // SI TIENE MUCHO OVERFLOW, TRUNCA EL SCRAMBLE Y PONE PUNTOS SUSPENSIVOS
-                        overflow: TextOverflow.fade,
-                      ),
-                    ),
-                    IconClass.iconButton(context, () async {
-                      await Clipboard.setData(
-                          ClipboardData(text: timeTraining.scramble));
-                      // MUESTRA MENSAJE DE QUE SE COPIO CORRECTAMENTE
-                      showSnackBarInformation(context, "copied_successfully");
-                    }, "copy_scramble", Icons.copy)
-                  ],
-                )
-              ],
-            ),
+              );
+            },
           );
         });
   } // METODO PARA MOSTRAR DETALLES DEL TIEMPO SELECCIONADO
@@ -854,7 +970,6 @@ class AlertUtil {
         });
   }
 
-
   /// Método para mostrar un Snackbar con un mensaje personalizado.
   ///
   /// Parámetros:
@@ -912,7 +1027,6 @@ class AlertUtil {
         .getLocalizations(context, messageKey);
     showSnackBar(context, Icons.error, message, Colors.redAccent);
   } // SNACKBAR PARA MOSTRAR UN ERROR
-
 
   /// Método para mostrar un Snackbar con información.
   ///
