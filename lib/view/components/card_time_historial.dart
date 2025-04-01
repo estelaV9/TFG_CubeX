@@ -12,6 +12,7 @@ import '../../model/cubetype.dart';
 import '../../model/session.dart';
 import '../../model/time_training.dart';
 import '../../view/utilities/app_color.dart';
+import '../../viewmodel/current_time.dart';
 import '../../viewmodel/current_user.dart';
 
 /// Widget que muestra una lista de tiempos registrados en un cubo de una sesión.
@@ -74,11 +75,15 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
 
   /// Método para cargar los tiempos de la sesión y el tipo de cubo actual.
   ///
+  /// Parámetros:
+  /// - `currentTime` (String, opcional): se utiliza para filtrar la busqueda por
+  ///   tiempo o por comentario, si se proporciona.
+  ///
   /// Este método obtiene el ID del usuario actual, la sesión actual y el
   /// tipo de cubo actual.
   /// Luego, recupera los tiempos de entrenamiento asociados a esa sesión y
   /// cubo, y actualiza la lista de tiempos.
-  Future<void> _loadTimes() async {
+  Future<void> _loadTimes([CurrentTime? currentTime]) async {
     UserDao userDao = UserDao();
     CubeTypeDao cubeTypeDao = CubeTypeDao();
     SessionDao sessionDao = new SessionDao();
@@ -109,8 +114,21 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
 
     if (session!.idSession != -1) {
       // perdon por el bucle si no tiene tiempos
-      final times = await timeTrainingDao
-          .getTimesOfSession(session.idSession); // ID DE SESION
+      final times;
+
+      if (currentTime?.searchComment != null) {
+        // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE BUSCA POR COMENTARIOS
+        times = await timeTrainingDao.getTimesOfSession(
+            session.idSession, currentTime?.searchComment);
+      } else if (currentTime?.searchTime != null) {
+        // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR TIEMPO
+        times = await timeTrainingDao.getTimesOfSession(
+            session.idSession, null, currentTime?.searchTime);
+      } else {
+        // SI NO SE HA INTRODUCIDO NI COMENTARIO NI TIEMPO, SE BUSCAN TODOS LOS TIEMPOS DE LA SESION
+        times = await timeTrainingDao.getTimesOfSession(session.idSession);
+      }
+
       setState(() {
         listTimes = times;
       });
@@ -122,7 +140,8 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
 
   @override
   Widget build(BuildContext context) {
-    _loadTimes();
+    final currentTime = context.read<CurrentTime>();
+    _loadTimes(currentTime);
     // USA MediaQuery PARA OBTENER EL ANCHO DE LA VENTANA
     final screenWidth = MediaQuery.sizeOf(context).width;
 
