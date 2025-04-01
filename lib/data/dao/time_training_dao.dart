@@ -7,22 +7,47 @@ import '../database/database_helper.dart';
 /// Esta clase interactúa con la base de datos para insertar, eliminar, obtener y
 /// calcular estadísticas relacionadas con los tiempos en las sesiones.
 class TimeTrainingDao {
-  /// Método para obtener los tiempos de una sesión específica.
+  /// Método para obtener los tiempos de una sesión específica con opción de búsqueda por comentario o tiempo.
   ///
   /// Este método consulta la base de datos y devuelve una lista de todos los tiempos
-  /// registrados para una sesión específica.
+  /// registrados para una sesión específica. Se puede filtrar la búsqueda por comentarios o por tiempo.
   ///
   /// Parámetros:
   /// - `idSession`: ID de la sesión de la que se desean obtener los tiempos.
+  /// - `comment` (String?, opcional): Si se proporciona, la búsqueda filtrará los resultados
+  ///   que contengan este comentario en el campo `comments`.
+  /// - `time` (String?, opcional): Si se proporciona, la búsqueda filtrará los resultados
+  ///   cuyos valores en `timeInSeconds` comiencen con este valor.
   ///
   /// Retorna:
-  /// - `List<TimeTraining>`: Lista de objetos [TimeTraining] que contiene los tiempos registrados para esa sesión.
-  Future<List<TimeTraining>> getTimesOfSession(int? idSession) async {
+  /// - `Future<List<TimeTraining>>`: Lista de objetos [TimeTraining] con los tiempos registrados
+  ///   que cumplen los criterios de búsqueda. Si no se encuentran resultados, devuelve una lista vacía.
+  Future<List<TimeTraining>> getTimesOfSession(int? idSession, [String? comment, String? time]) async {
     final db = await DatabaseHelper.database;
     try {
       // CONSULTA PARA OBTENER TODOS LOS TIEMPOS DE UNA SESION
-      final result = await db.query('timeTraining',
-          where: 'idSession = ?', whereArgs: [idSession]);
+      final List<Map<String, dynamic>> result;
+
+      if(comment != null){
+        // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE REALIZA LA BUSQUEDA POR COMENTARIOS
+        // SE USA LIKE CON '%' PARA ENCONTRAR CUALQUIER COINCIDENCIA QUE CONTENGA LA PALABRA
+        result = await db.query('timeTraining',
+            where: 'idSession = ? AND comments LIKE ?',
+            whereArgs: [idSession, '%$comment%']);
+      } else if (time != null){
+        // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR EL TIEMPO
+        // SE USA LIKE CON '%' AL FINAL PARA ENCONTRAR LOS REGISTROS CUYO TIEMPO
+        // COMIENCE CON EL VALOR INTRODUCIDO
+        result = await db.query(
+          'timeTraining',
+          where: "idSession = ? AND timeInSeconds LIKE ?",
+          whereArgs: [idSession, '$time%'],
+        );
+      } else {
+        // SI NO SE HA INTRODUCIDO NI TIEMPO NI COMENTARIO, SE FILTRA POR LA SESION
+        result = await db.query('timeTraining',
+            where: 'idSession = ?', whereArgs: [idSession]);
+      }
 
       if (result.isNotEmpty) {
         // MAPEAR LOS RESULTADOS A UNA LISTA DE OBJETOS TimeTraining
@@ -38,8 +63,8 @@ class TimeTrainingDao {
           );
         }).toList();
       } else {
-        DatabaseHelper.logger
-            .w("No se encontraron tiempos para la sesion con ID: $idSession.");
+        //DatabaseHelper.logger
+        //    .w("No se encontraron tiempos para la sesion con ID: $idSession.");
         return []; // DEVOLVER UNA LISTA VACIA SI NO HAY RESULTADOS
       } // VERIFICAR SI HAY RESULTADOS
     } catch (e) {
