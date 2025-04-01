@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../screen/historial_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
+import '../screen/statistics_screen.dart';
+
 /// Clase que representa la **barra de navegación inferior** de la aplicación.
 ///
 /// Esta clase permite a los usuarios cambiar entre diferentes pantallas de la aplicación
@@ -26,7 +28,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   final List<Widget> _screens = [
     const HistorialScreen(),
     const TimerScreen(),
-    // StatisticScreen()
+    const StatisticsScreen()
   ];
 
   void _onTap(int index) {
