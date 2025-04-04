@@ -6,6 +6,7 @@ import '../screen/historial_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import '../screen/statistics_screen.dart';
+import 'app_drawer.dart';
 
 /// Clase que representa la **barra de navegación inferior** de la aplicación.
 ///
@@ -55,12 +56,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: _screens[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
         index: _currentIndex,
         height: 60,
         // FONDO DEL NAVIGATION BAR (el color del espacio que deja el elemento seleccionado)
-        backgroundColor: AppColors.downLinearColor,
+        backgroundColor: Colors.transparent,
         color: AppColors.lightVioletColor,
         // COLOR DE LA BARRA
         animationDuration: const Duration(milliseconds: 350),
