@@ -77,7 +77,6 @@ class _TimerScreenState extends State<TimerScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // INICIA LAS ESTADISTICAS
     initTimeStatistics();
@@ -411,6 +410,7 @@ class _TimerScreenState extends State<TimerScreen> {
           // .fill PARA QUE SE EXPANDA EL TIMER Y SIGA QUEDANDOSE EN EL CENTRO
           Positioned.fill(
             top: 250, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
+            bottom: 60,
             child: GestureDetector(
               onTap: () async {
                 // CUANDO EMPIECE UN TIEMPO NUEVO, SI HA PULSADO ALGUNA PENALIZACION, SE ACTUALIZA EL TIEMPO
