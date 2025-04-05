@@ -1,4 +1,5 @@
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../database/database_helper.dart';
 
@@ -457,4 +458,36 @@ class TimeTrainingDao {
       return null;
     }
   } // METODO PARA BUSCAR UN TIEMPO POR SU ID
+
+  /// Método para contar cuántos tiempos tienen una penalización específica en una sesión.
+  ///
+  /// Este método cuenta cuántos registros están asociados a una sesión (`idSession`)
+  /// y tienen una penalización específica (`penalty`).
+  ///
+  /// Parámetros:
+  /// - `idSession`: El ID de la sesión sobre la cual se realizará la consulta.
+  /// - `penalty`: La penalización que se desea contar ("+2", "DNF").
+  ///
+  /// Retorna:
+  /// - Un `int` representando la cantidad de veces que se encuentra la penalización
+  ///   en la sesión indicada.
+  /// - `-1` si no se encontró ningún resultado o si ocurrió un error durante la consulta.
+  Future<int> countPenalty(int? idSession, String penalty) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // CONSULTA PARA CONTAR LOS TIEMPOS DE LA SESION QUE TIENEN ESA PENALIZACION
+      final result = await db.rawQuery(
+        'SELECT COUNT(*) AS count FROM timeTraining WHERE idSession = ? AND penalty = ?',
+        [idSession, penalty],
+      );
+
+      // RETORNA EL PRIMER VALOR Y SI ES NULL, RETORNA -1
+      return Sqflite.firstIntValue(result) ?? -1;
+    } catch (e) {
+      // SI OCURRE ALGUN ERROR, MANDA UN MENSAJE Y RETORNA -1
+      DatabaseHelper.logger.e(
+          "Error al obtener la cuenta de la penalizacion $penalty de la sesion $idSession");
+      return -1;
+    }
+  }
 }
