@@ -10,8 +10,6 @@ environment:
 dependencies:
   syncfusion_flutter_charts: ^29.1.35
   share_plus: ^7.0.0
-  flutter_email_sender: ^5.0.2
-  whatsapp_share: ^2.0.2
   pdf: ^3.11.3
   printing: ^5.14.2
   dropdown_button2: ^2.3.9
