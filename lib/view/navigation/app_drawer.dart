@@ -319,7 +319,10 @@ class _AppDrawerState extends State<AppDrawer> {
                 color: AppColors.darkPurpleColor),
 
             // BOTON PARA CERRAR SESION
-            listTileGenerator(Icons.logout, "log_out", const LoginScreen()),
+            Padding(
+                padding: const EdgeInsets.only(bottom: 70),
+                child: listTileGenerator(
+                    Icons.logout, "log_out", const LoginScreen()))
           ],
         ),
       ),
