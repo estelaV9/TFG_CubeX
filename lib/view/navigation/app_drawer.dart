@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import '../../viewmodel/current_user.dart';
 import '../../view/navigation/bottom_navigation.dart';
 import '../components/waves_painter/drawer_wave.dart';
+import '../utilities/app_styles.dart';
 
 /// Widget que representa el `Drawer` (menú lateral) de la aplicación.
 ///
@@ -171,10 +172,7 @@ class _AppDrawerState extends State<AppDrawer> {
       child: Text(
         Internationalization.internationalization
             .getLocalizations(context, text),
-        style: const TextStyle(
-          fontSize: 15,
-          color: AppColors.darkPurpleColor,
-        ),
+        style: AppStyles.darkPurple(15),
       ),
     );
   } // METODO PARA LOS TITULOS DEL LISTINER PARA NO DUPLICAR CODIGO
@@ -250,20 +248,13 @@ class _AppDrawerState extends State<AppDrawer> {
                         // NOMBRE USUARIO
                         Text(
                           returnName(),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.darkPurpleColor,
-                          ),
+                          style: AppStyles.darkPurpleAndBold(20),
                         ),
 
                         // MAIL USUARIO
                         Text(
                           mail,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: AppColors.darkPurpleColor,
-                          ),
+                          style: AppStyles.darkPurple(15),
                         ),
                       ],
                     ),
@@ -319,7 +310,10 @@ class _AppDrawerState extends State<AppDrawer> {
                 color: AppColors.darkPurpleColor),
 
             // BOTON PARA CERRAR SESION
-            listTileGenerator(Icons.logout, "log_out", const LoginScreen()),
+            Padding(
+                padding: const EdgeInsets.only(bottom: 70),
+                child: listTileGenerator(
+                    Icons.logout, "log_out", const LoginScreen()))
           ],
         ),
       ),

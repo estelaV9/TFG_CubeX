@@ -56,4 +56,7 @@ class AppColors {
 
   /// Color morado claro de fondo para popovers.
   static const Color popoverBackground = Color(0xFF9575d3);
+
+  /// Color morado oscuro utilizado para el punto de los pbs en la gráfica.
+  static const Color pointPbGraphic = Color(0xFF4f3693);
 }

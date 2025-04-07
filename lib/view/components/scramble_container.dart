@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../utilities/ScrambleGenerator.dart';
+import '../utilities/app_styles.dart';
 
 /// Widget que contiene el contenedor para mostrar el scramble y el botón para añadir manualmente.
 class ScrambleContainer extends StatefulWidget {
@@ -104,10 +105,7 @@ class ScrambleContainerState extends State<ScrambleContainer> {
               child: Text(
                 // MOSTRAMOS EL SCRAMBLE
                 scrambleName,
-                style: const TextStyle(
-                    color: AppColors.darkPurpleColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
+                style: AppStyles.darkPurpleAndBold(20),
               )),
 
           // BOTON AÑADIR MANUALMENTE

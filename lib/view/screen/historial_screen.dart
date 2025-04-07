@@ -124,51 +124,54 @@ class _HistorialScreenState extends State<HistorialScreen> {
             top: 175,
             right: 20,
             left: 20,
-            bottom: 20,
+            bottom: 80,
             child: CardTimeHistorial(),
           ),
         ],
       ),
 
-      floatingActionButton: SpeedDial(
-        // SI NO HA PULSADO, SE PONE EL ICONO DE COMPARTIR, SI NO EL ICONO DE CERRAR
-        icon: _isOpen ? Icons.close : Icons.share,
-        backgroundColor: AppColors.speedDialButtonBackground,
-        // CUANDO SE ABRE, LA PANTALLA SE TORNA DE UN BLANCO
-        overlayColor: Colors.white12,
-        // OPACIDAD DEL COLOR BLANCO
-        overlayOpacity: 0.5,
-        spacing: 10,
-        // CUANDO SE ABRE, SE CAMBIA EL VALOR
-        onOpen: () {
-          setState(() {
-            _isOpen = true;
-          });
-        },
-        // CUANDO SE CIERRA SE CAMBIA EL VALOR
-        onClose: () {
-          setState(() {
-            _isOpen = false;
-          });
-        },
-        children: [
-          SpeedDialChild(
-            child: const Icon(Icons.download, color: Colors.white),
-            label: "Download",
-            backgroundColor: AppColors.imagenBg,
-            onTap: () {
-              convertPdf(context, ShareOption.download);
-            },
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.more_horiz, color: Colors.white),
-            label: "Otros",
-            backgroundColor: Colors.blueGrey,
-            onTap: () {
-              convertPdf(context, ShareOption.moreOptions);
-            },
-          ),
-        ],
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 60),
+        child: SpeedDial(
+          // SI NO HA PULSADO, SE PONE EL ICONO DE COMPARTIR, SI NO EL ICONO DE CERRAR
+          icon: _isOpen ? Icons.close : Icons.share,
+          backgroundColor: AppColors.speedDialButtonBackground,
+          // CUANDO SE ABRE, LA PANTALLA SE TORNA DE UN BLANCO
+          overlayColor: Colors.white12,
+          // OPACIDAD DEL COLOR BLANCO
+          overlayOpacity: 0.5,
+          spacing: 10,
+          // CUANDO SE ABRE, SE CAMBIA EL VALOR
+          onOpen: () {
+            setState(() {
+              _isOpen = true;
+            });
+          },
+          // CUANDO SE CIERRA SE CAMBIA EL VALOR
+          onClose: () {
+            setState(() {
+              _isOpen = false;
+            });
+          },
+          children: [
+            SpeedDialChild(
+              child: const Icon(Icons.download, color: Colors.white),
+              label: "Download",
+              backgroundColor: AppColors.imagenBg,
+              onTap: () {
+                convertPdf(context, ShareOption.download);
+              },
+            ),
+            SpeedDialChild(
+              child: const Icon(Icons.more_horiz, color: Colors.white),
+              label: "Otros",
+              backgroundColor: Colors.blueGrey,
+              onTap: () {
+                convertPdf(context, ShareOption.moreOptions);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

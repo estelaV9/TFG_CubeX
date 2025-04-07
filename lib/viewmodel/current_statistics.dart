@@ -62,6 +62,38 @@ class CurrentStatistics extends ChangeNotifier {
     return await TimeTrainingDao().getAoX(_timesList, numAvg);
   } // METODO AUXILIAR OBTENER LA MEDIA DE LOS X TIEMPOS DE LA SESION
 
+  /// Obtiene la **peor media** de X tiempos de la sesión actual.
+  ///
+  /// Este método utiliza la función `getWorstAvg()` del DAO para calcular la **peor media**
+  /// de los **X tiempos más recientes**, eliminando el mejor y el peor tiempo,
+  /// y calculando la media de los tiempos restantes.
+  ///
+  /// Parámetros:
+  /// - `numAvg`: Número de tiempos para calcular la media (peor media).
+  ///
+  /// Retorna:
+  /// - **String**: La peor media en formato `"mm:ss.ss"` si hay suficientes tiempos.
+  ///   - `"--:--.--"` si no hay suficientes tiempos para calcular la media.
+  Future<String> getWorstAvgValue(int numAvg) async {
+    return await TimeTrainingDao().getWorstAvg(_timesList, numAvg);
+  } // METODO AUXILIAR OBTENER LA PEOR MEDIA DE LOS X TIEMPOS DE LA SESION
+
+  /// Obtiene la **mejor media** de X tiempos de la sesión actual.
+  ///
+  /// Este método utiliza la función `getBestAvg()` del DAO para calcular la **mejor media**
+  /// de los **X tiempos más recientes**, eliminando el mejor y el peor tiempo,
+  /// y calculando la media de los tiempos restantes.
+  ///
+  /// Parámetros:
+  /// - `numAvg`: Número de tiempos para calcular la media (mejor media).
+  ///
+  /// Retorna:
+  /// - **String**: La mejor media en formato `"mm:ss.ss"` si hay suficientes tiempos.
+  ///   - `"--:--.--"` si no hay suficientes tiempos para calcular la media.
+  Future<String> getBestAvgValue(int numAvg) async {
+    return await TimeTrainingDao().getBestAvg(_timesList, numAvg);
+  } // METODO AUXILIAR OBTENER LA MEJOR MEDIA DE LOS X TIEMPOS DE LA SESION
+
   /// Obtiene la **Average of 5 (Ao5)** de los tiempos más recientes.
   ///
   /// Calcula la media de los últimos **5 tiempos registrados**, eliminando

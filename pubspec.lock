@@ -288,14 +288,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_email_sender:
-    dependency: "direct main"
-    description:
-      name: flutter_email_sender
-      sha256: "9e253c69617f43d4cb5de672e93a7a19c12a21fb6a75e66c6ce7626336c4c1bc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.2.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -1062,6 +1054,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
+  syncfusion_flutter_charts:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_charts
+      sha256: "22d633491d63e0986dc84dd07f7e68e1d2e9796a35b52ba7d39440fa3f79fa11"
+      url: "https://pub.dev"
+    source: hosted
+    version: "29.1.35"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      sha256: be5eff439bb6c16eb2f297aa3dde779cc5352485f2df1825557d14f09d5b26b6
+      url: "https://pub.dev"
+    source: hosted
+    version: "29.1.35"
   synchronized:
     dependency: transitive
     description:
@@ -1246,14 +1254,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  whatsapp_share:
-    dependency: "direct main"
-    description:
-      name: whatsapp_share
-      sha256: d1884f302a52d9f400bc3d7d4274b77aad83424e08f425351cea8d13b4cb8649
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
   win32:
     dependency: transitive
     description:

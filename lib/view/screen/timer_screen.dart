@@ -44,7 +44,12 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
-  TextStyle statsTextStyle = AppStyles.statsTextStyle;
+  TextStyle statsTextStyle = AppStyles.darkPurpleAndBold(15);
+  final userDao = UserDao();
+  final sessionDao = SessionDao();
+  final cubeDao = CubeTypeDao();
+  final timeTrainingDao = TimeTrainingDao();
+  final cubeTypeDao = CubeTypeDao();
 
   // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
@@ -57,7 +62,6 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao100Value = "--:--.--";
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TimeTrainingDao timeTrainingDao = TimeTrainingDao();
 
   // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
   String _finalTime = "0.00";
@@ -77,7 +81,6 @@ class _TimerScreenState extends State<TimerScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // INICIA LAS ESTADISTICAS
     initTimeStatistics();
@@ -101,29 +104,9 @@ class _TimerScreenState extends State<TimerScreen> {
   /// y actualiza, actualmentem las estadísticas como el mejor tiempo (PB), el peor tiempo y
   /// el número de tiempos que hay en la sesión.
   void initTimeStatistics() async {
-    final userDao = UserDao();
-    final sessionDao = SessionDao();
-    final cubeDao = CubeTypeDao();
-    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
-
-    // OBTENER EL USUARIO ACTUAL
-    final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
-    if (idUser == -1) {
-      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-      return;
-    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-    // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-
-    final currentSession = context.read<CurrentSession>().session;
-    final currentCubeType = context.read<CurrentCubeType>().cubeType;
-
-    final cubeType = await cubeDao.cubeTypeDefault(currentCubeType!.cubeName);
-
-    final session = await sessionDao.getSessionByUserCubeName(
-        idUser, currentSession!.sessionName, cubeType.idCube);
+    int? idUser = await userDao.getUserId(context);
+    final session = await sessionDao.getSessionData(context, idUser!);
 
     var timesList = await timeTrainingDao.getTimesOfSession(session!.idSession);
 
@@ -206,37 +189,10 @@ class _TimerScreenState extends State<TimerScreen> {
   /// - Se actualizan las estadísticas de tiempo.
   Future<void> _saveTimeToDatabase(
       double timeInSeconds, String scramble) async {
-    final userDao = UserDao();
-    final sessionDao = SessionDao();
-    final timeTrainingDao = TimeTrainingDao();
-    CubeTypeDao cubeTypeDao = CubeTypeDao();
-
     try {
-      // OBTENER EL USUARIO ACTUAL
-      final currentUser = context.read<CurrentUser>().user;
       // OBTENER EL ID DEL USUARIO
-      int idUser = await userDao.getIdUserFromName(currentUser!.username);
-      if (idUser == -1) {
-        DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-        return;
-      } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-      // OBTENER LA SESSION Y EL TIPO DE CUBO ACTUAL
-      final currentSession = context.read<CurrentSession>().session;
-      final currentCube = context.read<CurrentCubeType>().cubeType;
-      CubeType? cubeType =
-          await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
-      if (cubeType.idCube == -1) {
-        DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
-        return;
-      } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
-
-      // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-      int idSession =
-          await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
-
-      Session? session = await sessionDao.getSessionByUserCubeName(
-          idUser, currentSession!.sessionName, cubeType.idCube);
+      int? idUser = await userDao.getUserId(context);
+      final session = await sessionDao.getSessionData(context, idUser!);
 
       final timeTraining = TimeTraining(
         idSession: session!.idSession,
@@ -249,7 +205,7 @@ class _TimerScreenState extends State<TimerScreen> {
       final success = await timeTrainingDao.insertNewTime(timeTraining);
 
       // MOSTRAR UNA LISTA CON LOS TIEMPOS
-      final result = await timeTrainingDao.getTimesOfSession(idSession);
+      final result = await timeTrainingDao.getTimesOfSession(session.idSession);
       DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
 
       if (success) {
@@ -411,6 +367,7 @@ class _TimerScreenState extends State<TimerScreen> {
           // .fill PARA QUE SE EXPANDA EL TIMER Y SIGA QUEDANDOSE EN EL CENTRO
           Positioned.fill(
             top: 250, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
+            bottom: 60,
             child: GestureDetector(
               onTap: () async {
                 // CUANDO EMPIECE UN TIEMPO NUEVO, SI HA PULSADO ALGUNA PENALIZACION, SE ACTUALIZA EL TIEMPO
@@ -455,11 +412,7 @@ class _TimerScreenState extends State<TimerScreen> {
                                   Text(
                                     key: const Key('timer_display'),
                                     _finalTime,
-                                    style: const TextStyle(
-                                      fontSize: 40,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.darkPurpleColor,
-                                    ),
+                                    style: AppStyles.darkPurpleAndBold(40),
                                   ),
 
                                   // SI HAY UN +2 O COMENTARIOS, SE AÑADE UN PADDING A LA DERECHA
@@ -469,7 +422,8 @@ class _TimerScreenState extends State<TimerScreen> {
 
                                   // SI SOLO ESTA SELECCIONADO EL +2 SIN COMENTARIOS
                                   if (currentTime.isPlusTwoChoose && !isComment)
-                                    const Text( " +2",
+                                    const Text(
+                                      " +2",
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -479,7 +433,8 @@ class _TimerScreenState extends State<TimerScreen> {
 
                                   // SI SOLO HAY COMENTARIOS, SE MUESTRA SOLO EL ICON
                                   if (isComment && !currentTime.isPlusTwoChoose)
-                                    IconClass.iconMaker(context, Icons.comment, "fsd", 15),
+                                    IconClass.iconMaker(
+                                        context, Icons.comment, "fsd", 15),
 
                                   // SI HAY COMENTARIOS Y +2, SE MUESTRAN EN COLUMNA
                                   if (isComment && currentTime.isPlusTwoChoose)
@@ -487,7 +442,8 @@ class _TimerScreenState extends State<TimerScreen> {
                                       children: [
                                         IconClass.iconMaker(
                                             context, Icons.comment, "fsd", 15),
-                                        const Text( " +2",
+                                        const Text(
+                                          " +2",
                                           style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold,
@@ -506,15 +462,20 @@ class _TimerScreenState extends State<TimerScreen> {
                                   ? IconClass.iconButton(context, logicComment,
                                       "add_comment", Icons.add_comment_rounded)
                                   : IconClass.iconButton(
-                                      context, () {}, "add_comment",
+                                      context,
+                                      () {},
+                                      "add_comment",
                                       Icons.add_comment_rounded,
                                       AppColors.darkPurpleOpacity),
                               TextButton(
                                 // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
                                 onPressed: currentTime.timeTraining != null
-                                    ? () { currentTime.setPenalty(
-                                            "DNF", !currentTime.isDnfChoose); }
-                                    : () {}, // SE DESHABILITA SI NO HAY TIEMPO ACTUAl
+                                    ? () {
+                                        currentTime.setPenalty(
+                                            "DNF", !currentTime.isDnfChoose);
+                                      }
+                                    : () {},
+                                // SE DESHABILITA SI NO HAY TIEMPO ACTUAl
                                 child: Internationalization.internationalization
                                     .createLocalizedSemantics(
                                   context, "dnf_label", "dnf_hint", "dnf",
@@ -527,12 +488,16 @@ class _TimerScreenState extends State<TimerScreen> {
                               TextButton(
                                 // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
                                 onPressed: currentTime.timeTraining != null
-                                    ? () { currentTime.setPenalty(
-                                            "+2", !currentTime.isPlusTwoChoose); }
-                                    : () {}, // SE DESHABILITA SI NO HAY TIEMPO ACTUAL
+                                    ? () {
+                                        currentTime.setPenalty(
+                                            "+2", !currentTime.isPlusTwoChoose);
+                                      }
+                                    : () {},
+                                // SE DESHABILITA SI NO HAY TIEMPO ACTUAL
                                 child: Internationalization.internationalization
                                     .createLocalizedSemantics(
-                                  context, "plus_two_label", "plus_two_hint", "plus_two",
+                                  context, "plus_two_label", "plus_two_hint",
+                                  "plus_two",
                                   // APLICAR COLOR SI ESTA O NO PULSADO
                                   AppStyles.getButtonTextStyle(
                                       currentTime.isPlusTwoChoose,
@@ -566,22 +531,10 @@ class _TimerScreenState extends State<TimerScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Average: $averageValue",
-                                    style: statsTextStyle,
-                                  ),
-                                  Text(
-                                    "Pb: $pbValue",
-                                    style: statsTextStyle,
-                                  ),
-                                  Text(
-                                    "Worst: $worstValue",
-                                    style: statsTextStyle,
-                                  ),
-                                  Text(
-                                    "Count: $countValue",
-                                    style: statsTextStyle,
-                                  ),
+                                  _statsText("Average", averageValue),
+                                  _statsText("Pb", pbValue),
+                                  _statsText("Worst", worstValue),
+                                  _statsText("Count", countValue)
                                 ],
                               ),
 
@@ -591,22 +544,10 @@ class _TimerScreenState extends State<TimerScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    "Ao5: $ao5Value",
-                                    style: statsTextStyle,
-                                  ),
-                                  Text(
-                                    "Ao12: $ao12Value",
-                                    style: statsTextStyle,
-                                  ),
-                                  Text(
-                                    "Ao50: $ao50Value",
-                                    style: statsTextStyle,
-                                  ),
-                                  Text(
-                                    "Ao100: $ao100Value",
-                                    style: statsTextStyle,
-                                  ),
+                                  _statsText("Ao5", ao5Value),
+                                  _statsText("Ao12", ao12Value),
+                                  _statsText("Ao50", ao50Value),
+                                  _statsText("Ao100", ao100Value)
                                 ],
                               ),
                             ],
@@ -621,6 +562,13 @@ class _TimerScreenState extends State<TimerScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Text _statsText(String title, String value) {
+    return Text(
+      "$title: $value",
+      style: statsTextStyle,
     );
   }
 }

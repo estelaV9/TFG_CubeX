@@ -1,4 +1,5 @@
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../database/database_helper.dart';
 
@@ -273,6 +274,142 @@ class TimeTrainingDao {
     return "$minutes:${seconds.toStringAsFixed(2).padLeft(5, '0')}";
   } // METODO PARA HACER LA MEDIA DE x TIEMPOS (5,12,50,100,total)
 
+
+  /// Método para calcular la **mejor media** de X tiempos en una sesión.
+  ///
+  /// Este método calcula la **mejor media** (más baja) de un bloque de `numAvg`
+  /// tiempos, ordenados por fecha de más reciente a más antigua. Para cada bloque,
+  /// se eliminan el mejor y el peor tiempo, y se calcula la media con los
+  /// tiempos restantes (regla WCA).
+  ///
+  /// Parámetros:
+  /// - `timesList`: Lista de objetos [TimeTraining] registrados en la sesión.
+  /// - `numAvg`: Número de tiempos consecutivos que se usan para calcular la media.
+  ///
+  /// Retorna:
+  /// - **String**: La mejor media en formato `"mm:ss.ss"`.
+  ///   - `"--:--.--"` si no hay suficientes tiempos para calcular la media.
+  Future<String> getBestAvg(List<TimeTraining> timesList, int numAvg) async {
+    if (timesList.length < numAvg) {
+      // SI NO HAY SUFICIENTES TIEMPOS PARA HACER LA MEDIA, DEVUELVE EL VALOR POR
+      // DEFECTO
+      return "--:--.--";
+    }
+
+    // MEJOR MEDIA (VALOR MAS BAJO)
+    double bestAvgTimeInSeconds = double.infinity;
+
+    // ORDENAMOS LA LISTA POR FECHA MAS RECIENTE
+    timesList.sort((a, b) {
+      DateTime dateA = DateTime.parse(a.registrationDate);
+      DateTime dateB = DateTime.parse(b.registrationDate);
+      // ORDENAMOS DE MAS RECIENTE A MAS ANTIGUO
+      return dateB.compareTo(dateA);
+    });
+
+    // RECORREMOS LA LISTA TOMBANDO BLOQUES DE numAvg TIEMPOS
+    for (int i = 0; i <= timesList.length - numAvg; i++) {
+      // TOMAMOS UN BLOQUE DE numAvg TIEMPOS
+      List<TimeTraining> block = timesList.sublist(i, i + numAvg);
+
+      // ORDENAMOS EL BLOQUE POR TIEMPO (DE MENOR A MAYOR)
+      block.sort((a, b) => a.timeInSeconds.compareTo(b.timeInSeconds));
+
+      // ELIMINAMOS EL MEJOR Y EL PEOR TIEMPO
+      List<TimeTraining> trimmedBlock = block.sublist(1, block.length - 1);
+
+      // CALCULAMOS LA MEDIA DEL BLOQUE QUEDANDO CON LOS TIEMPOS RESTANTES
+      double sum = 0.0;
+      for (var time in trimmedBlock) {
+        sum += time.timeInSeconds;
+      }
+      double avgTimeInSeconds = sum / trimmedBlock.length;
+
+      // COMPARAMOS CON LAS OTRAS MEDIAS Y ACTUALIZAMOS LA MEJOR MEDIA
+      if (avgTimeInSeconds < bestAvgTimeInSeconds) {
+        bestAvgTimeInSeconds = avgTimeInSeconds;
+      }
+    }
+
+    // CONVERTIMOS EL TIEMPO EN SEGUNDOS EN FORMATO "mm:ss.ss"
+    String formatTime(double timeInSeconds) {
+      int minutes = timeInSeconds ~/ 60;
+      double seconds = timeInSeconds % 60;
+      // AÑADE UN CARACTER '0' A LA IZQUIERDA SI TIENE MENOS DE 5 CARACTERES
+      // (si es 9.45 -> 09.45, pero si es 11.45 se queda igual)
+      return "${minutes}:${seconds.toStringAsFixed(2).padLeft(5, '0')}";
+    }
+    return formatTime(bestAvgTimeInSeconds);
+  }
+
+
+  /// Método para calcular la **peor media** de X tiempos en una sesión.
+  ///
+  /// Este método calcula la **peor media** (más alta) DE UN bloques de `numAvg`
+  /// tiempos, ordenados por fecha de más reciente a más antigua. Para cada bloque,
+  /// se eliminan el mejor y el peor tiempo, y se calcula la media con los
+  /// tiempos restantes (regla WCA).
+  ///
+  /// Parámetros:
+  /// - `timesList`: Lista de tiempos [TimeTraining] registrados en la sesión.
+  /// - `numAvg`: Número de tiempos consecutivos a considerar por bloque.
+  ///
+  /// Retorna:
+  /// - **String**: La peor media en formato `"mm:ss.ss"`.
+  ///   - `"--:--.--"` si no hay suficientes tiempos para calcularla.
+  Future<String> getWorstAvg(List<TimeTraining> timesList, int numAvg) async {
+    if (timesList.length < numAvg) {
+      // SI NO HAY SUFICIENTES TIEMPOS PARA HACER LA MEDIA, DEVUELVE EL VALOR POR
+      // DEFECTO
+      return "--:--.--";
+    }
+
+    // MEJOR MEDIA (VALOR MAS ALTO)
+    double worstAvgTimeInSeconds = -double.infinity;
+
+    // ORDENAMOS LA LISTA POR FECHA MAS RECIENTE
+    timesList.sort((a, b) {
+      DateTime dateA = DateTime.parse(a.registrationDate);
+      DateTime dateB = DateTime.parse(b.registrationDate);
+      // ORDENAMOS DE MAS RECIENTE A MAS ANTIGUO
+      return dateB.compareTo(dateA);
+    });
+
+    // RECORREMOS LA LISTA TOMBANDO BLOQUES DE numAvg TIEMPOS
+    for (int i = 0; i <= timesList.length - numAvg; i++) {
+      // TOMAMOS UN BLOQUE DE numAvg TIEMPOS
+      List<TimeTraining> block = timesList.sublist(i, i + numAvg);
+
+      // ORDENAMOS EL BLOQUE POR TIEMPO (DE MENOR A MAYOR)
+      block.sort((a, b) => a.timeInSeconds.compareTo(b.timeInSeconds));
+
+      // ELIMINAMOS EL MEJOR Y EL PEOR TIEMPO
+      List<TimeTraining> trimmedBlock = block.sublist(1, block.length - 1);
+
+      // CALCULAMOS LA MEDIA DEL BLOQUE QUEDANDO CON LOS TIEMPOS RESTANTES
+      double sum = 0.0;
+      for (var time in trimmedBlock) {
+        sum += time.timeInSeconds;
+      }
+      double avg = sum / trimmedBlock.length;
+
+      // ACTUALIZAMOS SI ESTA MEDIA ES LA PEOR (LA MAS ALTA)
+      if (avg > worstAvgTimeInSeconds) {
+        worstAvgTimeInSeconds = avg;
+      }
+    }
+
+    // CONVERTIMOS EL TIEMPO EN SEGUNDOS A FORMATO "mm:ss.ss"
+    String formatTime(double timeInSeconds) {
+      int minutes = timeInSeconds ~/ 60;
+      double seconds = timeInSeconds % 60;
+      // AÑADE UN CARACTER '0' A LA IZQUIERDA SI TIENE MENOS DE 5 CARACTERES
+      // (si es 9.45 -> 09.45, pero si es 11.45 se queda igual)
+      return "${minutes}:${seconds.toStringAsFixed(2).padLeft(5, '0')}";
+    }
+    return formatTime(worstAvgTimeInSeconds);
+  }
+
   /// Método para eliminar un tiempo por su ID.
   ///
   /// Este método elimina un tiempo registrado en la base de datos
@@ -457,4 +594,36 @@ class TimeTrainingDao {
       return null;
     }
   } // METODO PARA BUSCAR UN TIEMPO POR SU ID
+
+  /// Método para contar cuántos tiempos tienen una penalización específica en una sesión.
+  ///
+  /// Este método cuenta cuántos registros están asociados a una sesión (`idSession`)
+  /// y tienen una penalización específica (`penalty`).
+  ///
+  /// Parámetros:
+  /// - `idSession`: El ID de la sesión sobre la cual se realizará la consulta.
+  /// - `penalty`: La penalización que se desea contar ("+2", "DNF").
+  ///
+  /// Retorna:
+  /// - Un `int` representando la cantidad de veces que se encuentra la penalización
+  ///   en la sesión indicada.
+  /// - `-1` si no se encontró ningún resultado o si ocurrió un error durante la consulta.
+  Future<int> countPenalty(int? idSession, String penalty) async {
+    final db = await DatabaseHelper.database;
+    try {
+      // CONSULTA PARA CONTAR LOS TIEMPOS DE LA SESION QUE TIENEN ESA PENALIZACION
+      final result = await db.rawQuery(
+        'SELECT COUNT(*) AS count FROM timeTraining WHERE idSession = ? AND penalty = ?',
+        [idSession, penalty],
+      );
+
+      // RETORNA EL PRIMER VALOR Y SI ES NULL, RETORNA -1
+      return Sqflite.firstIntValue(result) ?? -1;
+    } catch (e) {
+      // SI OCURRE ALGUN ERROR, MANDA UN MENSAJE Y RETORNA -1
+      DatabaseHelper.logger.e(
+          "Error al obtener la cuenta de la penalizacion $penalty de la sesion $idSession");
+      return -1;
+    }
+  }
 }

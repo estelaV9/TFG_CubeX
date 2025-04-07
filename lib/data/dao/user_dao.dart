@@ -1,6 +1,8 @@
 import 'package:esteladevega_tfg_cubex/model/user.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
+import '../../viewmodel/current_user.dart';
 import '../database/database_helper.dart';
 
 /// Clase encargada de gestionar las operaciones CRUD sobre los **usuarios**.
@@ -262,4 +264,29 @@ class UserDao {
       return null;
     }
   } // METODO PARA CONSEGUIR LA IMAGEN DEL USUARIO
+
+
+  /// Método para obtener el ID del usuario actual a partir del nombre de usuario guardado en el estado global.
+  ///
+  /// Devuelve el ID del usuario si se encuentra correctamente.
+  /// Si ocurre un error o no hay usuario activo, devuelve `null` y registra el error en consola.
+  ///
+  /// Retorna un [Future<int?>] con el ID o `null`.
+  Future<int?> getUserId(BuildContext context) async {
+    final userDao = UserDao();
+    final currentUser = context.read<CurrentUser>().user;
+
+    if (currentUser == null) {
+      DatabaseHelper.logger.e("Usuario no encontrado.");
+      return null;
+    }
+
+    int idUser = await userDao.getIdUserFromName(currentUser.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+      return null;
+    }
+
+    return idUser;
+  }
 }

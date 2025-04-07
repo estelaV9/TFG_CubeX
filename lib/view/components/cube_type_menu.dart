@@ -1,9 +1,11 @@
 import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/database/database_helper.dart';
@@ -166,6 +168,7 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                             onTap: () async {
                               SessionDao sessionDao = SessionDao();
                               UserDao userDao = UserDao();
+                              TimeTrainingDao timeTrainingDao = TimeTrainingDao();
 
                               // SE ACTUALIZA EL TIPO DE CUBO EN EL PROVIDER
                               final currentCubeType = Provider.of<CurrentCubeType>(this.context, listen: false);
@@ -198,6 +201,16 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               if(sessionDefault != null){
                                 // SE ACTUALIZA EL ESTADO GLOBAL
                                 currentSession.setSession(sessionDefault);
+
+                                var timesList = await timeTrainingDao.getTimesOfSession(currentSession.session!.idSession);
+
+                                // GUARDAR LOS DATOS DE LAS ESTADISTICAS EN EL ESTADO GLOBAL
+                                final currentStatistics = Provider.of<CurrentStatistics>(
+                                    this.context, listen: false);
+                                // SE ACTUALIZA EL ESTADO GLOBAL
+                                currentStatistics.updateStatistics(timesListUpdate: timesList);
+
+
                                 widget.onCubeTypeSelected(cubeTypes[index]);
                                 // SE CIERRA EL MENU UNA VEZ ELIJA
                                 Navigator.of(context).pop();
