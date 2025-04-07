@@ -276,5 +276,12 @@
    "semantic_plus_two_percentage": "Esta columna muestra el porcentaje de +2",
 
    "tooltip_total_solve_time": "Tiempo total invertido resolviendo",
-   "semantic_total_solve_time": "Esta columna muestra el tiempo total de resolución acumulado"
+   "semantic_total_solve_time": "Esta columna muestra el tiempo total de resolución acumulado",
+
+   "performance_over_time": "Rendimiento a lo largo del tiempo",
+   "yearly": "Anual",
+   "monthly":  "Mensual",
+   "daily": "Diario",
+   "graph_orientation": "Orientación de la gráfica",
+   "toggle_times_visibility": "Esconder o mostrar los tiempos de la gráfica"
 }

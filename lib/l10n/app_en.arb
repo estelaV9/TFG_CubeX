@@ -282,5 +282,12 @@
   "semantic_plus_two_percentage": "This column shows the percentage of +2s",
 
   "tooltip_total_solve_time": "Total time spent solving",
-  "semantic_total_solve_time": "This column shows the accumulated time solving"
+  "semantic_total_solve_time": "This column shows the accumulated time solving",
+
+  "performance_over_time": "Performance Over Time",
+  "yearly": "Yearly",
+  "monthly": "Monthly",
+  "daily": "Daily",
+  "graph_orientation": "Graph Orientation",
+  "toggle_times_visibility": "Toggle time labels visibility"
 }

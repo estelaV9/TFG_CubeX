@@ -262,6 +262,12 @@ class Internationalization {
       'semantic_plus_two_percentage': () => l10n.semantic_plus_two_percentage,
       'tooltip_total_solve_time': () => l10n.tooltip_total_solve_time,
       'semantic_total_solve_time': () => l10n.semantic_total_solve_time,
+      'performance_over_time': () => l10n.performance_over_time,
+      'yearly': () => l10n.yearly,
+      'monthly': () => l10n.monthly,
+      'daily': () => l10n.daily,
+      'graph_orientation': () => l10n.graph_orientation,
+      'toggle_times_visibility': () => l10n.toggle_times_visibility,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
