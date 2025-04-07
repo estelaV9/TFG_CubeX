@@ -248,5 +248,39 @@
   "ascending_hint": "Button to sort in ascending order",
   "descending_hint": "Button to sort in descending order",
   "order_date_hint": "Button to sort by date",
-  "order_time_hint": "Button to sort by time"
+  "order_time_hint": "Button to sort by time",
+
+  "general_statistics": "General Statistics",
+  "best_single": "Best Single",
+  "worst_single": "Worst Single",
+  "solve_count": "Solve Count",
+  "dnf_count": "DNF Count",
+  "plus_two_count": "+2 Count",
+  "dnf_percentage": "DNF Percentage",
+  "plus_two_percentage": "+2 Percentage",
+  "total_solve_time": "Total Solve Time",
+
+  "tooltip_best_single": "Best recorded single time",
+  "semantic_best_single": "This column shows the best individual time",
+
+  "tooltip_worst_single": "Worst recorded single time",
+  "semantic_worst_single": "This column shows the worst individual time",
+
+  "tooltip_solve_count": "Total number of solves",
+  "semantic_solve_count": "This column shows how many times you have solved",
+
+  "tooltip_dnf_count": "Number of DNF solves",
+  "semantic_dnf_count": "This column shows the amount of DNFs (Did Not Finish)",
+
+  "tooltip_plus_two_count": "Number of +2 solves",
+  "semantic_plus_two_count": "This column shows the amount of +2 penalties",
+
+  "tooltip_dnf_percentage": "Percentage of DNFs",
+  "semantic_dnf_percentage": "This column shows the percentage of DNFs",
+
+  "tooltip_plus_two_percentage": "Percentage of +2 penalties",
+  "semantic_plus_two_percentage": "This column shows the percentage of +2s",
+
+  "tooltip_total_solve_time": "Total time spent solving",
+  "semantic_total_solve_time": "This column shows the accumulated time solving"
 }

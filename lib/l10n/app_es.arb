@@ -242,5 +242,39 @@
    "ascending_hint": "Botón para ordenar ascendentemente",
    "descending_hint": "Botón para ordenar descendentemente",
    "order_date_hint": "Botón para ordenar por fecha",
-   "order_time_hint": "Botón para ordenar por tiempo"
+   "order_time_hint": "Botón para ordenar por tiempo",
+
+   "general_statistics": "Estadísticas Generales",
+   "best_single": "Mejor Tiempo",
+   "worst_single": "Peor Tiempo",
+   "solve_count": "Número de Resoluciones",
+   "dnf_count": "Conteo de DNF",
+   "plus_two_count": "Conteo de +2",
+   "dnf_percentage": "Porcentaje de DNF",
+   "plus_two_percentage": "Porcentaje de +2",
+   "total_solve_time": "Tiempo Total de Resolución",
+
+   "tooltip_best_single": "Mejor tiempo individual registrado",
+   "semantic_best_single": "Esta columna muestra el mejor tiempo individual",
+
+   "tooltip_worst_single": "Peor tiempo individual registrado",
+   "semantic_worst_single": "Esta columna muestra el peor tiempo individual",
+
+   "tooltip_solve_count": "Número total de resoluciones registradas",
+   "semantic_solve_count": "Esta columna muestra cuántas resoluciones hiciste",
+
+   "tooltip_dnf_count": "Cantidad de intentos con penalización DNF",
+   "semantic_dnf_count": "Esta columna muestra los intentos no finalizados (DNF)",
+
+   "tooltip_plus_two_count": "Cantidad de penalizaciones +2",
+   "semantic_plus_two_count": "Esta columna muestra las resoluciones con penalización de +2 segundos",
+
+   "tooltip_dnf_percentage": "Porcentaje de penalizaciones DNF",
+   "semantic_dnf_percentage": "Esta columna muestra el porcentaje de DNFs",
+
+   "tooltip_plus_two_percentage": "Porcentaje de penalizaciones +2",
+   "semantic_plus_two_percentage": "Esta columna muestra el porcentaje de +2",
+
+   "tooltip_total_solve_time": "Tiempo total invertido resolviendo",
+   "semantic_total_solve_time": "Esta columna muestra el tiempo total de resolución acumulado"
 }
