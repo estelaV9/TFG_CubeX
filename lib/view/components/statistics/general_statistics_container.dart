@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../data/dao/cubetype_dao.dart';
 import '../../../data/dao/session_dao.dart';
 import '../../../data/dao/time_training_dao.dart';
 import '../../../data/dao/user_dao.dart';
 import '../../../data/database/database_helper.dart';
 import '../../../model/session.dart';
-import '../../../viewmodel/current_cube_type.dart';
-import '../../../viewmodel/current_session.dart';
 import '../../../viewmodel/current_statistics.dart';
 import '../../../viewmodel/current_usage_timer.dart';
-import '../../../viewmodel/current_user.dart';
 import '../../utilities/app_color.dart';
 import '../../utilities/app_styles.dart';
 import '../../utilities/internationalization.dart';
@@ -49,6 +45,9 @@ class _GeneralStatisticsContainerState
   late double plusTwoPercentage = 0;
   late final String totalSolveTime = "0:00.00";
 
+  UserDao userDao = UserDao();
+  SessionDao sessionDao = SessionDao();
+
   @override
   void initState() {
     super.initState();
@@ -63,10 +62,10 @@ class _GeneralStatisticsContainerState
   ///
   /// Se ejecuta automáticamente en el `initState`.
   Future<void> initTimeStatistics() async {
-    int? idUser = await _getUserId();
+    int? idUser = await userDao.getUserId(context);
     if (idUser == null) return;
 
-    Session? session = await _getSessionData(idUser);
+    Session? session = await sessionDao.getSessionData(context, idUser);
     if (session == null) return;
 
     var statistics = await _getStatistics(session);
@@ -74,56 +73,6 @@ class _GeneralStatisticsContainerState
 
     _updateState(statistics['pb'], statistics['worst'], statistics['count'],
         statistics['dnfCnt'], statistics['plusTwoCnt']);
-  }
-
-  /// Obtiene el ID del usuario actual a partir del nombre de usuario guardado en el estado global.
-  ///
-  /// Devuelve el ID del usuario si se encuentra correctamente.
-  /// Si ocurre un error o no hay usuario activo, devuelve `null` y registra el error en consola.
-  ///
-  /// Retorna un [Future<int?>] con el ID o `null`.
-  Future<int?> _getUserId() async {
-    final userDao = UserDao();
-    final currentUser = context.read<CurrentUser>().user;
-
-    if (currentUser == null) {
-      DatabaseHelper.logger.e("Usuario no encontrado.");
-      return null;
-    }
-
-    int idUser = await userDao.getIdUserFromName(currentUser.username);
-    if (idUser == -1) {
-      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-      return null;
-    }
-
-    return idUser;
-  }
-
-  /// Obtiene la sesión activa del usuario según el nombre de la sesión y el tipo de cubo actual.
-  ///
-  /// Parámetros:
-  /// - [idUser]: ID del usuario para el cual se quiere obtener la sesión.
-  ///
-  /// Este método recupera la sesión correspondiente al usuario y cubo actual.
-  /// Si no se encuentra la sesión o el tipo de cubo, se retorna `null` y se muestra un error en consola.
-  ///
-  /// Retorna un [Future<Session?>] con la sesión o `null`.
-  Future<Session?> _getSessionData(int idUser) async {
-    final sessionDao = SessionDao();
-    final cubeDao = CubeTypeDao();
-
-    final currentSession = context.read<CurrentSession>().session;
-    final currentCubeType = context.read<CurrentCubeType>().cubeType;
-
-    if (currentSession == null || currentCubeType == null) {
-      DatabaseHelper.logger.e("Sesión o tipo de cubo no encontrados.");
-      return null;
-    }
-
-    final cubeType = await cubeDao.cubeTypeDefault(currentCubeType.cubeName);
-    return await sessionDao.getSessionByUserCubeName(
-        idUser, currentSession.sessionName, cubeType.idCube);
   }
 
   /// Método que recupera las estadísticas generales de una sesión específica desde la base de datos.
