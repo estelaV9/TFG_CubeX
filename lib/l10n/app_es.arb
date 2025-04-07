@@ -283,5 +283,49 @@
    "monthly":  "Mensual",
    "daily": "Diario",
    "graph_orientation": "Orientación de la gráfica",
-   "toggle_times_visibility": "Esconder o mostrar los tiempos de la gráfica"
+   "toggle_times_visibility": "Esconder o mostrar los tiempos de la gráfica",
+
+  "average_analysis": "Análisis de promedios",
+  "average_analysis_label": "Análisis de promedios",
+  "average_analysis_hint": "Muestra el análisis de tiempos promedio",
+
+  "current": "Actual",
+  "current_label": "Tiempo promedio actual",
+  "current_hint": "Tiempo medio de las últimas resoluciones",
+
+  "average": "Media",
+  "average_label": "Media de tiempos",
+  "average_hint": "Tabla con las medias de tus tiempos en la sesión",
+
+  "ao5": "Ao5",
+  "ao5_label": "Media de 5",
+  "ao5_hint": "Tiempo promedio de las últimas 5 resoluciones",
+
+  "ao12": "Ao12",
+  "ao12_label": "Media de 12",
+  "ao12_hint": "Tiempo promedio de las últimas 12 resoluciones",
+
+  "ao50": "Ao50",
+  "ao50_label": "Media de 50",
+  "ao50_hint": "Tiempo promedio de las últimas 50 resoluciones",
+
+  "ao100": "Ao100",
+  "ao100_label": "Media de 100",
+  "ao100_hint": "Tiempo promedio de las últimas 100 resoluciones",
+
+  "aoTotal": "AoTotal",
+  "aoTotal_label": "Media total",
+  "aoTotal_hint": "Tiempo promedio de las todas las resoluciones",
+
+  "best": "Mejor",
+  "best_label": "Mejores promedios",
+  "best_hint": "Mejores tiempos promedio registrados",
+
+  "worst": "Peor",
+  "worst_label": "Peores promedios",
+  "worst_hint": "Tiempos promedio más lentos",
+
+  "total_average": "Media total de tiempos",
+  "total_average_label": "Media total",
+  "total_average_hint": "Tiempo medio de todas las resoluciones en esta sesión"
 }

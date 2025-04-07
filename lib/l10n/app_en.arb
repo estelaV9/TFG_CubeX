@@ -289,5 +289,49 @@
   "monthly": "Monthly",
   "daily": "Daily",
   "graph_orientation": "Graph Orientation",
-  "toggle_times_visibility": "Toggle time labels visibility"
+  "toggle_times_visibility": "Toggle time labels visibility",
+
+  "average_analysis": "Average Analysis",
+  "average_analysis_label": "Average Analysis",
+  "average_analysis_hint": "Displays the average time analysis",
+
+  "current": "Current",
+  "current_label": "Current average time",
+  "current_hint": "Average time over recent solves",
+
+  "average": "Average",
+  "average_label": "Average of times",
+  "average_hint": "Table showing the average of your times in the current session",
+
+  "ao5": "Ao5",
+  "ao5_label": "Average of 5",
+  "ao5_hint": "Average time of last 5 solves",
+
+  "ao12": "Ao12",
+  "ao12_label": "Average of 12",
+  "ao12_hint": "Average time of last 12 solves",
+
+  "ao50": "Ao50",
+  "ao50_label": "Average of 50",
+  "ao50_hint": "Average time of last 50 solves",
+
+  "ao100": "Ao100",
+  "ao100_label": "Average of 100",
+  "ao100_hint": "Average time of last 100 solves",
+
+  "aoTotal": "AoTotal",
+  "aoTotal_label": "Total average",
+  "aoTotal_hint": "Average time of all solves",
+
+  "best": "Best",
+  "best_label": "Best averages",
+  "best_hint": "Best average times recorded",
+
+  "worst": "Worst",
+  "worst_label": "Worst averages",
+  "worst_hint": "Slowest average times recorded",
+
+  "total_average": "Total average time",
+  "total_average_label": "Total average",
+  "total_average_hint": "Average time for all solves in this session"
 }
