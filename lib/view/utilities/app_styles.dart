@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_color.dart';
+import 'internationalization.dart';
 
 /// Clase que contiene los estilos de texto utilizados en la aplicación.
 /// (por ahora solo las del timer)
@@ -49,12 +50,51 @@ class AppStyles {
       fontWeight: FontWeight.bold,
       color: AppColors.darkPurpleOpacity);
 
-  /// Estilo de texto para las estadísticas o textos generales de la aplicación.
+  /// Estilo de texto con fuente en negrita, tamaño personalizado y color morado oscuro.
+  static TextStyle darkPurpleAndBold([double fontSize = 15]) {
+    return TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.bold,
+      color: AppColors.darkPurpleColor,
+    );
+  }
+
+  /// Estilo de texto con tamaño personalizado y color morado oscuro.
+  static TextStyle darkPurple([double fontSize = 15]) {
+    return TextStyle(
+      fontSize: fontSize,
+      color: AppColors.darkPurpleColor,
+    );
+  }
+
+  /// Widget reutilizable para mostrar texto con soporte de accesibilidad y tooltip.
   ///
-  /// - Fuente en negrita, tamaño 15 y color morado oscuro.
-  static const TextStyle statsTextStyle = TextStyle(
-    fontSize: 15,
-    fontWeight: FontWeight.bold,
-    color: AppColors.darkPurpleColor,
-  );
+  /// Parámetros:
+  /// - [context]: el contexto de la aplicación.
+  /// - [semantic]: descripción accesible para lectores de pantalla.
+  /// - [tooltip]: texto que aparece al hacer hover.
+  /// - [text]: el texto visible que se mostrará.
+  /// - [style]: estilo del texto.
+  static Widget textWithSemanticsAndTooltip(
+    BuildContext context,
+    String semantic,
+    String tooltip,
+    String text,
+    TextStyle style,
+  ) {
+    final messageSemantic = Internationalization.internationalization
+        .getLocalizations(context, semantic);
+    final messageTooltip = Internationalization.internationalization
+        .getLocalizations(context, tooltip);
+    final messageText = Internationalization.internationalization
+        .getLocalizations(context, text);
+
+    return Semantics(
+      label: messageSemantic,
+      child: Tooltip(
+        message: messageTooltip,
+        child: Text(messageText, style: style),
+      ),
+    );
+  }
 }
