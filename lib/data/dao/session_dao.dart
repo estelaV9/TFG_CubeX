@@ -1,6 +1,11 @@
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/session.dart';
+import '../../viewmodel/current_cube_type.dart';
+import '../../viewmodel/current_session.dart';
+import 'cubetype_dao.dart';
 
 /// Clase encargada de gestionar las operaciones CRUD sobre las **sesiones**.
 ///
@@ -322,4 +327,31 @@ class SessionDao {
       return null;
     }
   } // METODO QUE DEVUELVE UNA SESION POR ID DE USUARIO, NOMBRE DE LA SESION Y TIPO DE CUBO
+
+  /// Método para obtener la sesión actual del usuario según el nombre de la sesión y el tipo de cubo actual.
+  ///
+  /// Parámetros:
+  /// - [idUser]: ID del usuario para el cual se quiere obtener la sesión.
+  ///
+  /// Este método recupera la sesión correspondiente al usuario y cubo actual.
+  /// Si no se encuentra la sesión o el tipo de cubo, se retorna `null` y se muestra un error en consola.
+  ///
+  /// Retorna un [Future<Session?>] con la sesión o `null`.
+  Future<Session?> getSessionData(BuildContext context, int idUser) async {
+    final sessionDao = SessionDao();
+    final cubeDao = CubeTypeDao();
+
+    final currentSession = context.read<CurrentSession>().session;
+    final currentCubeType = context.read<CurrentCubeType>().cubeType;
+
+    if (currentSession == null || currentCubeType == null) {
+      DatabaseHelper.logger.e("Sesión o tipo de cubo no encontrados.");
+      return null;
+    }
+
+    final cubeType = await cubeDao.cubeTypeDefault(currentCubeType.cubeName);
+    return await sessionDao.getSessionByUserCubeName(
+        idUser, currentSession.sessionName, cubeType.idCube);
+  }
+
 }
