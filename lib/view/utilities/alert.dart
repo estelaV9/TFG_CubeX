@@ -25,6 +25,7 @@ import '../../viewmodel/current_user.dart';
 import '../components/menu_item.dart';
 import '../components/password_field_row.dart';
 import '../navigation/bottom_navigation.dart';
+import 'app_styles.dart';
 import 'internationalization.dart';
 
 /// Clase **AlertUtil** que sirve para mostrar diversos tipos de alertas
@@ -483,11 +484,7 @@ class AlertUtil {
                       currentTime.timeTraining!.penalty == "DNF"
                           ? currentTime.timeTraining!.penalty.toString()
                           : currentTime.timeTraining!.timeInSeconds.toString(),
-                      style: const TextStyle(
-                        color: AppColors.darkPurpleColor,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppStyles.darkPurpleAndBold(30),
                     ),
                     IconClass.iconButton(context, () async {
                       await deleteTime();
@@ -504,8 +501,7 @@ class AlertUtil {
                             context, () {}, "date", Icons.calendar_month),
                         Text(
                           DateFormat('dd/MM/yyyy').format(DateTime.now()),
-                          style: const TextStyle(
-                              color: AppColors.darkPurpleColor, fontSize: 16),
+                          style: AppStyles.darkPurple(16),
                         )
                       ],
                     ),
@@ -538,12 +534,9 @@ class AlertUtil {
                                 isTextPressed = true;
                               });
                             },
-                            child: const Text(
+                            child: Text(
                               "Scramble",
-                              style: TextStyle(
-                                  color: AppColors.darkPurpleColor,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
+                              style:AppStyles.darkPurpleAndBold(13),
                             ),
                           ),
                         ),
@@ -562,12 +555,9 @@ class AlertUtil {
                                 isTextPressed = false;
                               });
                             },
-                            child: const Text(
+                            child: Text(
                               "Comments",
-                              style: TextStyle(
-                                  color: AppColors.darkPurpleColor,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
+                              style: AppStyles.darkPurpleAndBold(13),
                             ),
                           ),
                         ),

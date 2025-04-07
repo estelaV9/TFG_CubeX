@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
+import '../utilities/app_styles.dart';
+
 /// Pantalla que muestra un cronómetro con un tiempo de inspección al mantener presionado.
 /// El cronómetro se inicia después de la cuenta atrás y muestra el tiempo transcurrido.
 ///
@@ -141,11 +143,7 @@ class _ShowTimeScreenState extends State<ShowTimeScreen> {
             Center(
               child: Text(
                 _showTime.isEmpty ? "15" : _showTime, // TEXTO INICIAL O TIEMPO
-                style: const TextStyle(
-                  fontSize: 55,
-                  color: AppColors.darkPurpleColor,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppStyles.darkPurpleAndBold(55),
               ),
             ),
           ],

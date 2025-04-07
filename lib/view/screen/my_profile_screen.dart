@@ -15,6 +15,7 @@ import '../../model/gallery_service.dart';
 import '../../viewmodel/current_user.dart';
 import '../components/Icon/icon.dart';
 import '../components/password_field_row.dart';
+import '../utilities/app_styles.dart';
 import '../utilities/encrypt_password.dart';
 import '../utilities/internationalization.dart';
 
@@ -455,12 +456,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Text(
+                                Text(
                                   "Delete account",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: AppColors.darkPurpleColor,
-                                      fontWeight: FontWeight.bold),
+                                  style: AppStyles.darkPurpleAndBold(18),
                                 )
                               ],
                             ),
