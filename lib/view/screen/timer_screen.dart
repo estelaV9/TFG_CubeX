@@ -44,7 +44,7 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
-  TextStyle statsTextStyle = AppStyles.statsTextStyle;
+  TextStyle statsTextStyle = AppStyles.darkPurpleAndBold(15);
 
   // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
