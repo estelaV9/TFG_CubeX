@@ -206,22 +206,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     double fontSize = currentLocale.languageCode == 'es' ? 50 : 70;
     double fontSizeByButton = currentLocale.languageCode == 'es' ? 35 : 45;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/background_intro.jpeg"),
-                fit: BoxFit.cover, // AJUSTAR LA IMAGEN AL TAMAÑO DE LA PANTALLA
+    return GestureDetector(
+        // CUANDO SE TOCA EN CUALQUIER LADO DE LA PANTALLA
+        onTap: () {
+          // SE QUITA EL FOCO DEL ELEMENTO ACTUAL, LO QUE CIERRA EL TECLADO SI ESTA ABIERTO
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          // EVITAMOS QUE EL CONTENIDO DE LA PANTALLA SE MUEVA HACIA ARRIBA CUANDO APARECE EL TECLADO
+          // ASI LOS ELEMENTOS NO SE DESPLACEN (Y NO GENEREN OVERFLOW)
+          resizeToAvoidBottomInset: false,
+          body: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/background_intro.jpeg"),
+                    fit: BoxFit.cover, // AJUSTAR LA IMAGEN AL TAMAÑO DE LA PANTALLA
+                  ),
+                ),
               ),
-            ),
-          ),
 
-          // SE DEJA UN HUECO DONDE SE VE UN POCO LA PARTE DE ARRIBA
+              // SE DEJA UN HUECO DONDE SE VE UN POCO LA PARTE DE ARRIBA
 
-          Positioned.fill(
-              child: CustomPaint(
+              Positioned.fill(
+                  child: CustomPaint(
                 painter: WaveContainerPainter(),
                 // FORMULARIO
                 child: Padding(
@@ -426,8 +435,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ))
-        ],
-      ),
-    );
+            ],
+          ),
+        ));
   }
 }
