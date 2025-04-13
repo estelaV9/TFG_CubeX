@@ -25,16 +25,22 @@ class CurrentStatistics extends ChangeNotifier {
   ///
   /// Llama al método DAO de tiempos `getPbTimeBySession(timesList)`
   /// y retorna el mejor tiempo.
-  Future<String> getPbValue() async {
-    return await TimeTrainingDao().getPbTimeBySession(_timesList);
+  ///
+  /// Parámetros:
+  /// - `isDnf` (opcional): Atributo para saber si ha puesto un DNF al tiempo actual.
+  Future<String> getPbValue([bool isDnf = false]) async {
+    return await TimeTrainingDao().getPbTimeBySession(_timesList, isDnf);
   } // OBTIENE EL PB DE TODOS LOS TIEMPOS DE LA SESION
 
   /// Obtiene el **peor tiempo** de la sesión actual.
   ///
   /// Llama al método DAO de tiempos `getWorstTimeBySession(timesList)`
   /// y retorna el peor tiempo.
-  Future<String> getWorstValue() async {
-    return await TimeTrainingDao().getWorstTimeBySession(_timesList);
+  ///
+  /// Parámetros:
+  /// - `isDnf` (opcional): Atributo para saber si ha puesto un DNF al tiempo actual.
+  Future<String> getWorstValue([bool isDnf = false]) async {
+    return await TimeTrainingDao().getWorstTimeBySession(_timesList, isDnf);
   } // OBTIENE EL PEOR TIEMPO DE TODOS LOS TIEMPOS DE LA SESION
 
   /// Obtiene la **cantidad total de tiempos registrados** en la sesión actual.
