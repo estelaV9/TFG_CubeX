@@ -28,7 +28,8 @@ class TimeTrainingDao {
   /// Retorna:
   /// - `Future<List<TimeTraining>>`: Lista de objetos [TimeTraining] con los tiempos registrados
   ///   que cumplen los criterios de búsqueda. Si no se encuentran resultados, devuelve una lista vacía.
-  Future<List<TimeTraining>> getTimesOfSession(int? idSession, [String? comment, String? time, bool? dateAsc, bool? timeAsc]) async {
+  Future<List<TimeTraining>> getTimesOfSession(int? idSession,
+      [String? comment, String? time, bool? dateAsc, bool? timeAsc]) async {
     final db = await DatabaseHelper.database;
     try {
       // CONSULTA PARA OBTENER TODOS LOS TIEMPOS DE UNA SESION
@@ -42,14 +43,14 @@ class TimeTrainingDao {
         orderBy = timeAsc ? "timeInSeconds ASC" : "timeInSeconds DESC";
       }
 
-      if(comment != null){
+      if (comment != null) {
         // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE REALIZA LA BUSQUEDA POR COMENTARIOS
         // SE USA LIKE CON '%' PARA ENCONTRAR CUALQUIER COINCIDENCIA QUE CONTENGA LA PALABRA
         result = await db.query('timeTraining',
             where: 'idSession = ? AND comments LIKE ?',
             whereArgs: [idSession, '%$comment%'],
             orderBy: orderBy.isNotEmpty ? orderBy : null);
-      } else if (time != null){
+      } else if (time != null) {
         // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR EL TIEMPO
         // SE USA LIKE CON '%' AL FINAL PARA ENCONTRAR LOS REGISTROS CUYO TIEMPO
         // COMIENCE CON EL VALOR INTRODUCIDO
@@ -62,7 +63,8 @@ class TimeTrainingDao {
       } else {
         // SI NO SE HA INTRODUCIDO NI TIEMPO NI COMENTARIO, SE FILTRA POR LA SESION
         result = await db.query('timeTraining',
-            where: 'idSession = ?', whereArgs: [idSession],
+            where: 'idSession = ?',
+            whereArgs: [idSession],
             orderBy: orderBy.isNotEmpty ? orderBy : null);
       }
 
@@ -133,30 +135,78 @@ class TimeTrainingDao {
   ///
   /// Este método recorre la lista de tiempos de la sesión y devuelve el mejor tiempo
   /// en formato "minutos:segundos.decimal".
+  /// Se valida que el mejor tiempo no contenga una penalización DNF.
   ///
   /// Parámetros:
   /// - `timesList`: Lista de tiempos [TimeTraining] para los cuales se calcula el mejor tiempo.
+  /// - `isDnf`: Booleano para saber si el tiempo actual al que se le esta aplicando este método
+  ///   ha sido establecido como DNF.
   ///
   /// Retorna:
-  /// - `String`: El mejor tiempo en formato "minutos:segundos.decimal".
-  Future<String> getPbTimeBySession(List<TimeTraining> timesList) async {
+  /// - `String`: El mejor tiempo en formato "minutos:segundos.decimal" que no contenga un DNF.
+  /// - "0:00.00": Si no hay tiempos antes o si los anteriores tiempos tienen una penalizacion
+  /// de DNF entonces retornará el tiempo en formato "0:00.00".
+  Future<String> getPbTimeBySession(
+      List<TimeTraining> timesList, bool isDnf) async {
     var pbTime = 0.0; // INICIALIZAR EL MEJOR TIEMPO
     var worstTime = 0.0; // INICIALIZAR EL PEOR TIEMPO
     int minutes = 0;
+    // ATRIBUTO PARA SABER SSI TODOS LOS TIEMPOS SON DNF
+    bool isDnfAll = false;
+    // CONTADOR PARA SABER CUANDOS TIEMPOS SON DNF
+    int cont = 0;
 
-    for (var times in timesList) {
-      if (times.timeInSeconds > worstTime) {
-        worstTime = times.timeInSeconds;
-      } // SI EL TIEMPO ES MENOR AL PEOR TIEMPO SE ESTABLECE
-    } // SE RECORRE TODOS LOS TIEMPOS BUSCANDO EL PEOR TIEMPO DE LA SESION
+    for (var tim in timesList) {
+      // SI EL TIEMPO TIENE UNA PENALIZACION DE 'DNF' SUBE EL CONTADOR
+      if (tim.penalty == "DNF") cont++;
+    } // SE RECORRE LA LSITA
 
-    pbTime = worstTime; // EL MEJOR TIEMPO ES EL PEOR (para darle un valor)
+    // CUENTA EL ULTIMO TIEMPO SI LE PONE UN DNF
+    if (isDnf == true) cont++;
 
-    for (var times in timesList) {
-      if (times.timeInSeconds < pbTime) {
-        pbTime = times.timeInSeconds;
-      } // SI EL TIEMPO ES MAYOR AL MEJOR TIEMPO SE ESTABLECE
-    } // SE RECORRE TODOS LOS TIEMPOS BUSCANDO EL MEJOR TIEMPO DE LA SESION
+    // SI EL CONTADOR Y EL NUMERO TOTAL DE TIEMPOS ES EL MISMO SIGNIFICA QUE
+    // TODOS LOS TIEMPOS TIENEN DNF
+    if (cont == timesList.length) isDnfAll = true;
+
+    // SI HA PUESTO DNF Y TODA LA LISTA TIENE DNF
+    if (isDnfAll == true) return "0:00.00";
+
+    if (isDnf) {
+      // SI EL TIEMPO ACTUAL SE LE AÑADE UN DNF, ENTONCES SE RECORRE TODOS LOS TIEMPOS
+      // MENOS EL ACTUAL, PARA SABER QUE TIEMPO ES EL PEOR Y SIN DNF
+      for (int index = 0; index <= (timesList.length - 2); index++) {
+        if (timesList[index].timeInSeconds > worstTime &&
+            timesList[index].penalty != "DNF") {
+          worstTime = timesList[index].timeInSeconds;
+        } // SI EL TIEMPO ES MENOR AL PEOR TIEMPO SE ESTABLECE
+      }
+
+      pbTime = worstTime; // EL MEJOR TIEMPO ES EL PEOR (para darle un valor)
+
+      for (int index = 0; index <= (timesList.length - 2); index++) {
+        if (timesList[index].timeInSeconds < pbTime &&
+            timesList[index].penalty != "DNF") {
+          pbTime = timesList[index].timeInSeconds;
+        } // SI EL TIEMPO ES MAYOR AL MEJOR TIEMPO SE ESTABLECE
+      }
+
+    } else {
+      for (var times in timesList) {
+        if (times.timeInSeconds > worstTime && times.penalty != "DNF") {
+          worstTime = times.timeInSeconds;
+        } // SI EL TIEMPO ES MENOR AL PEOR TIEMPO SE ESTABLECE
+      } // SE RECORRE TODOS LOS TIEMPOS BUSCANDO EL PEOR TIEMPO DE LA SESION
+
+      pbTime = worstTime; // EL MEJOR TIEMPO ES EL PEOR (para darle un valor)
+
+      for (var times in timesList) {
+        // SI EL TIEMPO NO TIENE DNF Y ES MENOR QUE EL MEJOR TIEMPO, SE ACTUALIZA EL PB
+        if (times.timeInSeconds < pbTime &&
+            times.penalty != "DNF") {
+          pbTime = times.timeInSeconds;
+        } // SI EL TIEMPO ES MAYOR AL MEJOR TIEMPO SE ESTABLECE
+      } // SE RECORRE TODOS LOS TIEMPOS BUSCANDO EL MEJOR TIEMPO DE LA SESION
+    }
 
     while (pbTime >= 60) {
       minutes++;
@@ -174,6 +224,7 @@ class TimeTrainingDao {
   ///
   /// Este método recorre la lista de tiempos de la sesión y devuelve el peor
   /// tiempo en formato "minutos:segundos.decimal".
+  /// Se valida que el mejor tiempo no contenga una penalización DNF.
   ///
   /// Parámetros:
   /// - `timesList`: Lista de tiempos [TimeTraining] para los cuales se calcula
@@ -181,15 +232,48 @@ class TimeTrainingDao {
   ///
   /// Retorna:
   /// - `String`: El peor tiempo en formato "minutos:segundos.decimal".
-  Future<String> getWorstTimeBySession(List<TimeTraining> timesList) async {
+  /// - "0:00.00": Si no hay tiempos antes o si los anteriores tiempos tienen una penalizacion
+  /// de DNF entonces retornará el tiempo en formato "0:00.00".
+  Future<String> getWorstTimeBySession(
+      List<TimeTraining> timesList, bool isDnf) async {
     var worstTime = 0.0; // INICIALIZAR EL PEOR TIEMPO
     int minutes = 0;
-    for (var times in timesList) {
-      if (times.timeInSeconds > worstTime) {
-        worstTime = times.timeInSeconds;
-      } // SI EL TIEMPO ES MENOR AL PEOR TIEMPO SE ESTABLECE
-    } // SE RECORRE TODOS LOS TIEMPOS BUSCANDO EL PEOR TIEMPO DE LA SESION
+    // ATRIBUTO PARA SABER SSI TODOS LOS TIEMPOS SON DNF
+    bool isDnfAll = false;
+    // CONTADOR PARA SABER CUANDOS TIEMPOS SON DNF
+    int cont = 0;
 
+    for (var tim in timesList) {
+      // SI EL TIEMPO TIENE UNA PENALIZACION DE 'DNF' SUBE EL CONTADOR
+      if (tim.penalty == "DNF") cont++;
+    } // SE RECORRE LA LSITA
+
+    // CUENTA EL ULTIMO TIEMPO SI LE PONE UN DNF
+    if (isDnf == true) cont++;
+
+    // SI EL CONTADOR Y EL NUMERO TOTAL DE TIEMPOS ES EL MISMO SIGNIFICA QUE
+    // TODOS LOS TIEMPOS TIENEN DNF
+    if (cont == timesList.length) isDnfAll = true;
+
+    // SI HA PUESTO DNF Y TODA LA LISTA TIENE DNF
+    if (isDnfAll == true) return "0:00.00";
+
+    if (isDnf) {
+      // SI EL TIEMPO ACTUAL SE LE AÑADE UN DNF, ENTONCES SE RECORRE TODOS LOS TIEMPOS
+      // MENOS EL ACTUAL, PARA SABER QUE TIEMPO ES EL PEOR Y SIN DNF
+      for (int index = 0; index <= (timesList.length - 2); index++) {
+        if (timesList[index].timeInSeconds > worstTime &&
+            timesList[index].penalty != "DNF") {
+          worstTime = timesList[index].timeInSeconds;
+        } // SI EL TIEMPO ES MENOR AL PEOR TIEMPO SE ESTABLECE
+      }
+    } else {
+      for (var times in timesList) {
+        if (times.timeInSeconds > worstTime && times.penalty != "DNF") {
+          worstTime = times.timeInSeconds;
+        } // SI EL TIEMPO ES MENOR AL PEOR TIEMPO SE ESTABLECE
+      } // SE RECORRE TODOS LOS TIEMPOS BUSCANDO EL PEOR TIEMPO DE LA SESION
+    }
     while (worstTime >= 60) {
       minutes++;
       worstTime -= 60; // RESTANIS 60 SEGUNDO CUANDO PASE UN MINUTO
@@ -220,6 +304,8 @@ class TimeTrainingDao {
   ///
   /// Este metodo calcula la media de los **X tiempos más recientes** registrados en la sesión,
   /// eliminando el mejor y el peor tiempo.
+  /// Se filtra los **DNF** ya que si contiene uno la media se establecerá como
+  /// peor tiempo, pero si tiene más entonces la media se establece como **DNF**.
   ///
   /// Parametros:
   /// - `timesList`: Lista de tiempos [TimeTraining] registrados.
@@ -249,6 +335,14 @@ class TimeTrainingDao {
     // (.take devuelve los primeros numAvg elementos de la lista)
     List<TimeTraining> recentTimes = timesList.take(numAvg).toList();
 
+    // FILTRAMOS LOS DNF (EL DNF SE CONSIDERA EL PEOR TIEMPO)
+    recentTimes.removeWhere((time) => time.penalty == "DNF");
+
+    // SI ELIMINA MAS DE UN TIEMPO POR DNF, LA MEDIA SE QUEDA EN DNF
+    if (recentTimes.length < numAvg - 1) {
+      return "DNF";
+    }
+
     // ORDENAMOS POR TIEMPO PARA SACAR EL MEJOR Y EL PEOR
     recentTimes.sort((a, b) => a.timeInSeconds.compareTo(b.timeInSeconds));
 
@@ -273,7 +367,6 @@ class TimeTrainingDao {
     // decimales)
     return "$minutes:${seconds.toStringAsFixed(2).padLeft(5, '0')}";
   } // METODO PARA HACER LA MEDIA DE x TIEMPOS (5,12,50,100,total)
-
 
   /// Método para calcular la **mejor media** de X tiempos en una sesión.
   ///
@@ -341,7 +434,6 @@ class TimeTrainingDao {
     }
     return formatTime(bestAvgTimeInSeconds);
   }
-
 
   /// Método para calcular la **peor media** de X tiempos en una sesión.
   ///
@@ -544,7 +636,6 @@ class TimeTrainingDao {
     }
   } // METODO PARA ACTUALIZAR UN TIEMPO
 
-
   /// Método para obtener un tiempo por su ID en la base de datos.
   ///
   /// Este método recupera un tiempo especifico en la tabla `timeTraining`
@@ -588,8 +679,7 @@ class TimeTrainingDao {
       return null; // RETORNA NULL
     } catch (e) {
       // SI OCURRE UN ERROR MUESTRA UN MENSAJE DE ERROR
-      DatabaseHelper.logger.e(
-          "Error al obtener el tiempo por id: $idTime");
+      DatabaseHelper.logger.e("Error al obtener el tiempo por id: $idTime");
       // RETORNA NULL EN CASO DE ERROR
       return null;
     }
