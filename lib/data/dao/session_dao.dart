@@ -349,9 +349,8 @@ class SessionDao {
       return null;
     }
 
-    final cubeType = await cubeDao.cubeTypeDefault(currentCubeType.cubeName);
+    final cubeType = await cubeDao.getCubeTypeByNameAndIdUser(currentCubeType.cubeName, idUser);
     return await sessionDao.getSessionByUserCubeName(
         idUser, currentSession.sessionName, cubeType.idCube);
   }
-
 }
