@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
@@ -67,10 +69,42 @@ class SettingsScreenState extends State<SettingsScreen> {
     } // SI EL MAIL ES "", MUESTRA UN AVISO
   } // METODO PARA RETORNAR EL MAIL DEL USUARIO QUE ACCEDIO
 
+  // LA URL DE LA IMAGEN DEL USUARIO, QUE SE INICIALIZA CON LA IMAGEN POR DEFECTO
+  String imageUrl = "assets/default_user_image.png";
+
   @override
   void initState() {
     super.initState();
     returnMail();
+    _getImageUrl();
+  }
+
+  /// Método privado para obtener la URL de la imagen de perfil del usuario actual.
+  ///
+  /// Este método busca en la base de datos la imagen asociada al usuario actual y,
+  /// si la encuentra, la asigna a la variable `imageUrl`.
+  ///
+  /// Procedimiento:
+  /// - Obtiene el usuario actual y recupera el ID mediante su nombre.
+  /// - Si el ID es válido, busca la URL de la imagen en la base de datos.
+  /// - Si la imagen no es nula, actualiza el estado con la nueva URL.
+  void _getImageUrl() async {
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+      return;
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    String? image = await userDao.getImageUser(idUser);
+    if (image != null) {
+      setState(() {
+        // SE ASIGNA EL VALOR DE LA URL DE LA IMAGEN
+        imageUrl = image;
+      });
+    } // SI NO ES NULA, SE ASIGNA EL VALOR
   }
 
   @override
@@ -110,11 +144,25 @@ class SettingsScreenState extends State<SettingsScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // IMAGEN DEL USUARIO
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: AppColors.imagenBg,
-                  child: Image.asset("assets/default_user_image.png"),
-                ),
+                imageUrl.isNotEmpty
+                    ? ClipOval(
+                        child: Image.file(
+                          File(imageUrl),
+                          fit: BoxFit.cover,
+                          width: 140,
+                          height: 140,
+                        ),
+                      )
+                    :
+                    // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
+                    ClipOval(
+                        child: Image.asset(
+                          "assets/default_user_image.png",
+                          fit: BoxFit.cover,
+                          width: 140,
+                          height: 140,
+                        ),
+                      ),
 
                 // COLUMNA PARA EL NOMBRE Y EL MAIL DEL USUARIO
                 Padding(
