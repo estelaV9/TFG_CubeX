@@ -104,7 +104,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
     CubeType? cubeType =
-        await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
+        await cubeTypeDao.getCubeTypeByNameAndIdUser(currentCube!.cubeName, idUser);
     if (cubeType == null) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
       return;

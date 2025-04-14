@@ -39,8 +39,7 @@ class AlertUtil {
   /// Los parámetros [key] y [contentKey] se utilizan para obtener los textos
   /// localizados a través de claves. El parámetro [title] define el título de la alerta,
   /// y el parámetro [content] define el contenido que se muestra en el cuerpo.
-  static void showAlert(String key, String contentKey, String title,
-      String content, BuildContext context) {
+  static void showAlert(String key, String contentKey, BuildContext context) {
     showDialog(
         context: context,
         builder: (context) {
@@ -182,7 +181,7 @@ class AlertUtil {
     final tipoCuboEstablecido = context.read<CurrentCubeType>().cubeType;
     final currentSession = context.read<CurrentSession>().session;
     final cubo =
-        await cubeTypeDao.cubeTypeDefault(tipoCuboEstablecido!.cubeName);
+        await cubeTypeDao.getCubeTypeByNameAndIdUser(tipoCuboEstablecido!.cubeName, idUser);
 
     // BUSCAMOS EL TIPO DE CUBO QUE TIENE ESA SESION
     Session? sessionTipoActual = await sessionDao.getSessionByUserCubeName(
@@ -363,12 +362,17 @@ class AlertUtil {
       Future<void> Function() deleteTime, TimeTraining timeTraining) async {
     TimeTrainingDao timeTrainingDao = TimeTrainingDao();
 
+
     // ATRIBUTO PARA SABER SI ESTA PRESIONADO EL SCRAMBLE O LOS COMMENTS
     var isTextPressed = true;
 
     final currentTime = Provider.of<CurrentTime>(context, listen: false);
     currentTime.setResetTimeTraining();
     currentTime.setTimeTraining(timeTraining); // SE ACTUALIZA EL ESTADO GLOBAL
+
+    // REESTABLECER VALORES DE PENALIZACION
+    currentTime.isPlusTwoChoose = false;
+    currentTime.isDnfChoose = false;
 
     int idTime = await timeTrainingDao.getIdByTime(
         currentTime.timeTraining!.scramble,
@@ -391,8 +395,12 @@ class AlertUtil {
                 // SEGUN LA PENALIZACION DEL TIEMPO, SE PONE UN ICONO
                 if (currentTime.timeTraining!.penalty == "+2") {
                   iconPenalty = Icons.timer;
+                  currentTime.isDnfChoose = false;
+                  currentTime.isPlusTwoChoose = true;
                 } else if (currentTime.timeTraining!.penalty == "DNF") {
                   iconPenalty = Icons.close;
+                  currentTime.isDnfChoose = true;
+                  currentTime.isPlusTwoChoose = false;
                 } else if (currentTime.timeTraining!.penalty == "none") {
                   iconPenalty = Icons.block;
                 } // INICIALIZAR EL ICONO
@@ -433,10 +441,14 @@ class AlertUtil {
                             // ASIGNAR LA PENALIZACION SEGUN EL ICONO SELECCIONADO
                             if (iconPenalty == Icons.close) {
                               // PENALIZACION DNF (NO FINALIZADO)
-                              currentTime.setPenalty("DNF", true);
+                              currentTime.setPenalty("DNF", !currentTime.isDnfChoose);
+                              currentTime.isDnfChoose = !currentTime.isDnfChoose;
+                              currentTime.isPlusTwoChoose = false;
                             } else if (iconPenalty == Icons.timer) {
                               // PENALIZACION +2 SEGUNDOS
-                              currentTime.setPenalty("+2", true);
+                              currentTime.setPenalty("+2", !currentTime.isPlusTwoChoose);
+                              currentTime.isDnfChoose = false;
+                              currentTime.isPlusTwoChoose = !currentTime.isPlusTwoChoose;
                             } else if (iconPenalty == Icons.block) {
                               currentTime.timeTraining!.timeInSeconds ==
                                   timeInSecondsOld;
@@ -486,6 +498,7 @@ class AlertUtil {
                           : currentTime.timeTraining!.timeInSeconds.toString(),
                       style: AppStyles.darkPurpleAndBold(30),
                     ),
+
                     IconClass.iconButton(context, () async {
                       await deleteTime();
                     }, "delete_time", Icons.delete)

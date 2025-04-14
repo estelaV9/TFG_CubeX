@@ -43,17 +43,18 @@ class CubeTypeDao {
   ///
   /// Parámetros:
   /// - `name`: Nombre del tipo de cubo a buscar.
+  /// - `idUser`: ID del usuario.
   ///
   /// Retorna:
   /// - `CubeType`: El tipo de cubo encontrado o un cubo con valores de error.
-  Future<CubeType> cubeTypeDefault(String name) async {
+  Future<CubeType> getCubeTypeByNameAndIdUser(String name, int? idUser) async {
     final db = await DatabaseHelper.database;
     try {
       // REALIZA LA CONSULTA A LA BASE DE DATOS
       final result = await db.query(
         'cubeType',
-        where: 'cubeName = ?',
-        whereArgs: [name],
+        where: 'cubeName = ? AND idUser = ?',
+        whereArgs: [name, idUser],
       );
 
       if (result.isNotEmpty) {
@@ -142,15 +143,16 @@ class CubeTypeDao {
   ///
   /// Parámetros:
   /// - `cubeName`: Nombre del tipo de cubo que se quiere eliminar.
+  /// - `idUser`: ID del usuario.
   ///
   /// Retorna:
   /// - `bool`: `true` si el tipo de cubo se eliminó correctamente, `false` si ocurrió un error.
-  Future<bool> deleteCubeType(String cubeName) async {
+  Future<bool> deleteCubeType(String cubeName, int? idUser) async {
     final db = await DatabaseHelper.database;
     try {
       // SE ELIMINA EL TIPO DE CUBO CON EL NOMBRE PROPORCIONADO
       final deleteCube = await db
-          .delete('cubeType', where: 'cubeName = ?', whereArgs: [cubeName]);
+          .delete('cubeType', where: 'cubeName = ? AND idUser = ?', whereArgs: [cubeName, idUser]);
 
       // DEVUELVE TRUE/FALSE SI SE ELIMINO CORRECTAMENTE O NO
       return deleteCube > 0;

@@ -83,6 +83,7 @@ class CurrentTime extends ChangeNotifier {
   /// Establece el tiempo actual null y notifica a los listeners.
   void setResetTimeTraining() {
     _timeTraining = null;
+    _originalTime = null;
     isDnfChoose = false;
     isPlusTwoChoose = false;
     isComment = false;
@@ -91,6 +92,15 @@ class CurrentTime extends ChangeNotifier {
     // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
     notifyListeners();
   } // ESTABLECER EL TIEMPO ACTUAL EN NULO
+
+  /// Resetea el tiempo actual a "0.00"
+  ///
+  /// Usado sobretodo para si cambia de sesión o tipo de cubo no aparezca el tiempo
+  /// anteriormente realizado
+  void resetTime() {
+    timeTraining?.timeInSeconds = 0.00;
+    notifyListeners();
+  }
 
   /// Actualiza el tiempo actual si se ha aplicado una penalización.
   ///
@@ -271,6 +281,13 @@ class CurrentTime extends ChangeNotifier {
   String getFormattedTime() {
     if (_timeTraining == null) return "0.00";
     if (isDnfChoose) return "DNF";
+    if(_timeTraining!.timeInSeconds >= 60){
+      int minutes = _timeTraining!.timeInSeconds ~/ 60;
+      double seconds = _timeTraining!.timeInSeconds % 60;
+      // AÑADE UN CARACTER '0' A LA IZQUIERDA SI TIENE MENOS DE 5 CARACTERES
+      // (si es 9.45 -> 09.45, pero si es 11.45 se queda igual)
+      return "${minutes}:${seconds.toStringAsFixed(2).padLeft(5, '0')}";
+    }
     return "${_timeTraining!.timeInSeconds}";
   }
 

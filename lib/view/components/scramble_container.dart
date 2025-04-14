@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
@@ -21,9 +22,16 @@ class ScrambleContainer extends StatefulWidget {
 class ScrambleContainerState extends State<ScrambleContainer> {
   Scramble scramble = Scramble();
   String scrambleName = "";
+  late CurrentCubeType _currentCubeType;
 
   // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
   int random = (Random().nextInt(25 - 20 + 1) + 20);
+
+  /// Método para generar un Scramble con el tipo de cubo actual
+  String _generator(){
+    _currentCubeType = context.read<CurrentCubeType>();
+    return scramble.generateScramble(_currentCubeType.cubeType!.cubeName);
+  }
 
   /// Método que se ejecuta cuando se quiere añadir un scramble personalizado
   /// de manera manual.
@@ -55,7 +63,7 @@ class ScrambleContainerState extends State<ScrambleContainer> {
   /// Establece el scramble generado como el scramble actual en el estado global.
   void updateScramble() {
     setState(() {
-      scrambleName = scramble.generateScramble(random);  // SE ASIGNA UN NUEVO SCRAMBLE
+      scrambleName = _generator();  // SE ASIGNA UN NUEVO SCRAMBLE
       // ESTABLECEMOS EL SCRAMBLE ACTUAL
       final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
       currentScramble.setScramble(scrambleName);
@@ -65,7 +73,8 @@ class ScrambleContainerState extends State<ScrambleContainer> {
   @override
   void initState() {
     super.initState();
-    scrambleName = scramble.generateScramble(random);
+    _currentCubeType = context.read<CurrentCubeType>();
+    scrambleName = _generator();
     // ESTABLECEMOS EL SCRAMBLE ACTUAL
     final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
     currentScramble.setScramble(scrambleName);
@@ -73,6 +82,7 @@ class ScrambleContainerState extends State<ScrambleContainer> {
 
   @override
   Widget build(BuildContext context) {
+    CurrentScramble currentScramble = context.read<CurrentScramble>();
     return Container(
       width: 348,
       height: 136,
@@ -104,7 +114,7 @@ class ScrambleContainerState extends State<ScrambleContainer> {
               bottom: 10,
               child: Text(
                 // MOSTRAMOS EL SCRAMBLE
-                scrambleName,
+                currentScramble.scramble!,
                 style: AppStyles.darkPurpleAndBold(20),
               )),
 

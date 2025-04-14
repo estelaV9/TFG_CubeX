@@ -327,5 +327,14 @@
 
   "total_average": "Media total de tiempos",
   "total_average_label": "Media total",
-  "total_average_hint": "Tiempo medio de todas las resoluciones en esta sesión"
+  "total_average_hint": "Tiempo medio de todas las resoluciones en esta sesión",
+
+
+  "session_deletion_failed_content_hint": "Debe permanecer al menos una sesión activa.",
+  "session_deletion_failed_content_label": "Eliminar sesión",
+  "session_deletion_failed_content": "No se puede eliminar la sesión porque es la única activa.",
+
+  "cube_deletion_failed_content_hint": "Debe haber al menos un tipo de cubo activo.",
+  "cube_deletion_failed_content_label": "Eliminar tipo de cubo",
+  "cube_deletion_failed_content": "No se puede eliminar este tipo de cubo porque es el único activo."
 }

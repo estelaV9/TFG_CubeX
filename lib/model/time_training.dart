@@ -10,7 +10,7 @@ class TimeTraining {
   final String scramble;
 
   /// Tiempo registrado en segundos.
-  final double timeInSeconds;
+  double timeInSeconds;
 
   /// Comentarios adicionales sobre el tiempo registrado (opcional).
   final String? comments;

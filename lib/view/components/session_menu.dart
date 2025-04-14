@@ -3,9 +3,11 @@ import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
+import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +17,6 @@ import '../utilities/internationalization.dart';
 import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_statistics.dart';
 import '../../viewmodel/current_user.dart';
-import '../screen/timer_screen.dart';
 
 /// Menú de sesión.
 ///
@@ -54,26 +55,29 @@ class _SessionMenuState extends State<SessionMenu> {
   void sessionList() async {
     // OBTENEMOS EL CUBO SELECCIONADO
     CubeType? selectedCubeType = context.read<CurrentCubeType>().cubeType;
-    int idCubeType = selectedCubeType?.idCube ?? -1;
 
-    if (idCubeType == -1) {
-      DatabaseHelper.logger.e("No se ha seleccionado ningún tipo de cubo.");
-      return;
-    }
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;
 
     if (currentUser != null) {
       // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
-      int idUser = await userDao.getIdUserFromName(currentUser.username);
-
+      int? idUser = await userDao.getUserId(context);
+      CubeType? cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+          selectedCubeType!.cubeName, idUser);
       // FILTRAMOS LAS SESIONES POR EL ID DEL CUBO
-      List<Session> result =
-          await sessionDao.searchSessionByCubeAndUser(idUser, idCubeType);
+      List<Session> result = await sessionDao.searchSessionByCubeAndUser(
+          idUser!, cubeType.idCube!);
 
       setState(() {
         sessions = result;
       });
+
+      // ACTUALIZAMOS LA SESION PRIMERA DEL TIPO DE CUBO
+      // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
+      final currentSession =
+          Provider.of<CurrentSession>(this.context, listen: false);
+      // SE ACTUALIZA EL ESTADO GLOBAL
+      currentSession.setSession(result[0]);
 
       DatabaseHelper.logger.i("Sesiones filtradas: \n${result.join('\n')}");
     } else {
@@ -94,8 +98,6 @@ class _SessionMenuState extends State<SessionMenu> {
 
     // SE OBTIENE EL TIPO DE CUBO ACTUAL
     CubeType? selectedCubeType = context.read<CurrentCubeType>().cubeType;
-    int idCubeType = selectedCubeType?.idCube ?? -1;
-    print(idCubeType);
 
     String? newSession = await AlertUtil.showAlertForm(
         "create_new_session_label",
@@ -105,8 +107,7 @@ class _SessionMenuState extends State<SessionMenu> {
 
     if (newSession == null) {
       // MENSAJE DE ERROR POR SI DEJA EL FORMULARIO VACIO
-      AlertUtil.showSnackBarError(
-          context, "add_session_name_empty");
+      AlertUtil.showSnackBarError(context, "add_session_name_empty");
     } else {
       setState(() {
         sessionName = newSession;
@@ -116,8 +117,13 @@ class _SessionMenuState extends State<SessionMenu> {
         // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
         int idUser = await userDao.getIdUserFromName(currentUser.username);
 
+        CubeType? cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+            selectedCubeType!.cubeName, idUser);
+
         Session newSession = Session(
-            idUser: idUser, sessionName: sessionName, idCubeType: idCubeType);
+            idUser: idUser,
+            sessionName: sessionName,
+            idCubeType: cubeType.idCube!);
         // INSERTAMOS LA NUEVA SESIÓN EN LA BASE DE DATOS
         bool sessionInserted = await sessionDao.insertSession(newSession);
 
@@ -128,8 +134,7 @@ class _SessionMenuState extends State<SessionMenu> {
           sessionList(); // RECARGAMOS LA LISTA DE SESIONES
         } else {
           // MENSAJE DE ERROR SI LA SESION NO SE PUDO GUARDAR
-          AlertUtil.showSnackBarError(
-              context, "failed_create_session");
+          AlertUtil.showSnackBarError(context, "failed_create_session");
         } // VALIDAR SI SE HA INSERTADO BIEN
       } else {
         // MENSAJE INTERNO DE ERROR
@@ -218,56 +223,72 @@ class _SessionMenuState extends State<SessionMenu> {
                             ],
                           ),
                           onLongPress: () {
-                            // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
-                            AlertUtil.showDeleteSessionOrCube(
-                                context,
-                                "delete_session_label",
-                                "delete_session_hint",
-                                () async {
-                              String sessionName = sessions[index].sessionName;
-                              // OBTENEMOS LOS DATOS DEL USUARIO
-                              final currentUser =
-                                  context.read<CurrentUser>().user;
-                              // CONSEGUIMOS EL ID DEL USUAIRO ACTUAL
-                              int idUser = await userDao
-                                  .getIdUserFromName(currentUser!.username);
-                              if (idUser == -1) {
-                                // SI NO SE OBTIENE EL ID DE USUARIO SE MUESTRA UN MENSAJE
-                                DatabaseHelper.logger.e(
-                                    "No se pudo conseguir el id del usuario actual $idUser");
-                              } else {
-                                // PILLAMOS EL ID DE LA SESION
-                                int idSession = await sessionDao
-                                    .searchIdSessionByNameAndUser(
-                                        idUser, sessionName);
-                                if (idSession == -1) {
-                                  // SI NO SE ENCUENTRA EL ID DE LA SESION S EMUESTRA UN MENSAJE
-                                  AlertUtil.showSnackBarError(
-                                      context, "session_not_found");
+                            // ANTES DE ELIMINAR, SE VERIFICA QUE NO SEA LA ULTIMA SESION,
+                            // ASI VALIDAMOS QUE SIEMPRE HAYA UNA SESION
+                            if (index == 0) {
+                              // SI EN EL INDEX SOLO HAY UN ELEMENTO
+                              AlertUtil.showAlert("session_deletion_failed",
+                                  "session_deletion_failed_content", context);
+                            } else {
+                              // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
+                              AlertUtil.showDeleteSessionOrCube(
+                                  context,
+                                  "delete_session_label",
+                                  "delete_session_hint", () async {
+                                String sessionName =
+                                    sessions[index].sessionName;
+                                // OBTENEMOS LOS DATOS DEL USUARIO
+                                final currentUser =
+                                    context.read<CurrentUser>().user;
+                                // CONSEGUIMOS EL ID DEL USUAIRO ACTUAL
+                                int idUser = await userDao
+                                    .getIdUserFromName(currentUser!.username);
+                                if (idUser == -1) {
+                                  // SI NO SE OBTIENE EL ID DE USUARIO SE MUESTRA UN MENSAJE
+                                  DatabaseHelper.logger.e(
+                                      "No se pudo conseguir el id del usuario actual $idUser");
                                 } else {
-                                  if (await sessionDao
-                                      .deleteSession(idSession)) {
-                                    AlertUtil.showSnackBarInformation(
-                                        context, "session_deleted_successful");
-                                    sessionList(); // VOLVEMOS A CARGAR LAS SESIONES
+                                  // PILLAMOS EL ID DE LA SESION
+                                  int idSession = await sessionDao
+                                      .searchIdSessionByNameAndUser(
+                                          idUser, sessionName);
+                                  if (idSession == -1) {
+                                    // SI NO SE ENCUENTRA EL ID DE LA SESION S EMUESTRA UN MENSAJE
+                                    AlertUtil.showSnackBarError(
+                                        context, "session_not_found");
                                   } else {
-                                    AlertUtil.showSnackBarError(context,
-                                        "session_deletion_failed");
-                                  } // SE ELIMINA LA SESION
-                                } // BUSCAR EL ID DE LA SESION
-                              } // BUSCAR EL ID DEL USUARIO
-                            });
+                                    // ELIMINAMOS ANTES LOS TIEMPOS
+                                    // COGEMOS TOA LA LISTA DE TIEMPOS VINCULADA A ESA SESION
+                                    var timesList = await timeTrainingDao
+                                        .getTimesOfSession(idSession);
+
+                                    for (TimeTraining t in timesList) {
+                                      if (await timeTrainingDao
+                                              .deleteTime(t.idTimeTraining!) ==
+                                          false) {
+                                        AlertUtil.showSnackBarError(
+                                            context, "session_deletion_failed");
+                                        return;
+                                      }
+                                    } // SE RECORREN LOS TIEMPOS DE LAS SESIONES ELIMINANDOLOS
+
+                                    if (await sessionDao
+                                        .deleteSession(idSession)) {
+                                      AlertUtil.showSnackBarInformation(context,
+                                          "session_deleted_successful");
+                                      sessionList(); // VOLVEMOS A CARGAR LAS SESIONES
+                                    } else {
+                                      AlertUtil.showSnackBarError(
+                                          context, "session_deletion_failed");
+                                    } // SE ELIMINA LA SESION
+                                  } // BUSCAR EL ID DE LA SESION
+                                } // BUSCAR EL ID DEL USUARIO
+                              });
+                            }
                           },
                           onTap: () async {
                             // OBTENER EL USUARIO ACTUAL
-                            final currentUser = context.read<CurrentUser>().user;
-                            // OBTENER EL ID DEL USUARIO
-                            int idUser = await userDao.getIdUserFromName(currentUser!.username);
-                            if (idUser == -1) {
-                              DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-                              return;
-                            } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
+                            int? idUser = await userDao.getUserId(context);
 
                             // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
                             final currentSession = Provider.of<CurrentSession>(
@@ -276,13 +297,18 @@ class _SessionMenuState extends State<SessionMenu> {
                             // SE ACTUALIZA EL ESTADO GLOBAL
                             currentSession.setSession(sessions[index]);
 
+                            // ACTUALIZAR EL TIEMPO A "0.00" CUANDO SE CAMBIE DE SESION
+                            Provider.of<CurrentTime>(context, listen: false)
+                                .resetTime();
+
                             // BUSCAMOS EL TIPO DE CUBO QUE YA ESTABA ESTABLECIDO
                             final tipoCuboEstablecido = context.read<CurrentCubeType>().cubeType;
-                            final cubo = await cubeTypeDao.cubeTypeDefault(tipoCuboEstablecido!.cubeName);
+                            final cubo = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+                                    tipoCuboEstablecido!.cubeName, idUser);
 
                             // BUSCAMOS EL TIPO DE CUBO QUE TIENE ESA SESION
                             Session? sessionTipoActual =
-                              await sessionDao.getSessionByUserCubeName(idUser, currentSession.session!.sessionName, cubo.idCube);
+                              await sessionDao.getSessionByUserCubeName(idUser!, currentSession.session!.sessionName, cubo.idCube);
 
                             // CUANDO SELECCIONE UNA SESION, SE BUSCA EL TIPO DE CUBO DE ESA SESION
                             // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
@@ -306,7 +332,6 @@ class _SessionMenuState extends State<SessionMenu> {
                                 this.context, listen: false);
                             // SE ACTUALIZA EL ESTADO GLOBAL
                             currentStatistics.updateStatistics(timesListUpdate: timesList);
-
 
                             setState(() {
                               widget.onSessionSelected(
@@ -335,8 +360,7 @@ class _SessionMenuState extends State<SessionMenu> {
                       "create_new_session_label",
                       "create_new_session_button",
                       "create_new_session_label",
-                      const TextStyle(
-                          fontSize: 16),
+                      const TextStyle(fontSize: 16),
                     ))
               ],
             ),

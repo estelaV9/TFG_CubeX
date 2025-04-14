@@ -151,13 +151,26 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
                 crossAxisAlignment: CrossAxisAlignment.center,
 
                 children: [
-                  Text(
-                    currentCube!.cubeName,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkPurpleColor),
+                  // PARA ESCHCAHAR LOS CAMBIOS EN LOS PROVIDERS SE UTILIZA CONSUMER
+                  // ASI LA UI SE ACTUALIZA AUTOMATICAMENTE
+                  Consumer<CurrentCubeType>(
+                    builder: (context, currentCube, child) {
+                      return Text(
+                        currentCube.cubeType!.cubeName,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.darkPurpleColor
+                        ),
+                      );
+                    },
                   ),
-                  Text(currentSession!.sessionName)
+
+                  Consumer<CurrentSession>(
+                    builder: (context, currentSession, child) {
+                      return Text(currentSession.session!.sessionName);
+                    },
+                  ),
+
                 ],
               ),
             ),

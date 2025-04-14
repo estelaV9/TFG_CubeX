@@ -300,7 +300,13 @@ class Internationalization {
       'worst_hint': () => l10n.worst_hint,
       'total_average': () => l10n.total_average,
       'total_average_label': () => l10n.total_average_label,
-      'total_average_hint': () => l10n.total_average_hint
+      'total_average_hint': () => l10n.total_average_hint,
+      'session_deletion_failed_content': () => l10n.session_deletion_failed_content,
+      'session_deletion_failed_content_label': () => l10n.session_deletion_failed_content_label,
+      'session_deletion_failed_content_hint': () => l10n.session_deletion_failed_content_hint,
+      'cube_deletion_failed_content': () => l10n.cube_deletion_failed_content,
+      'cube_deletion_failed_content_label': () => l10n.cube_deletion_failed_content_label,
+      'cube_deletion_failed_content_hint': () => l10n.cube_deletion_failed_content_hint,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

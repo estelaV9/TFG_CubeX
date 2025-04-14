@@ -10,11 +10,12 @@ import 'app_drawer.dart';
 
 /// Clase que representa la **barra de navegación inferior** de la aplicación.
 ///
-/// Esta clase permite a los usuarios cambiar entre diferentes pantallas de la aplicación
-/// mediante un menú de navegación en la parte inferior de la pantalla.
+/// Esta clase permite a los usuarios cambiar entre diferentes pantallas de la aplicación mediante:
+/// - Un menú de navegación en la parte inferior de la pantalla (`CurvedNavigationBar`).
+/// - Gestos de deslizamiento lateral gracias a la integración con `PageView`.
 ///
-/// Implementa `CurvedNavigationBar` para mejorar la estética al usuario.
-/// La selección de un elemento actualiza el estado y muestra la pantalla correspondiente.
+/// La selección de un elemento en el menú o el gesto de deslizamiento actualiza el estado y
+/// muestra la pantalla correspondiente.
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
 
@@ -24,6 +25,7 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int _currentIndex = 1; // INDICE ACTUAL DEL BOTTOM NAVIGATION BAR
+  late PageController _pageController = PageController(initialPage: _currentIndex);
 
   // LISTA DE WIDGETS PARA CADA PANTALLA
   final List<Widget> _screens = [
@@ -32,9 +34,22 @@ class _BottomNavigationState extends State<BottomNavigation> {
     const StatisticsScreen()
   ];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _pageController = PageController(initialPage: _currentIndex);
+  }
+
   void _onTap(int index) {
     setState(() {
       _currentIndex = index; // ACTUALIZA EL INDICE
+      // ANIMA EL CAMBIO DE PAGINA EN EL PAGEVIEW HACIA EL INDICE SELECCIONADO CON UNA TRANSICIAN SUAVE
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     });
   } // METODO PARA CUANDO PULSE EN LA BARRA DE NAVEGACION
 
@@ -57,7 +72,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _screens[_currentIndex],
+      body: PageView(
+        controller: _pageController,
+        children: _screens,
+        onPageChanged: (index) {
+          setState(() => _currentIndex = index);
+        },
+      ),
       bottomNavigationBar: CurvedNavigationBar(
         index: _currentIndex,
         height: 60,
@@ -75,5 +96,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

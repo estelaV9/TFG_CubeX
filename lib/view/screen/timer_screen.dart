@@ -11,17 +11,12 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../model/cubetype.dart';
-import '../../model/session.dart';
-import '../../viewmodel/current_cube_type.dart';
-import '../../viewmodel/current_session.dart';
 import '../components/Icon/icon.dart';
 import '../../data/dao/session_dao.dart';
 import '../../data/dao/time_training_dao.dart';
 import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
-import '../../viewmodel/current_user.dart';
 import '../components/waves_painter/small_wave_container_painter.dart';
 import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
@@ -113,15 +108,28 @@ class _TimerScreenState extends State<TimerScreen> {
     final currentStatistics = context.read<CurrentStatistics>();
     // SE ACTUALIZA EL ESTADO GLOBAL
     currentStatistics.updateStatistics(timesListUpdate: timesList);
+    CurrentTime currentTime = context.read<CurrentTime>();
 
-    String pb = await currentStatistics.getPbValue();
-    String worst = await currentStatistics.getWorstValue();
+    String pb = await currentStatistics.getPbValue(currentTime.isDnfChoose);
+    String worst =
+        await currentStatistics.getWorstValue(currentTime.isDnfChoose);
     String count = await currentStatistics.getCountValue();
     String ao5 = await currentStatistics.getAo5Value();
     String ao12 = await currentStatistics.getAo12Value();
     String ao50 = await currentStatistics.getAo50Value();
     String ao100 = await currentStatistics.getAo100Value();
-    String average = await currentStatistics.getAoXValue(timesList.length);
+    String average;
+    // SI LA LISTA NO ESTA VACIA, SE HACE LA MEDIA
+    // Y SI LA LISTA DE TIEMPOS TIENE AL MENOS 3 TIEMPOS DE RESOLUCION
+    // (YA QUE SE QUITAN 2 TIEMPOS, SE EMPIEZA EN EL TERCERO
+    if (timesList.isNotEmpty && timesList.length >= 3) {
+      // DE ESTA FORMA SE SOLUCIONA QUE SE MUESTRE LOS 2 PRIMEROS NUMEROS Y
+      // NO HAYA FALLOS DE RANGO
+      average = await currentStatistics.getAoXValue(timesList.length);
+    } else {
+      // SI NO SE PONE EL TEXTO PREDETERMINADO
+      average = "--:--.--";
+    }
 
     setState(() {
       averageValue = average;
@@ -161,17 +169,61 @@ class _TimerScreenState extends State<TimerScreen> {
 
     // SI EL RESULTADO NO ES NULO SE ACTUALIZA EL TIEMPO
     if (result != null) {
-      setState(() {
-        _finalTime = result; // ACTUALIZAR TIEMPO
-      });
-
       // SE ACTUALIZA EL SCRAMBLE UNA VEZ TEMINADO EL TIEMPO DE RESOLUCION
       _scrambleKey.currentState?.updateScramble();
 
+      // CONVERTIR EL TIEMPO A SEGUNDOS
+      double finalTimeInSeconds = _convertTimeToSeconds(result);
+
+      setState(() {
+        _finalTime = finalTimeInSeconds.toString(); // ACTUALIZAR TIEMPO
+      });
+
       // GUARDAR EL TIEMPO QUE HA HECHO
-      await _saveTimeToDatabase(double.parse(result), currentScramble);
+      await _saveTimeToDatabase(finalTimeInSeconds, currentScramble);
     }
   } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
+
+  /// Método que convierte un tiempo en formato `String` a `double` en segundos.
+  ///
+  /// Este método admite dos formatos:
+  /// - `mm:ss.SS`: Minutos, segundos y centésimas.
+  /// - `ss.SS`: Solo segundos con centésimas.
+  ///
+  /// Si el formato es inválido o hay errores de conversión, se devuelve 0.0 por defecto.
+  ///
+  /// ### Parámetros:
+  /// - [time]: Tiempo en formato `String` que será convertido.
+  ///
+  /// ### Retorna:
+  /// - Tiempo total en segundos como `double`.
+  double _convertTimeToSeconds(String time) {
+    // VERIFICAMOS SI EL FORMATO INCLUYE MINUTOS
+    if (time.contains(":")) {
+      final parts = time.split(':');
+      if (parts.length != 2) return 0.0; // FORMATO INVALIDO
+
+      // SEPARAMOS MINUTOS Y LA PARTE DE SEGUNDOS.CENTESIMAS
+      final minutes = int.tryParse(parts[0]) ?? 0;
+      final secondsAndMillis = parts[1].split('.');
+
+      final seconds = int.tryParse(secondsAndMillis[0]) ?? 0;
+      final milliseconds = int.tryParse(secondsAndMillis[1]) ?? 0;
+
+      // CALCULAMOS EL TIEMPO TOTAL EN SEGUNDOS
+      double totalSeconds = minutes * 60 + seconds + (milliseconds / 100);
+
+      // AJUSTE EXTRA POR SI LOS SEGUNDOS FUERAN >= 60
+      if (seconds >= 60) {
+        totalSeconds += (seconds ~/ 60) * 60;
+      }
+
+      return totalSeconds;
+    } else {
+      // FORMATO DE SEGUNDOS CON DECIMALES
+      return double.tryParse(time) ?? 0.0;
+    }
+  }
 
   /// Guarda el tiempo realizado en la base de datos.
   ///
@@ -286,7 +338,12 @@ class _TimerScreenState extends State<TimerScreen> {
         context,
         "actual_delete_time",
         "actual_delete_time_content",
-        () => currentTime.deleteTime(context),
+        () {
+          currentTime.deleteTime(context);
+          // CUANDO SE ELIMINE SE QUITAN LSO COMENTARIOS
+          // PARA QUE DESAPAREZCA EL SIMBOLO AL ELIMINARSE
+          isComment = false;
+        },
       );
     } // SI HAY UN TIEMPO ACTUAL, SE MUESTRA LA ALERTA
   } // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
@@ -296,6 +353,7 @@ class _TimerScreenState extends State<TimerScreen> {
     currentTime = context.watch<CurrentTime>();
     // SE MUESTRA EL TIEMPO FORMATEADO (si tiene penalizacines o no)
     _finalTime = currentTime.getFormattedTime();
+    initTimeStatistics();
 
     return Scaffold(
       key: _scaffoldKey, // KEY PARA CONTROLLAR EL SCAFFOLD PARA EL DRAWER

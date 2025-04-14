@@ -333,5 +333,13 @@
 
   "total_average": "Total average time",
   "total_average_label": "Total average",
-  "total_average_hint": "Average time for all solves in this session"
+  "total_average_hint": "Average time for all solves in this session",
+
+  "session_deletion_failed_content_hint": "At least one session must remain active.",
+  "session_deletion_failed_content_label": "Delete session failed",
+  "session_deletion_failed_content": "The session cannot be deleted because it is the only active one.",
+
+  "cube_deletion_failed_content_hint": "At least one cube type must remain active.",
+  "cube_deletion_failed_content_label": "Delete session",
+  "cube_deletion_failed_content": "The cube type cannot be deleted because it is the only active one."
 }
