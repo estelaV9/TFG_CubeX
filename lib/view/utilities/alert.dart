@@ -616,10 +616,7 @@ class AlertUtil {
   /// Parámetros:
   /// `context`: El contexto de la aplicación para mostrar el diálogo.
   /// `key`: Clave para obtener la traducción de la interfaz del diálogo.
-  static showChangeLanguague(
-    BuildContext context,
-    String key,
-  ) {
+  static showChangeLanguague(BuildContext context) {
     // SE MUESTRA EL DIALOG
     return showDialog(
         context: context,
