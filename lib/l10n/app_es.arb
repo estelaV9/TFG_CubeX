@@ -336,5 +336,55 @@
 
   "cube_deletion_failed_content_hint": "Debe haber al menos un tipo de cubo activo.",
   "cube_deletion_failed_content_label": "Eliminar tipo de cubo",
-  "cube_deletion_failed_content": "No se puede eliminar este tipo de cubo porque es el único activo."
+  "cube_deletion_failed_content": "No se puede eliminar este tipo de cubo porque es el único activo.",
+
+  "enable_notifications_title": "Activar notificaciones",
+  "enable_notifications_label": "Notificaciones",
+  "enable_notifications_hint": "Activa esta opción para recibir alertas",
+  "enable_notifications_description": "Recibe actualizaciones oportunas y recordatorios importantes directamente en tu dispositivo.",
+
+  "enable_notifications_button_hint": "Pulsa para activar las notificaciones",
+  "enable_notifications_button_title": "Activar las notificaciones",
+
+
+  "allow_notifications_title": "Permitir notificaciones",
+  "allow_notifications_description": "Recibe recordatorios para mejorar tus tiempos y no olvides entrenar.",
+  "toggle_button_title": "Desactivar notificaciones",
+  "toggle_button_hint": "Toca para desactivar las notificaciones.",
+  "toggle_button_label": "Notificaciones",
+
+  "daily_notifications_title": "Notificaciones Diarias",
+  "daily_notifications_description": "Recibe un recordatorio diario para seguir practicando y mejorar tus tiempos. ¡No olvides entrenar!",
+  "daily_notifications_button_title": "Activar notificaciones diarias",
+  "daily_notifications_button_hint": "Muestra información sobre las notificaciones diarias",
+
+  "weekly_motivation_title": "Motivación Semanal",
+  "weekly_motivation_description": "Recibe mensajes motivacionales semanales para seguir adelante con tus retos. ¡Nunca te rindas!",
+  "weekly_motivation_button_title": "Activar motivación semanal",
+  "weekly_motivation_button_hint": "Muestra información sobre los mensajes motivacionales semanales",
+
+  "new_record_notification_title": "Logros y Récords",
+  "new_record_notification_description": "Activa esta opción para recibir notificaciones cuando consigas un nuevo récord personal o logros importantes.",
+  "new_record_notification_button_title": "Activar logros y récords",
+  "new_record_notification_button_hint": "Muestra información sobre las notificaciones de nuevos récords",
+
+  "training_reminders_title": "Recordatorios de Entrenamiento",
+  "training_reminders_description": "Recibe recordatorios para entrenar y mejorar tu velocidad de resolución a lo largo de la semana. ¡No pierdas la costumbre!",
+  "training_reminders_button_title": "Activar recordatorios de entrenamiento",
+  "training_reminders_button_hint": "Muestra información sobre recordatorios semanales para entrenar",
+
+  "weekly_summary_title": "Resúmenes Semanales",
+  "weekly_summary_description": "Recibe un resumen semanal de tu progreso, tiempos y estadísticas para que sigas viendo tu evolución.",
+  "weekly_summary_button_title": "Activar resumen semanal",
+  "weekly_summary_button_hint": "Muestra información sobre el resumen de tu progreso semanal",
+
+  "inactivity_notification_title": "Notificaciones de Inactividad",
+  "inactivity_notification_description": "Recibe un mensaje si no has resuelto ningún cubo en los últimos días. ¡Es hora de retomar la práctica!",
+  "inactivity_notification_button_title": "Activar notificaciones por inactividad",
+  "inactivity_notification_button_hint": "Muestra información sobre alertas de inactividad prolongada",
+
+  "weekly_stats_title": "Estadísticas Semanales",
+  "weekly_stats_description": "Recibe un informe semanal sobre tus tiempos y mejoras.",
+  "weekly_stats_button_title": "Activar estadísticas semanales",
+  "weekly_stats_button_hint": "Muestra información sobre tus estadísticas de la semana"
 }

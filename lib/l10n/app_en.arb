@@ -341,5 +341,54 @@
 
   "cube_deletion_failed_content_hint": "At least one cube type must remain active.",
   "cube_deletion_failed_content_label": "Delete session",
-  "cube_deletion_failed_content": "The cube type cannot be deleted because it is the only active one."
+  "cube_deletion_failed_content": "The cube type cannot be deleted because it is the only active one.",
+
+  "enable_notifications_title": "Enable Notifications",
+  "enable_notifications_label": "Notifications",
+  "enable_notifications_hint": "Enable this to receive alerts",
+  "enable_notifications_description": "Receive timely updates and important reminders directly on your device.",
+
+  "enable_notifications_button_hint": "Tap to enable notifications",
+  "enable_notifications_button_title": "Activate notifications",
+
+  "allow_notifications_title": "Allow notifications",
+  "allow_notifications_description": "Receive reminders to improve your times and keep practicing.",
+  "toggle_button_title": "Toggle notifications",
+  "toggle_button_hint": "Tap to toggle notifications on or off.",
+  "toggle_button_label": "Notifications",
+
+  "daily_notifications_title": "Daily Notifications",
+  "daily_notifications_description": "Get a daily reminder to keep practicing and improve your times. Don’t forget to train!",
+  "daily_notifications_button_title": "Enable daily notifications",
+  "daily_notifications_button_hint": "Shows info about daily notifications",
+
+  "weekly_motivation_title": "Weekly Motivation",
+  "weekly_motivation_description": "Receive weekly motivational messages to stay on track with your challenges. Never give up!",
+  "weekly_motivation_button_title": "Enable weekly motivation",
+  "weekly_motivation_button_hint": "Shows info about weekly motivational messages",
+
+  "new_record_notification_title": "Achievements and Records",
+  "new_record_notification_description": "Enable this option to get notified when you set a new personal best or achieve something important.",
+  "new_record_notification_button_title": "Enable achievements and records",
+  "new_record_notification_button_hint": "Shows info about new record notifications",
+
+  "training_reminders_title": "Training Reminders",
+  "training_reminders_description": "Get reminders throughout the week to train and improve your solving speed. Keep the habit!",
+  "training_reminders_button_title": "Enable training reminders",
+  "training_reminders_button_hint": "Shows info about weekly training reminders",
+
+  "weekly_summary_title": "Weekly Summaries",
+  "weekly_summary_description": "Receive a weekly summary of your progress, times, and stats to track your evolution.",
+  "weekly_summary_button_title": "Enable weekly summary",
+  "weekly_summary_button_hint": "Shows info about your weekly progress summary",
+
+  "inactivity_notification_title": "Inactivity Notifications",
+  "inactivity_notification_description": "Get notified if you haven’t solved any cubes lately. Time to get back to practice!",
+  "inactivity_notification_button_title": "Enable inactivity notifications",
+  "inactivity_notification_button_hint": "Shows info about alerts for long inactivity",
+
+  "weekly_stats_title": "Weekly Stats",
+  "weekly_stats_description": "Receive a weekly report of your times and improvements.",
+  "weekly_stats_button_title": "Enable weekly stats",
+  "weekly_stats_button_hint": "Shows info about your weekly performance data"
 }

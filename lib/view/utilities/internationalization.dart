@@ -307,6 +307,47 @@ class Internationalization {
       'cube_deletion_failed_content': () => l10n.cube_deletion_failed_content,
       'cube_deletion_failed_content_label': () => l10n.cube_deletion_failed_content_label,
       'cube_deletion_failed_content_hint': () => l10n.cube_deletion_failed_content_hint,
+      'enable_notifications_title': () => l10n.enable_notifications_title,
+      'enable_notifications_label': () => l10n.enable_notifications_label,
+      'enable_notifications_hint': () => l10n.enable_notifications_hint,
+      'enable_notifications_description': () => l10n.enable_notifications_description,
+      'enable_notifications_button_hint': () => l10n.enable_notifications_button_hint,
+      'enable_notifications_button_title': () => l10n.enable_notifications_button_title,
+
+      'daily_notifications_title': () => l10n.daily_notifications_title,
+      'daily_notifications_description': () => l10n.daily_notifications_description,
+      'daily_notifications_button_title': () => l10n.daily_notifications_button_title,
+      'daily_notifications_button_hint': () => l10n.daily_notifications_button_hint,
+
+      'weekly_motivation_title': () => l10n.weekly_motivation_title,
+      'weekly_motivation_description': () => l10n.weekly_motivation_description,
+      'weekly_motivation_button_title': () => l10n.weekly_motivation_button_title,
+      'weekly_motivation_button_hint': () => l10n.weekly_motivation_button_hint,
+
+      'new_record_notification_title': () => l10n.new_record_notification_title,
+      'new_record_notification_description': () => l10n.new_record_notification_description,
+      'new_record_notification_button_title': () => l10n.new_record_notification_button_title,
+      'new_record_notification_button_hint': () => l10n.new_record_notification_button_hint,
+
+      'training_reminders_title': () => l10n.training_reminders_title,
+      'training_reminders_description': () => l10n.training_reminders_description,
+      'training_reminders_button_title': () => l10n.training_reminders_button_title,
+      'training_reminders_button_hint': () => l10n.training_reminders_button_hint,
+
+      'weekly_summary_title': () => l10n.weekly_summary_title,
+      'weekly_summary_description': () => l10n.weekly_summary_description,
+      'weekly_summary_button_title': () => l10n.weekly_summary_button_title,
+      'weekly_summary_button_hint': () => l10n.weekly_summary_button_hint,
+
+      'inactivity_notification_title': () => l10n.inactivity_notification_title,
+      'inactivity_notification_description': () => l10n.inactivity_notification_description,
+      'inactivity_notification_button_title': () => l10n.inactivity_notification_button_title,
+      'inactivity_notification_button_hint': () => l10n.inactivity_notification_button_hint,
+
+      'weekly_stats_title': () => l10n.weekly_stats_title,
+      'weekly_stats_description': () => l10n.weekly_stats_description,
+      'weekly_stats_button_title': () => l10n.weekly_stats_button_title,
+      'weekly_stats_button_hint': () => l10n.weekly_stats_button_hint
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
