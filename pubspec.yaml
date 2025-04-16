@@ -8,6 +8,9 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  timezone: ^0.10.0
+  permission_handler: ^11.0.0
+  flutter_local_notifications: ^19.1.0
   syncfusion_flutter_charts: ^29.1.35
   share_plus: ^7.0.0
   pdf: ^3.11.3
@@ -61,6 +64,7 @@ flutter:
     - assets/default_user_image.png
     - assets/session_icon.png
     - assets/trash-list.png
+    - assets/notification_cubix.png
   fonts:
     - family: JollyLodger
       fonts:
