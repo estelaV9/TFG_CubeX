@@ -36,6 +36,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // PARA LAS NOTIFICACIONES
+        // ES NECESARIO PARA EL PLUGIN DE flutter_local_notifications QUE PERMITE SUPERAR EL LÍMITE DE 64K METODOS
+        // (asi no explota la app por tener demasiados metodos entre la app, las notificaciones y otras librerias)
+        multiDexEnabled true
     }
 
     buildTypes {
