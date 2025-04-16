@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:esteladevega_tfg_cubex/view/screen/notification_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
@@ -218,7 +219,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             // IDIOMAS
             SettingsContainer(
               functionArrow: () {
-                AlertUtil.showChangeLanguague(context, "dsaf");
+                AlertUtil.showChangeLanguague(context);
               },
               name: Internationalization.internationalization.getLocalizations(context, "languages"),
               icon: Icons.language,
@@ -231,7 +232,10 @@ class SettingsScreenState extends State<SettingsScreen> {
 
             // NOTIFICACIONES
             SettingsContainer(
-              functionArrow: () {},
+              functionArrow: () {
+                // IR A LA PANTALLA DE NOTIFICACIONES
+                ChangeScreen.changeScreen(const NotificationScreen(), context);
+              },
               name: Internationalization.internationalization.getLocalizations(context, "notification"),
               icon: Icons.notifications,
               tooltip: Internationalization.internationalization.getLocalizations(context, "select_notification"),
