@@ -115,9 +115,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   /// - Si el nombre de usuario ya existe y no es el mismo que el actual, muestra un error.
   /// - Si el formulario no es válido, no se procede con la actualización.
   /// - Si no hay cambios en la imagen, se mantiene la anterior.
+  /// - Se permiten los siguientes casos de actualización para mejorar la experiencia de usuario:
+  ///   - Solo actualizar la foto.
+  ///   - Solo cambiar el nombre de usuario.
+  ///   - Solo cambiar la contraseña (la nueva contraseña y su confirmación no deben estar vacías).
+  ///   - Cambiar nombre, contraseña y foto a la vez (todos los campos del perfil).
+  ///   - Cambiar nombre y contraseña sin cambiar la foto (todos los campos del formulario).
+
   void saveUser() async {
     String newName = _usernameController.text;
     String newPassword = _passwordController.text;
+    String confirmNewPassword = _confirmPasswordController.text;
 
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
@@ -135,7 +143,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       return;
     } // VALIDAR SI EL NOMBRE YA ESTA EN USO Y QUE NO ESTE VACIO EL CAMPO
 
-    if (formKey.currentState!.validate()) {
+    // VALIDACIONES
+    // QUE EL FORMULARIO ESTE CORRECTO
+    final isFormValid = formKey.currentState!.validate();
+
+    // QUE SOLO SE PUEDA EDITAR LA IMAGEN
+    final isPhotoOnlyUpdate = _isPhotoUpdate && newPassword.isEmpty && newName.isEmpty;
+
+    // QUE SOLO SE PUEDA EDITAR EL NOMBRE
+    final isOnlyNameChange = newName.isNotEmpty && newPassword.isEmpty && confirmNewPassword.isEmpty;
+
+    // QUE SOLO SE PUEDA EDITAR LA CONTRASEÑA
+    final isPasswordChangeValid = newPassword.isNotEmpty && confirmNewPassword.isNotEmpty && newName.isEmpty;
+
+    // QUE SE PUEDA EDITAR TODAS LAS OPCIONES
+    final isAllChangeValid = _isPhotoUpdate && newPassword.isNotEmpty && confirmNewPassword.isNotEmpty && newName.isNotEmpty;
+
+    // QUE SE PUEDA EDITAR TODAS LAS OPCIONES DEL FORMULARIO SIN CAMBIAR LA IMAGEN
+    final isAllFormOptionsChangeValid = !_isPhotoUpdate && newPassword.isNotEmpty && confirmNewPassword.isNotEmpty && newName.isNotEmpty;
+
+    if (isFormValid && (isPhotoOnlyUpdate || isOnlyNameChange || isPasswordChangeValid || isAllChangeValid || isAllFormOptionsChangeValid)) {
       // PARA GUARDAR LOS DATOS DEBERA PONER SU ANTIGUA CONTRASEÑA
       bool? isConfirmed = await AlertUtil.showConfirmWithOldPass(
           context, "insert_old_pass", "old_pass", currentUser);
@@ -167,7 +194,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // CUANDO SE INICIA, SE ESTABLECE LA FOTO
     _getImageUrl();
