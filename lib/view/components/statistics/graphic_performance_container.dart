@@ -78,7 +78,6 @@ class _GraphicPerformanceContainerState
     // TODO: implement initState
     super.initState();
     _loadTimes();
-    DatabaseHelper.logger.e(_listTimesData.isEmpty);
   }
 
   /// Método para cargar los tiempos de la sesión y el tipo de cubo actual.
