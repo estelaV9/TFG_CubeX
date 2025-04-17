@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:esteladevega_tfg_cubex/model/NotificationService.dart';
-import 'package:esteladevega_tfg_cubex/view/screen/notification_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/settings_options/notification_screen.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_notifications.dart';
