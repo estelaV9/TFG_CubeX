@@ -79,8 +79,13 @@ class _TimerScreenState extends State<TimerScreen> {
     super.initState();
     // INICIA LAS ESTADISTICAS
     initTimeStatistics();
-    currentTime = context.read<CurrentTime>();
-    currentTime.setResetTimeTraining();
+    // EJECUTA LA FUNCION DESPUES DE QUE EL FRAME ACTUAL TERMINE DE CONSTRUIRSE,
+    // ASI NO CAUSA ERRORES DURANTE EL BUILD PARA HACER CAMBIOS EN EL STATE O EN PROVIDERS
+    // (se soluciona el mensaje de error cuando pulsas en el timer de setState() or
+    // markNeedsBuild() called during build)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CurrentTime>(context, listen: false).setResetTimeTraining();
+    });
   }
 
   @override

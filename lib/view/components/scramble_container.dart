@@ -76,8 +76,14 @@ class ScrambleContainerState extends State<ScrambleContainer> {
     _currentCubeType = context.read<CurrentCubeType>();
     scrambleName = _generator();
     // ESTABLECEMOS EL SCRAMBLE ACTUAL
-    final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
-    currentScramble.setScramble(scrambleName);
+    // EJECUTA LA FUNCION DESPUES DE QUE EL FRAME ACTUAL TERMINE DE CONSTRUIRSE,
+    // ASI NO CAUSA ERRORES DURANTE EL BUILD PARA HACER CAMBIOS EN EL STATE O EN PROVIDERS
+    // (se soluciona el mensaje de error cuando pulsas en el timer de setState() or
+    // markNeedsBuild() called during build)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
+      currentScramble.setScramble(scrambleName);
+    });
   }
 
   @override
