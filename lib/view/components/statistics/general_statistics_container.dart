@@ -121,11 +121,18 @@ class _GeneralStatisticsContainerState
   /// - [dnfCnt]: Número de penalizaciones DNF.
   /// - [plusTwoCnt]: Número de penalizaciones +2.
   ///
-  /// Este método calcula también los porcentajes de penalizaciones y actualiza los valores visibles en pantalla.
+  /// Este método calcula también los porcentajes de penalizaciones (si la cuenta es al menos de un tiempo)
+  /// y actualiza los valores visibles en pantalla.
   void _updateState(
       String pb, String worst, int count, int dnfCnt, int plusTwoCnt) {
-    double dnfPer = (dnfCnt / count) * 100;
-    double plusTwoPer = (plusTwoCnt / count) * 100;
+    double dnfPer = 0, plusTwoPer = 0;
+    // SI LA CUENTA DE DNF O +2 NO ES 0 SE HACE EL PORCENTAJE, SI NO DEVUELVE 0
+    if (dnfCnt != 0){
+      dnfPer = (dnfCnt / count) * 100;
+    }
+    if(plusTwoCnt != 0){
+      plusTwoPer = (plusTwoCnt / count) * 100;
+    }
 
     setState(() {
       bestSingle = pb;
