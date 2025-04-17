@@ -347,7 +347,33 @@ class Internationalization {
       'weekly_stats_title': () => l10n.weekly_stats_title,
       'weekly_stats_description': () => l10n.weekly_stats_description,
       'weekly_stats_button_title': () => l10n.weekly_stats_button_title,
-      'weekly_stats_button_hint': () => l10n.weekly_stats_button_hint
+      'weekly_stats_button_hint': () => l10n.weekly_stats_button_hint,
+
+      'hide_time_title': () => l10n.hide_time_title,
+      'hide_time_description': () => l10n.hide_time_description,
+      'hide_time_button_title': () => l10n.hide_time_button_title,
+      'hide_time_button_hint': () => l10n.hide_time_button_hint,
+
+      'record_time_alert_title': () => l10n.record_time_alert_title,
+      'record_time_alert_description': () => l10n.record_time_alert_description,
+      'record_time_alert_button_title': () => l10n.record_time_alert_button_title,
+      'record_time_alert_button_hint': () => l10n.record_time_alert_button_hint,
+
+      'best_average_alert_title': () => l10n.best_average_alert_title,
+      'best_average_alert_description': () => l10n.best_average_alert_description,
+      'best_average_alert_button_title': () => l10n.best_average_alert_button_title,
+      'best_average_alert_button_hint': () => l10n.best_average_alert_button_hint,
+
+      'worst_time_alert_title': () => l10n.worst_time_alert_title,
+      'worst_time_alert_description': () => l10n.worst_time_alert_description,
+      'worst_time_alert_button_title': () => l10n.worst_time_alert_button_title,
+      'worst_time_alert_button_hint': () => l10n.worst_time_alert_button_hint,
+
+      'inspection_title': () => l10n.inspection_title,
+      'advanced_options_title': () => l10n.advanced_options_title,
+      'empty_stats_title': () => l10n.empty_stats_title,
+      'empty_stats_label': () => l10n.empty_stats_label,
+      'empty_stats_hint': () => l10n.empty_stats_hint,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

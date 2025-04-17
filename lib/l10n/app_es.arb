@@ -386,5 +386,33 @@
   "weekly_stats_title": "Estadísticas Semanales",
   "weekly_stats_description": "Recibe un informe semanal sobre tus tiempos y mejoras.",
   "weekly_stats_button_title": "Activar estadísticas semanales",
-  "weekly_stats_button_hint": "Muestra información sobre tus estadísticas de la semana"
+  "weekly_stats_button_hint": "Muestra información sobre tus estadísticas de la semana",
+
+  "hide_time_title": "Ocultar el tiempo en ejecución",
+  "hide_time_description": "No mostrar el cronómetro mientras esté activo para evitar distracciones o reducir presión.",
+  "hide_time_button_title": "Ocultar tiempo en ejecución",
+  "hide_time_button_hint": "No muestra el tiempo hasta que finalices la resolución",
+
+  "record_time_alert_title": "Alerta de tiempo récord",
+  "record_time_alert_description": "Recibe una notificación cuando consigas tu mejor tiempo personal.",
+  "record_time_alert_button_title": "Activar alerta de récord",
+  "record_time_alert_button_hint": "Te avisará cuando logres tu mejor tiempo",
+
+  "best_average_alert_title": "Alerta de mejor promedio",
+  "best_average_alert_description": "Se notificará cuando mejores tu promedio de tiempos (ao5, ao12, etc).",
+  "best_average_alert_button_title": "Activar alerta de mejor promedio",
+  "best_average_alert_button_hint": "Recibirás alertas cuando superes tus promedios",
+
+  "worst_time_alert_title": "Alerta de peor tiempo",
+  "worst_time_alert_description": "Recibe una alerta cuando consigas tu peor tiempo personal.",
+  "worst_time_alert_button_title": "Activar alerta de peor tiempo",
+  "worst_time_alert_button_hint": "Te avisará cuando logres tu peor tiempo",
+
+  "inspection_title": "Inspección",
+  "advanced_options_title": "Opciones avanzadas",
+
+  "empty_stats_title": "Todavía no has registrado ningún tiempo",
+  "empty_stats_label": "La gráfica está vacía",
+  "empty_stats_hint": "La gráfica está vacía ya que no se ha registrado ningún tiempo"
+
 }

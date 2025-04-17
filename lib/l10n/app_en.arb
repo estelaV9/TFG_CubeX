@@ -390,5 +390,32 @@
   "weekly_stats_title": "Weekly Stats",
   "weekly_stats_description": "Receive a weekly report of your times and improvements.",
   "weekly_stats_button_title": "Enable weekly stats",
-  "weekly_stats_button_hint": "Shows info about your weekly performance data"
+  "weekly_stats_button_hint": "Shows info about your weekly performance data",
+
+  "hide_time_title": "Hide running time",
+  "hide_time_description": "Do not show the timer while it's running to minimize distractions or performance pressure.",
+  "hide_time_button_title": "Hide running time",
+  "hide_time_button_hint": "Keeps the time hidden until the resolution ends",
+
+  "record_time_alert_title": "Record time alert",
+  "record_time_alert_description": "Get notified when you achieve your personal best time.",
+  "record_time_alert_button_title": "Enable record alert",
+  "record_time_alert_button_hint": "Notifies you when you hit your best time",
+
+  "best_average_alert_title": "Best average alert",
+  "best_average_alert_description": "You'll be notified when you beat your average time (ao5, ao12, etc).",
+  "best_average_alert_button_title": "Enable best average alert",
+  "best_average_alert_button_hint": "Alerts you when you improve your averages",
+
+  "worst_time_alert_title": "Worst time alert",
+  "worst_time_alert_description": "Get an alert when you achieve your personal worst time.",
+  "worst_time_alert_button_title": "Enable worst time alert",
+  "worst_time_alert_button_hint": "Notifies you when you hit your worst time",
+
+  "inspection_title": "Inspection",
+  "advanced_options_title": "Advanced options",
+
+  "empty_stats_title": "You haven’t recorded any time yet",
+  "empty_stats_label": "The graph is empty",
+  "empty_stats_hint": "The graph is empty because no time has been recorded yet"
 }
