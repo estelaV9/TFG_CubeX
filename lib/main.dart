@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:esteladevega_tfg_cubex/model/notification_service.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
-import 'package:esteladevega_tfg_cubex/view/screen/settings_options/notification_screen.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_notifications.dart';
@@ -26,6 +25,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+import 'model/app_notification.dart';
+
 /// Método principal de la aplicación: Inicio de la app.
 ///
 /// Este método inicializa la base de datos y las preferencias,
@@ -37,7 +38,7 @@ void main() async {
   // SE INICIALIZA LA BASE DE DATOS Y SE CONFIGURA LAS PREFERENCIAS
   await DatabaseHelper.initDatabase();
   await SettingsScreenState.startPreferences();
-  await NotificationScreenState.startPreferences();
+  await AppNotification.startPreferences();
 
   // INICIALIZAR EL TIMEZONES
   tz.initializeTimeZones();

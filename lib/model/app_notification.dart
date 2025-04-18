@@ -61,4 +61,19 @@ class AppNotification {
     await prefs.setBool("inactivityNotification", inactivityNotification);
     await prefs.setBool("weeklyStats", weeklyStats);
   }
+
+  // SHARED PREFEERNCES PARA LAS NOTIFICACIONES
+  static late SharedPreferences preferences;
+
+  /// Inicializa las preferencias compartidas para guardar y cargar la notificaciones.
+  static Future<void> startPreferences() async {
+    preferences = await SharedPreferences.getInstance();
+    if (preferences.getKeys().isEmpty) {
+      await preferences.setBool("isActive", false);
+      await preferences.setBool("dailyChallenges", false);
+      await preferences.setBool("motivationNudges", false);
+      await preferences.setBool("speedTraining", false);
+      await preferences.setBool("weeklyStats", false);
+    }
+  }
 }

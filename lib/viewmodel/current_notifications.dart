@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 import '../model/app_notification.dart';
-import '../view/screen/settings_options/notification_screen.dart';
 
 /// Provider para gestionar el estado actual de las **notificaciones** en la aplicación.
 ///
@@ -13,11 +12,10 @@ class CurrentNotifications extends ChangeNotifier {
   /// Configuraciones actuales de notificaciones, iniciando por si estan habilitadas/deshabilitadas según
   /// lo que se guardó en las preferencias de la aplicación.
   AppNotification notification = AppNotification(
-      isActive:
-          NotificationScreenState.preferences.getBool("isActive") ?? false);
+      isActive: AppNotification.preferences.getBool("isActive") ?? false);
 
   /// Preferencias de las notificaciones (`SharedPreferences`) de la aplicación.
-  final prefs = NotificationScreenState.preferences;
+  final prefs = AppNotification.preferences;
 
   /// Método que restablece las notificaciones a sus valores por defecto.
   ///
@@ -26,7 +24,7 @@ class CurrentNotifications extends ChangeNotifier {
   ///
   /// Guarda los valores en `SharedPreferences` y notifica a los listeners.
   void resetValue() async {
-    final prefs = NotificationScreenState.preferences;
+    final prefs = AppNotification.preferences;
     notification = AppNotification(
       isActive: true,
       dailyNotifications: true,
@@ -45,7 +43,7 @@ class CurrentNotifications extends ChangeNotifier {
   ///
   /// Guarda los valores en `SharedPreferences` y notifica a los listeners.
   void turnOffValue() async {
-    final prefs = NotificationScreenState.preferences;
+    final prefs = AppNotification.preferences;
     notification = AppNotification(
       isActive: false,
       dailyNotifications: false,
@@ -70,7 +68,7 @@ class CurrentNotifications extends ChangeNotifier {
   /// - [key]: Clave que representa el nombre del campo a modificar.
   /// - [value]: Nuevo valor booleano que se desea asignar.
   void changeValue(String key, bool value) async {
-    final prefs = NotificationScreenState.preferences;
+    final prefs = AppNotification.preferences;
 
     switch (key) {
       case 'isActive':
