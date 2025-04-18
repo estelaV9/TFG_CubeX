@@ -1,8 +1,12 @@
 import 'dart:io';
 
-import 'package:esteladevega_tfg_cubex/view/screen/notification_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/settings_options/advanced_options_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/settings_options/configure_inspection_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/settings_options/configure_timer_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/settings_options/notification_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_styles.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/my_profile_screen.dart';
@@ -19,8 +23,12 @@ import '../components/settings_container.dart';
 
 /// Pantalla de configuración de la aplicación.
 ///
-/// Esta pantalla permite (por ahora) al usuario cambiar el idioma de la aplicación
-/// entre español e inglés y acceder a su perfil personal.
+/// Esta pantalla permite al usuario personalizar su experiencia dentro de la app.
+/// Desde aquí, el usuario podrá:
+/// - Cambiar el idioma de la aplicación entre español e inglés.
+/// - Acceder a su perfil personal.
+/// - Activar o desactivar las notificaciones, además de personalizar cuáles desea recibir.
+/// - Configurar las opciones del cronómetro, la inspección y otros ajustes avanzados.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -123,218 +131,245 @@ class SettingsScreenState extends State<SettingsScreen> {
         centerTitle: true,
         backgroundColor: AppColors.lightVioletColor,
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          // COLOR DEGRADADO PARA EL FONDO
-          gradient: LinearGradient(
-            begin: Alignment.topCenter, // DESDE ARRIBA
-            end: Alignment.bottomCenter, // HASTA ABAJO
-            colors: [
-              // COLOR DE ARRIBA DEL DEGRADADO
-              AppColors.upLinearColor,
-              // COLOR DE ABAJO DEL DEGRADADO
-              AppColors.downLinearColor,
-            ],
-          ),
-        ),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView(
+        child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              // COLOR DEGRADADO PARA EL FONDO
+              gradient: LinearGradient(
+                begin: Alignment.topCenter, // DESDE ARRIBA
+                end: Alignment.bottomCenter, // HASTA ABAJO
+                colors: [
+                  // COLOR DE ARRIBA DEL DEGRADADO
+                  AppColors.upLinearColor,
+                  // COLOR DE ABAJO DEL DEGRADADO
+                  AppColors.downLinearColor,
+                ],
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // IMAGEN DEL USUARIO
-                imageUrl.isNotEmpty
-                    ? ClipOval(
-                        child: Image.file(
-                          File(imageUrl),
-                          fit: BoxFit.cover,
-                          width: 140,
-                          height: 140,
-                        ),
-                      )
-                    :
-                    // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
-                    ClipOval(
-                        child: Image.asset(
-                          "assets/default_user_image.png",
-                          fit: BoxFit.cover,
-                          width: 140,
-                          height: 140,
-                        ),
-                      ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // IMAGEN DEL USUARIO
+                    imageUrl.isNotEmpty
+                        ? ClipOval(
+                            child: Image.file(
+                              File(imageUrl),
+                              fit: BoxFit.cover,
+                              width: 140,
+                              height: 140,
+                            ),
+                          )
+                        :
+                        // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
+                        ClipOval(
+                            child: Image.asset(
+                              "assets/default_user_image.png",
+                              fit: BoxFit.cover,
+                              width: 140,
+                              height: 140,
+                            ),
+                          ),
 
-                // COLUMNA PARA EL NOMBRE Y EL MAIL DEL USUARIO
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Column(
-                    // SE ALINEA A LA IZQUIERDA
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // NOMBRE USUARIO
-                      Text(
-                        returnName(),
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.purpleIntroColor,
-                        ),
-                      ),
+                    // COLUMNA PARA EL NOMBRE Y EL MAIL DEL USUARIO
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Column(
+                        // SE ALINEA A LA IZQUIERDA
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // NOMBRE USUARIO
+                          Text(
+                            returnName(),
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.purpleIntroColor,
+                            ),
+                          ),
 
-                      // MAIL USUARIO
-                      Text(
-                        mail,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: AppColors.purpleIntroColor,
-                        ),
+                          // MAIL USUARIO
+                          Text(
+                            mail,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: AppColors.purpleIntroColor,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // GENERAL
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    "general",
+                    "general",
+                    "general",
+                    const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.lightVioletColor),
                   ),
                 ),
-              ],
-            ),
 
-            const SizedBox(
-              height: 20,
-            ),
+                // IDIOMAS
+                SettingsContainer(
+                  functionArrow: () {
+                    AlertUtil.showChangeLanguague(context);
+                  },
+                  name: Internationalization.internationalization.getLocalizations(context, "languages"),
+                  icon: Icons.language,
+                  tooltip: Internationalization.internationalization.getLocalizations(context, "select_languages"),
+                ),
 
-            // GENERAL
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Internationalization.internationalization
-                  .createLocalizedSemantics(
-                context,
-                "general",
-                "general",
-                "general",
-                const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightVioletColor),
-              ),
-            ),
+                const SizedBox(height: 10),
 
-            // IDIOMAS
-            SettingsContainer(
-              functionArrow: () {
-                AlertUtil.showChangeLanguague(context);
-              },
-              name: Internationalization.internationalization.getLocalizations(context, "languages"),
-              icon: Icons.language,
-              tooltip: Internationalization.internationalization.getLocalizations(context, "select_languages"),
-            ),
+                // NOTIFICACIONES
+                SettingsContainer(
+                  functionArrow: () {
+                    // IR A LA PANTALLA DE NOTIFICACIONES
+                    ChangeScreen.changeScreen(const NotificationScreen(), context);
+                  },
+                  name: Internationalization.internationalization.getLocalizations(context, "notification"),
+                  icon: Icons.notifications,
+                  tooltip: Internationalization.internationalization.getLocalizations(context, "select_notification"),
+                ),
 
-            const SizedBox(
-              height: 10,
-            ),
+                const SizedBox(height: 20),
 
-            // NOTIFICACIONES
-            SettingsContainer(
-              functionArrow: () {
-                // IR A LA PANTALLA DE NOTIFICACIONES
-                ChangeScreen.changeScreen(const NotificationScreen(), context);
-              },
-              name: Internationalization.internationalization.getLocalizations(context, "notification"),
-              icon: Icons.notifications,
-              tooltip: Internationalization.internationalization.getLocalizations(context, "select_notification"),
-            ),
-
-            const SizedBox(
-              height: 20,
-            ),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Internationalization.internationalization
-                  .createLocalizedSemantics(
-                context,
-                "time_configuration",
-                "time_configuration",
-                "time_configuration",
-                const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightVioletColor),
-              ),
-            ),
-
-            // CONFIGURAR TIMER
-            SettingsContainer(
-              functionArrow: () {},
-              name: Internationalization.internationalization.getLocalizations(context, "configure_timer"),
-              icon: Icons.timer,
-              tooltip: Internationalization.internationalization.getLocalizations(context, "configure_timer"),
-            ),
-
-            const SizedBox(
-              height: 20,
-            ),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Internationalization.internationalization
-                  .createLocalizedSemantics(
-                context,
-                "account",
-                "account",
-                "account",
-                const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightVioletColor),
-              ),
-            ),
-
-            // PERFIL
-            SettingsContainer(
-              functionArrow: () {
-                ChangeScreen.changeScreen(const MyProfileScreen(), context);
-              }, // CUANDO PULSE IRA A LA PANTALLA DE PERFIL
-              name: Internationalization.internationalization.getLocalizations(context, "my_profile"),
-              icon: Icons.person,
-              tooltip: Internationalization.internationalization.getLocalizations(context, "my_profile"),
-            ),
-
-            // COLOCAMOS UN EXPANDED PARA OCUPAR EL ESPACIO RESSTANTE Y
-            // COLOCAR EL GITHUB ABAJO DELTODO
-            Expanded(child: Container()),
-
-            // GITHUB
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconClass.iconMaker(
-                    context, Icons.account_circle_sharp, "github", 40),
-                TextButton(
-                    onPressed: () async {
-                      // CUANDO PULSE IRA A MI GITHUB
-                      const url = 'https://github.com/estelaV9';
-
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        throw 'No se pudo abrir la URL';
-                      } // VERIFICA SI LA URL ES VALIDA
-                    },
-                    child: Internationalization.internationalization
-                        .createLocalizedSemantics(
-                      context,
-                      "name_github",
-                      "name_github",
-                      "name_github",
-                      const TextStyle(
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    "time_configuration",
+                    "time_configuration",
+                    "time_configuration",
+                    const TextStyle(
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.darkPurpleColor,
-                        fontSize: 30,
-                      ),
-                    ))
+                        color: AppColors.lightVioletColor),
+                  ),
+                ),
+
+                // CONFIGURAR TIMER
+                SettingsContainer(
+                  functionArrow: () {
+                    // IR A LA PANTALLA DE NOTIFICACIONES
+                    ChangeScreen.changeScreen(const ConfigureTimerScreen(), context);
+                  },
+                  name: Internationalization.internationalization.getLocalizations(context, "configure_timer"),
+                  icon: Icons.timer,
+                  tooltip: Internationalization.internationalization.getLocalizations(context, "configure_timer"),
+                ),
+
+                const SizedBox(height: 10),
+
+                // CONFIGURAR INSPECCION
+                SettingsContainer(
+                  functionArrow: () {
+                    // IR A LA PANTALLA DE CONFIGURAR INSPECCION
+                    ChangeScreen.changeScreen(const ConfigureInspectionScreen(), context);
+                  },
+                  name: Internationalization.internationalization.getLocalizations(context, "inspection_title"),
+                  icon: Icons.hourglass_top_rounded,
+                  tooltip: Internationalization.internationalization.getLocalizations(context, "inspection_title"),
+                ),
+
+                const SizedBox(height: 20),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context, "account", "account", "account",
+                    const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.lightVioletColor),
+                  ),
+                ),
+
+                // PERFIL
+                SettingsContainer(
+                  functionArrow: () {
+                    ChangeScreen.changeScreen(const MyProfileScreen(), context);
+                  }, // CUANDO PULSE IRA A LA PANTALLA DE PERFIL
+                  name: Internationalization.internationalization.getLocalizations(context, "my_profile"),
+                  icon: Icons.person,
+                  tooltip: Internationalization.internationalization.getLocalizations(context, "my_profile"),
+                ),
+
+                const SizedBox(height: 20),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    "advanced_options_title",
+                    "advanced_options_title",
+                    "advanced_options_title",
+                    const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.lightVioletColor),
+                  ),
+                ),
+
+                // OPCIONES AVANZADAS
+                SettingsContainer(
+                  functionArrow: () {
+                    // IR A LA PANTALLA DE OPCIONES AVANZADAS
+                    ChangeScreen.changeScreen(const AdvancedOptionsScreen(), context);
+                  },
+                  name: Internationalization.internationalization
+                      .getLocalizations(context, "advanced_options_title"),
+                  icon: Icons.tune,
+                  tooltip: Internationalization.internationalization
+                      .getLocalizations(context, "advanced_options_title"),
+                ),
+
+                const SizedBox(height: 30),
+
+                // GITHUB
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconClass.iconMaker(
+                        context, Icons.account_circle_sharp, "github", 40),
+                    TextButton(
+                        onPressed: () async {
+                          // CUANDO PULSE IRA A MI GITHUB
+                          const url = 'https://github.com/estelaV9';
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'No se pudo abrir la URL';
+                          } // VERIFICA SI LA URL ES VALIDA
+                        },
+                        child: Internationalization.internationalization
+                            .createLocalizedSemantics(
+                          context, "name_github", "name_github", "name_github",
+                          AppStyles.darkPurpleAndBold(30)
+                        ))
+                  ],
+                ),
               ],
-            ),
-          ],
-        ),
+            )),
       ),
     );
   }
