@@ -5,6 +5,7 @@ import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_styles.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -112,16 +113,8 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                   mainAxisAlignment: MainAxisAlignment.center, // CENTRADO
                   children: [
                     Internationalization.internationalization
-                        .createLocalizedSemantics(
-                      context,
-                      "select_cube_type",
-                      "select_cube_type",
-                      "select_cube_type",
-                      const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.darkPurpleColor,
-                          fontSize: 25),
-                    ), // TITULO
+                        .localizedTextOnlyKey(context, "select_cube_type",
+                            style: AppStyles.darkPurpleAndBold(25)), // TITULO
 
                     // ESPACIO ENTRE EL TITULO Y EL DIVIDER
                     const SizedBox(height: 8),
@@ -398,12 +391,10 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                         } // VERIFICAR QUE SE OBTIENE BIEN EL TIPO DE CUBO
                       },
                       child: Internationalization.internationalization
-                          .createLocalizedSemantics(
+                          .localizedTextOnlyKey(
                         context,
                         "create_new_cube_type",
-                        "create_new_cube_type",
-                        "create_new_cube_type",
-                        const TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     )
                   ],

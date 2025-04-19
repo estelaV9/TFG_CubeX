@@ -1,4 +1,4 @@
-import 'package:esteladevega_tfg_cubex/viewmodel/current_notifications.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utilities/internationalization.dart';

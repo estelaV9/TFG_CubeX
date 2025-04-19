@@ -139,13 +139,10 @@ class _AppDrawerState extends State<AppDrawer> {
             // PADDING
             contentPadding: const EdgeInsets.only(left: 30),
             leading: Icon(icon, color: AppColors.darkPurpleColor),
-            title: Internationalization.internationalization
-                .createLocalizedSemantics(
+            title: Internationalization.internationalization.localizedTextOnlyKey(
               context,
               text,
-              text,
-              text,
-              const TextStyle(
+              style: const TextStyle(
                 color: AppColors.darkPurpleColor,
               ),
             ),

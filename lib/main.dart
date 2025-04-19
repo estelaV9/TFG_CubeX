@@ -92,17 +92,13 @@ class CubeXApp extends StatelessWidget {
         // SE INICIALIZA EL SISTEMA PARA MOSTRAR DIALOGOS PERSONALIZADOS EN LA APP
         // ESTOS DOS ATRIBUTOS HACEN QUE FUNCIONE EL FLUTTER SMART DIALOG
         builder: FlutterSmartDialog.init(),
-
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate
         ],
-        supportedLocales: const [
-          Locale('es'),
-          Locale('en')
-        ],
+        supportedLocales: const [Locale('es'), Locale('en')],
         locale: locale,
         debugShowCheckedModeBanner: false,
         // QUITAR MARCA DEBUG
@@ -163,12 +159,10 @@ class _IntroScreenState extends State<IntroScreen> {
                     padding: const EdgeInsets.only(right: 10, top: 20),
                     // CubeX
                     child: Internationalization.internationalization
-                        .createLocalizedSemantics(
+                        .localizedTextOnlyKey(
                       context,
                       "cube_x",
-                      "cube_x",
-                      "cube_x",
-                      const TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'JollyLodger',
                         fontSize: 132,
                         color: AppColors.purpleIntroColor,
@@ -290,8 +284,7 @@ class _IntroScreenState extends State<IntroScreen> {
                             borderRadius: BorderRadius.circular(100),
                             // BORDES REDONDEADOS
                             side: const BorderSide(
-                                color: Colors.black,
-                                width: 1), // BORDE NEGRO
+                                color: Colors.black, width: 1), // BORDE NEGRO
                           ),
                         ),
                         // Sign up

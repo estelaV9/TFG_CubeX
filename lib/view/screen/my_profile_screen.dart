@@ -272,19 +272,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             backgroundColor: AppColors.lightVioletColor,
           ),
           body: Container(
-            decoration: const BoxDecoration(
-              // COLOR DEGRADADO PARA EL FONDO
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, // DESDE ARRIBA
-                end: Alignment.bottomCenter, // HASTA ABAJO
-                colors: [
-                  // COLOR DE ARRIBA DEL DEGRADADO
-                  AppColors.upLinearColor,
-                  // COLOR DE ABAJO DEL DEGRADADO
-                  AppColors.downLinearColor,
-                ],
-              ),
-            ),
+            decoration: AppStyles.boxDecorationContainer(),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(

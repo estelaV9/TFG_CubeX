@@ -9,6 +9,7 @@ import '../../view/navigation/app_drawer.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
 import '../components/waves_painter/small_wave_container_painter.dart';
+import '../utilities/app_styles.dart';
 
 /// Pantalla del historial
 ///
@@ -48,19 +49,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
           // FONDO DEGRADADO
           Positioned.fill(
               child: Container(
-                decoration: const BoxDecoration(
-                  // COLOR DEGRADADO PARA EL FONDO
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter, // DESDE ARRIBA
-                    end: Alignment.bottomCenter, // HASTA ABAJO
-                    colors: [
-                      // COLOR DE ARRIBA DEL DEGRADADO
-                      AppColors.upLinearColor,
-                      // COLOR DE ABAJO DEL DEGRADADO
-                      AppColors.downLinearColor,
-                    ],
-                  ),
-                ),
+                decoration: AppStyles.boxDecorationContainer(),
               )),
 
           Positioned(

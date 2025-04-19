@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../components/settings_option/option_switch_tile.dart';
 import '../../utilities/app_color.dart';
+import '../../utilities/app_styles.dart';
 import '../../utilities/internationalization.dart';
 
 /// Pantalla de configuración del temporizador.
@@ -44,17 +45,7 @@ class _ConfigureTimerScreenState extends State<ConfigureTimerScreen> {
           backgroundColor: AppColors.lightVioletColor,
         ),
         body: Container(
-            decoration: const BoxDecoration(
-              // COLOR DEGRADADO PARA EL FONDO
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.upLinearColor,
-                  AppColors.downLinearColor,
-                ],
-              ),
-            ),
+            decoration: AppStyles.boxDecorationContainer(),
             child: SingleChildScrollView(
                 child: SizedBox(
                     height: MediaQuery.of(context).size.height,

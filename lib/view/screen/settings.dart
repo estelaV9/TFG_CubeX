@@ -120,13 +120,10 @@ class SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Internationalization.internationalization.createLocalizedSemantics(
+        title: Internationalization.internationalization.localizedTextOnlyKey(
           context,
           "settings",
-          "settings",
-          "settings",
-          const TextStyle(fontFamily: 'Broadway', fontSize: 35),
+          style: const TextStyle(fontFamily: 'Broadway', fontSize: 35),
         ),
         centerTitle: true,
         backgroundColor: AppColors.lightVioletColor,
@@ -134,19 +131,7 @@ class SettingsScreenState extends State<SettingsScreen> {
       body: SingleChildScrollView(
         child: Container(
             padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              // COLOR DEGRADADO PARA EL FONDO
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, // DESDE ARRIBA
-                end: Alignment.bottomCenter, // HASTA ABAJO
-                colors: [
-                  // COLOR DE ARRIBA DEL DEGRADADO
-                  AppColors.upLinearColor,
-                  // COLOR DE ABAJO DEL DEGRADADO
-                  AppColors.downLinearColor,
-                ],
-              ),
-            ),
+            decoration: AppStyles.boxDecorationContainer(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -212,12 +197,10 @@ class SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Internationalization.internationalization
-                      .createLocalizedSemantics(
+                      .localizedTextOnlyKey(
                     context,
                     "general",
-                    "general",
-                    "general",
-                    const TextStyle(
+                    style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.lightVioletColor),
@@ -252,12 +235,10 @@ class SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Internationalization.internationalization
-                      .createLocalizedSemantics(
+                      .localizedTextOnlyKey(
                     context,
                     "time_configuration",
-                    "time_configuration",
-                    "time_configuration",
-                    const TextStyle(
+                    style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.lightVioletColor),
@@ -293,9 +274,10 @@ class SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Internationalization.internationalization
-                      .createLocalizedSemantics(
-                    context, "account", "account", "account",
-                    const TextStyle(
+                      .localizedTextOnlyKey(
+                    context,
+                    "account",
+                    style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.lightVioletColor),
@@ -317,12 +299,10 @@ class SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Internationalization.internationalization
-                      .createLocalizedSemantics(
+                      .localizedTextOnlyKey(
                     context,
                     "advanced_options_title",
-                    "advanced_options_title",
-                    "advanced_options_title",
-                    const TextStyle(
+                    style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.lightVioletColor),
@@ -362,10 +342,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                           } // VERIFICA SI LA URL ES VALIDA
                         },
                         child: Internationalization.internationalization
-                            .createLocalizedSemantics(
-                          context, "name_github", "name_github", "name_github",
-                          AppStyles.darkPurpleAndBold(30)
-                        ))
+                            .localizedTextOnlyKey(context, "name_github",
+                                style: AppStyles.darkPurpleAndBold(30)))
                   ],
                 ),
               ],

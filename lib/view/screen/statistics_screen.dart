@@ -8,6 +8,8 @@ import '../components/Icon/icon.dart';
 import '../components/waves_painter/small_wave_container_painter.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
+import '../utilities/app_styles.dart';
+
 /// Pantalla de estadísticas generales de la sesión actual.
 ///
 /// Esta pantalla muestra diversas estadísticas relacionadas con el rendimiento
@@ -36,19 +38,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           // FONDO DEGRADADO
           Positioned.fill(
               child: Container(
-            decoration: const BoxDecoration(
-              // COLOR DEGRADADO PARA EL FONDO
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, // DESDE ARRIBA
-                end: Alignment.bottomCenter, // HASTA ABAJO
-                colors: [
-                  // COLOR DE ARRIBA DEL DEGRADADO
-                  AppColors.upLinearColor,
-                  // COLOR DE ABAJO DEL DEGRADADO
-                  AppColors.downLinearColor,
-                ],
-              ),
-            ),
+            decoration: AppStyles.boxDecorationContainer(),
           )),
 
           Positioned(

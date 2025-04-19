@@ -127,10 +127,10 @@ class _GeneralStatisticsContainerState
       String pb, String worst, int count, int dnfCnt, int plusTwoCnt) {
     double dnfPer = 0, plusTwoPer = 0;
     // SI LA CUENTA DE DNF O +2 NO ES 0 SE HACE EL PORCENTAJE, SI NO DEVUELVE 0
-    if (dnfCnt != 0){
+    if (dnfCnt != 0) {
       dnfPer = (dnfCnt / count) * 100;
     }
-    if(plusTwoCnt != 0){
+    if (plusTwoCnt != 0) {
       plusTwoPer = (plusTwoCnt / count) * 100;
     }
 
@@ -166,13 +166,10 @@ class _GeneralStatisticsContainerState
       child: Column(
         children: [
           Center(
-            child: Internationalization.internationalization
-                .createLocalizedSemantics(
+            child: Internationalization.internationalization.localizedTextOnlyKey(
               context,
               "general_statistics",
-              "general_statistics",
-              "general_statistics",
-              AppStyles.darkPurpleAndBold(24),
+              style: AppStyles.darkPurpleAndBold(24),
             ),
           ),
           Row(

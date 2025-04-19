@@ -113,9 +113,10 @@ class _CustomPopoverState extends State<CustomPopover> {
                             child: Column(
                               children: [
                                 Internationalization.internationalization
-                                    .createLocalizedSemantics(
-                                  context, "sort_by", "sort_by", "sort_by",
-                                  const TextStyle(
+                                    .localizedTextOnlyKey(
+                                  context,
+                                  "sort_by",
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontSize: 23,

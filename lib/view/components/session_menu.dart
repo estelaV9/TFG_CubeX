@@ -4,6 +4,7 @@ import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/app_styles.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
@@ -160,17 +161,9 @@ class _SessionMenuState extends State<SessionMenu> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // CENTRADO
               children: [
-                Internationalization.internationalization
-                    .createLocalizedSemantics(
-                  context,
-                  "select_session_label",
-                  "select_session_label",
-                  "select_session_label",
-                  const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkPurpleColor,
-                      fontSize: 25),
-                ), // TITULO
+                Internationalization.internationalization.localizedTextOnlyKey(
+                    context, "select_session_label",
+                    style: AppStyles.darkPurpleAndBold(25)), // TITULO
 
                 // ESPACIO ENTRE EL TITULO Y EL DIVIDER
                 const SizedBox(height: 8),
@@ -318,10 +311,10 @@ class _SessionMenuState extends State<SessionMenu> {
 
                             // SE BUSCA ESE TIPO DE CUBO POR ESE ID
                             CubeType? cubeType = await cubeTypeDao.getCubeById(sessionTipoActual!.idCubeType);
-                            if(cubeType.idCube != -1){
+                            if(cubeType.idCube != -1) {
                               // SE ACTUALIZA EL ESTADO GLOBAL
                               currentCube.setCubeType(cubeType);
-                            } else{
+                            } else {
                               DatabaseHelper.logger.e("No se encontro el tipo de cubo: ${cubeType.toString()}");
                             } // SE VERIFICA QUE SE HA RETORNADO EL TIPO DE CUBO CORRECTAMENTE
 
