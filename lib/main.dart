@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:esteladevega_tfg_cubex/model/notification_service.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_configure_timer.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_notifications.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
@@ -26,6 +27,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'model/app_notification.dart';
+import 'model/configuration_timer.dart';
 
 /// Método principal de la aplicación: Inicio de la app.
 ///
@@ -39,6 +41,7 @@ void main() async {
   await DatabaseHelper.initDatabase();
   await SettingsScreenState.startPreferences();
   await AppNotification.startPreferences();
+  await ConfigurationTimer.startPreferences();
 
   // INICIALIZAR EL TIMEZONES
   tz.initializeTimeZones();
@@ -56,6 +59,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CurrentTime()),
         ChangeNotifierProvider(create: (_) => CurrentLanguage()),
         ChangeNotifierProvider(create: (_) => CurrentNotifications()),
+        ChangeNotifierProvider(create: (_) => CurrentConfigurationTimer()),
         ChangeNotifierProvider(create: (_) => CurrentStatistics()),
         ChangeNotifierProvider(create: (_) => CurrentScramble()),
         ChangeNotifierProvider(create: (_) => CurrentSession()),
