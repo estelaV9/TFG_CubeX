@@ -126,7 +126,7 @@ class _ConfigureInspectionScreenState extends State<ConfigureInspectionScreen> {
                         Align(
                           alignment: Alignment.center,
                           child: Image.asset(
-                            "assets/cubix_inspection.png",
+                            "assets/cubix/cubix_inspection.png",
                             width: 200,
                           ),
                         ),

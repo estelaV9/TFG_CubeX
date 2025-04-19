@@ -98,7 +98,7 @@ class _ConfigureTimerScreenState extends State<ConfigureTimerScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Image.asset(
-                              "assets/cubix_timer.png",
+                              "assets/cubix/cubix_timer.png",
                               width: 200,
                             ),
                           ),

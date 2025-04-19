@@ -64,7 +64,7 @@ flutter:
     - assets/default_user_image.png
     - assets/session_icon.png
     - assets/trash-list.png
-    - assets/notification_cubix.png
+    - assets/cubix/
   fonts:
     - family: JollyLodger
       fonts:
