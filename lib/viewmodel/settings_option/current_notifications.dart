@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../model/app_notification.dart';
+import '../../model/app_notification.dart';
 
 /// Provider para gestionar el estado actual de las **notificaciones** en la aplicación.
 ///
