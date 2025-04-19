@@ -13,6 +13,24 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class Internationalization {
   static Internationalization internationalization = Internationalization();
 
+  /// Crea un widget de texto internacionalizado con accesibilidad.
+  ///
+  /// Este método es como un "atajo" más simple del metodo `createLocalizedSemantics`
+  /// para generar un widget `Semantics`.
+  ///
+  /// Es útil cuando no se requieren etiquetas o hints, asi se puede reutilizar
+  /// una misma clave para todos los campos de accesibilidad y no repetir codigo.
+  ///
+  /// Parámetros:
+  /// - [context]: El contexto actual de la aplicación.
+  /// - [key]: Clave de localización que se usa como etiqueta, hint y contenido.
+  /// - [style]: Estilo aplicado al widget `Text`.
+  Widget localizedTextOnlyKey(BuildContext context, String key, {required TextStyle style}) {
+    return Internationalization.internationalization.createLocalizedSemantics(
+      context, key, key, key, style,
+    );
+  }
+
   /// Crea un widget `Semantics` con el texto traducido y accesibilidad.
   ///
   /// Este método genera un widget `Semantics` que incluye las traducciones
