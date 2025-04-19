@@ -8,7 +8,7 @@ import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/validator.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
-import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +22,7 @@ import '../../model/cubetype.dart';
 import '../../model/session.dart';
 import '../../model/user.dart';
 import '../../viewmodel/current_user.dart';
+import '../../viewmodel/settings_option/current_configure_timer.dart';
 import '../components/menu_item.dart';
 import '../components/password_field_row.dart';
 import '../navigation/bottom_navigation.dart';
@@ -362,7 +363,6 @@ class AlertUtil {
       Future<void> Function() deleteTime, TimeTraining timeTraining) async {
     TimeTrainingDao timeTrainingDao = TimeTrainingDao();
 
-
     // ATRIBUTO PARA SABER SI ESTA PRESIONADO EL SCRAMBLE O LOS COMMENTS
     var isTextPressed = true;
 
@@ -549,7 +549,7 @@ class AlertUtil {
                             },
                             child: Text(
                               "Scramble",
-                              style:AppStyles.darkPurpleAndBold(13),
+                              style: AppStyles.darkPurpleAndBold(13),
                             ),
                           ),
                         ),
@@ -969,6 +969,139 @@ class AlertUtil {
           );
         });
   }
+
+  /// Metodo para mostrar un diálogo que permita que el usuario introduzca el tiempo de inspección deseado.
+  ///
+  /// Este diálogo permite al usuario ingresar un valor personalizado para el tiempo de inspección
+  /// (en segundos) que se usará antes de iniciar el cronómetro. Por defecto, el campo de texto
+  /// se rellena con el valor actualmente configurado que tiene el usuario.
+  ///
+  /// Parámetros:
+  /// - `titleKey`: Clave de localización para el título y textos del diálogo.
+  /// - `context`: Contexto de la aplicación donde se mostrará el diálogo.
+  ///
+  /// Comportamiento:
+  /// - Valida que el campo no esté vacío, contenga solo números enteros y esté entre 1 y 59.
+  /// - El botón "Predeterminado" restablece el tiempo a 15 segundos.
+  /// - El botón "Aceptar" guarda el nuevo valor ingresado.
+  /// - El botón "Cancelar" cierra el diálogo sin realizar cambios.
+  static Future<String?> addSecondsTimeOfInspectionForm(
+      String titleKey, BuildContext context) async {
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController controller = TextEditingController();
+    final currentSecondsTime = context.read<CurrentConfigurationTimer>();
+    // EN EL TEXTO DEL CAMPOS DEL FORMULARIO SE ESTABLECE LOS SEGUNDO DE INSPECCION YA
+    // CONFIGURADOS
+    controller.text = currentSecondsTime.configurationTimer.inspectionSeconds.toString();
+
+    // MOSTRAR EL DIALOG
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Internationalization.internationalization
+              .createLocalizedSemantics(
+            context,
+            '${titleKey}_title',
+            '${titleKey}_description',
+            '${titleKey}_title',
+            const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // AJUSTE DE TAMAÑO DEL CONTENIDO
+            children: [
+              Form(
+                key: formKey,
+                child: TextFormField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    labelText: Internationalization.internationalization
+                        .getLocalizations(context, '${titleKey}_form'),
+                    border: const OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return Internationalization.internationalization.getLocalizations(context, "inspection_field_required");
+                    } // SI ESTA VACIO
+
+                    if (!RegExp(r'^\d+$').hasMatch(value.trim())) {
+                      return Internationalization.internationalization.getLocalizations(context, "inspection_only_numbers");
+                    } // SI CONTIENE NUMEROS
+
+                    int seconds = int.parse(value.trim());
+
+                    if (seconds < 1 || seconds > 59) {
+                      return Internationalization.internationalization.getLocalizations(context, "inspection_range_1_59");
+                    } // SI INTRODUCE UN NUMERO MENOR QUE 1 O MAYOR QUE 59
+
+                    return null;
+                  },
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // BOTOTN DE PREDETERMINADO
+                TextButton(
+                  onPressed: () {
+                    // EL PREDETERMINADO SON 15 SEGUNDOS
+                    currentSecondsTime.changeValue(inspectionSeconds: 15);
+                    Navigator.of(context).pop();
+                  },
+                  child: Internationalization.internationalization
+                      .localizedTextOnlyKey(
+                    context,
+                    'time_default',
+                    style: const TextStyle(fontSize: 16, color: Colors.green),
+                  ),
+                ),
+
+                // BOTON CANCELAR
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
+                  },
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    'cancel_label',
+                    'cancel_hint',
+                    'cancel_label',
+                    const TextStyle(
+                        fontSize: 16, color: AppColors.deleteAccount),
+                  ),
+                ),
+
+                // BOTON ACEPTAR
+                TextButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      int seconds = int.parse(controller.text.trim());
+                      currentSecondsTime.changeValue(
+                          inspectionSeconds: seconds);
+                      // CIERRA EL DIALOGO
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Internationalization.internationalization
+                      .createLocalizedSemantics(
+                    context,
+                    'accept_label',
+                    'accept_hint',
+                    'accept_label',
+                    const TextStyle(fontSize: 16, color: Colors.blue),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO PARA QUE EL USUARIO
 
   /// Método para mostrar un Snackbar con un mensaje personalizado.
   ///

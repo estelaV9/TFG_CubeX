@@ -404,6 +404,9 @@ class Internationalization {
       'time_default_label': () => l10n.time_default_label,
       'time_default_hint': () => l10n.time_default_hint,
       'inspection_time_form': () => l10n.inspection_time_form,
+      'inspection_field_required': () => l10n.inspection_field_required,
+      'inspection_only_numbers': () => l10n.inspection_only_numbers,
+      'inspection_range_1_59': () => l10n.inspection_range_1_59,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

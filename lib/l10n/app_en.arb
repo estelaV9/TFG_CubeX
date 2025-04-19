@@ -433,5 +433,9 @@
   "time_default": "Default",
   "time_default_label": "Default time",
   "time_default_hint": "Resets the inspection time to its default value (15 seconds)",
-  "inspection_time_form": "Please enter a inspection time"
+  "inspection_time_form": "Please enter a inspection time",
+
+  "inspection_field_required": "This field is required",
+  "inspection_only_numbers": "Do not enter letters, only whole numbers",
+  "inspection_range_1_59": "You can only enter a value between 1 and 59"
 }

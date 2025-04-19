@@ -429,5 +429,9 @@
   "time_default": "Predeterminado",
   "time_default_label": "Tiempo predeterminado",
   "time_default_hint": "Restablece el tiempo de inspección a su valor por defecto (15 segundos)",
-  "inspection_time_form": "Introduce un tiempo de inspección"
+  "inspection_time_form": "Introduce un tiempo de inspección",
+
+  "inspection_field_required": "Este campo es obligatorio",
+  "inspection_only_numbers": "No introduzcas letras, solo números enteros",
+  "inspection_range_1_59": "Solo puedes introducir un rango entre 1 a 59"
 }
