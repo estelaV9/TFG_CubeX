@@ -417,5 +417,21 @@
 
   "empty_stats_title": "You haven’t recorded any time yet",
   "empty_stats_label": "The graph is empty",
-  "empty_stats_hint": "The graph is empty because no time has been recorded yet"
+  "empty_stats_hint": "The graph is empty because no time has been recorded yet",
+
+  "alerts": "Alerts",
+
+  "inspection_description": "Enables an inspection countdown before the solve time starts.",
+  "inspection_button_title": "Enable inspection",
+  "inspection_button_hint": "Shows a countdown before starting the solve",
+
+  "inspection_time_title": "Inspection Time (seconds)",
+  "inspection_time_description": "Set how many seconds you'll have to inspect the cube before starting. By default, it's 15 seconds.",
+  "inspection_time_button_title": "Change inspection seconds",
+  "inspection_time_button_hint": "Choose how many seconds you'll have to inspect before solving",
+
+  "time_default": "Default",
+  "time_default_label": "Default time",
+  "time_default_hint": "Resets the inspection time to its default value (15 seconds)",
+  "inspection_time_form": "Please enter a inspection time"
 }

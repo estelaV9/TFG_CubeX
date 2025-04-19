@@ -413,6 +413,21 @@
 
   "empty_stats_title": "Todavía no has registrado ningún tiempo",
   "empty_stats_label": "La gráfica está vacía",
-  "empty_stats_hint": "La gráfica está vacía ya que no se ha registrado ningún tiempo"
+  "empty_stats_hint": "La gráfica está vacía ya que no se ha registrado ningún tiempo",
 
+  "alerts": "Alertas",
+
+  "inspection_description": "Activa una cuenta atrás de inspección antes de iniciar el tiempo de resolución.",
+  "inspection_button_title": "Activar inspección",
+  "inspection_button_hint": "Muestra una cuenta atrás antes de comenzar la resolución",
+
+  "inspection_time_title": "Tiempo de inspección (segundos)",
+  "inspection_time_description": "Define cuántos segundos tendrás para inspeccionar el cubo antes de empezar. Por defecto, serán 15 segundos.",
+  "inspection_time_button_title": "Cambiar segundos de inspección",
+  "inspection_time_button_hint": "Elige cuántos segundos tendrás para inspeccionar antes de resolver",
+
+  "time_default": "Predeterminado",
+  "time_default_label": "Tiempo predeterminado",
+  "time_default_hint": "Restablece el tiempo de inspección a su valor por defecto (15 segundos)",
+  "inspection_time_form": "Introduce un tiempo de inspección"
 }
