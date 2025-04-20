@@ -6,7 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// Esta clase permite acceder y modificar las distintas opciones de configuración
 /// relacionadas con el temporizador, como la visibilidad del tiempo durante la resolución,
-/// las alertas de récords y el sistema de inspección previa.
+/// las alertas de récords, el sistema de inspección previa y el tipo de alerta en los
+/// oche y doce segundos de inspección.
 ///
 /// Las configuraciones se almacenan y recuperan desde `SharedPreferences`,
 /// permitiendo que los valores persistan entre sesiones del usuario.
@@ -17,7 +18,11 @@ class CurrentConfigurationTimer extends ChangeNotifier {
       bestAverageAlert: ConfigurationTimer.preferences.getBool("bestAverageAlert") ?? false,
       worstTimeAlert: ConfigurationTimer.preferences.getBool("worstTimeAlert") ?? false,
       isActiveInspection: ConfigurationTimer.preferences.getBool("isActiveInspection") ?? true,
-      inspectionSeconds: ConfigurationTimer.preferences.getInt("inspectionSeconds") ?? 15);
+      inspectionSeconds: ConfigurationTimer.preferences.getInt("inspectionSeconds") ?? 15,
+      alertAt8And12Seconds: ConfigurationTimer.preferences.getBool("alertAt8And12Seconds") ?? false,
+      inspectionAlertType: ConfigurationTimer.returnInspectinoTypeString(
+          ConfigurationTimer.preferences.getString("inspectionAlertType") ??
+              InspectionAlertType.vibrant.name));
 
   /// Preferencias de las configuraciones del timer (`SharedPreferences`) de la aplicación.
   final SharedPreferences prefs = ConfigurationTimer.preferences;
@@ -66,6 +71,9 @@ class CurrentConfigurationTimer extends ChangeNotifier {
   /// - [worstTimeAlert]: Muestra una alerta cuando se bate el peor tiempo registrado.
   /// - [isActiveInspection]: Activa o desactiva la cuenta atrás de inspección.
   /// - [inspectionSeconds]: Número de segundos para la inspección antes de iniciar.
+  /// - [alertAt8And12Seconds]: Activa/desactiva la alerta de los ocho y doce segundos en el
+  ///   tiempo de inspección.
+  /// - [inspectionAlertType]: Tipo de alerta si esta activada la alerta en el tiempo de inspección.
   void changeValue({
     bool? hideRunningTime,
     bool? recordTimeAlert,
@@ -73,6 +81,8 @@ class CurrentConfigurationTimer extends ChangeNotifier {
     bool? worstTimeAlert,
     bool? isActiveInspection,
     int? inspectionSeconds,
+    bool? alertAt8And12Seconds,
+    InspectionAlertType? inspectionAlertType,
   }) async {
     configurationTimer = ConfigurationTimer(
       hideRunningTime: hideRunningTime ?? configurationTimer.hideRunningTime,
@@ -81,6 +91,8 @@ class CurrentConfigurationTimer extends ChangeNotifier {
       worstTimeAlert: worstTimeAlert ?? configurationTimer.worstTimeAlert,
       isActiveInspection: isActiveInspection ?? configurationTimer.isActiveInspection,
       inspectionSeconds: inspectionSeconds ?? configurationTimer.inspectionSeconds,
+      alertAt8And12Seconds: alertAt8And12Seconds ?? configurationTimer.alertAt8And12Seconds,
+      inspectionAlertType: inspectionAlertType ?? configurationTimer.inspectionAlertType,
     );
     await configurationTimer.saveToPreferences(prefs);
     notifyListeners();
