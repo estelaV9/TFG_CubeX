@@ -437,5 +437,16 @@
 
   "inspection_field_required": "This field is required",
   "inspection_only_numbers": "Do not enter letters, only whole numbers",
-  "inspection_range_1_59": "You can only enter a value between 1 and 59"
+  "inspection_range_1_59": "You can only enter a value between 1 and 59",
+
+  "inspection_advanced_title": "Inspection Alerts",
+  "alert_at_8_12_title": "Alert at 8 and 12 seconds",
+  "alert_at_8_12_description": "Enable alerts when there are 7 and 3 seconds left in the inspection.",
+  "alert_at_8_12_button_title": "Enable time alerts",
+  "alert_at_8_12_button_hint": "Enables an alert when 7 and 3 seconds remain during inspection",
+  "alert_type_title": "Alert type",
+  "alert_type_description": "Choose how alerts will be displayed during the inspection:",
+  "inspection_alert_vibrant_type": "Vibrant",
+  "inspection_alert_sound_type": "Sound",
+  "inspection_alert_both_type": "Both"
 }

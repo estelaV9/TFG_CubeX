@@ -433,5 +433,16 @@
 
   "inspection_field_required": "Este campo es obligatorio",
   "inspection_only_numbers": "No introduzcas letras, solo números enteros",
-  "inspection_range_1_59": "Solo puedes introducir un rango entre 1 a 59"
+  "inspection_range_1_59": "Solo puedes introducir un rango entre 1 a 59",
+
+  "inspection_advanced_title": "Avisos durante la inspección",
+  "alert_at_8_12_title": "Alerta a los 8 y 12 segundos",
+  "alert_at_8_12_description": "Activa los avisos cuando queden 7 y 3 segundos de inspección.",
+  "alert_at_8_12_button_title": "Activar alertas de tiempo",
+  "alert_at_8_12_button_hint": "Activa una alerta cuando queden 7 y 3 segundos de inspección",
+  "alert_type_title": "Tipo de alerta",
+  "alert_type_description": "Elige cómo se mostrarán las alertas durante la inspección:",
+  "inspection_alert_vibrant_type": "Vibración",
+  "inspection_alert_sound_type": "Sonido",
+  "inspection_alert_both_type": "Ambas"
 }

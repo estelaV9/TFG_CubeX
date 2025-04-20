@@ -407,6 +407,16 @@ class Internationalization {
       'inspection_field_required': () => l10n.inspection_field_required,
       'inspection_only_numbers': () => l10n.inspection_only_numbers,
       'inspection_range_1_59': () => l10n.inspection_range_1_59,
+      'inspection_advanced_title': () => l10n.inspection_advanced_title,
+      'alert_at_8_12_title': () => l10n.alert_at_8_12_title,
+      'alert_at_8_12_description': () => l10n.alert_at_8_12_description,
+      'alert_at_8_12_button_title': () => l10n.alert_at_8_12_button_title,
+      'alert_at_8_12_button_hint': () => l10n.alert_at_8_12_button_hint,
+      'alert_type_title': () => l10n.alert_type_title,
+      'alert_type_description': () => l10n.alert_type_description,
+      'inspection_alert_vibrant_type': () => l10n.inspection_alert_vibrant_type,
+      'inspection_alert_sound_type': () => l10n.inspection_alert_sound_type,
+      'inspection_alert_both_type': () => l10n.inspection_alert_both_type,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
