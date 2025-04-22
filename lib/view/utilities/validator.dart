@@ -47,11 +47,11 @@ class Validator {
       bool profilePass = false,
       User? currentUser,
       BuildContext? context]) {
-    if (!profilePass && value == null || value!.isEmpty) {
+    if (!profilePass && (value == null || value.isEmpty)) {
       return 'Please fill in this field.';
     } // VALIDAR CAMPOS VACIOS (EXCEPTO SI ES DEL PROFILE)
 
-    if (value.isNotEmpty) {
+    if (value!.isNotEmpty) {
       if (value.length < 8) {
         return "Must be at least 8 characters.";
       } // VALIDAR QUE LA CONTRASEÑA CONTENGA AL MENSO 8 CARACTERES
@@ -90,9 +90,20 @@ class Validator {
   /// Si es para uso del Profile, puede ser nula.
   ///
   /// Retorna un mensaje de error si la validación falla o `null` si es exitosa.
-  static String? validateConfirmPassword(String? value, String password, [bool isProfile = false]) {
+  static String? validateConfirmPassword(String? value, String? password,
+      [bool isProfile = false]) {
     if (!isProfile && (value == null || value.isEmpty)) {
+      // SI NO ESTAMOS EN LA PANTALLA DE PERFIL Y EL CAMPO ESTA VACIO, MOSTRAMOS UN MENSAJE
       return 'Please fill in this field.';
+    } else {
+      // SI ESTAMOS EN LA PANTALLA DE PERFIL ENTONCES:
+      // - SI EL VALUE ES NULO PERO PASSWORD NO LO ES
+      // - O SI VALUE ESTA VACIO PERO PASSWORD NO LO ESTA
+      // ENTONCES MOSTRAMOS MENSAJE DE VALIDACION
+      if ((value == null && password != null) ||
+          (value!.isEmpty && password!.isNotEmpty)) {
+        return 'Please fill in this field.';
+      }
     } // VALIDAR CAMPOS VACIOS SI NO ES DEL PROFILE
 
     if (value!.isNotEmpty) {

@@ -6,7 +6,6 @@ import '../screen/historial_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import '../screen/statistics_screen.dart';
-import 'app_drawer.dart';
 
 /// Clase que representa la **barra de navegación inferior** de la aplicación.
 ///

@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:esteladevega_tfg_cubex/model/notification_service.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
-import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_configure_timer.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_language.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_notifications.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
@@ -21,6 +24,10 @@ import 'package:stroke_text/stroke_text.dart';
 import 'data/database/database_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:timezone/data/latest.dart' as tz;
+
+import 'model/app_notification.dart';
+import 'model/configuration_timer.dart';
 
 /// Método principal de la aplicación: Inicio de la app.
 ///
@@ -33,6 +40,14 @@ void main() async {
   // SE INICIALIZA LA BASE DE DATOS Y SE CONFIGURA LAS PREFERENCIAS
   await DatabaseHelper.initDatabase();
   await SettingsScreenState.startPreferences();
+  await AppNotification.startPreferences();
+  await ConfigurationTimer.startPreferences();
+
+  // INICIALIZAR EL TIMEZONES
+  tz.initializeTimeZones();
+
+  // SE INICIALIZAN LAS NOTIFICACIONES DONDE TE PIDE LOS PERMISOS
+  await NotificationService.initNotification();
 
   // QUITA EL STATUS BAR EN EL MOVIL
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -43,6 +58,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CurrentCubeType()),
         ChangeNotifierProvider(create: (_) => CurrentTime()),
         ChangeNotifierProvider(create: (_) => CurrentLanguage()),
+        ChangeNotifierProvider(create: (_) => CurrentNotifications()),
+        ChangeNotifierProvider(create: (_) => CurrentConfigurationTimer()),
         ChangeNotifierProvider(create: (_) => CurrentStatistics()),
         ChangeNotifierProvider(create: (_) => CurrentScramble()),
         ChangeNotifierProvider(create: (_) => CurrentSession()),
@@ -75,17 +92,13 @@ class CubeXApp extends StatelessWidget {
         // SE INICIALIZA EL SISTEMA PARA MOSTRAR DIALOGOS PERSONALIZADOS EN LA APP
         // ESTOS DOS ATRIBUTOS HACEN QUE FUNCIONE EL FLUTTER SMART DIALOG
         builder: FlutterSmartDialog.init(),
-
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate
         ],
-        supportedLocales: const [
-          Locale('es'),
-          Locale('en')
-        ],
+        supportedLocales: const [Locale('es'), Locale('en')],
         locale: locale,
         debugShowCheckedModeBanner: false,
         // QUITAR MARCA DEBUG
@@ -146,12 +159,10 @@ class _IntroScreenState extends State<IntroScreen> {
                     padding: const EdgeInsets.only(right: 10, top: 20),
                     // CubeX
                     child: Internationalization.internationalization
-                        .createLocalizedSemantics(
+                        .localizedTextOnlyKey(
                       context,
                       "cube_x",
-                      "cube_x",
-                      "cube_x",
-                      const TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'JollyLodger',
                         fontSize: 132,
                         color: AppColors.purpleIntroColor,
@@ -273,8 +284,7 @@ class _IntroScreenState extends State<IntroScreen> {
                             borderRadius: BorderRadius.circular(100),
                             // BORDES REDONDEADOS
                             side: const BorderSide(
-                                color: Colors.black,
-                                width: 1), // BORDE NEGRO
+                                color: Colors.black, width: 1), // BORDE NEGRO
                           ),
                         ),
                         // Sign up

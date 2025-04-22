@@ -13,6 +13,24 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class Internationalization {
   static Internationalization internationalization = Internationalization();
 
+  /// Crea un widget de texto internacionalizado con accesibilidad.
+  ///
+  /// Este método es como un "atajo" más simple del metodo `createLocalizedSemantics`
+  /// para generar un widget `Semantics`.
+  ///
+  /// Es útil cuando no se requieren etiquetas o hints, asi se puede reutilizar
+  /// una misma clave para todos los campos de accesibilidad y no repetir codigo.
+  ///
+  /// Parámetros:
+  /// - [context]: El contexto actual de la aplicación.
+  /// - [key]: Clave de localización que se usa como etiqueta, hint y contenido.
+  /// - [style]: Estilo aplicado al widget `Text`.
+  Widget localizedTextOnlyKey(BuildContext context, String key, {required TextStyle style}) {
+    return Internationalization.internationalization.createLocalizedSemantics(
+      context, key, key, key, style,
+    );
+  }
+
   /// Crea un widget `Semantics` con el texto traducido y accesibilidad.
   ///
   /// Este método genera un widget `Semantics` que incluye las traducciones
@@ -307,6 +325,107 @@ class Internationalization {
       'cube_deletion_failed_content': () => l10n.cube_deletion_failed_content,
       'cube_deletion_failed_content_label': () => l10n.cube_deletion_failed_content_label,
       'cube_deletion_failed_content_hint': () => l10n.cube_deletion_failed_content_hint,
+      'enable_notifications_title': () => l10n.enable_notifications_title,
+      'enable_notifications_label': () => l10n.enable_notifications_label,
+      'enable_notifications_hint': () => l10n.enable_notifications_hint,
+      'enable_notifications_description': () => l10n.enable_notifications_description,
+      'enable_notifications_button_hint': () => l10n.enable_notifications_button_hint,
+      'enable_notifications_button_title': () => l10n.enable_notifications_button_title,
+
+      'daily_notifications_title': () => l10n.daily_notifications_title,
+      'daily_notifications_description': () => l10n.daily_notifications_description,
+      'daily_notifications_button_title': () => l10n.daily_notifications_button_title,
+      'daily_notifications_button_hint': () => l10n.daily_notifications_button_hint,
+
+      'weekly_motivation_title': () => l10n.weekly_motivation_title,
+      'weekly_motivation_description': () => l10n.weekly_motivation_description,
+      'weekly_motivation_button_title': () => l10n.weekly_motivation_button_title,
+      'weekly_motivation_button_hint': () => l10n.weekly_motivation_button_hint,
+
+      'new_record_notification_title': () => l10n.new_record_notification_title,
+      'new_record_notification_description': () => l10n.new_record_notification_description,
+      'new_record_notification_button_title': () => l10n.new_record_notification_button_title,
+      'new_record_notification_button_hint': () => l10n.new_record_notification_button_hint,
+
+      'training_reminders_title': () => l10n.training_reminders_title,
+      'training_reminders_description': () => l10n.training_reminders_description,
+      'training_reminders_button_title': () => l10n.training_reminders_button_title,
+      'training_reminders_button_hint': () => l10n.training_reminders_button_hint,
+
+      'weekly_summary_title': () => l10n.weekly_summary_title,
+      'weekly_summary_description': () => l10n.weekly_summary_description,
+      'weekly_summary_button_title': () => l10n.weekly_summary_button_title,
+      'weekly_summary_button_hint': () => l10n.weekly_summary_button_hint,
+
+      'inactivity_notification_title': () => l10n.inactivity_notification_title,
+      'inactivity_notification_description': () => l10n.inactivity_notification_description,
+      'inactivity_notification_button_title': () => l10n.inactivity_notification_button_title,
+      'inactivity_notification_button_hint': () => l10n.inactivity_notification_button_hint,
+
+      'weekly_stats_title': () => l10n.weekly_stats_title,
+      'weekly_stats_description': () => l10n.weekly_stats_description,
+      'weekly_stats_button_title': () => l10n.weekly_stats_button_title,
+      'weekly_stats_button_hint': () => l10n.weekly_stats_button_hint,
+
+      'hide_time_title': () => l10n.hide_time_title,
+      'hide_time_description': () => l10n.hide_time_description,
+      'hide_time_button_title': () => l10n.hide_time_button_title,
+      'hide_time_button_hint': () => l10n.hide_time_button_hint,
+
+      'record_time_alert_title': () => l10n.record_time_alert_title,
+      'record_time_alert_description': () => l10n.record_time_alert_description,
+      'record_time_alert_button_title': () => l10n.record_time_alert_button_title,
+      'record_time_alert_button_hint': () => l10n.record_time_alert_button_hint,
+
+      'best_average_alert_title': () => l10n.best_average_alert_title,
+      'best_average_alert_description': () => l10n.best_average_alert_description,
+      'best_average_alert_button_title': () => l10n.best_average_alert_button_title,
+      'best_average_alert_button_hint': () => l10n.best_average_alert_button_hint,
+
+      'worst_time_alert_title': () => l10n.worst_time_alert_title,
+      'worst_time_alert_description': () => l10n.worst_time_alert_description,
+      'worst_time_alert_button_title': () => l10n.worst_time_alert_button_title,
+      'worst_time_alert_button_hint': () => l10n.worst_time_alert_button_hint,
+
+      'inspection_title': () => l10n.inspection_title,
+      'advanced_options_title': () => l10n.advanced_options_title,
+      'empty_stats_title': () => l10n.empty_stats_title,
+      'empty_stats_label': () => l10n.empty_stats_label,
+      'empty_stats_hint': () => l10n.empty_stats_hint,
+      'alerts': () => l10n.alerts,
+      'inspection_description': () => l10n.inspection_description,
+      'inspection_button_title': () => l10n.inspection_button_title,
+      'inspection_button_hint': () => l10n.inspection_button_hint,
+      'inspection_time_title': () => l10n.inspection_time_title,
+      'inspection_time_description': () => l10n.inspection_time_description,
+      'inspection_time_button_title': () => l10n.inspection_time_button_title,
+      'inspection_time_button_hint': () => l10n.inspection_time_button_hint,
+      'time_default': () => l10n.time_default,
+      'time_default_label': () => l10n.time_default_label,
+      'time_default_hint': () => l10n.time_default_hint,
+      'inspection_time_form': () => l10n.inspection_time_form,
+      'inspection_field_required': () => l10n.inspection_field_required,
+      'inspection_only_numbers': () => l10n.inspection_only_numbers,
+      'inspection_range_1_59': () => l10n.inspection_range_1_59,
+      'inspection_advanced_title': () => l10n.inspection_advanced_title,
+      'alert_at_8_12_title': () => l10n.alert_at_8_12_title,
+      'alert_at_8_12_description': () => l10n.alert_at_8_12_description,
+      'alert_at_8_12_button_title': () => l10n.alert_at_8_12_button_title,
+      'alert_at_8_12_button_hint': () => l10n.alert_at_8_12_button_hint,
+      'alert_type_title': () => l10n.alert_type_title,
+      'alert_type_description': () => l10n.alert_type_description,
+      'inspection_alert_vibrant_type': () => l10n.inspection_alert_vibrant_type,
+      'inspection_alert_sound_type': () => l10n.inspection_alert_sound_type,
+      'inspection_alert_both_type': () => l10n.inspection_alert_both_type,
+      'delete': () => l10n.delete,
+      'delete_selected_times_button': () => l10n.delete_selected_times_button,
+      'close_selected_time': () => l10n.close_selected_time,
+      'reset': () => l10n.reset,
+      'reset_notifications_button': () => l10n.reset_notifications_button,
+      'permission_required_title': () => l10n.permission_required_title,
+      'permission_required_description': () => l10n.permission_required_description,
+      'open_settings_button': () => l10n.open_settings_button,
+      'notification_permissions_denied': () => l10n.notification_permissions_denied,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

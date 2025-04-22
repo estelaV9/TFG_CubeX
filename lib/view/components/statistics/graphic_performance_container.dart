@@ -33,6 +33,8 @@ import '../../utilities/internationalization.dart';
 /// - La opción de cambiar entre orientación horizontal y vertical.
 /// - La opción de mostrar/ocultar los tiempos en cada punto del gráfico.
 ///
+/// Si el usuario no ha realizado ningún tiempo, se mostrará un mensaje en vez de la gráfica.
+///
 /// La información se carga automáticamente al construir el widget, accediendo
 /// a la información del usuario, la sesión y el tipo de cubo seleccionados.
 class GraphicPerformanceContainer extends StatefulWidget {
@@ -102,8 +104,8 @@ class _GraphicPerformanceContainerState
     final currentSession = context.read<CurrentSession>().session;
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
-    CubeType? cubeType =
-        await cubeTypeDao.getCubeTypeByNameAndIdUser(currentCube!.cubeName, idUser);
+    CubeType? cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+        currentCube!.cubeName, idUser);
     if (cubeType.idCube == -1) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
       return;
@@ -213,25 +215,28 @@ class _GraphicPerformanceContainerState
   /// Método privado para generar una lista de tiempos que representan los mejores tiempos
   /// (PB) de una sesión.
   ///
-  /// Recorre la lista de tiempos (_listTimesData) y va agregando a la lista pbTimes
-  /// aquellos tiempos que sean menores al mínimo registrado hasta ese momento.
+  /// Si el usuario ha realizado tiempos entonces se recorrerá la lista de tiempos (_listTimesData)
+  /// y se irá agregando a la lista pbTimes aquellos tiempos que sean menores al mínimo
+  /// registrado hasta ese momento.
   ///
   /// Esta lista se utiliza para mostrar los PB en una gráfica con línea discontinua y con
   /// punto en los tiempos.
   void _loadPbList() {
-    // EL PRIMER MINIMO PB ES EL PRIMER TIEMPO QUE HIZO
-    double minimoPb = _listTimesData[0].time;
-    _TimeData timeData = _TimeData(minimoPb, _listTimesData[0].date);
-    pbTimes.add(timeData);
+    if (_listTimesData.isNotEmpty) {
+      // EL PRIMER MINIMO PB ES EL PRIMER TIEMPO QUE HIZO
+      double minimoPb = _listTimesData[0].time;
+      _TimeData timeData = _TimeData(minimoPb, _listTimesData[0].date);
+      pbTimes.add(timeData);
 
-    for (_TimeData c in _listTimesData) {
-      if (c.time < minimoPb) {
-        // SI EL TIEMPO ES MEJOR QUE EL MINIMO PB SE AGREGA A LA LISTA
-        minimoPb = c.time;
-        _TimeData timeDataPb = _TimeData(minimoPb, c.date);
-        pbTimes.add(timeDataPb);
+      for (_TimeData c in _listTimesData) {
+        if (c.time < minimoPb) {
+          // SI EL TIEMPO ES MEJOR QUE EL MINIMO PB SE AGREGA A LA LISTA
+          minimoPb = c.time;
+          _TimeData timeDataPb = _TimeData(minimoPb, c.date);
+          pbTimes.add(timeDataPb);
+        }
       }
-    }
+    } // VALIDAMOS QUE LA LISTA TIENE AL MENOS 1 TIEMPO PARA ESTABLECER EL MEJOR PB
   }
 
   @override
@@ -362,84 +367,100 @@ class _GraphicPerformanceContainerState
               ),
 
               // GRAFICA DE ESTADISTICAS
-              SfCartesianChart(
-                  // SI ESTA ACTIVO SE MUESTRA LA GRAFICA EN VERTICAL
-                  isTransposed: isVerticalGraphActive,
-                  // SE USA FECHAS FORMATEADAS
-                  primaryXAxis: const CategoryAxis(),
-                  palette: [
-                    // COLOR DEL GRAFICO
-                    AppColors.darkPurpleColor.withOpacity(0.8),
-                  ],
-                  // DESHABILITAMOS LA LEYENDA
-                  legend: const Legend(isVisible: false),
-                  // LOS TOOLTIPS AL PULSAR UN TIEMPO ESTA ACTIVO
-                  tooltipBehavior: TooltipBehavior(enable: true),
-                  series: <CartesianSeries<_TimeData, String>>[
-                    // GRAFICA DE TIEMPOS
-                    LineSeries<_TimeData, String>(
-                        // DATOS DE LOS TIEMPOS
-                        dataSource: _listTimesData,
-                        xValueMapper: (_TimeData timeData, _) {
-                          DateTime parsedDate = DateTime.parse(timeData.date);
-                          // SEGUN LA OPCION ELEGIDA SE MUESTRA DE UN TIPO DE FECHA
-                          switch (currentFilter) {
-                            case TimeFilter.daily:
-                              // CON EL DIA/MES/AÑO Y HORA:MINUTOS
-                              return '${DateFormat('dd-MM-yyyy').format(parsedDate)}\n${DateFormat('HH:mm').format(parsedDate)}';
-                            case TimeFilter.monthly:
-                              // CON EL NOMBRE COMPLETO DEL MES
-                              return DateFormat('MMMM').format(parsedDate);
-                            case TimeFilter.yearly:
-                              // SE MEUSTRA EL AÑO
-                              return DateFormat('yyyy').format(parsedDate);
-                          }
-                        },
-                        // VALOR TIEMPO
-                        yValueMapper: (_TimeData timeData, _) => timeData.time,
-                        // SE QUITA LA LEYENDA
-                        name: '',
-                        isVisibleInLegend: false,
-                        // SI ESTA ACTIVO SE MUESTRA EL TIEMPO
-                        dataLabelSettings:
-                            DataLabelSettings(isVisible: isNumberActive)),
+              (_listTimesData.isEmpty && pbTimes.isEmpty)
+                  ?
+                  // SI LA LISTA D ETIEMPOS Y DE PB ESTA VACIA ENTONCES SE MUESTRA
+                  // UN CONTAINER INDICANDO QUE ESTA VACIA LA GRAFICA
+                  Container(
+                      padding: const EdgeInsets.all(20),
+                      height: 200,
+                      alignment: Alignment.center,
+                      child: // You haven’t recorded any time yet
+                          Internationalization.internationalization
+                              .createLocalizedSemantics(
+                                  context,
+                                  "empty_stats_label",
+                                  "empty_stats_hint",
+                                  "empty_stats_title",
+                                  AppStyles.darkPurpleAndBold(20)))
+                  : SfCartesianChart(
+                      // SI ESTA ACTIVO SE MUESTRA LA GRAFICA EN VERTICAL
+                      isTransposed: isVerticalGraphActive,
+                      // SE USA FECHAS FORMATEADAS
+                      primaryXAxis: const CategoryAxis(),
+                      palette: [
+                        // COLOR DEL GRAFICO
+                        AppColors.darkPurpleColor.withOpacity(0.8),
+                      ],
+                      // DESHABILITAMOS LA LEYENDA
+                      legend: const Legend(isVisible: false),
+                      // LOS TOOLTIPS AL PULSAR UN TIEMPO ESTA ACTIVO
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CartesianSeries<_TimeData, String>>[
+                        // GRAFICA DE TIEMPOS
+                        LineSeries<_TimeData, String>(
+                            // DATOS DE LOS TIEMPOS
+                            dataSource: _listTimesData,
+                            xValueMapper: (_TimeData timeData, _) {
+                              DateTime parsedDate = DateTime.parse(timeData.date);
+                              // SEGUN LA OPCION ELEGIDA SE MUESTRA DE UN TIPO DE FECHA
+                              switch (currentFilter) {
+                                case TimeFilter.daily:
+                                  // CON EL DIA/MES/AÑO Y HORA:MINUTOS
+                                  return '${DateFormat('dd-MM-yyyy').format(parsedDate)}\n${DateFormat('HH:mm').format(parsedDate)}';
+                                case TimeFilter.monthly:
+                                  // CON EL NOMBRE COMPLETO DEL MES
+                                  return DateFormat('MMMM').format(parsedDate);
+                                case TimeFilter.yearly:
+                                  // SE MEUSTRA EL AÑO
+                                  return DateFormat('yyyy').format(parsedDate);
+                              }
+                            },
+                            // VALOR TIEMPO
+                            yValueMapper: (_TimeData timeData, _) => timeData.time,
+                            // SE QUITA LA LEYENDA
+                            name: '',
+                            isVisibleInLegend: false,
+                            // SI ESTA ACTIVO SE MUESTRA EL TIEMPO
+                            dataLabelSettings:
+                                DataLabelSettings(isVisible: isNumberActive)),
 
-                    // GRAFICA CON LOS PBS
-                    LineSeries<_TimeData, String>(
-                        dataSource: pbTimes,
-                        xValueMapper: (_TimeData timeData, _) {
-                          DateTime parsedDate = DateTime.parse(timeData.date);
-                          switch (currentFilter) {
-                            case TimeFilter.daily:
-                              return '${DateFormat('dd-MM-yyyy').format(parsedDate)}\n${DateFormat('HH:mm').format(parsedDate)}';
-                            case TimeFilter.monthly:
-                              return DateFormat('MMMM').format(parsedDate);
-                            case TimeFilter.yearly:
-                              return DateFormat('yyyy').format(parsedDate);
-                          }
-                        },
+                        // GRAFICA CON LOS PBS
+                        LineSeries<_TimeData, String>(
+                            dataSource: pbTimes,
+                            xValueMapper: (_TimeData timeData, _) {
+                              DateTime parsedDate = DateTime.parse(timeData.date);
+                              switch (currentFilter) {
+                                case TimeFilter.daily:
+                                  return '${DateFormat('dd-MM-yyyy').format(parsedDate)}\n${DateFormat('HH:mm').format(parsedDate)}';
+                                case TimeFilter.monthly:
+                                  return DateFormat('MMMM').format(parsedDate);
+                                case TimeFilter.yearly:
+                                  return DateFormat('yyyy').format(parsedDate);
+                              }
+                            },
 
-                        // HACER LA LINEA DISCONTINUA
-                        dashArray: const <double>[12, 12],
-                        markerSettings: const MarkerSettings(
-                          // SE MUESTRAN LOS PUNTOS
-                          isVisible: true,
-                          // FORMA DE CIRCULO
-                          shape: DataMarkerType.circle,
-                          // TAMAÑO Y ALTURA DEL PUNTO
-                          width: 5,
-                          height: 5,
-                          borderWidth: 3,
-                          // COLOR DEL PUNTO
-                          color: AppColors.pointPbGraphic,
-                          borderColor: AppColors.pointPbGraphic,
-                        ),
-                        yValueMapper: (_TimeData timeData, _) => timeData.time,
-                        name: '',
-                        isVisibleInLegend: false,
-                        dataLabelSettings:
-                            DataLabelSettings(isVisible: isNumberActive))
-                  ]),
+                            // HACER LA LINEA DISCONTINUA
+                            dashArray: const <double>[12, 12],
+                            markerSettings: const MarkerSettings(
+                              // SE MUESTRAN LOS PUNTOS
+                              isVisible: true,
+                              // FORMA DE CIRCULO
+                              shape: DataMarkerType.circle,
+                              // TAMAÑO Y ALTURA DEL PUNTO
+                              width: 5,
+                              height: 5,
+                              borderWidth: 3,
+                              // COLOR DEL PUNTO
+                              color: AppColors.pointPbGraphic,
+                              borderColor: AppColors.pointPbGraphic,
+                            ),
+                            yValueMapper: (_TimeData timeData, _) => timeData.time,
+                            name: '',
+                            isVisibleInLegend: false,
+                            dataLabelSettings:
+                                DataLabelSettings(isVisible: isNumberActive))
+                      ]),
             ]),
           ),
         ],

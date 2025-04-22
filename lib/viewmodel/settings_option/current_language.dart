@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../view/screen/settings.dart';
+import '../../view/screen/settings.dart';
 
 /// Provider para gestionar el **idioma actual** de la aplicación.
 ///

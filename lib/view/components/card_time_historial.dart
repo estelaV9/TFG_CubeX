@@ -1,7 +1,9 @@
 import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,6 @@ import '../../model/session.dart';
 import '../../model/time_training.dart';
 import '../../view/utilities/app_color.dart';
 import '../../viewmodel/current_time.dart';
-import '../../viewmodel/current_user.dart';
 
 /// Widget que muestra una lista de tiempos registrados en un cubo de una sesión.
 ///
@@ -22,7 +23,12 @@ import '../../viewmodel/current_user.dart';
 /// tiempo y la opción de eliminarlo o copiar el scramble con el que se realizó ese tiempo.
 ///
 /// El tiempo se elimina de la base de datos y se actualiza la vista con un mensaje de
-/// éxito o error.
+/// éxito o error. Además, se implementa un sistema donde los usuarios pueden mantener
+/// presionado para seleccionar múltiples tiempos y eliminarlos directamente con el
+/// botón flotante que aparece. Si el usuario quiere eliminar un tiempo de la selección
+/// solo deberá pulsar la 'x' que aparece cuando se presiona un tiempo.
+///
+/// Se asegura que esté montado (`mounted`) antes de ejecutar `setState` o acciones con contexto.
 class CardTimeHistorial extends StatefulWidget {
   const CardTimeHistorial({Key? key}) : super(key: key);
 
@@ -36,14 +42,24 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
   String scramble = "";
   int? idSession;
 
+  // ATRIBUTO PARA GUARDAR TODOS LOS INDEX DE TIEMPOS QUE EL USUARIO HA SELECCIONADO PARA ELIMINAR
+  Set<int> selectedIndex = {};
+
   /// Método que elimina un tiempo específico de la base de datos.
   ///
   /// Este método obtiene el ID del tiempo a eliminar utilizando el scramble y
   /// el ID de la sesión.
   /// Si se elimina correctamente o si ocurre un error, se muestra un mensaje de éxito.
-  Future<void> deleteTime() async {
-    // SE CIERRA EL DIALOGO AL ELIMINAR
-    Navigator.of(context).pop();
+  ///
+  /// Parámetros:
+  /// - [isSelectedOnPress]: atributo opcional para saber si el usuario esta eliminando el tiempo
+  /// directamente en los detalles del tiempo especifico o si esta eliminando varios tiempos al
+  /// mantener presionada cada tiempo.
+  Future<void> deleteTime([bool isSelectedOnPress = false]) async {
+    if (!isSelectedOnPress) {
+      // SE CIERRA EL DIALOGO AL ELIMINAR
+      Navigator.of(context).pop();
+    } // SI LA LLAMADA AL METODO NO ES CUANDO SE MANTIENE PARA BORRAR, SE CIERRA EL DIALOGO
 
     final idDeleteTime =
         await timeTrainingDao.getIdByTime(scramble, idSession!);
@@ -85,38 +101,39 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
   /// tipo de cubo actual.
   /// Luego, recupera los tiempos de entrenamiento asociados a esa sesión y
   /// cubo, y actualiza la lista de tiempos.
+  ///
+  /// Se asegura que esté montado (`mounted`) antes de ejecutar `setState` o acciones con contexto.
   Future<void> _loadTimes([CurrentTime? currentTime]) async {
-    UserDao userDao = UserDao();
-    CubeTypeDao cubeTypeDao = CubeTypeDao();
-    SessionDao sessionDao = new SessionDao();
+    // VERIFICA SI EL WIDGET SIGUE MONTADO (SI ESTAACTIVO EN PANTALLA)
+    // SI NO LO ESTA, SE SALE PARA EVITAR ERRORES AL USAR CONTEXT O setState
+    // (asi no salen los errores cada vez que entra al timer)
+    if (!mounted) return;
 
-    // OBTENER EL USUARIO ACTUAL
-    final currentUser = context.read<CurrentUser>().user;
-    // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
-    if (idUser == -1) {
-      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-      return;
-    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-    // OBTENER LA SESSION Y EL TIPO DE CUBO ACTUAL
+    // GUARDAR CONTEXTO AL PRINCIPIO
     final currentSession = context.read<CurrentSession>().session;
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
-    CubeType? cubeType =
-        await cubeTypeDao.getCubeTypeByNameAndIdUser(currentCube!.cubeName, idUser);
-    if (cubeType == null) {
+    UserDao userDao = UserDao();
+    CubeTypeDao cubeTypeDao = CubeTypeDao();
+    SessionDao sessionDao = SessionDao();
+
+    // OBTENER EL ID DEL USUARIO
+    int? idUser = await userDao.getUserId(context);
+
+    CubeType? cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+        currentCube!.cubeName, idUser);
+    if (cubeType.idCube == -1) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
       return;
     } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
 
     // OBJETO SESION CON EL ID DEL USUARIO, NOMBRE Y TIPO DE CUBO
     Session? session = await sessionDao.getSessionByUserCubeName(
-        idUser, currentSession!.sessionName, cubeType.idCube);
+        idUser!, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
       // perdon por el bucle si no tiene tiempos
-      final times;
+      final List<TimeTraining> times;
 
       if (currentTime?.searchComment != null) {
         // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE BUSCA POR COMENTARIOS
@@ -139,6 +156,9 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
         times = await timeTrainingDao.getTimesOfSession(session.idSession, null,
             null, currentTime?.dateAsc, currentTime?.timeAsc);
       }
+
+      // ANTES DE HACER UN SetState VERIFICAMOS SI EL WIDGET SIGUE MONTADO
+      if (!mounted) return;
 
       setState(() {
         listTimes = times;
@@ -174,46 +194,134 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
       fontSize = 20;
     }
 
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 1.4,
-      ),
-      itemCount: listTimes.length,
-      itemBuilder: (context, index) {
-        final time = listTimes[index];
-        return SizedBox(
-          height: 50,
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                scramble = listTimes[index].scramble;
-                idSession = listTimes[index].idSession!;
-              }); // SETTEAMOS LOS DATOS DEL SCRAMBLE E ID
-              AlertUtil.showDetailsTime(context, deleteTime, listTimes[index]);
-            },
-            child: Card(
-              color: AppColors.lightVioletColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 4,
-              child: Center(
-                child: Text(
-                  // SI EL TIEMPO TIENE UNA PENALIZACION DE DNF, SE ESTABLECE EN VEZ DEL TIEMPO
-                  time.penalty == "DNF"
-                      ? time.penalty.toString()
-                      : time.timeInSeconds.toStringAsFixed(2),
-                  style: TextStyle(
-                      fontSize: fontSize, fontWeight: FontWeight.bold),
-                ),
+    return Scaffold(
+      // COLOR DEL FONDO TRANSPARENTE
+      backgroundColor: Colors.transparent,
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 1.4,
+        ),
+        itemCount: listTimes.length,
+        itemBuilder: (context, index) {
+          final time = listTimes[index];
+          // VERIFICA SI EL TIEMPO ACTUAL ESTA SELECCIONADO PARA CAMBIAR SU ESTADO VISUAL
+          final isSelected = selectedIndex.contains(index);
+          return SizedBox(
+            height: 50,
+            child: GestureDetector(
+              onTap: () {
+                if (selectedIndex.isNotEmpty) {
+                  // SI HAY TIEMPOS SELECCIONADOS, AÑADE O ELIMINA ESE TIEMPO DE LA LISTA DE SELECCIONADOS
+                  setState(() {
+                    isSelected
+                        ? selectedIndex.remove(index)
+                        : selectedIndex.add(index);
+                  });
+                } else {
+                  // SI NO HAY ELEMENTOS SELECCIONADOS, SE MUESTRA LOS DETALLES DEL TIEMPO
+                  setState(() {
+                    scramble = time.scramble;
+                    idSession = time.idSession!;
+                  });
+                  AlertUtil.showDetailsTime(context, deleteTime, time);
+                }
+              },
+              onLongPress: () {
+                // CUANDO EL USUARIO MANTENGA PULSADO SE AÑADIRA EL TIEMPO A LA LISTA DE SELECCIONADOS
+                setState(() {
+                  selectedIndex.add(index);
+                });
+              },
+              child: Stack(
+                children: [
+                  // CONTAINER ANIMADO PARA SI ESTA SELECCIONADO O NO
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      color: AppColors.lightVioletColor,
+                      border: Border.all(
+                        // SI ESTA SELECCIONADO MUESTRA UN BORDE COLOR ROJO
+                        color: isSelected
+                            ? Colors.red.withOpacity(0.8)
+                            : Colors.transparent,
+                        width: 3,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        // SI EL TIEMPO TIENE UNA PENALIZACION DE DNF, SE ESTABLECE EN VEZ DEL TIEMPO
+                        time.penalty == "DNF"
+                            ? time.penalty.toString()
+                            : time.timeInSeconds.toStringAsFixed(2),
+                        style: TextStyle(
+                            fontSize: fontSize, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  if (isSelected)
+                    // SI ESTA SELECCIONADO
+                    Positioned(
+                      top: 5,
+                      right: 5,
+                      child: CircleAvatar(
+                          radius: 9,
+                          backgroundColor: Colors.red.withOpacity(0.8),
+                          child: IconClass.iconButton(context, () {
+                            setState(() {
+                              scramble = time.scramble;
+                              idSession = time.idSession!;
+                              // QUITAMOS EL ELEMENTO SELECCIONADO
+                              selectedIndex.remove(index);
+                            });
+                          }, "close_selected_time", Icons.close, Colors.white,
+                              14, EdgeInsets.zero)),
+                    ),
+                ],
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
+
+      // BOTON PARA LA ELIMINACION MULTIPLE DE LOS TIEMPOS
+      floatingActionButton: selectedIndex.isNotEmpty
+          ? Padding(
+              padding: const EdgeInsets.all(20),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: FloatingActionButton.extended(
+                  tooltip: Internationalization.internationalization
+                      .getLocalizations(
+                          context, "delete_selected_times_button"),
+                  onPressed: () async {
+                    // ELIMINA TODOS LOS ELEMENTOS SELECCIONADOS
+                    for (var index in selectedIndex.toList()) {
+                      scramble = listTimes[index].scramble;
+                      idSession = listTimes[index].idSession!;
+                      await deleteTime(true);
+                    }
+                    // LIMPIA LA LISTA DE SELECCIONADOS
+                    setState(() {
+                      selectedIndex.clear();
+                    });
+                  },
+                  icon: IconClass.iconMaker(context, Icons.delete, "delete"),
+                  label: Text(
+                      "${Internationalization.internationalization.getLocalizations(context, "delete")} (${selectedIndex.length})"),
+                  backgroundColor: AppColors.deleteAccount,
+                ),
+              ),
+            )
+          : null,
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

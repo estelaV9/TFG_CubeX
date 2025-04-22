@@ -3,6 +3,7 @@ import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utilities/app_styles.dart';
 import '../utilities/internationalization.dart';
 
 /// Pantalla de información acerca de la aplicación.
@@ -23,19 +24,7 @@ class AboutAppScreen extends StatelessWidget {
         backgroundColor: AppColors.lightVioletColor,
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          // COLOR DEGRADADO PARA EL FONDO
-          gradient: LinearGradient(
-            begin: Alignment.topCenter, // DESDE ARRIBA
-            end: Alignment.bottomCenter, // HASTA ABAJO
-            colors: [
-              // COLOR DE ARRIBA DEL DEGRADADO
-              AppColors.upLinearColor,
-              // COLOR DE ABAJO DEL DEGRADADO
-              AppColors.downLinearColor,
-            ],
-          ),
-        ),
+        decoration: AppStyles.boxDecorationContainer(),
         child: SingleChildScrollView(
           // SCROLL
           child: Padding(
@@ -53,12 +42,10 @@ class AboutAppScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(right: 10),
                         // CubeX
                         child: Internationalization.internationalization
-                            .createLocalizedSemantics(
+                            .localizedTextOnlyKey(
                           context,
                           "cube_x",
-                          "cube_x",
-                          "cube_x",
-                          const TextStyle(
+                          style: const TextStyle(
                             fontFamily: 'JollyLodger',
                             fontSize: 100,
                             color: AppColors.purpleIntroColor,
@@ -93,24 +80,19 @@ class AboutAppScreen extends StatelessWidget {
                 Align(
                   alignment: Alignment.center,
                   child: Internationalization.internationalization
-                      .createLocalizedSemantics(
+                      .localizedTextOnlyKey(
                     context,
                     "version",
-                    "version",
-                    "version",
-                    const TextStyle(fontSize: 18, color: Colors.grey),
+                    style: const TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // DESCRIPCION
-                Internationalization.internationalization
-                    .createLocalizedSemantics(
+                Internationalization.internationalization.localizedTextOnlyKey(
                   context,
                   "description",
-                  "description",
-                  "description",
-                  const TextStyle(fontSize: 16, color: Colors.black87),
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
 
                 const SizedBox(height: 20),
@@ -126,12 +108,10 @@ class AboutAppScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Internationalization.internationalization
-                          .createLocalizedSemantics(
+                          .localizedTextOnlyKey(
                         context,
                         "open_source",
-                        "open_source",
-                        "open_source",
-                        const TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -168,35 +148,29 @@ class AboutAppScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Internationalization.internationalization
-                          .createLocalizedSemantics(
+                          .localizedTextOnlyKey(
                         context,
                         "developer",
-                        "developer",
-                        "developer",
-                        const TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 10),
                       Internationalization.internationalization
-                          .createLocalizedSemantics(
+                          .localizedTextOnlyKey(
                         context,
                         "developer_name",
-                        "developer_name",
-                        "developer_name",
-                        const TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                         ),
                       ),
                       const SizedBox(height: 5),
                       Internationalization.internationalization
-                          .createLocalizedSemantics(
+                          .localizedTextOnlyKey(
                         context,
                         "developer_email",
-                        "developer_email",
-                        "developer_email",
-                        const TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                         ),
                       )
@@ -218,24 +192,20 @@ class AboutAppScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Internationalization.internationalization
-                          .createLocalizedSemantics(
+                          .localizedTextOnlyKey(
                         context,
                         "tools",
-                        "tools",
-                        "tools",
-                        const TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 10),
                       Internationalization.internationalization
-                          .createLocalizedSemantics(
+                          .localizedTextOnlyKey(
                         context,
                         "tools_list",
-                        "tools_list",
-                        "tools_list",
-                        const TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                         ),
                       ),
@@ -263,17 +233,8 @@ class AboutAppScreen extends StatelessWidget {
                           } // VERIFICA SI LA URL ES VALIDA
                         },
                         child: Internationalization.internationalization
-                            .createLocalizedSemantics(
-                          context,
-                          "name_github",
-                          "name_github",
-                          "name_github",
-                          const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.darkPurpleColor,
-                            fontSize: 30,
-                          ),
-                        ))
+                            .localizedTextOnlyKey(context, "name_github",
+                                style: AppStyles.darkPurpleAndBold(30)))
                   ],
                 )
               ],

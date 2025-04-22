@@ -60,6 +60,9 @@ class _TimerScreenState extends State<TimerScreen> {
 
   // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
   String _finalTime = "0.00";
+  // ATRIBUTO PARA COMPARAR EL PB ANTERIOR CON EL TIEMPO QUE HA HECHO PARA MOSTRAR
+  // UNA ALERTA SI HA SUPERADO SU PB
+  double auxPbValue = 0;
 
   // KEY DEL ScrambleContainer
   final GlobalKey<ScrambleContainerState> _scrambleKey =
@@ -79,8 +82,13 @@ class _TimerScreenState extends State<TimerScreen> {
     super.initState();
     // INICIA LAS ESTADISTICAS
     initTimeStatistics();
-    currentTime = context.read<CurrentTime>();
-    currentTime.setResetTimeTraining();
+    // EJECUTA LA FUNCION DESPUES DE QUE EL FRAME ACTUAL TERMINE DE CONSTRUIRSE,
+    // ASI NO CAUSA ERRORES DURANTE EL BUILD PARA HACER CAMBIOS EN EL STATE O EN PROVIDERS
+    // (se soluciona el mensaje de error cuando pulsas en el timer de setState() or
+    // markNeedsBuild() called during build)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CurrentTime>(context, listen: false).setResetTimeTraining();
+    });
   }
 
   @override
@@ -268,6 +276,12 @@ class _TimerScreenState extends State<TimerScreen> {
         // SE ACTUALIZA EL ESTADO GLOBAL
         currentTime.setTimeTraining(timeTraining);
 
+        final currentStatistics = context.read<CurrentStatistics>();
+
+        // EL PB AUXILIAR (PILLAMOS EL PB ANTERIOR)
+        auxPbValue =
+            _convertTimeToSeconds(await currentStatistics.getPbValue());
+
         initTimeStatistics(); // ACTUALIZAR LAS ESTADISTICAS
       } else {
         DatabaseHelper.logger.e("Error al guardar el tiempo.");
@@ -355,6 +369,9 @@ class _TimerScreenState extends State<TimerScreen> {
     _finalTime = currentTime.getFormattedTime();
     initTimeStatistics();
 
+    // EL TIEMPO ACTUAL AUXILIAR CONVERTIDO EN SEGUNDOS
+    double auxFinalTime = _convertTimeToSeconds(_finalTime);
+
     return Scaffold(
       key: _scaffoldKey, // KEY PARA CONTROLLAR EL SCAFFOLD PARA EL DRAWER
       drawer: const AppDrawer(), // DRAWER
@@ -363,19 +380,7 @@ class _TimerScreenState extends State<TimerScreen> {
           // FONDO DEGRADADO
           Positioned.fill(
               child: Container(
-            decoration: const BoxDecoration(
-              // COLOR DEGRADADO PARA EL FONDO
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, // DESDE ARRIBA
-                end: Alignment.bottomCenter, // HASTA ABAJO
-                colors: [
-                  // COLOR DE ARRIBA DEL DEGRADADO
-                  AppColors.upLinearColor,
-                  // COLOR DE ABAJO DEL DEGRADADO
-                  AppColors.downLinearColor,
-                ],
-              ),
-            ),
+            decoration: AppStyles.boxDecorationContainer(),
           )),
 
           Positioned(
@@ -618,6 +623,37 @@ class _TimerScreenState extends State<TimerScreen> {
               ),
             ),
           ),
+
+          // SI HA SUPERADO SU PB SE MUESTRA UN CONTAINER EN FORMA DE ALERTA
+          Positioned(
+            bottom: 165,
+            right: 20,
+            child: auxFinalTime < auxPbValue
+                ? Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      // SEPARARLO DE LAS ESTADISTICAS
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: AppColors.lightVioletColor, width: 2)),
+                      child: const Text("¡Has superado tu\nmejor tiempo!"),
+                    )
+
+                    /*CustomPaint(
+                painter: AlertRecordWave(
+                    message: "¡Has superado tu\nmejor tiempo!"
+                ),
+                child: const SizedBox(
+                  width: 160,
+                  height: 80,
+                ),
+              )*/
+                    )
+                : const Text(""),
+          )
         ],
       ),
     );

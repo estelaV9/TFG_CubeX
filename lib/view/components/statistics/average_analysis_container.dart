@@ -49,7 +49,6 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
     "ao12": "00:00.00",
     "ao50": "00:00.00",
     "ao100": "00:00.00",
-    "aoTotal": "00:00.00",
   };
 
   String aoTotal = "00:00.00";

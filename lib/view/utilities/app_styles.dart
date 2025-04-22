@@ -97,4 +97,26 @@ class AppStyles {
       ),
     );
   }
+
+  /// Devuelve la decoración de fondo con un degradado para el contenedor.
+  ///
+  /// Esta función proporciona un `BoxDecoration` que aplica un fondo degradado
+  /// de arriba hacia abajo, utilizando dos colores definidos en `AppColors`
+  /// (`upLinearColor` y `downLinearColor`). Este degradado se utiliza como fondo
+  /// en varios containers de las pantallas dentro de la aplicación.
+  static BoxDecoration boxDecorationContainer(){
+    return const BoxDecoration(
+      // COLOR DEGRADADO PARA EL FONDO
+      gradient: LinearGradient(
+        begin: Alignment.topCenter, // DESDE ARRIBA
+        end: Alignment.bottomCenter, // HASTA ABAJO
+        colors: [
+          // COLOR DE ARRIBA DEL DEGRADADO
+          AppColors.upLinearColor,
+          // COLOR DE ABAJO DEL DEGRADADO
+          AppColors.downLinearColor,
+        ],
+      ),
+    );
+  }
 }

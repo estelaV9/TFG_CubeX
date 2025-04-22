@@ -336,5 +336,125 @@
 
   "cube_deletion_failed_content_hint": "Debe haber al menos un tipo de cubo activo.",
   "cube_deletion_failed_content_label": "Eliminar tipo de cubo",
-  "cube_deletion_failed_content": "No se puede eliminar este tipo de cubo porque es el único activo."
+  "cube_deletion_failed_content": "No se puede eliminar este tipo de cubo porque es el único activo.",
+
+  "enable_notifications_title": "Activar notificaciones",
+  "enable_notifications_label": "Notificaciones",
+  "enable_notifications_hint": "Activa esta opción para recibir alertas",
+  "enable_notifications_description": "Recibe actualizaciones oportunas y recordatorios importantes directamente en tu dispositivo.",
+
+  "enable_notifications_button_hint": "Pulsa para activar las notificaciones",
+  "enable_notifications_button_title": "Activar las notificaciones",
+
+
+  "allow_notifications_title": "Permitir notificaciones",
+  "allow_notifications_description": "Recibe recordatorios para mejorar tus tiempos y no olvides entrenar.",
+  "toggle_button_title": "Desactivar notificaciones",
+  "toggle_button_hint": "Toca para desactivar las notificaciones.",
+  "toggle_button_label": "Notificaciones",
+
+  "daily_notifications_title": "Notificaciones Diarias",
+  "daily_notifications_description": "Recibe un recordatorio diario para seguir practicando y mejorar tus tiempos. ¡No olvides entrenar!",
+  "daily_notifications_button_title": "Activar notificaciones diarias",
+  "daily_notifications_button_hint": "Muestra información sobre las notificaciones diarias",
+
+  "weekly_motivation_title": "Motivación Semanal",
+  "weekly_motivation_description": "Recibe mensajes motivacionales semanales para seguir adelante con tus retos. ¡Nunca te rindas!",
+  "weekly_motivation_button_title": "Activar motivación semanal",
+  "weekly_motivation_button_hint": "Muestra información sobre los mensajes motivacionales semanales",
+
+  "new_record_notification_title": "Logros y Récords",
+  "new_record_notification_description": "Activa esta opción para recibir notificaciones cuando consigas un nuevo récord personal o logros importantes.",
+  "new_record_notification_button_title": "Activar logros y récords",
+  "new_record_notification_button_hint": "Muestra información sobre las notificaciones de nuevos récords",
+
+  "training_reminders_title": "Recordatorios de Entrenamiento",
+  "training_reminders_description": "Recibe recordatorios para entrenar y mejorar tu velocidad de resolución a lo largo de la semana. ¡No pierdas la costumbre!",
+  "training_reminders_button_title": "Activar recordatorios de entrenamiento",
+  "training_reminders_button_hint": "Muestra información sobre recordatorios semanales para entrenar",
+
+  "weekly_summary_title": "Resúmenes Semanales",
+  "weekly_summary_description": "Recibe un resumen semanal de tu progreso, tiempos y estadísticas para que sigas viendo tu evolución.",
+  "weekly_summary_button_title": "Activar resumen semanal",
+  "weekly_summary_button_hint": "Muestra información sobre el resumen de tu progreso semanal",
+
+  "inactivity_notification_title": "Notificaciones de Inactividad",
+  "inactivity_notification_description": "Recibe un mensaje si no has resuelto ningún cubo en los últimos días. ¡Es hora de retomar la práctica!",
+  "inactivity_notification_button_title": "Activar notificaciones por inactividad",
+  "inactivity_notification_button_hint": "Muestra información sobre alertas de inactividad prolongada",
+
+  "weekly_stats_title": "Estadísticas Semanales",
+  "weekly_stats_description": "Recibe un informe semanal sobre tus tiempos y mejoras.",
+  "weekly_stats_button_title": "Activar estadísticas semanales",
+  "weekly_stats_button_hint": "Muestra información sobre tus estadísticas de la semana",
+
+  "hide_time_title": "Ocultar el tiempo en ejecución",
+  "hide_time_description": "No mostrar el cronómetro mientras esté activo para evitar distracciones o reducir presión.",
+  "hide_time_button_title": "Ocultar tiempo en ejecución",
+  "hide_time_button_hint": "No muestra el tiempo hasta que finalices la resolución",
+
+  "record_time_alert_title": "Alerta de tiempo récord",
+  "record_time_alert_description": "Recibe una notificación cuando consigas tu mejor tiempo personal.",
+  "record_time_alert_button_title": "Activar alerta de récord",
+  "record_time_alert_button_hint": "Te avisará cuando logres tu mejor tiempo",
+
+  "best_average_alert_title": "Alerta de mejor promedio",
+  "best_average_alert_description": "Se notificará cuando mejores tu promedio de tiempos (ao5, ao12, etc).",
+  "best_average_alert_button_title": "Activar alerta de mejor promedio",
+  "best_average_alert_button_hint": "Recibirás alertas cuando superes tus promedios",
+
+  "worst_time_alert_title": "Alerta de peor tiempo",
+  "worst_time_alert_description": "Recibe una alerta cuando consigas tu peor tiempo personal.",
+  "worst_time_alert_button_title": "Activar alerta de peor tiempo",
+  "worst_time_alert_button_hint": "Te avisará cuando logres tu peor tiempo",
+
+  "inspection_title": "Inspección",
+  "advanced_options_title": "Opciones avanzadas",
+
+  "empty_stats_title": "Todavía no has registrado ningún tiempo",
+  "empty_stats_label": "La gráfica está vacía",
+  "empty_stats_hint": "La gráfica está vacía ya que no se ha registrado ningún tiempo",
+
+  "alerts": "Alertas",
+
+  "inspection_description": "Activa una cuenta atrás de inspección antes de iniciar el tiempo de resolución.",
+  "inspection_button_title": "Activar inspección",
+  "inspection_button_hint": "Muestra una cuenta atrás antes de comenzar la resolución",
+
+  "inspection_time_title": "Tiempo de inspección (segundos)",
+  "inspection_time_description": "Define cuántos segundos tendrás para inspeccionar el cubo antes de empezar. Por defecto, serán 15 segundos.",
+  "inspection_time_button_title": "Cambiar segundos de inspección",
+  "inspection_time_button_hint": "Elige cuántos segundos tendrás para inspeccionar antes de resolver",
+
+  "time_default": "Predeterminado",
+  "time_default_label": "Tiempo predeterminado",
+  "time_default_hint": "Restablece el tiempo de inspección a su valor por defecto (15 segundos)",
+  "inspection_time_form": "Introduce un tiempo de inspección",
+
+  "inspection_field_required": "Este campo es obligatorio",
+  "inspection_only_numbers": "No introduzcas letras, solo números enteros",
+  "inspection_range_1_59": "Solo puedes introducir un rango entre 1 a 59",
+
+  "inspection_advanced_title": "Avisos durante la inspección",
+  "alert_at_8_12_title": "Alerta a los 8 y 12 segundos",
+  "alert_at_8_12_description": "Activa los avisos cuando queden 7 y 3 segundos de inspección.",
+  "alert_at_8_12_button_title": "Activar alertas de tiempo",
+  "alert_at_8_12_button_hint": "Activa una alerta cuando queden 7 y 3 segundos de inspección",
+  "alert_type_title": "Tipo de alerta",
+  "alert_type_description": "Elige cómo se mostrarán las alertas durante la inspección:",
+  "inspection_alert_vibrant_type": "Vibración",
+  "inspection_alert_sound_type": "Sonido",
+  "inspection_alert_both_type": "Ambas",
+
+  "delete": "Eliminar",
+  "delete_selected_times_button": "Botón para eliminar los tiempos seleccionados",
+  "close_selected_time": "Cerrar tiempo seleccionado",
+
+  "reset": "Reiniciar",
+  "reset_notifications_button": "Reiniciar las notificaciones",
+  "notifications_activated": "Notificaciones activadas",
+  "permission_required_title": "Permiso necesario",
+  "permission_required_description": "Para gestionar las notificaciones, por favor activa los permisos en la configuración del dispositivo.",
+  "open_settings_button": "Abrir configuración",
+  "notification_permissions_denied": "Permisos de notificaciones denegados"
 }
