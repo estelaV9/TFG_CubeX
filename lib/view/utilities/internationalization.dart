@@ -417,6 +417,9 @@ class Internationalization {
       'inspection_alert_vibrant_type': () => l10n.inspection_alert_vibrant_type,
       'inspection_alert_sound_type': () => l10n.inspection_alert_sound_type,
       'inspection_alert_both_type': () => l10n.inspection_alert_both_type,
+      'delete': () => l10n.delete,
+      'delete_selected_times_button': () => l10n.delete_selected_times_button,
+      'close_selected_time': () => l10n.close_selected_time,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

@@ -448,5 +448,9 @@
   "alert_type_description": "Choose how alerts will be displayed during the inspection:",
   "inspection_alert_vibrant_type": "Vibrant",
   "inspection_alert_sound_type": "Sound",
-  "inspection_alert_both_type": "Both"
+  "inspection_alert_both_type": "Both",
+
+  "delete": "Delete",
+  "delete_selected_times_button": "Button to delete selected times",
+  "close_selected_time": "Close selected time"
 }

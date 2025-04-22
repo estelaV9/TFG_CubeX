@@ -444,5 +444,9 @@
   "alert_type_description": "Elige cómo se mostrarán las alertas durante la inspección:",
   "inspection_alert_vibrant_type": "Vibración",
   "inspection_alert_sound_type": "Sonido",
-  "inspection_alert_both_type": "Ambas"
+  "inspection_alert_both_type": "Ambas",
+
+  "delete": "Eliminar",
+  "delete_selected_times_button": "Botón para eliminar los tiempos seleccionados",
+  "close_selected_time": "Cerrar tiempo seleccionado"
 }
