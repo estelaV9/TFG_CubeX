@@ -452,5 +452,8 @@
 
   "delete": "Delete",
   "delete_selected_times_button": "Button to delete selected times",
-  "close_selected_time": "Close selected time"
+  "close_selected_time": "Close selected time",
+
+  "reset": "Reset",
+  "reset_notifications_button": "Reset notifications"
 }

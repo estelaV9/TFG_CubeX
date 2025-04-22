@@ -448,5 +448,8 @@
 
   "delete": "Eliminar",
   "delete_selected_times_button": "Botón para eliminar los tiempos seleccionados",
-  "close_selected_time": "Cerrar tiempo seleccionado"
+  "close_selected_time": "Cerrar tiempo seleccionado",
+
+  "reset": "Reiniciar",
+  "reset_notifications_button": "Reiniciar las notificaciones"
 }

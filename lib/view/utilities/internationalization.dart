@@ -420,6 +420,8 @@ class Internationalization {
       'delete': () => l10n.delete,
       'delete_selected_times_button': () => l10n.delete_selected_times_button,
       'close_selected_time': () => l10n.close_selected_time,
+      'reset': () => l10n.reset,
+      'reset_notifications_button': () => l10n.reset_notifications_button,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
