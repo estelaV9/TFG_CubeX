@@ -19,12 +19,16 @@ class IconClass {
   /// - `icon`: El icono que se va a mostrar.
   /// - `messageKey`: La clave de mensaje para obtener el texto del Tooltip.
   /// - `size`: El tamaño del icono. Si es `null`, el valor predeterminado es 25.
-  static Tooltip iconMaker(BuildContext context, IconData icon, String messageKey, [double? size]){
-    size ??= 25; // SI NO SE INTRODUCE UN TAMAÑO, POR DEFECTO SERA 25
-    final messageTooltip = Internationalization.internationalization.getLocalizations(context, messageKey);
+  /// - `color`: El color del icono. Si no se proporciona ningun color, será morado oscuro.
+  static Tooltip iconMaker(
+      BuildContext context, IconData icon, String messageKey,
+      [double? size = 25, Color color = AppColors.darkPurpleColor]) {
+
+    final messageTooltip = Internationalization.internationalization
+        .getLocalizations(context, messageKey);
     return Tooltip(
       message: messageTooltip,
-      child: Icon(icon, color: AppColors.darkPurpleColor, size: size),
+      child: Icon(icon, color: color, size: size),
     );
   } // METODO QUE DEVUELVE UN ICONO CON UN TOOLTIP
 
@@ -61,9 +65,12 @@ class IconClass {
   /// - `function`: La función que se ejecutará cuando el botón sea presionado.
   /// - `filePath`: La ruta del archivo de la imagen que se va a mostrar en el botón.
   /// - `messageKey`: La clave de mensaje para obtener el texto del Tooltip.
-  static Tooltip iconButtonImage(BuildContext context,
-      VoidCallback function, String filePath, String messageKey, [double? size]) {
-    final messageTooltip = Internationalization.internationalization.getLocalizations(context, messageKey);
+  static Tooltip iconButtonImage(BuildContext context, VoidCallback function,
+      String filePath, String messageKey,
+      [double? size]) {
+
+    final messageTooltip = Internationalization.internationalization
+        .getLocalizations(context, messageKey);
 
     // SI EL TAMAÑO ES NULO, SE LE AÑADE UN VALOR POR DEFECTO
     size ??= 40;
