@@ -178,8 +178,9 @@ class _ManageDisabledNotificationScreenState
                           // SE ENVIA UNA NOTIFICACION DE QUE SE ACTIVARON LAS NOTIFICACIONES
                           NotificationService.showNotification(
                               id: 0,
-                              title: "notification",
-                              body: "notifications_activated");
+                              titleKey: "notification",
+                              bodyKey: "notifications_activated",
+                              context: context);
                         }
                       } else {
                         // SI ESTA DENEGADO EL PERMISO SE MUESTRA UNA ALERTA QUE ABRE LOS SETTINGS

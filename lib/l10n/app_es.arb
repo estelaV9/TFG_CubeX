@@ -455,5 +455,6 @@
   "notifications_activated": "Notificaciones activadas",
   "permission_required_title": "Permiso necesario",
   "permission_required_description": "Para gestionar las notificaciones, por favor activa los permisos en la configuración del dispositivo.",
-  "open_settings_button": "Abrir configuración"
+  "open_settings_button": "Abrir configuración",
+  "notification_permissions_denied": "Permisos de notificaciones denegados"
 }
