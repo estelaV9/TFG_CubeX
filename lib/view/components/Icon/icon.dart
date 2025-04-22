@@ -23,7 +23,6 @@ class IconClass {
   static Tooltip iconMaker(
       BuildContext context, IconData icon, String messageKey,
       [double? size = 25, Color color = AppColors.darkPurpleColor]) {
-
     final messageTooltip = Internationalization.internationalization
         .getLocalizations(context, messageKey);
     return Tooltip(
@@ -43,15 +42,22 @@ class IconClass {
   /// - `tooltip`: La clave de mensaje para obtener el texto del Tooltip.
   /// - `icon`: El icono que se va a mostrar en el `IconButton`.
   /// - `colors`: Color para el icono opcional, el cual por defecto será un morado oscuro.
-  static IconButton iconButton(BuildContext context,
-      Function()? function, String tooltip, IconData icon, [Color? colors = AppColors.darkPurpleColor]) {
-    final messageTooltip = Internationalization.internationalization.getLocalizations(context, tooltip);
+  /// - `size`: El tamaño del icono del botón. Si es `null`, pondrá el valor predeterminado.
+  /// - `padding`: Padding del botón. Si es `null`, aplica el padding predeterminado.
+  static IconButton iconButton(
+      BuildContext context, Function()? function, String tooltip, IconData icon,
+      [Color? colors = AppColors.darkPurpleColor,
+      double? size,
+      EdgeInsetsGeometry? padding]) {
+    final messageTooltip = Internationalization.internationalization
+        .getLocalizations(context, tooltip);
 
     return IconButton(
         onPressed: function,
         color: colors,
+        padding: padding,
         tooltip: messageTooltip,
-        icon: Icon(icon));
+        icon: Icon(icon, size: size));
   } // METODO QUE DEVUELVE UN ICONBUTTON
 
   /// Crea un `IconButton` con una imagen como ícono, y un Tooltip asociado.
@@ -68,7 +74,6 @@ class IconClass {
   static Tooltip iconButtonImage(BuildContext context, VoidCallback function,
       String filePath, String messageKey,
       [double? size]) {
-
     final messageTooltip = Internationalization.internationalization
         .getLocalizations(context, messageKey);
 
