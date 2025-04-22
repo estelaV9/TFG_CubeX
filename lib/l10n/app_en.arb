@@ -455,5 +455,9 @@
   "close_selected_time": "Close selected time",
 
   "reset": "Reset",
-  "reset_notifications_button": "Reset notifications"
+  "reset_notifications_button": "Reset notifications",
+  "notifications_activated": "Notifications activated",
+  "permission_required_title": "Permission required",
+  "permission_required_description": "To manage notifications, please enable permissions in your device settings.",
+  "open_settings_button": "Open settings"
 }

@@ -422,6 +422,9 @@ class Internationalization {
       'close_selected_time': () => l10n.close_selected_time,
       'reset': () => l10n.reset,
       'reset_notifications_button': () => l10n.reset_notifications_button,
+      'permission_required_title': () => l10n.permission_required_title,
+      'permission_required_description': () => l10n.permission_required_description,
+      'open_settings_button': () => l10n.open_settings_button,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

@@ -451,5 +451,9 @@
   "close_selected_time": "Cerrar tiempo seleccionado",
 
   "reset": "Reiniciar",
-  "reset_notifications_button": "Reiniciar las notificaciones"
+  "reset_notifications_button": "Reiniciar las notificaciones",
+  "notifications_activated": "Notificaciones activadas",
+  "permission_required_title": "Permiso necesario",
+  "permission_required_description": "Para gestionar las notificaciones, por favor activa los permisos en la configuración del dispositivo.",
+  "open_settings_button": "Abrir configuración"
 }
