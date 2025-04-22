@@ -1103,6 +1103,70 @@ class AlertUtil {
     );
   } // METODO PARA MOSTRAR UNA ALERTA FORMULARIO PARA QUE EL USUARIO
 
+
+  /// Método para mostrar un diálogo de alerta simple con un botón personalizado
+  /// y uno de cancelación.
+  ///
+  /// Este dialogo permite mostrar un título, una descripción y dos botones:
+  /// uno para cancelar y otro para ejecutar una función personalizada pasada como parámetro.
+  ///
+  /// Parámetros:
+  /// - `context`: El contexto de la aplicación donde se mostrará el diálogo.
+  /// - `key`: Clave de localización para el título del diálogo.
+  /// - `contentKey`: Clave de localización para el contenido del diálogo.
+  /// - `functionKey`: Clave de localización para el botón de acción.
+  /// - `function`: Función que se ejecutará al pulsar el botón personalizado.
+  static void showAlertSimple(BuildContext context, String key,
+      String contentKey, String functionKey, Function function) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title:
+            Internationalization.internationalization.localizedTextOnlyKey(
+              context,
+              key,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content:
+            Internationalization.internationalization.localizedTextOnlyKey(
+              context,
+              contentKey,
+              style: const TextStyle(fontSize: 16),
+            ),
+            actions: <Widget>[
+              // BOTONES PARA CANCELAR O PARA ACEPTAR/ABRIR CONFIGURACION
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'Cancel');
+                },
+                child: Internationalization.internationalization
+                    .createLocalizedSemantics(
+                  context,
+                  'cancel_label',
+                  'cancel_hint',
+                  'cancel_label',
+                  const TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'OK');
+                  function;
+                },
+                child: Internationalization.internationalization
+                    .localizedTextOnlyKey(
+                  context,
+                  functionKey,
+                  style: const TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+            ],
+          );
+        });
+  } // METODO PARA MOSTRAR UNA ALERTA CON TITULO, CONTENIDO, CON BOTONES DE CANCELAR Y OTRO
+
+
   /// Método para mostrar un Snackbar con un mensaje personalizado.
   ///
   /// Parámetros:
