@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/view/components/appbar_class.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_configure_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,15 +36,7 @@ class _ConfigureTimerScreenState extends State<ConfigureTimerScreen> {
     final currentConfiguration = context.read<CurrentConfigurationTimer>();
 
     return Scaffold(
-        appBar: AppBar(
-          title: Internationalization.internationalization.localizedTextOnlyKey(
-            context,
-            "configure_timer",
-            style: const TextStyle(fontFamily: 'Broadway', fontSize: 35),
-          ),
-          centerTitle: true,
-          backgroundColor: AppColors.lightVioletColor,
-        ),
+        appBar: AppBarClass.appBarWithBack(context, "configure_timer"),
         body: Container(
             decoration: AppStyles.boxDecorationContainer(),
             child: SingleChildScrollView(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../viewmodel/settings_option/current_configure_timer.dart';
+import '../../components/appbar_class.dart';
 import '../../components/settings_option/option_switch_tile.dart';
 import '../../utilities/alert.dart';
 import '../../utilities/app_color.dart';
@@ -41,13 +42,7 @@ class _ConfigureInspectionScreenState extends State<ConfigureInspectionScreen> {
         : Colors.white.withOpacity(0.5);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Internationalization.internationalization.localizedTextOnlyKey(
-              context, "inspection_title",
-              style: const TextStyle(fontFamily: 'Broadway', fontSize: 35)),
-          centerTitle: true,
-          backgroundColor: AppColors.lightVioletColor,
-        ),
+        appBar: AppBarClass.appBarWithBack(context, "inspection_title"),
         body: Container(
             padding: const EdgeInsets.all(20),
             decoration: AppStyles.boxDecorationContainer(),

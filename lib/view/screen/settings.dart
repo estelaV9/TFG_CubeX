@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
+import '../components/appbar_class.dart';
 import '../utilities/internationalization.dart';
 import '../../viewmodel/current_user.dart';
 import '../components/settings_container.dart';
@@ -119,15 +120,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Internationalization.internationalization.localizedTextOnlyKey(
-          context,
-          "settings",
-          style: const TextStyle(fontFamily: 'Broadway', fontSize: 35),
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.lightVioletColor,
-      ),
+      appBar: AppBarClass.appBarWithBack(context, "settings"),
       body: SingleChildScrollView(
         child: Container(
             padding: const EdgeInsets.all(20),
