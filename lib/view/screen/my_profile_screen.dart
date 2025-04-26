@@ -227,7 +227,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     } // SI NO ES NULA, SE ASIGNA EL VALOR
   } // METODO PARA OBTENER LA IMAGEN ACTUAL DEL USUARIO
 
-
   /// Maneja la acción de la fecha de back en la pantalla de edición de perfil.
   ///
   /// Este método se ejecuta cuando el usuario intenta salir de la pantalla.
@@ -369,8 +368,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             hintText: Internationalization.internationalization
                                 .getLocalizations(context, "username_hint"),
                             controller: _usernameController,
-                            validator: (value) =>
-                                Validator.validateUsername(value, true),
+                            validator: (value) {
+                              String? errorKey =
+                                  Validator.validateUsername(value, true);
+                              if (errorKey != null) {
+                                return Internationalization.internationalization
+                                    .getLocalizations(context, errorKey);
+                              }
+                              return null;
+                            },
                             labelSemantics: Internationalization
                                 .internationalization
                                 .getLocalizations(context, "username_label"),
@@ -391,8 +397,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             hintText: Internationalization.internationalization
                                 .getLocalizations(context, "password_hint"),
                             controller: _passwordController,
-                            validator: (value) =>
-                                Validator.validatePassword(value, false, true),
+                            validator: (value) {
+                              String? errorKey = Validator.validatePassword(
+                                  value, false, true);
+                              if (errorKey != null) {
+                                return Internationalization.internationalization
+                                    .getLocalizations(context, errorKey);
+                              }
+                              return null;
+                            },
                             passwordOnSaved: (value) => _password = value!,
                             labelSemantics: Internationalization
                                 .internationalization
@@ -415,9 +428,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 .getLocalizations(
                                     context, "confirm_password_hint"),
                             controller: _confirmPasswordController,
-                            validator: (value) =>
-                                Validator.validateConfirmPassword(
-                                    value, _passwordController.text, true),
+                            validator: (value) {
+                              String? errorKey =
+                                  Validator.validateConfirmPassword(
+                                      value, _passwordController.text, true);
+                              if (errorKey != null) {
+                                return Internationalization.internationalization
+                                    .getLocalizations(context, errorKey);
+                              }
+                              return null;
+                            },
                             passwordOnSaved: (value) => _password = value!,
                             labelSemantics: Internationalization
                                 .internationalization

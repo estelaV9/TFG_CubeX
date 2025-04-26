@@ -247,8 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         constraints: const BoxConstraints(maxWidth: 300),
                         child: StrokeText(
                           text: Internationalization.internationalization
-                              .getLocalizations(
-                                  context, "sign_up_button"),
+                              .getLocalizations(context, "sign_up_button"),
                           textStyle: TextStyle(
                               fontFamily: 'Gluten',
                               fontSize: fontSize,
@@ -276,8 +275,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   .internationalization
                                   .getLocalizations(context, "username_hint"),
                               controller: _usernameController,
-                              validator: (value) =>
-                                  Validator.validateUsername(value),
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validateUsername(value);
+                                if (errorKey != null) {
+                                  return Internationalization
+                                      .internationalization
+                                      .getLocalizations(context, errorKey);
+                                }
+                              },
                               labelSemantics: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "username_label"),
@@ -299,8 +305,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   .internationalization
                                   .getLocalizations(context, "mail_hint"),
                               controller: _mailController,
-                              validator: (value) =>
-                                  Validator.validateEmail(value),
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validateEmail(value);
+                                if (errorKey != null) {
+                                  return Internationalization
+                                      .internationalization
+                                      .getLocalizations(context, errorKey);
+                                }
+                              },
                               labelSemantics: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "mail_label"),
@@ -322,8 +335,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   .internationalization
                                   .getLocalizations(context, "password_hint"),
                               controller: _passwordController,
-                              validator: (value) =>
-                                  Validator.validatePassword(value),
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validatePassword(value);
+                                if (errorKey != null) {
+                                  return Internationalization
+                                      .internationalization
+                                      .getLocalizations(context, errorKey);
+                                }
+                              },
                               passwordOnSaved: (value) => _password = value!,
                               labelSemantics: Internationalization
                                   .internationalization
@@ -348,9 +368,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   .getLocalizations(
                                       context, "confirm_password_hint"),
                               controller: _confirmPasswordController,
-                              validator: (value) =>
-                                  Validator.validateConfirmPassword(
-                                      value, _passwordController.text),
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validateConfirmPassword(
+                                        value, _passwordController.text);
+                                if (errorKey != null) {
+                                  return Internationalization
+                                      .internationalization
+                                      .getLocalizations(context, errorKey);
+                                }
+                                return null;
+                              },
                               passwordOnSaved: (value) => _password = value!,
                               labelSemantics: Internationalization
                                   .internationalization

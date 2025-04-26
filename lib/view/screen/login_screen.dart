@@ -202,7 +202,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintText: Internationalization.internationalization
                                   .getLocalizations(context, "username_hint"),
                               controller: _usernameController,
-                              validator: Validator.validateUsernameOrEmail,
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validateUsernameOrEmail(value);
+                                return Internationalization.internationalization
+                                    .getLocalizations(context, errorKey!);
+                              },
                               labelSemantics: Internationalization
                                   .internationalization
                                   .getLocalizations(context, "username_label"),
@@ -220,7 +225,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintText: Internationalization.internationalization
                                   .getLocalizations(context, "password_hint"),
                               controller: _passwordController,
-                              validator: Validator.validatePassword,
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validatePassword(value);
+                                return Internationalization.internationalization
+                                    .getLocalizations(context, errorKey!);
+                              },
                               passwordOnSaved: (value) => _password = value!,
                               labelSemantics: Internationalization
                                   .internationalization
