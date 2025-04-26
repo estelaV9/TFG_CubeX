@@ -456,5 +456,14 @@
   "permission_required_title": "Permiso necesario",
   "permission_required_description": "Para gestionar las notificaciones, por favor activa los permisos en la configuración del dispositivo.",
   "open_settings_button": "Abrir configuración",
-  "notification_permissions_denied": "Permisos de notificaciones denegados"
+  "notification_permissions_denied": "Permisos de notificaciones denegados",
+
+  "form_error_required_field": "Por favor, completa este campo.",
+  "form_error_minimum_8_characters": "Debe tener al menos 8 caracteres.",
+  "form_error_no_spaces_allowed": "No debe contener espacios.",
+  "form_error_special_character_required": "Debe agregar un carácter especial.",
+  "form_error_number_required": "Debe agregar un número.",
+  "form_error_passwords_do_not_match": "Las contraseñas no coinciden.",
+  "form_error_invalid_email": "Por favor, ingresa un correo válido.",
+  "form_error_name_max_length": "El nombre no debe superar los 12 caracteres."
 }

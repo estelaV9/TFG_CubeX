@@ -460,5 +460,14 @@
   "permission_required_title": "Permission required",
   "permission_required_description": "To manage notifications, please enable permissions in your device settings.",
   "open_settings_button": "Open settings",
-  "notification_permissions_denied": "Notification permissions denied"
+  "notification_permissions_denied": "Notification permissions denied",
+
+  "form_error_required_field": "Please fill in this field.",
+  "form_error_minimum_8_characters": "Must be at least 8 characters.",
+  "form_error_no_spaces_allowed": "Must not contain spaces.",
+  "form_error_special_character_required": "Must add one special character.",
+  "form_error_number_required": "Must add one number.",
+  "form_error_passwords_do_not_match": "Passwords do not match.",
+  "form_error_invalid_email": "Please enter a valid email.",
+  "form_error_name_max_length": "Name mustn't exceed 12 characters."
 }

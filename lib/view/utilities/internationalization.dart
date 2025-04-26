@@ -426,6 +426,15 @@ class Internationalization {
       'permission_required_description': () => l10n.permission_required_description,
       'open_settings_button': () => l10n.open_settings_button,
       'notification_permissions_denied': () => l10n.notification_permissions_denied,
+
+      'form_error_minimum_8_characters': () => l10n.form_error_minimum_8_characters,
+      'form_error_required_field': () => l10n.form_error_required_field,
+      'form_error_no_spaces_allowed': () => l10n.form_error_no_spaces_allowed,
+      'form_error_special_character_required': () => l10n.form_error_special_character_required,
+      'form_error_number_required': () => l10n.form_error_number_required,
+      'form_error_invalid_email': () => l10n.form_error_invalid_email,
+      'form_error_passwords_do_not_match': () => l10n.form_error_passwords_do_not_match,
+      'form_error_name_max_length': () => l10n.form_error_name_max_length,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
