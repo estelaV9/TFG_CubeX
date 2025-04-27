@@ -118,10 +118,13 @@ class ScrambleContainerState extends State<ScrambleContainer> {
               right: 10,
               left: 10,
               bottom: 10,
-              child: Text(
-                // MOSTRAMOS EL SCRAMBLE
-                currentScramble.scramble!,
-                style: AppStyles.darkPurpleAndBold(20),
+              // SE AÑADE UN SCROLL POR SI ES MUY LARGO EL SCRAMBLE
+              child: SingleChildScrollView(
+                child: Text(
+                  // MOSTRAMOS EL SCRAMBLE
+                  currentScramble.scramble!,
+                  style: AppStyles.darkPurpleAndBold(20),
+                ),
               )),
 
           // BOTON AÑADIR MANUALMENTE
