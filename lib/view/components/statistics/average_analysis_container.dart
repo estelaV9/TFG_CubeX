@@ -167,7 +167,6 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initTimeStatistics();
   }
@@ -206,7 +205,7 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
 
     return Container(
       // SIN WITH PARA QUE EXPANDA
-      height: 225,
+      height: 235,
       padding: const EdgeInsets.only(top: 8, right: 20, left: 20, bottom: 15),
       decoration: BoxDecoration(
         color: AppColors.lightVioletColor,
@@ -220,63 +219,65 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
           ),
         ],
       ),
-      child: Column(
-        children: [
-          Center(
-              child: Text(
-            "Average analysis",
-            style: AppStyles.darkPurpleAndBold(24),
-            semanticsLabel: Internationalization.internationalization
-                .getLocalizations(context, "performance_over_time"),
-          )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 5,
-                children: [
-                  _textForStatsWithSemantics("average"),
-                  _textForStatsWithSemantics("ao5"),
-                  _textForStatsWithSemantics("ao12"),
-                  _textForStatsWithSemantics("ao50"),
-                  _textForStatsWithSemantics("ao100"),
-                ],
-              ),
-              buildColumn("best", bestTimes),
-              buildColumn("worst", worstTimes),
-              buildColumn("current", currentTimes),
-            ],
-          ),
-          const SizedBox(height: 5),
-          const Divider(
-            color: AppColors.darkPurpleColor,
-            height: 5,
-            indent: 10,
-            endIndent: 10,
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: _textForStatsWithSemantics("aoTotal")),
-              Expanded(
-                  child: Center(
-                child: Tooltip(
-                  message: Internationalization.internationalization
-                      .getLocalizations(context, "aoTotal_label"),
-                  child: Text(
-                    aoTotal,
-                    style: AppStyles.darkPurple(15),
-                    semanticsLabel: Internationalization.internationalization
-                        .getLocalizations(context, "aoTotal"),
-                  ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Center(
+                child: Text(
+              "Average analysis",
+              style: AppStyles.darkPurpleAndBold(24),
+              semanticsLabel: Internationalization.internationalization
+                  .getLocalizations(context, "performance_over_time"),
+            )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 5,
+                  children: [
+                    _textForStatsWithSemantics("average"),
+                    _textForStatsWithSemantics("ao5"),
+                    _textForStatsWithSemantics("ao12"),
+                    _textForStatsWithSemantics("ao50"),
+                    _textForStatsWithSemantics("ao100"),
+                  ],
                 ),
-              ))
-            ],
-          )
-        ],
+                buildColumn("best", bestTimes),
+                buildColumn("worst", worstTimes),
+                buildColumn("current", currentTimes),
+              ],
+            ),
+            const SizedBox(height: 5),
+            const Divider(
+              color: AppColors.darkPurpleColor,
+              height: 5,
+              indent: 10,
+              endIndent: 10,
+            ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: _textForStatsWithSemantics("aoTotal")),
+                Expanded(
+                    child: Center(
+                  child: Tooltip(
+                    message: Internationalization.internationalization
+                        .getLocalizations(context, "aoTotal_label"),
+                    child: Text(
+                      aoTotal,
+                      style: AppStyles.darkPurple(15),
+                      semanticsLabel: Internationalization.internationalization
+                          .getLocalizations(context, "aoTotal"),
+                    ),
+                  ),
+                ))
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
