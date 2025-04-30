@@ -8,6 +8,8 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  image_cropper: ^5.0.0
+  animated_text_kit: ^4.2.3
   vibration: ^3.1.3
   audioplayers: ^6.4.0
   timezone: ^0.10.0
@@ -68,6 +70,7 @@ flutter:
     - assets/trash-list.png
     - assets/cubix/
     - assets/sound_alerts/
+    - assets/flag/
   fonts:
     - family: JollyLodger
       fonts:
