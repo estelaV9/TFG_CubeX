@@ -1301,6 +1301,27 @@ class AlertUtil {
     });
   } // MOSTRAR UN SNACKBAR
 
+  /// Metodo para mostrar un SnackBar personalizado con una duracion determinada.
+  ///
+  /// Este método permite mostrar un mensaje con localizacion en la parte inferior de la pantalla
+  /// durante una cantidad de segundos especificada.
+  ///
+  /// Parametros:
+  /// - `context`: El contexto de la aplicacion donde se mostrará el SnackBar.
+  /// - `seconds`: La duración en segundos que el SnackBar permanecera visible.
+  /// - `keyTitle`: Clave de localizacion para obtener el texto del mensaje.
+  static showSnackBarWithDuration (BuildContext context, int seconds, String keyTitle){
+    final message = Internationalization.internationalization
+        .getLocalizations(context, keyTitle);
+
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: seconds),
+      ),
+    );
+  }
+
   /// Método para mostrar un Snackbar de error.
   ///
   /// Parametros:
