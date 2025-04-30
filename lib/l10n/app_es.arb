@@ -491,5 +491,7 @@
   "dialog_exit_app_message": "¿Estás seguro de que quieres salir de la aplicación?",
 
   "comments": "Comentarios",
-  "no_comments": "Sin comentarios"
+  "no_comments": "Sin comentarios",
+
+  "press_again_to_exit": "Presiona de nuevo para salir"
 }

@@ -495,5 +495,7 @@
   "dialog_exit_app_message": "Are you sure you want to exit the app?",
 
   "comments": "Comments",
-  "no_comments": "No comments"
+  "no_comments": "No comments",
+
+  "press_again_to_exit": "Press again to exit"
 }

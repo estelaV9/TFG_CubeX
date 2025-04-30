@@ -456,6 +456,8 @@ class Internationalization {
       'dialog_exit_app_message': () => l10n.dialog_exit_app_message,
       'comments': () => l10n.comments,
       'no_comments': () => l10n.no_comments,
+
+      'press_again_to_exit': () => l10n.press_again_to_exit,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
