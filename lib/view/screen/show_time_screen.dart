@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/configuration_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -93,25 +94,26 @@ class _ShowTimeScreenState extends State<ShowTimeScreen> {
             try {
               if (_currentTime == 8) {
                 WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  await audioPlayer.setSource(AssetSource(
+                  await audioPlayer.play(AssetSource(
                       // DEPENDIENDO EL IDIOMA, REPRODUCE UNO U OTRO
                       locale.languageCode == "en"
-                          ? 'sound_alerts/eight_seconds.mp3'
-                          : 'sound_alerts/ocho_segundos.mp3'));
+                          ? "sound_alerts/eight_seconds.mp3"
+                          : "sound_alerts/ocho_segundos.mp3")
+                  );
                 });
               } // SI EL TIEMPO DE INSPECCION ES DE 8 SEGUNDOS
 
               if (_currentTime == 12) {
                 WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  await audioPlayer.setSource(AssetSource(
+                  await audioPlayer.play(AssetSource(
                       // DEPENDIENDO EL IDIOMA, REPRODUCE UNO U OTRO
                       locale.languageCode == "en"
-                          ? 'sound_alerts/twelve_seconds.mp3'
-                          : 'sound_alerts/doce_segundos.mp3'));
+                          ? "sound_alerts/twelve_seconds.mp3"
+                          : "sound_alerts/doce_segundos.mp3"));
                 });
               } // SI EL TIEMPO DE INSPECCION ES DE 12 SEGUNDOS
             } catch (e) {
-              print("Error al reproducir el audio: $e");
+              DatabaseHelper.logger.e("Error al reproducir el audio: $e");
             }
           } // SI EL TIPO DE ALERTA ES DE SONIDO O DE AMBAS
         } // SI ESTA ACTIVA LA ALERTA DE LOS 8 Y 12 SEGUNDOS
