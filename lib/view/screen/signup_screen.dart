@@ -24,7 +24,7 @@ import '../components/Icon/icon.dart';
 import '../../view/navigation/bottom_navigation.dart';
 import '../components/password_field_row.dart';
 import '../../viewmodel/current_user.dart';
-import '../components/tooltip_suggestion.dart';
+import '../components/tooltip/tooltip_suggestion.dart';
 import '../utilities/internationalization.dart';
 import 'dart:math' as ran;
 
@@ -182,14 +182,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         } else {
           // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
           AlertUtil.showSnackBarError(context, "account_email_exists");
-          setState(() {
-            isExisting = true;
-          });
-          newName = await randomUsername();
         } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
       } else {
         // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DE USUARIO YA EXISTE
         AlertUtil.showSnackBarError(context, "username_already_in_use");
+
+        setState(() {
+          isExisting = true;
+        });
+        newName = await randomUsername();
       } // VALIDAR QUE EL NOMBRE DE USUARIO NO EXISTA
     } // SI TODOS LOS CAMPOS DEL FORMULARIO ESTAN CORRECTOS
   } // METODO PARA CREAR UNA CUENTA

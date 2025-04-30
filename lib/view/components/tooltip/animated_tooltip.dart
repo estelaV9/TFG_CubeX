@@ -1,9 +1,10 @@
+import 'package:esteladevega_tfg_cubex/view/components/tooltip/triangle_painter.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../utilities/internationalization.dart';
+import '../../utilities/internationalization.dart';
 
 /// Widget que muestra un popover personalizado que permite ordenar los tiempos por fecha o tiempo.
 ///
@@ -19,7 +20,7 @@ class CustomPopover extends StatefulWidget {
   const CustomPopover({super.key, required this.child});
 
   @override
-  _CustomPopoverState createState() => _CustomPopoverState();
+  State<CustomPopover> createState() => _CustomPopoverState();
 }
 
 class _CustomPopoverState extends State<CustomPopover> {
@@ -274,52 +275,5 @@ class _CustomPopoverState extends State<CustomPopover> {
       onTap: () => _showPopover(context),
       child: widget.child,
     );
-  }
-}
-
-/// Painter personalizado para dibujar una flecha triangular para el `Popover`.
-///
-/// Esta clase extiende de `CustomPainter` y permite dibujar una flecha triangular
-/// que se utilizará para el indicador del popover.
-/// El color de la flecha es configurable a través del parámetro `fillColor`, que se
-/// pasa al constructor. La flecha se dibuja utilizando el `Canvas` para crear el
-/// triángulo, que tiene una base en la parte inferior y un vértice en la parte superior.
-class TrianglePainter extends CustomPainter {
-  // COLOR QUE SE UTILIZA PARA RELLENAR EL TRIANGULO
-  final Color fillColor;
-
-  TrianglePainter({required this.fillColor});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // SE CREA UN OBJETO Paint PARA DEFINIR LAS PROPIEDADES DE ESTILO DEL TRIANGULO
-    final paint = Paint()
-      ..color = fillColor // ESTABLECE EL COLOR DEL TRIANGULO
-      ..style =
-          PaintingStyle.fill; // SE ESTABLECE EL ESTILO DE RELLENO (SIN BORDES)
-
-    // OBJETO PATH PARA DIBUJAR LA FORMA DEL TRIANGULO
-    final path = Path();
-
-    // COMIENZA EL TRAZO DEL TRIANGULO DESDE LA ESQUINA INFERIOR IZQUIERDA
-    path.moveTo(0, size.height);
-
-    // LINEA HACIA EL VERTICE SUPERIOR DEL TRIANGULO
-    path.lineTo(size.width / 2, 0);
-
-    // LINEA DESDE EL VERTICE HASTA LA ESQUINA INFERIOR DERECHA
-    path.lineTo(size.width, size.height);
-
-    // SE CIERRA EL TRIANGULO CONECTANDO EL ULTIMO PUNTO CON EL PRIMERO
-    path.close();
-
-    // SE DIBUJA EL TRIANGULO CON EL COLOR Y ESTILO DEFINIDO
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // NO ES NECESARIO REPINTAR, YA QEU EL TRIANGULO NO CAMBIA DESPUES DE SER DIBUJADO
-    return false;
   }
 }

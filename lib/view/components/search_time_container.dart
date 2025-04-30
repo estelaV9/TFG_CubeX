@@ -18,7 +18,7 @@ import '../../viewmodel/current_session.dart';
 import '../../viewmodel/current_time.dart';
 import '../../viewmodel/current_user.dart';
 import '../utilities/internationalization.dart';
-import 'animated_tooltip.dart';
+import 'tooltip/animated_tooltip.dart';
 
 /// Widget contenedor que muestra un botón para añadir un tiempo manualmente.
 ///
