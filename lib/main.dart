@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:esteladevega_tfg_cubex/model/notification_service.dart';
+import 'package:esteladevega_tfg_cubex/view/navigation/bottom_navigation.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_configure_timer.dart';
@@ -20,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'data/database/database_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -28,6 +30,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'model/app_notification.dart';
 import 'model/configuration_timer.dart';
+import 'model/user.dart';
 
 /// Método principal de la aplicación: Inicio de la app.
 ///
@@ -42,6 +45,7 @@ void main() async {
   await SettingsScreenState.startPreferences();
   await AppNotification.startPreferences();
   await ConfigurationTimer.startPreferences();
+  await User.startPreferences();
 
   // INICIALIZAR EL TIMEZONES
   tz.initializeTimeZones();
@@ -74,15 +78,45 @@ void main() async {
 
 /// Clase principal de la aplicación CubeX.
 ///
-/// La clase CubeXApp configura el idioma y la pantalla inicial
-/// de la aplicación a través de un `MaterialApp`.
-class CubeXApp extends StatelessWidget {
+/// La clase `CubeXApp` es el punto de entrada de la aplicación, aqui se configura
+/// el idioma y la pantalla inicial de la aplicación a través de un `MaterialApp`.
+/// En esta clase, se inicializa el sistema de localización, se verifica el estado de sesión del usuario,
+/// y se establece la pantalla correspondiente (ya sea la pantalla de inicio de sesión
+/// o la pantalla principal, dependiendo de si esta logeado o no)
+class CubeXApp extends StatefulWidget {
   const CubeXApp({super.key});
+
+  @override
+  State<CubeXApp> createState() => _CubeXAppState();
+}
+
+class _CubeXAppState extends State<CubeXApp> {
+  // ATRIBUTO PARA EL USUARIO
+  User? newUser;
+
+  /// Método para cargar el usuario desde SharedPreferences.
+  ///
+  /// Este método recupera el usuario almacenado en las preferencias.
+  /// Si el usuario existe, se actualiza el estado global del usuario.
+  ///
+  /// Parámetros:
+  /// - `context`: El contexto de la aplicación para acceder al `Provider`.
+  Future<void> loadUser(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    // SE CARGA EL USUARIO ALMACENADO EN LAS PREFERENCIAS
+    newUser = User.loadFromPreferences(prefs);
+    if (newUser != null) {
+      final currentUser = Provider.of<CurrentUser>(context, listen: false);
+      currentUser.setUser(newUser!); // SE ACTUALIZA EL ESTADO GLOBAL
+    } // SI EL USUARIO NO ES NULO
+  }
 
   @override
   Widget build(BuildContext context) {
     // ESTABLECER IDIOMA
     final locale = context.watch<CurrentLanguage>().locale;
+    // SE LLAMA AL METODO PARA VER SI HAY UN USUARIO YA LOGEADO
+    loadUser(context);
 
     return MaterialApp(
         // OBSERVADOR PARA MANEJAR COMO SE MUESTRAN LOS DIALOGOS CUANDO NAVEGAN
@@ -100,9 +134,13 @@ class CubeXApp extends StatelessWidget {
         ],
         supportedLocales: const [Locale('es'), Locale('en')],
         locale: locale,
-        debugShowCheckedModeBanner: false,
         // QUITAR MARCA DEBUG
-        home: const IntroScreen());
+        debugShowCheckedModeBanner: false,
+        // SI HAY UN USUARIO Y ESTA LOGEADO ENTONCES SE LE REDIRIGE DE NUEVO A
+        // LA PANTALLA DEL TIMER, SI NO A LA PANTALLA DE INICIAR SESION
+        home: newUser != null && newUser!.isLoggedIn
+            ? const BottomNavigation(index: 1)
+            : const IntroScreen());
   }
 }
 
