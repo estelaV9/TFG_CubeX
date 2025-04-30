@@ -148,6 +148,7 @@ class Internationalization {
       'chosen_name_already_exists': () => l10n.chosen_name_already_exists,
       'add_scramble_empty': () => l10n.add_scramble_empty,
       'scramble_added_successful': () => l10n.scramble_added_successful,
+      'copy_scramble': () => l10n.copy_scramble,
       'add_session_name_empty': () => l10n.add_session_name_empty,
       'session_added_successful': () => l10n.session_added_successful,
       'failed_create_session': () => l10n.failed_create_session,
@@ -451,6 +452,10 @@ class Internationalization {
       'form_error_invalid_email': () => l10n.form_error_invalid_email,
       'form_error_passwords_do_not_match': () => l10n.form_error_passwords_do_not_match,
       'form_error_name_max_length': () => l10n.form_error_name_max_length,
+      'dialog_exit_app_title': () => l10n.dialog_exit_app_title,
+      'dialog_exit_app_message': () => l10n.dialog_exit_app_message,
+      'comments': () => l10n.comments,
+      'no_comments': () => l10n.no_comments,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

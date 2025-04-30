@@ -485,5 +485,11 @@
   "form_error_number_required": "Debe agregar un número.",
   "form_error_passwords_do_not_match": "Las contraseñas no coinciden.",
   "form_error_invalid_email": "Por favor, ingresa un correo válido.",
-  "form_error_name_max_length": "El nombre no debe superar los 12 caracteres."
+  "form_error_name_max_length": "El nombre no debe superar los 12 caracteres.",
+
+  "dialog_exit_app_title": "Salir de la aplicación",
+  "dialog_exit_app_message": "¿Estás seguro de que quieres salir de la aplicación?",
+
+  "comments": "Comentarios",
+  "no_comments": "Sin comentarios"
 }

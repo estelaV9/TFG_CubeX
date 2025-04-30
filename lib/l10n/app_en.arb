@@ -489,5 +489,11 @@
   "form_error_number_required": "Must add one number.",
   "form_error_passwords_do_not_match": "Passwords do not match.",
   "form_error_invalid_email": "Please enter a valid email.",
-  "form_error_name_max_length": "Name mustn't exceed 12 characters."
+  "form_error_name_max_length": "Name mustn't exceed 12 characters.",
+
+  "dialog_exit_app_title": "Quit Application",
+  "dialog_exit_app_message": "Are you sure you want to exit the app?",
+
+  "comments": "Comments",
+  "no_comments": "No comments"
 }
