@@ -203,6 +203,8 @@ class CurrentTime extends ChangeNotifier {
     if (penalty == "none") {
       isDnfChoose = false;
       isPlusTwoChoose = false;
+      // SE GUARDA EL TIEMPO ORIGINAL SOLO SI AUN NO HA SIDO ASIGNADO
+      _originalTime ??= _timeTraining!.timeInSeconds;
     } // SI LA PENALIZACION ES 'none', SE DESACTIVAN LAS OTRAS PENALIZACIONES
 
     // ACTUALIZAR EL TIEMPO EN EL ESTADO FLOBAL
