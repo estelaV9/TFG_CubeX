@@ -11,6 +11,7 @@ import 'package:esteladevega_tfg_cubex/view/screen/my_profile_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../viewmodel/current_user.dart';
 import '../../view/navigation/bottom_navigation.dart';
@@ -102,6 +103,18 @@ class _AppDrawerState extends State<AppDrawer> {
     } // SI NO ES NULA, SE ASIGNA EL VALOR
   }
 
+  /// Metodo que cierra la sesión del usuario actual.
+  ///
+  /// Actualiza las preferencias compartidas para marcar que el usuario
+  /// ya no está logueado ni registrado (`isLoggedIn` y `isSingup` se establecen en `false`).
+  /// Luego se recarga las preferencias para que los cambios se apliquen.
+  void _logoutUser() async{
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isLoggedIn", false);
+    await prefs.setBool("isSingup", false);
+    await prefs.reload();
+  }
+
   /// Método para generar un `ListTile` con un ícono, texto y una pantalla de destino.
   ///
   /// Este método sirve para evitar la duplicación de código al crear las opciones
@@ -148,6 +161,9 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             onTap: () {
               // CAMBIAR VISTA AL TOCAR EL LISTILE
+              if(text == "log_out") {
+                _logoutUser();
+              } // SI HA PUSLADO LA OPCION DE DESLOGEARSE SE ACTUALIZA LAS PREFERENCIAS
               ChangeScreen.changeScreen(nameScreen, context);
             },
           ),

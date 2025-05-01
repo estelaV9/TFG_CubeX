@@ -308,12 +308,16 @@ class _GraphicPerformanceContainerState
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 7, left: 4),
-                          child: AppStyles.textWithSemanticsAndTooltip(
-                              context,
-                              "semantic_solve_count",
-                              "tooltip_solve_count",
-                              "solve_count",
-                              AppStyles.darkPurple(12)),
+                          child: SizedBox(
+                            // DARLE UN TAMAÑO FIJO PARA QUE OCUPE LA FRRASE
+                            width: 105,
+                            child: AppStyles.textWithSemanticsAndTooltip(
+                                context,
+                                "semantic_solve_count",
+                                "tooltip_solve_count",
+                                "solve_count",
+                                AppStyles.darkPurple(12)),
+                          ),
                         )
                       ],
                     ),

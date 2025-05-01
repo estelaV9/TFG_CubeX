@@ -69,6 +69,9 @@ class AppStyles {
 
   /// Widget reutilizable para mostrar texto con soporte de accesibilidad y tooltip.
   ///
+  /// Este widget muestra un texto dentro de un contenedor con ancho limitado
+  /// (basado en el tamaño de la pantalla) para evitar overflows.
+  ///
   /// Parámetros:
   /// - [context]: el contexto de la aplicación.
   /// - [semantic]: descripción accesible para lectores de pantalla.
@@ -89,11 +92,25 @@ class AppStyles {
     final messageText = Internationalization.internationalization
         .getLocalizations(context, text);
 
+    // TAMAÑO DE LA PANTALLA
+    final screenWidth = MediaQuery.of(context).size.width;
+    final maxTextWidth = screenWidth * 0.25;
+
     return Semantics(
       label: messageSemantic,
       child: Tooltip(
         message: messageTooltip,
-        child: Text(messageText, style: style),
+        child: Container(
+          // CONTROLAMOS EL LIMITE DEL ANCHO PARA CONTROLAR EL OVERFLOW
+          constraints: BoxConstraints(maxWidth: maxTextWidth),
+          child: Text(
+            messageText,
+            style: style,
+            softWrap: true,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.visible,
+          ),
+        ),
       ),
     );
   }

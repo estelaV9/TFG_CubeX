@@ -456,5 +456,42 @@
   "permission_required_title": "Permiso necesario",
   "permission_required_description": "Para gestionar las notificaciones, por favor activa los permisos en la configuración del dispositivo.",
   "open_settings_button": "Abrir configuración",
-  "notification_permissions_denied": "Permisos de notificaciones denegados"
+  "notification_permissions_denied": "Permisos de notificaciones denegados",
+
+  "tour_intro_hello": "¡Hola! Soy Cubix :D",
+  "tour_intro_welcome": "Soy la mascota de la app, y estoy aquí para ayudarte",
+  "tour_intro_tour_question": "¿Quieres un pequeño recorrido?",
+
+  "tour_header": "Esta es la barra principal. Desde aquí verás tu sesión y el tipo de cubo actual.",
+  "tour_cubeType": "Con este botón puedes elegir y gestionar los diferentes tipos de cubos.",
+  "tour_session": "Y con este, puedes cambiar o crear nuevas sesiones para organizar tus tiempos.",
+  "tour_scramble": "Este es el scramble, ¡una mezcla aleatoria para que empieces tu resolución!",
+  "tour_timer": "Aquí es donde empieza la acción. Cronometra tus resoluciones, añade comentarios o penalizaciones si hace falta.",
+  "tour_quick_stats": "Y justo aquí verás un resumen de tus tiempos: tus mejores marcas, promedios, y más.",
+
+  "tour_go_to_history": "Vamos a echar un vistazo al historial.",
+  "tour_history": "Aquí se guardan todos tus tiempos. Puedes verlos, editarlos o eliminarlos cuando quieras.",
+
+  "tour_go_to_stats": "Ahora, veamos las estadísticas más a fondo.",
+  "tour_stats": "Aquí podrás analizar tus tiempos en cada sesión y seguir tu progreso con más detalle.",
+
+  "tour_end_title": "¡Tutorial terminado!",
+  "tour_end_message": "Recuerda! El cubo es tu lienzo, y cada giro una pincelada. Ahora es tu turno de crear tu obra.",
+
+  "form_error_required_field": "Por favor, completa este campo.",
+  "form_error_minimum_8_characters": "Debe tener al menos 8 caracteres.",
+  "form_error_no_spaces_allowed": "No debe contener espacios.",
+  "form_error_special_character_required": "Debe agregar un carácter especial.",
+  "form_error_number_required": "Debe agregar un número.",
+  "form_error_passwords_do_not_match": "Las contraseñas no coinciden.",
+  "form_error_invalid_email": "Por favor, ingresa un correo válido.",
+  "form_error_name_max_length": "El nombre no debe superar los 12 caracteres.",
+
+  "dialog_exit_app_title": "Salir de la aplicación",
+  "dialog_exit_app_message": "¿Estás seguro de que quieres salir de la aplicación?",
+
+  "comments": "Comentarios",
+  "no_comments": "Sin comentarios",
+
+  "press_again_to_exit": "Presiona de nuevo para salir"
 }

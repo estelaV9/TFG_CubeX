@@ -9,14 +9,17 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/Icon/icon.dart';
 import '../../data/dao/session_dao.dart';
 import '../../data/dao/time_training_dao.dart';
 import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
+import '../components/start_guide/start_guide_component.dart';
 import '../components/waves_painter/small_wave_container_painter.dart';
 import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
@@ -86,8 +89,22 @@ class _TimerScreenState extends State<TimerScreen> {
     // ASI NO CAUSA ERRORES DURANTE EL BUILD PARA HACER CAMBIOS EN EL STATE O EN PROVIDERS
     // (se soluciona el mensaje de error cuando pulsas en el timer de setState() or
     // markNeedsBuild() called during build)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      final prefs = await SharedPreferences.getInstance();
+
       Provider.of<CurrentTime>(context, listen: false).setResetTimeTraining();
+      final currentuser = context.read<CurrentUser>().user;
+
+      if(currentuser!.isSingup! && !currentuser.isLoggedIn){
+        // SE CREA EL TUTORIAL AQUI PARA QUE NO HAYA PROBLEMAS CON EL MediaQuery
+        final startGuideComponent = StartGuideComponent(context);
+        startGuideComponent.show(context);
+      } // SI EL USUARIO ACTUAL SE HA CREADO UNA CUENTA, SE MUESTRA EL TUTORIAL
+
+      // DESPUES DE ENSEÑAR EL TUTORIAL SE PONE EN FALSE
+      currentuser.isSingup = false;
+      prefs.setBool("isSingup", false);
+      prefs.reload();
     });
   }
 
@@ -107,6 +124,11 @@ class _TimerScreenState extends State<TimerScreen> {
   /// y actualiza, actualmentem las estadísticas como el mejor tiempo (PB), el peor tiempo y
   /// el número de tiempos que hay en la sesión.
   void initTimeStatistics() async {
+    // VERIFICA SI EL WIDGET SIGUE MONTADO (SI ESTAACTIVO EN PANTALLA)
+    // SI NO LO ESTA, SE SALE PARA EVITAR ERRORES AL USAR CONTEXT O setState
+    // (asi no salen los errores cada vez que entra al timer)
+    if (!mounted) return;
+
     // OBTENER EL ID DEL USUARIO
     int? idUser = await userDao.getUserId(context);
     final session = await sessionDao.getSessionData(context, idUser!);
@@ -139,6 +161,8 @@ class _TimerScreenState extends State<TimerScreen> {
       average = "--:--.--";
     }
 
+    // ANTES DE HACER UN SetState VERIFICAMOS SI EL WIDGET SIGUE MONTADO
+    if (!mounted) return;
     setState(() {
       averageValue = average;
       pbValue = pb;
@@ -419,12 +443,12 @@ class _TimerScreenState extends State<TimerScreen> {
           ),
 
           // CONTAINER DEL SCRAMBLE
-          Positioned(
+          const Positioned(
             top: 110,
             right: 20,
             left: 20,
             // SE PASA LA CLAVE DEL SCRMABLE PARA QUE FUNCIONE
-            child: ScrambleContainer(key: _scrambleKey),
+            child: ScrambleContainer(),
           ),
 
           // .fill PARA QUE SE EXPANDA EL TIMER Y SIGA QUEDANDOSE EN EL CENTRO
@@ -567,8 +591,18 @@ class _TimerScreenState extends State<TimerScreen> {
                                       currentTime.timeTraining != null),
                                 ),
                               ),
-                              IconClass.iconButton(context, logicDeleteTime,
-                                  "delete_time", Icons.close),
+                              currentTime.timeTraining != null
+                                  ? IconClass.iconButton(
+                                      context,
+                                      logicDeleteTime,
+                                      "delete_time",
+                                      Icons.close)
+                                  : IconClass.iconButton(
+                                      context,
+                                      () {},
+                                      "delete_time",
+                                      Icons.close,
+                                      AppColors.darkPurpleOpacity)
                             ],
                           )
                         ],

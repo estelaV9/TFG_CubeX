@@ -7,7 +7,9 @@ import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../model/cubetype.dart';
 import '../utilities/ScrambleGenerator.dart';
 import '../utilities/app_styles.dart';
 
@@ -27,9 +29,28 @@ class ScrambleContainerState extends State<ScrambleContainer> {
   // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
   int random = (Random().nextInt(25 - 20 + 1) + 20);
 
-  /// Método para generar un Scramble con el tipo de cubo actual
-  String _generator(){
-    _currentCubeType = context.read<CurrentCubeType>();
+  /// Genera un nuevo scramble basado en el tipo de cubo actual guardado en las preferencias
+  /// o en el estado global.
+  ///
+  /// Este método realiza carga el tipo de cubo (`CubeType`) desde las preferencias almacenadas.
+  /// Si el tipo de cubo contiene datos válidos (`idUser` o `idCube` diferentes de -1),
+  /// se actualiza el estado global a través del provider `CurrentCubeType`. Si no,
+  /// se mantiene el tipo de cubo actual del provider.
+  ///
+  /// Genera y devuelve un scramble usando el nombre del cubo obtenido.
+  Future<String> _generator() async {
+    // SE OBTIENE LAS SHAREDPERFERENDCES GUARDADAS
+    final prefs = await SharedPreferences.getInstance();
+    // CARGA EL TIPO DE CUBO ACTUAL DESDE LAS PREFERENCIAS
+    CubeType cubeType = CubeType.loadFromPreferences(prefs);
+    if (cubeType.idUser != -1 || cubeType.idCube != -1) {
+      _currentCubeType = Provider.of<CurrentCubeType>(context, listen: false);
+      _currentCubeType.setCubeType(cubeType); // SE ACTUALIZA EL ESTADO GLOBAL
+    } else {
+      // SI NO HAY NINGUNA PREFERENCIAS GUARDADAS ESTABLECE DEL ESTADO GLOBAL
+      _currentCubeType = context.read<CurrentCubeType>();
+    } // SE VERIFICA SI EXISTEN DATOS VALIDOS
+
     return scramble.generateScramble(_currentCubeType.cubeType!.cubeName);
   }
 
@@ -62,8 +83,8 @@ class ScrambleContainerState extends State<ScrambleContainer> {
   ///
   /// Establece el scramble generado como el scramble actual en el estado global.
   void updateScramble() {
-    setState(() {
-      scrambleName = _generator();  // SE ASIGNA UN NUEVO SCRAMBLE
+    setState(() async {
+      scrambleName = await _generator();  // SE ASIGNA UN NUEVO SCRAMBLE
       // ESTABLECEMOS EL SCRAMBLE ACTUAL
       final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
       currentScramble.setScramble(scrambleName);
@@ -73,22 +94,21 @@ class ScrambleContainerState extends State<ScrambleContainer> {
   @override
   void initState() {
     super.initState();
-    _currentCubeType = context.read<CurrentCubeType>();
-    scrambleName = _generator();
-    // ESTABLECEMOS EL SCRAMBLE ACTUAL
     // EJECUTA LA FUNCION DESPUES DE QUE EL FRAME ACTUAL TERMINE DE CONSTRUIRSE,
     // ASI NO CAUSA ERRORES DURANTE EL BUILD PARA HACER CAMBIOS EN EL STATE O EN PROVIDERS
     // (se soluciona el mensaje de error cuando pulsas en el timer de setState() or
     // markNeedsBuild() called during build)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // ESTABLECEMOS EL SCRAMBLE ACTUAL
+      scrambleName = await _generator();
+      final currentScramble = Provider.of<CurrentScramble>(context, listen: false);
       currentScramble.setScramble(scrambleName);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    CurrentScramble currentScramble = context.read<CurrentScramble>();
+    CurrentScramble scramble = context.watch<CurrentScramble>();
     return Container(
       width: 348,
       height: 136,
@@ -118,10 +138,13 @@ class ScrambleContainerState extends State<ScrambleContainer> {
               right: 10,
               left: 10,
               bottom: 10,
-              child: Text(
-                // MOSTRAMOS EL SCRAMBLE
-                currentScramble.scramble!,
-                style: AppStyles.darkPurpleAndBold(20),
+              // SE AÑADE UN SCROLL POR SI ES MUY LARGO EL SCRAMBLE
+              child: SingleChildScrollView(
+                child: Text(
+                  // MOSTRAMOS EL SCRAMBLE
+                    scramble.scramble.toString(),
+                  style: AppStyles.darkPurpleAndBold(20),
+                ),
               )),
 
           // BOTON AÑADIR MANUALMENTE

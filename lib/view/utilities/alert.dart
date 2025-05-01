@@ -383,7 +383,10 @@ class AlertUtil {
       return;
     } // VALIDAR QUE EL IDTIME NO DE ERROR
 
-    final timeInSecondsOld = timeTraining.timeInSeconds;
+    // SE GUARA EL TIEMPO ORIGINAL DEPENDIENDO DE SI TENIA UN +2 O NO DE PENALIZACION
+    final timeInSecondsOld = currentTime.timeTraining!.penalty == "+2"
+        ? timeTraining.timeInSeconds - 2
+        : timeTraining.timeInSeconds;
 
     // SE MUESTRA EL DIALOG
     return showDialog(
@@ -450,9 +453,10 @@ class AlertUtil {
                               currentTime.isDnfChoose = false;
                               currentTime.isPlusTwoChoose = !currentTime.isPlusTwoChoose;
                             } else if (iconPenalty == Icons.block) {
-                              currentTime.timeTraining!.timeInSeconds ==
-                                  timeInSecondsOld;
-                              // SIN PENALIZACION
+                              // SIN PENALIZACION, RESTA LOS 2 SEGUNDOS SI ESTABA EN +2
+                              if (currentTime.timeTraining!.penalty == "+2") {
+                                currentTime.timeTraining!.timeInSeconds = timeInSecondsOld;
+                              }
                               currentTime.setPenalty("none", true);
                             }
                           });
@@ -462,8 +466,7 @@ class AlertUtil {
 
                           // GUARDAR CAMBIOS EN LA BASE DE DATOS
                           if (await timeTrainingDao.updateTime(
-                                  idTime, currentTime.timeTraining) ==
-                              false) {
+                              idTime, currentTime.timeTraining) == false) {
                             // MOSTRAR ERROR SI FALLA LA ACTUALIZACION
                             AlertUtil.showSnackBarError(
                                 context, "time_saved_error");
@@ -569,7 +572,7 @@ class AlertUtil {
                               });
                             },
                             child: Text(
-                              "Comments",
+                              Internationalization.internationalization.getLocalizations(context, "comments"),
                               style: AppStyles.darkPurpleAndBold(13),
                             ),
                           ),
@@ -586,7 +589,7 @@ class AlertUtil {
                             // Y SI NO LOS COMENTARIOS
                             isTextPressed
                                 ? timeTraining.scramble
-                                : (timeTraining.comments ?? "No comments"),
+                                : (timeTraining.comments ?? Internationalization.internationalization.getLocalizations(context, "no_comments")),
                             style: const TextStyle(fontSize: 14),
                             // HACE UN SALTO DE LINEA SI ES LARGO
                             softWrap: true,
@@ -1166,6 +1169,90 @@ class AlertUtil {
         });
   } // METODO PARA MOSTRAR UNA ALERTA CON TITULO, CONTENIDO, CON BOTONES DE CANCELAR Y OTRO
 
+  /// Método para mostrar una alerta de confirmación para salir de la aplicación.
+  ///
+  /// Este diálogo muestra un título, un mensaje y una imagen junto con dos botones:
+  /// uno para cancelar (cerrando el diálogo) y otro para salir de la app.
+  ///
+  /// Está diseñado especificamente para prevenir salidas accidentales, como
+  /// cuando el usuario está en la pantalla principal y podría salir sin querer al login..
+  ///
+  /// Parámetros:
+  /// - `context`: El contexto de la aplicación donde se mostrará el diálogo.
+  static void showExitAlert(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      // EVITA QUE SE CIERRE AL TOCAR FUERA DEL DIALOGO
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(Internationalization.internationalization
+              .getLocalizations(context, "dialog_exit_app_title")),
+          content: SizedBox(
+            height: 100,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      Internationalization.internationalization
+                          .getLocalizations(context, "dialog_exit_app_message"),
+                      style: const TextStyle(fontSize: 15),
+                      // SI EL TEXTO ES MUY LARGO, SE PONE PUNTOS SUSPENSIVOS
+                      // Y SE MUESTRA HASTA 4 LINEAS
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 4,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 200,
+                  child: Image.asset(
+                    "assets/cubix/cubix_sad.png",
+                    // AJUSTA LA IMAGEN COMPLETA DENTRO DEL CONTENEDOR SIN RECORTARLA
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            // BOTONES PARA CANCELAR O DARLE OK
+            TextButton(
+              onPressed: () {
+                // CIERRA LA ALERTA
+                Navigator.pop(context);
+              },
+              child: Internationalization.internationalization
+                  .createLocalizedSemantics(
+                context,
+                'cancel_label',
+                'cancel_hint',
+                'cancel_label',
+                const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                // SI ACEPTA CIERRA LA APP
+                SystemNavigator.pop();
+              },
+              child: Internationalization.internationalization
+                  .createLocalizedSemantics(
+                context,
+                'accept_label',
+                'accept_hint',
+                'accept_label',
+                const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   /// Método para mostrar un Snackbar con un mensaje personalizado.
   ///
@@ -1213,6 +1300,27 @@ class AlertUtil {
       ScaffoldMessenger.of(context).clearSnackBars();
     });
   } // MOSTRAR UN SNACKBAR
+
+  /// Metodo para mostrar un SnackBar personalizado con una duracion determinada.
+  ///
+  /// Este método permite mostrar un mensaje con localizacion en la parte inferior de la pantalla
+  /// durante una cantidad de segundos especificada.
+  ///
+  /// Parametros:
+  /// - `context`: El contexto de la aplicacion donde se mostrará el SnackBar.
+  /// - `seconds`: La duración en segundos que el SnackBar permanecera visible.
+  /// - `keyTitle`: Clave de localizacion para obtener el texto del mensaje.
+  static showSnackBarWithDuration (BuildContext context, int seconds, String keyTitle){
+    final message = Internationalization.internationalization
+        .getLocalizations(context, keyTitle);
+
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: seconds),
+      ),
+    );
+  }
 
   /// Método para mostrar un Snackbar de error.
   ///

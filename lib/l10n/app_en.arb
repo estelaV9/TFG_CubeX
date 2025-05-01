@@ -460,5 +460,42 @@
   "permission_required_title": "Permission required",
   "permission_required_description": "To manage notifications, please enable permissions in your device settings.",
   "open_settings_button": "Open settings",
-  "notification_permissions_denied": "Notification permissions denied"
+  "notification_permissions_denied": "Notification permissions denied",
+
+  "tour_intro_hello": "Hi! I'm Cubix :D",
+  "tour_intro_welcome": "I'm the app's mascot, here to help you!",
+  "tour_intro_tour_question": "Would you like a quick tour?",
+
+  "tour_header": "This is the main bar. From here, you'll see your current session and cube type.",
+  "tour_cubeType": "With this button, you can choose and manage the different types of cubes.",
+  "tour_session": "And with this one, you can switch or create new sessions to organize your times.",
+  "tour_scramble": "This is the scramble — a random mix to get you started with solving!",
+  "tour_timer": "Here’s where the magic happens. Time your solves, add comments, or apply penalties if needed.",
+  "tour_quick_stats": "Right here you'll see a summary of your times: best solves, averages, and more.",
+
+  "tour_go_to_history": "Let’s take a look at your history.",
+  "tour_history": "Here you’ll find all your solve times. You can view, edit, or delete them anytime.",
+
+  "tour_go_to_stats": "Now, let’s head over to the detailed stats.",
+  "tour_stats": "Here you can dive into your session data and track your progress in detail.",
+
+  "tour_end_title": "Tutorial complete!",
+  "tour_end_message": "Remember! The cube is your canvas, and every turn a brushstroke. Now it's your turn to create a masterpiece.",
+
+  "form_error_required_field": "Please fill in this field.",
+  "form_error_minimum_8_characters": "Must be at least 8 characters.",
+  "form_error_no_spaces_allowed": "Must not contain spaces.",
+  "form_error_special_character_required": "Must add one special character.",
+  "form_error_number_required": "Must add one number.",
+  "form_error_passwords_do_not_match": "Passwords do not match.",
+  "form_error_invalid_email": "Please enter a valid email.",
+  "form_error_name_max_length": "Name mustn't exceed 12 characters.",
+
+  "dialog_exit_app_title": "Quit Application",
+  "dialog_exit_app_message": "Are you sure you want to exit the app?",
+
+  "comments": "Comments",
+  "no_comments": "No comments",
+
+  "press_again_to_exit": "Press again to exit"
 }
