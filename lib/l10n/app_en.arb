@@ -145,6 +145,7 @@
   "delete_time": "Delete time button",
   "add_comment": "Add comments button",
   "add_scramble_manual": "Add scramble manually button",
+  "reset_scramble": "Reset scramble button",
   "more_option": "More options button",
   "add_new_time": "Add new time button",
   "add_penalty": "Add a penalty button",
@@ -191,5 +192,310 @@
   "add_time_error": "An error occurred while adding the time",
 
   "delete_user_successfully": "The user was deleted successfully",
-  "delete_user_error": "An error occurred while deleting the user"
+  "delete_user_error": "An error occurred while deleting the user",
+
+  "delete_all_times_label": "Delete all session times",
+  "delete_all_times_hint": "Are you sure you want to delete all your saved times for this session?",
+  "all_times_deleted_successful": "All times successfully deleted",
+  "all_times_deletion_failed": "Failed to delete all times. Please try again.",
+
+  "search_time_or_comments": "Search time or comment...",
+
+  "update_user_successfully": "User information was updated successfully",
+  "update_user_error": "An error occurred while updating the user information",
+
+  "exit_without_saving": "Exit without saving",
+  "unsaved_changes_message": "You have unsaved changes. Do you want to leave?",
+
+  "insert_old_pass_label": "",
+  "insert_old_pass_hint": "Form to insert your old password to save",
+  "old_pass_form_label": "",
+  "old_pass_form_hint": "Field to fill with the scramble of the time",
+
+  "insert_old_pass_label": "Enter your old password",
+  "insert_old_pass_hint": "To continue and save changes, please enter your old password.",
+  "old_pass_form_label": "Old Password",
+  "old_pass_form_hint": "Enter the password associated with your account",
+  "old_pass_error": "Incorrect password. Please try again.",
+
+  "field_null": "Field null.",
+
+  "confirm_pass_field_null": "Confirm pass field is null.",
+  "password_mismatch_error": "The passwords do not match. Please try again.",
+
+  "actual_delete_time": "Are you sure you want to delete this time?",
+  "actual_delete_time_content": "Once deleted, you won't be able to recover this time.",
+
+  "add_comment_time": "Add comment.",
+  "add_comment_time_content": "Add comment to the registred time.",
+
+  "time_saved_error": "An error occurred while saving the time",
+  "time_error": "An error occurred with the time",
+
+  "share_not_implemented": "Sharing is not implemented for this platform",
+  "share_error": "Error sharing",
+  "pdf_generation_error": "Error generating the PDF",
+  "no_times_found": "No times found for this session",
+  "pdf_saved_success": "PDF saved successfully.",
+
+  "sort_by": "Sort by",
+  "date": "Date",
+  "ascending": "Ascending",
+  "descending": "Descending",
+  "time": "Time",
+  "close_popover": "Close",
+  "close_popover_hint": "Close dialog",
+  "ascending_hint": "Button to sort in ascending order",
+  "descending_hint": "Button to sort in descending order",
+  "order_date_hint": "Button to sort by date",
+  "order_time_hint": "Button to sort by time",
+
+  "general_statistics": "General Statistics",
+  "best_single": "Best Single",
+  "worst_single": "Worst Single",
+  "solve_count": "Solve Count",
+  "dnf_count": "DNF Count",
+  "plus_two_count": "+2 Count",
+  "dnf_percentage": "DNF Percentage",
+  "plus_two_percentage": "+2 Percentage",
+  "total_solve_time": "Total Solve Time",
+
+  "tooltip_best_single": "Best recorded single time",
+  "semantic_best_single": "This column shows the best individual time",
+
+  "tooltip_worst_single": "Worst recorded single time",
+  "semantic_worst_single": "This column shows the worst individual time",
+
+  "tooltip_solve_count": "Total number of solves",
+  "semantic_solve_count": "This column shows how many times you have solved",
+
+  "tooltip_dnf_count": "Number of DNF solves",
+  "semantic_dnf_count": "This column shows the amount of DNFs (Did Not Finish)",
+
+  "tooltip_plus_two_count": "Number of +2 solves",
+  "semantic_plus_two_count": "This column shows the amount of +2 penalties",
+
+  "tooltip_dnf_percentage": "Percentage of DNFs",
+  "semantic_dnf_percentage": "This column shows the percentage of DNFs",
+
+  "tooltip_plus_two_percentage": "Percentage of +2 penalties",
+  "semantic_plus_two_percentage": "This column shows the percentage of +2s",
+
+  "tooltip_total_solve_time": "Total time spent solving",
+  "semantic_total_solve_time": "This column shows the accumulated time solving",
+
+  "performance_over_time": "Performance Over Time",
+  "yearly": "Yearly",
+  "monthly": "Monthly",
+  "daily": "Daily",
+  "graph_orientation": "Graph Orientation",
+  "toggle_times_visibility": "Toggle time labels visibility",
+
+  "average_analysis": "Average Analysis",
+  "average_analysis_label": "Average Analysis",
+  "average_analysis_hint": "Displays the average time analysis",
+
+  "current": "Current",
+  "current_label": "Current average time",
+  "current_hint": "Average time over recent solves",
+
+  "average": "Average",
+  "average_label": "Average of times",
+  "average_hint": "Table showing the average of your times in the current session",
+
+  "ao5": "Ao5",
+  "ao5_label": "Average of 5",
+  "ao5_hint": "Average time of last 5 solves",
+
+  "ao12": "Ao12",
+  "ao12_label": "Average of 12",
+  "ao12_hint": "Average time of last 12 solves",
+
+  "ao50": "Ao50",
+  "ao50_label": "Average of 50",
+  "ao50_hint": "Average time of last 50 solves",
+
+  "ao100": "Ao100",
+  "ao100_label": "Average of 100",
+  "ao100_hint": "Average time of last 100 solves",
+
+  "aoTotal": "AoTotal",
+  "aoTotal_label": "Total average",
+  "aoTotal_hint": "Average time of all solves",
+
+  "best": "Best",
+  "best_label": "Best averages",
+  "best_hint": "Best average times recorded",
+
+  "worst": "Worst",
+  "worst_label": "Worst averages",
+  "worst_hint": "Slowest average times recorded",
+
+  "total_average": "Total average time",
+  "total_average_label": "Total average",
+  "total_average_hint": "Average time for all solves in this session",
+
+  "session_deletion_failed_content_hint": "At least one session must remain active.",
+  "session_deletion_failed_content_label": "Delete session failed",
+  "session_deletion_failed_content": "The session cannot be deleted because it is the only active one.",
+
+  "cube_deletion_failed_content_hint": "At least one cube type must remain active.",
+  "cube_deletion_failed_content_label": "Delete session",
+  "cube_deletion_failed_content": "The cube type cannot be deleted because it is the only active one.",
+
+  "enable_notifications_title": "Enable Notifications",
+  "enable_notifications_label": "Notifications",
+  "enable_notifications_hint": "Enable this to receive alerts",
+  "enable_notifications_description": "Receive timely updates and important reminders directly on your device.",
+
+  "enable_notifications_button_hint": "Tap to enable notifications",
+  "enable_notifications_button_title": "Activate notifications",
+
+  "allow_notifications_title": "Allow notifications",
+  "allow_notifications_description": "Receive reminders to improve your times and keep practicing.",
+  "toggle_button_title": "Toggle notifications",
+  "toggle_button_hint": "Tap to toggle notifications on or off.",
+  "toggle_button_label": "Notifications",
+
+  "daily_notifications_title": "Daily Notifications",
+  "daily_notifications_description": "Get a daily reminder to keep practicing and improve your times. Don’t forget to train!",
+  "daily_notifications_button_title": "Enable daily notifications",
+  "daily_notifications_button_hint": "Shows info about daily notifications",
+
+  "weekly_motivation_title": "Weekly Motivation",
+  "weekly_motivation_description": "Receive weekly motivational messages to stay on track with your challenges. Never give up!",
+  "weekly_motivation_button_title": "Enable weekly motivation",
+  "weekly_motivation_button_hint": "Shows info about weekly motivational messages",
+
+  "new_record_notification_title": "Achievements and Records",
+  "new_record_notification_description": "Enable this option to get notified when you set a new personal best or achieve something important.",
+  "new_record_notification_button_title": "Enable achievements and records",
+  "new_record_notification_button_hint": "Shows info about new record notifications",
+
+  "training_reminders_title": "Training Reminders",
+  "training_reminders_description": "Get reminders throughout the week to train and improve your solving speed. Keep the habit!",
+  "training_reminders_button_title": "Enable training reminders",
+  "training_reminders_button_hint": "Shows info about weekly training reminders",
+
+  "weekly_summary_title": "Weekly Summaries",
+  "weekly_summary_description": "Receive a weekly summary of your progress, times, and stats to track your evolution.",
+  "weekly_summary_button_title": "Enable weekly summary",
+  "weekly_summary_button_hint": "Shows info about your weekly progress summary",
+
+  "inactivity_notification_title": "Inactivity Notifications",
+  "inactivity_notification_description": "Get notified if you haven’t solved any cubes lately. Time to get back to practice!",
+  "inactivity_notification_button_title": "Enable inactivity notifications",
+  "inactivity_notification_button_hint": "Shows info about alerts for long inactivity",
+
+  "weekly_stats_title": "Weekly Stats",
+  "weekly_stats_description": "Receive a weekly report of your times and improvements.",
+  "weekly_stats_button_title": "Enable weekly stats",
+  "weekly_stats_button_hint": "Shows info about your weekly performance data",
+
+  "hide_time_title": "Hide running time",
+  "hide_time_description": "Do not show the timer while it's running to minimize distractions or performance pressure.",
+  "hide_time_button_title": "Hide running time",
+  "hide_time_button_hint": "Keeps the time hidden until the resolution ends",
+
+  "record_time_alert_title": "Record time alert",
+  "record_time_alert_description": "Get notified when you achieve your personal best time.",
+  "record_time_alert_button_title": "Enable record alert",
+  "record_time_alert_button_hint": "Notifies you when you hit your best time",
+
+  "best_average_alert_title": "Best average alert",
+  "best_average_alert_description": "You'll be notified when you beat your average time (ao5, ao12, etc).",
+  "best_average_alert_button_title": "Enable best average alert",
+  "best_average_alert_button_hint": "Alerts you when you improve your averages",
+
+  "worst_time_alert_title": "Worst time alert",
+  "worst_time_alert_description": "Get an alert when you achieve your personal worst time.",
+  "worst_time_alert_button_title": "Enable worst time alert",
+  "worst_time_alert_button_hint": "Notifies you when you hit your worst time",
+
+  "inspection_title": "Inspection",
+  "advanced_options_title": "Advanced options",
+
+  "empty_stats_title": "You haven’t recorded any time yet",
+  "empty_stats_label": "The graph is empty",
+  "empty_stats_hint": "The graph is empty because no time has been recorded yet",
+
+  "alerts": "Alerts",
+
+  "inspection_description": "Enables an inspection countdown before the solve time starts.",
+  "inspection_button_title": "Enable inspection",
+  "inspection_button_hint": "Shows a countdown before starting the solve",
+
+  "inspection_time_title": "Inspection Time (seconds)",
+  "inspection_time_description": "Set how many seconds you'll have to inspect the cube before starting. By default, it's 15 seconds.",
+  "inspection_time_button_title": "Change inspection seconds",
+  "inspection_time_button_hint": "Choose how many seconds you'll have to inspect before solving",
+
+  "time_default": "Default",
+  "time_default_label": "Default time",
+  "time_default_hint": "Resets the inspection time to its default value (15 seconds)",
+  "inspection_time_form": "Please enter a inspection time",
+
+  "inspection_field_required": "This field is required",
+  "inspection_only_numbers": "Do not enter letters, only whole numbers",
+  "inspection_range_1_59": "You can only enter a value between 1 and 59",
+
+  "inspection_advanced_title": "Inspection Alerts",
+  "alert_at_8_12_title": "Alert at 8 and 12 seconds",
+  "alert_at_8_12_description": "Enable alerts when there are 7 and 3 seconds left in the inspection.",
+  "alert_at_8_12_button_title": "Enable time alerts",
+  "alert_at_8_12_button_hint": "Enables an alert when 7 and 3 seconds remain during inspection",
+  "alert_type_title": "Alert type",
+  "alert_type_description": "Choose how alerts will be displayed during the inspection:",
+  "inspection_alert_vibrant_type": "Vibrant",
+  "inspection_alert_sound_type": "Sound",
+  "inspection_alert_both_type": "Both",
+
+  "delete": "Delete",
+  "delete_selected_times_button": "Button to delete selected times",
+  "close_selected_time": "Close selected time",
+
+  "reset": "Reset",
+  "reset_notifications_button": "Reset notifications",
+  "notifications_activated": "Notifications activated",
+  "permission_required_title": "Permission required",
+  "permission_required_description": "To manage notifications, please enable permissions in your device settings.",
+  "open_settings_button": "Open settings",
+  "notification_permissions_denied": "Notification permissions denied",
+
+  "tour_intro_hello": "Hi! I'm Cubix :D",
+  "tour_intro_welcome": "I'm the app's mascot, here to help you!",
+  "tour_intro_tour_question": "Would you like a quick tour?",
+
+  "tour_header": "This is the main bar. From here, you'll see your current session and cube type.",
+  "tour_cubeType": "With this button, you can choose and manage the different types of cubes.",
+  "tour_session": "And with this one, you can switch or create new sessions to organize your times.",
+  "tour_scramble": "This is the scramble — a random mix to get you started with solving!",
+  "tour_timer": "Here’s where the magic happens. Time your solves, add comments, or apply penalties if needed.",
+  "tour_quick_stats": "Right here you'll see a summary of your times: best solves, averages, and more.",
+
+  "tour_go_to_history": "Let’s take a look at your history.",
+  "tour_history": "Here you’ll find all your solve times. You can view, edit, or delete them anytime.",
+
+  "tour_go_to_stats": "Now, let’s head over to the detailed stats.",
+  "tour_stats": "Here you can dive into your session data and track your progress in detail.",
+
+  "tour_end_title": "Tutorial complete!",
+  "tour_end_message": "Remember! The cube is your canvas, and every turn a brushstroke. Now it's your turn to create a masterpiece.",
+
+  "form_error_required_field": "Please fill in this field.",
+  "form_error_minimum_8_characters": "Must be at least 8 characters.",
+  "form_error_no_spaces_allowed": "Must not contain spaces.",
+  "form_error_special_character_required": "Must add one special character.",
+  "form_error_number_required": "Must add one number.",
+  "form_error_passwords_do_not_match": "Passwords do not match.",
+  "form_error_invalid_email": "Please enter a valid email.",
+  "form_error_name_max_length": "Name mustn't exceed 12 characters.",
+
+  "dialog_exit_app_title": "Quit Application",
+  "dialog_exit_app_message": "Are you sure you want to exit the app?",
+
+  "comments": "Comments",
+  "no_comments": "No comments",
+
+  "press_again_to_exit": "Press again to exit"
 }

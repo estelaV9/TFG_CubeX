@@ -2,6 +2,8 @@ import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:flutter/material.dart';
 
+import '../utilities/app_styles.dart';
+
 /// Widget que representa un contenedor de opción de ajustes, con un ícono, un texto y
 /// un botón para redirigir a una pantalla relacionada con la opción seleccionada o
 /// mostrar una alerta.
@@ -45,10 +47,7 @@ class _SettingsContainerState extends State<SettingsContainer> {
           // NOMBRE DE LA OPCION
           Text(
             widget.name,
-            style: const TextStyle(
-                fontSize: 23,
-                fontWeight: FontWeight.bold,
-                color: AppColors.darkPurpleColor),
+            style: AppStyles.darkPurpleAndBold(23),
           ),
 
           // EL EXPANDED HACE QUE UBIQUE EL ICON AL FINAL DEL CONTAINER

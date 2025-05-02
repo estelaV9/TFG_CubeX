@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.8.0'  // O la versión más reciente
+    ext.kotlin_version = '1.8.0'
     repositories {
         google()
         mavenCentral()
@@ -18,9 +18,8 @@ plugins {
 
 android {
     namespace = "com.example.esteladevega_tfg_cubex"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
-    compileSdkVersion = 34
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -37,6 +36,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // PARA LAS NOTIFICACIONES
+        // ES NECESARIO PARA EL PLUGIN DE flutter_local_notifications QUE PERMITE SUPERAR EL LÍMITE DE 64K METODOS
+        // (asi no explota la app por tener demasiados metodos entre la app, las notificaciones y otras librerias)
+        multiDexEnabled true
     }
 
     buildTypes {

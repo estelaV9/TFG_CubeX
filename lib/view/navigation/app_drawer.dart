@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
@@ -9,9 +11,12 @@ import 'package:esteladevega_tfg_cubex/view/screen/my_profile_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../viewmodel/current_user.dart';
 import '../../view/navigation/bottom_navigation.dart';
+import '../components/waves_painter/drawer_wave.dart';
+import '../utilities/app_styles.dart';
 
 /// Widget que representa el `Drawer` (menú lateral) de la aplicación.
 ///
@@ -19,6 +24,8 @@ import '../../view/navigation/bottom_navigation.dart';
 /// y un conjunto de opciones que redirigen a diferentes pantallas de la aplicación.
 /// Las opciones están localizadas, lo que significa que se ajustan según el idioma
 /// seleccionado en la aplicación.
+/// Además, se podrá visualizar la foto de perfil que tenga el usuario. En caso de no
+/// tener, se visualizará la de por defecto.
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
 
@@ -58,10 +65,54 @@ class _AppDrawerState extends State<AppDrawer> {
     } // SI EL MAIL ES "", MUESTRA UN AVISO
   } // METODO PARA RETORNAR EL MAIL DEL USUARIO QUE ACCEDIO
 
+  // LA URL DE LA IMAGEN DEL USUARIO, QUE SE INICIALIZA CON LA IMAGEN POR DEFECTO
+  String imageUrl = "assets/default_user_image.png";
+
   @override
   void initState() {
     super.initState();
     returnMail();
+    _getImageUrl();
+  }
+
+  /// Método privado para obtener la URL de la imagen de perfil del usuario actual.
+  ///
+  /// Este método busca en la base de datos la imagen asociada al usuario actual y,
+  /// si la encuentra, la asigna a la variable `imageUrl`.
+  ///
+  /// Procedimiento:
+  /// - Obtiene el usuario actual y recupera el ID mediante su nombre.
+  /// - Si el ID es válido, busca la URL de la imagen en la base de datos.
+  /// - Si la imagen no es nula, actualiza el estado con la nueva URL.
+  void _getImageUrl() async {
+    // OBTENER EL USUARIO ACTUAL
+    final currentUser = context.read<CurrentUser>().user;
+    // OBTENER EL ID DEL USUARIO
+    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    if (idUser == -1) {
+      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+      return;
+    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+    String? image = await userDao.getImageUser(idUser);
+    if (image != null) {
+      setState(() {
+        // SE ASIGNA EL VALOR DE LA URL DE LA IMAGEN
+        imageUrl = image;
+      });
+    } // SI NO ES NULA, SE ASIGNA EL VALOR
+  }
+
+  /// Metodo que cierra la sesión del usuario actual.
+  ///
+  /// Actualiza las preferencias compartidas para marcar que el usuario
+  /// ya no está logueado ni registrado (`isLoggedIn` y `isSingup` se establecen en `false`).
+  /// Luego se recarga las preferencias para que los cambios se apliquen.
+  void _logoutUser() async{
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isLoggedIn", false);
+    await prefs.setBool("isSingup", false);
+    await prefs.reload();
   }
 
   /// Método para generar un `ListTile` con un ícono, texto y una pantalla de destino.
@@ -91,6 +142,7 @@ class _AppDrawerState extends State<AppDrawer> {
         },
         // SE USA CONTAINER PARA CAMBIAR EL COLOR DEL FONDO DE LISTTILE
         child: Container(
+          height: 43,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             // CUANDO EL MOUSE PASA POR ENCIMA, SE CAMBIA EL COLOR DE FONDO
@@ -100,18 +152,18 @@ class _AppDrawerState extends State<AppDrawer> {
             // PADDING
             contentPadding: const EdgeInsets.only(left: 30),
             leading: Icon(icon, color: AppColors.darkPurpleColor),
-            title: Internationalization.internationalization
-                .createLocalizedSemantics(
+            title: Internationalization.internationalization.localizedTextOnlyKey(
               context,
               text,
-              text,
-              text,
-              const TextStyle(
+              style: const TextStyle(
                 color: AppColors.darkPurpleColor,
               ),
             ),
             onTap: () {
               // CAMBIAR VISTA AL TOCAR EL LISTILE
+              if(text == "log_out") {
+                _logoutUser();
+              } // SI HA PUSLADO LA OPCION DE DESLOGEARSE SE ACTUALIZA LAS PREFERENCIAS
               ChangeScreen.changeScreen(nameScreen, context);
             },
           ),
@@ -131,11 +183,9 @@ class _AppDrawerState extends State<AppDrawer> {
     return Padding(
       padding: const EdgeInsets.only(left: 20.0),
       child: Text(
-        Internationalization.internationalization.getLocalizations(context, text),
-        style: const TextStyle(
-          fontSize: 15,
-          color: AppColors.darkPurpleColor,
-        ),
+        Internationalization.internationalization
+            .getLocalizations(context, text),
+        style: AppStyles.darkPurple(15),
       ),
     );
   } // METODO PARA LOS TITULOS DEL LISTINER PARA NO DUPLICAR CODIGO
@@ -149,48 +199,84 @@ class _AppDrawerState extends State<AppDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LO METEMOS TODO_EN UNA FILA PARA EXPANDIR EL CONTAINER
-            Row(
-              children: [
-                Expanded(
-                  // AVATAR Y NOMBRE
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 20, top: 30),
-                    child: Column(
-                      children: [
+            // SizedBox CON EL WAVE Y EL CICLERAVATAR
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Stack(
+                children: [
+                  Positioned(
+                    // LA WAVE SE UBICA EN LA PARTE SUPERIOR
+                    top: 0,
+                    left: 0,
+                    child: CustomPaint(
+                      painter: DrawerWave(
+                        backgroundColor: AppColors.lightVioletColor,
+                      ),
+                      // TAMAÑO DEL WAVE
+                      child: const SizedBox(
+                        // OCUPA TODO_EL TAMAÑO DEL DRAWER
+                        width: 200,
+                        height: 110,
+                      ),
+                    ),
+                  ),
+                  // CIRCLEAVATAR
+                  Positioned(
+                    top: 30,
+                    left: 20,
+                    child: // IMAGEN DEL USUARIO
                         CircleAvatar(
-                          radius: 50,
-                          backgroundColor: AppColors.imagenBg,
-                          child: Image.asset(rutaImagen), // IAMGEN
-                        ),
-                        const SizedBox(height: 10),
+                            radius: 50,
+                            backgroundColor: AppColors.imagenBg,
+                            // SI EL USUARIO TIENE UNA FOTO
+                            child: imageUrl.isNotEmpty
+                                ? ClipOval(
+                                    child: Image.file(
+                                      File(imageUrl),
+                                      fit: BoxFit.cover,
+                                      width: 140,
+                                      height: 140,
+                                    ),
+                                  )
+                                :
+                                // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
+                                ClipOval(
+                                    child: Image.asset(
+                                      "assets/default_user_image.png",
+                                      fit: BoxFit.cover,
+                                      width: 140,
+                                      height: 140,
+                                    ),
+                                  )),
+                  ),
 
+                  // NOMBRE Y MAIL DEL USUARIO
+                  Positioned(
+                    top: 140,
+                    left: 20,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         // NOMBRE USUARIO
                         Text(
                           returnName(),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.darkPurpleColor,
-                          ),
+                          style: AppStyles.darkPurpleAndBold(20),
                         ),
 
                         // MAIL USUARIO
                         Text(
                           mail,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: AppColors.darkPurpleColor,
-                          ),
+                          style: AppStyles.darkPurple(15),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
 
             // OPCIONES DEL MENU
             Expanded(
@@ -205,10 +291,14 @@ class _AppDrawerState extends State<AppDrawer> {
                   listTileGenerator(
                       Icons.person, "my_profile", const MyProfileScreen()),
 
+                  const SizedBox(height: 15),
+
                   // VERSUS
                   textTitleListTile("championship"),
                   listTileGenerator(
                       Icons.sports_kabaddi, "versus", const BottomNavigation()),
+
+                  const SizedBox(height: 15),
 
                   // OTRAS OPCIONES
                   textTitleListTile("other"),
@@ -233,7 +323,10 @@ class _AppDrawerState extends State<AppDrawer> {
                 color: AppColors.darkPurpleColor),
 
             // BOTON PARA CERRAR SESION
-            listTileGenerator(Icons.logout, "log_out", const LoginScreen()),
+            Padding(
+                padding: const EdgeInsets.only(bottom: 70),
+                child: listTileGenerator(
+                    Icons.logout, "log_out", const LoginScreen()))
           ],
         ),
       ),

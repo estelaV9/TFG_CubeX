@@ -41,4 +41,22 @@ class AppColors {
 
   /// Color utilizado para destacar acciones críticas, como eliminar cuentas.
   static const Color deleteAccount = Color(0xFFf2a0ac);
+
+  /// Color utilizado para destacar deshabilitar botones.
+  static const Color darkPurpleOpacity = Color(0x8041135E);
+
+  /// Morado vibrante utilizado en el *animated tooltip*.
+  static const Color vibrantPurple = Color(0xFFa982f3);
+
+  /// Color morado suave de lavanda.
+  static const Color softLavender = Color(0xFFa68ed0);
+
+  /// Color de fondo para el `floatingActionButton` con el `SpeedDial`.
+  static const Color speedDialButtonBackground = Color(0xFFe7caff);
+
+  /// Color morado claro de fondo para popovers.
+  static const Color popoverBackground = Color(0xFF9575d3);
+
+  /// Color morado oscuro utilizado para el punto de los pbs en la gráfica.
+  static const Color pointPbGraphic = Color(0xFF4f3693);
 }

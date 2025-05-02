@@ -19,12 +19,15 @@ class IconClass {
   /// - `icon`: El icono que se va a mostrar.
   /// - `messageKey`: La clave de mensaje para obtener el texto del Tooltip.
   /// - `size`: El tamaño del icono. Si es `null`, el valor predeterminado es 25.
-  static Tooltip iconMaker(BuildContext context, IconData icon, String messageKey, [double? size]){
-    size ??= 25; // SI NO SE INTRODUCE UN TAMAÑO, POR DEFECTO SERA 25
-    final messageTooltip = Internationalization.internationalization.getLocalizations(context, messageKey);
+  /// - `color`: El color del icono. Si no se proporciona ningun color, será morado oscuro.
+  static Tooltip iconMaker(
+      BuildContext context, IconData icon, String messageKey,
+      [double? size = 25, Color color = AppColors.darkPurpleColor]) {
+    final messageTooltip = Internationalization.internationalization
+        .getLocalizations(context, messageKey);
     return Tooltip(
       message: messageTooltip,
-      child: Icon(icon, color: AppColors.darkPurpleColor, size: size),
+      child: Icon(icon, color: color, size: size),
     );
   } // METODO QUE DEVUELVE UN ICONO CON UN TOOLTIP
 
@@ -38,17 +41,23 @@ class IconClass {
   /// - `function`: La función que se ejecutará cuando el botón sea presionado.
   /// - `tooltip`: La clave de mensaje para obtener el texto del Tooltip.
   /// - `icon`: El icono que se va a mostrar en el `IconButton`.
-  static IconButton iconButton(BuildContext context,
-      VoidCallback function, String tooltip, IconData icon) {
-    final messageTooltip = Internationalization.internationalization.getLocalizations(context, tooltip);
+  /// - `colors`: Color para el icono opcional, el cual por defecto será un morado oscuro.
+  /// - `size`: El tamaño del icono del botón. Si es `null`, pondrá el valor predeterminado.
+  /// - `padding`: Padding del botón. Si es `null`, aplica el padding predeterminado.
+  static IconButton iconButton(
+      BuildContext context, Function()? function, String tooltip, IconData icon,
+      [Color? colors = AppColors.darkPurpleColor,
+      double? size,
+      EdgeInsetsGeometry? padding]) {
+    final messageTooltip = Internationalization.internationalization
+        .getLocalizations(context, tooltip);
 
     return IconButton(
-        onPressed: () {
-          function();
-        },
-        color: AppColors.darkPurpleColor,
+        onPressed: function,
+        color: colors,
+        padding: padding,
         tooltip: messageTooltip,
-        icon: Icon(icon));
+        icon: Icon(icon, size: size));
   } // METODO QUE DEVUELVE UN ICONBUTTON
 
   /// Crea un `IconButton` con una imagen como ícono, y un Tooltip asociado.
@@ -62,9 +71,14 @@ class IconClass {
   /// - `function`: La función que se ejecutará cuando el botón sea presionado.
   /// - `filePath`: La ruta del archivo de la imagen que se va a mostrar en el botón.
   /// - `messageKey`: La clave de mensaje para obtener el texto del Tooltip.
-  static Tooltip iconButtonImage(BuildContext context,
-      VoidCallback function, String filePath, String messageKey) {
-    final messageTooltip = Internationalization.internationalization.getLocalizations(context, messageKey);
+  static Tooltip iconButtonImage(BuildContext context, VoidCallback function,
+      String filePath, String messageKey,
+      [double? size]) {
+    final messageTooltip = Internationalization.internationalization
+        .getLocalizations(context, messageKey);
+
+    // SI EL TAMAÑO ES NULO, SE LE AÑADE UN VALOR POR DEFECTO
+    size ??= 40;
 
     return Tooltip(
       // CUANDO SE PASE EL MOUSE SALDRA UN TEXTO
@@ -85,8 +99,8 @@ class IconClass {
           child: SizedBox(
               child: Image.asset(
             // SE LE DA UN TAMAÑO A LA IMAGEN
-            width: 40,
-            height: 40,
+            width: size,
+            height: size,
             filePath,
             color: AppColors.darkPurpleColor,
           ))),

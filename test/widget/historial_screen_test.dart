@@ -1,6 +1,6 @@
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
-import 'package:esteladevega_tfg_cubex/viewmodel/current_language.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';

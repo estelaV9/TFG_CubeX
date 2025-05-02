@@ -8,21 +8,24 @@ import 'package:esteladevega_tfg_cubex/view/screen/show_time_screen.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_time.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../model/cubetype.dart';
-import '../../model/session.dart';
-import '../../viewmodel/current_cube_type.dart';
-import '../../viewmodel/current_session.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/Icon/icon.dart';
 import '../../data/dao/session_dao.dart';
 import '../../data/dao/time_training_dao.dart';
 import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
-import '../../viewmodel/current_user.dart';
+import '../components/start_guide/start_guide_component.dart';
+import '../components/waves_painter/small_wave_container_painter.dart';
 import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
+
+import '../utilities/alert.dart';
+import '../utilities/app_styles.dart';
 
 /// Pantalla principal del temporizador del cubo.
 ///
@@ -39,10 +42,12 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
-  TextStyle style = const TextStyle(
-      fontSize: 15,
-      fontWeight: FontWeight.bold,
-      color: AppColors.darkPurpleColor);
+  TextStyle statsTextStyle = AppStyles.darkPurpleAndBold(15);
+  final userDao = UserDao();
+  final sessionDao = SessionDao();
+  final cubeDao = CubeTypeDao();
+  final timeTrainingDao = TimeTrainingDao();
+  final cubeTypeDao = CubeTypeDao();
 
   // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
@@ -54,201 +59,13 @@ class _TimerScreenState extends State<TimerScreen> {
   var ao50Value = "--:--.--";
   var ao100Value = "--:--.--";
 
-  /// Método para insertar tiempos de prueba en la base de datos.
-  ///
-  /// No se utiliza.
-  void insertTimes() async {
-    final userDao = UserDao();
-    final sessionDao = SessionDao();
-    final timeTrainingDao = TimeTrainingDao();
-
-    // OBTENER EL USUARIO ACTUAL
-    final currentUser = context.read<CurrentUser>().user;
-    // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
-    if (idUser == -1) {
-      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-      return;
-    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-    // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-    int idSession =
-        await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
-    List<TimeTraining> timeTrainings = [
-      TimeTraining(
-          idSession: idSession,
-          scramble:
-              "B F2 D U' L' D' L2 B' R D' U2 F R U' D R' U F' R2 L' R' U2 F",
-          timeInSeconds: 1.4,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "U' D L' R2 F2 D' L' B' F R' D2 U2 F' U D2 R' L2",
-        timeInSeconds: 2.1,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "F' R' L2 D R' F' U2 L2 F2 U' R' U2 L",
-        timeInSeconds: 3.0,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "L D' F' R2 L' R' F2 D U' F' L",
-        timeInSeconds: 2.5,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "R F2 L2 U R' D' F' U' D' L2",
-        timeInSeconds: 4.2,
-        comments: null,
-      ),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "U' L2 D' F R2 L' B' U D F'",
-          timeInSeconds: 3.5,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "B' F D2 L' R U F2 U' L",
-          timeInSeconds: 5.0,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "U F' R' D B' F' U2 R' L D'",
-          timeInSeconds: 2.8,
-          comments: null,
-          penalty: "DNF"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "D L2 F U' B2 F R D' L R",
-        timeInSeconds: 3.6,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "F D' L B' R2 D L2 F' U",
-        timeInSeconds: 4.7,
-        comments: null,
-      ),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "B' U2 D' L' F U' D2 F' R",
-          timeInSeconds: 6.0,
-          comments: null,
-          penalty: "+2"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "R2 F2 D' B2 U' R F L' D2",
-        timeInSeconds: 3.2,
-        comments: null,
-      ),
-      TimeTraining(
-          idSession: idSession,
-          scramble: "D2 R B2 U' L2 F' D2",
-          timeInSeconds: 5.3,
-          comments: null,
-          penalty: "DNF"),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "U' R' D F L' B U2 R' F2 L",
-        timeInSeconds: 4.1,
-        comments: null,
-      ),
-      TimeTraining(
-        idSession: idSession,
-        scramble: "F2 R2 L2 D U' R2 F D'",
-        timeInSeconds: 3.8,
-        comments: null,
-      ),
-    ];
-
-    for (var timeTraining in timeTrainings) {
-      final success = await timeTrainingDao.insertNewTime(timeTraining);
-      if (success) {
-        DatabaseHelper.logger.i("Tiempo insertado: $timeTraining");
-      } else {
-        DatabaseHelper.logger.i("Error al insertar el tiempo: $timeTraining");
-      } // VERIFICAMOS SI SE INSERTO CORRECTAMENTE
-    } // SE INSERTA CADA TIEMPO EN LA BASE DE DATOS
-
-    // MOSTRAR RESULTADOS
-    // final result = await timeTrainingDao.getTimesOfSession(idSession);
-    // DatabaseHelper.logger.i("Tiempos obtenidos: \n${result.join('\n')}");
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    //insertTimes();
-    // INICIA LAS ESTADISTICAS
-    initTimeStatistics();
-  }
-
-  /// Método para inicializar las estadísticas de tiempo.
-  ///
-  /// Este método obtiene los tiempos almacenados en la base de datos para la sesión actual
-  /// y actualiza, actualmentem las estadísticas como el mejor tiempo (PB), el peor tiempo y
-  /// el número de tiempos que hay en la sesión.
-  void initTimeStatistics() async {
-    final userDao = UserDao();
-    final sessionDao = SessionDao();
-    final cubeDao = CubeTypeDao();
-    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
-
-    // OBTENER EL USUARIO ACTUAL
-    final currentUser = context.read<CurrentUser>().user;
-    // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
-    if (idUser == -1) {
-      DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-      return;
-    } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-    // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-
-    final currentSession = context.read<CurrentSession>().session;
-    final currentCubeType = context.read<CurrentCubeType>().cubeType;
-
-    final cubeType = await cubeDao.cubeTypeDefault(currentCubeType!.cubeName);
-
-    final session = await sessionDao.getSessionByUserCubeName(idUser, currentSession!.sessionName, cubeType.idCube);
-
-    var timesList = await timeTrainingDao.getTimesOfSession(session!.idSession);
-
-    final currentStatistics = context.read<CurrentStatistics>();
-    // SE ACTUALIZA EL ESTADO GLOBAL
-    currentStatistics.updateStatistics(timesListUpdate: timesList);
-
-    String pb = await currentStatistics.getPbValue();
-    String worst = await currentStatistics.getWorstValue();
-    String count = await currentStatistics.getCountValue();
-    /*String ao5 = await currentStatistics.getAo5Value();
-    String ao12 = await currentStatistics.getAo12Value();
-    String ao50 = await currentStatistics.getAo50Value();
-    String ao100 = await currentStatistics.getAo100Value();*/
-
-    setState(() {
-      pbValue = pb;
-      worstValue = worst;
-      countValue = count;
-      ao5Value = ao5Value;
-      ao12Value = ao12Value;
-      ao50Value = ao50Value;
-      ao100Value = ao100Value;
-    }); // SETTEA EL ESTADO DE LAS ESTADISTICAS
-  } // INICIALIZAR/ACTUALIZAR LAS ESTADISTICA
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // TIEMPO QUE RECIBE DDESDE LA CLASE ShowTimeScreen
   String _finalTime = "0.00";
+  // ATRIBUTO PARA COMPARAR EL PB ANTERIOR CON EL TIEMPO QUE HA HECHO PARA MOSTRAR
+  // UNA ALERTA SI HA SUPERADO SU PB
+  double auxPbValue = 0;
 
   // KEY DEL ScrambleContainer
   final GlobalKey<ScrambleContainerState> _scrambleKey =
@@ -258,6 +75,106 @@ class _TimerScreenState extends State<TimerScreen> {
   // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
   int random = (Random().nextInt(25 - 20 + 1) + 20);
 
+  late CurrentTime currentTime;
+
+  // ATRIBUTOS PARA SABER SI SE ESTABLECIDO PENALIZACIONES O COMENTARIOS
+  bool isDnfChoose = false, isPlusTwoChoose = false, isComment = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // INICIA LAS ESTADISTICAS
+    initTimeStatistics();
+    // EJECUTA LA FUNCION DESPUES DE QUE EL FRAME ACTUAL TERMINE DE CONSTRUIRSE,
+    // ASI NO CAUSA ERRORES DURANTE EL BUILD PARA HACER CAMBIOS EN EL STATE O EN PROVIDERS
+    // (se soluciona el mensaje de error cuando pulsas en el timer de setState() or
+    // markNeedsBuild() called during build)
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      final prefs = await SharedPreferences.getInstance();
+
+      Provider.of<CurrentTime>(context, listen: false).setResetTimeTraining();
+      final currentuser = context.read<CurrentUser>().user;
+
+      if(currentuser!.isSingup! && !currentuser.isLoggedIn){
+        // SE CREA EL TUTORIAL AQUI PARA QUE NO HAYA PROBLEMAS CON EL MediaQuery
+        final startGuideComponent = StartGuideComponent(context);
+        startGuideComponent.show(context);
+      } // SI EL USUARIO ACTUAL SE HA CREADO UNA CUENTA, SE MUESTRA EL TUTORIAL
+
+      // DESPUES DE ENSEÑAR EL TUTORIAL SE PONE EN FALSE
+      currentuser.isSingup = false;
+      prefs.setBool("isSingup", false);
+      prefs.reload();
+    });
+  }
+
+  @override
+  void dispose() async {
+    // ACTUALIZA LA INFORMACION DEL TIEMPO ACTUAL
+    // (si ha hecho un tiempo, añadido penalizaciones/comentarios cuando se vaya
+    // a otra pestaña, se guardara)
+    currentTime.updateCurrentTime(context);
+
+    super.dispose();
+  }
+
+  /// Método para inicializar las estadísticas de tiempo.
+  ///
+  /// Este método obtiene los tiempos almacenados en la base de datos para la sesión actual
+  /// y actualiza, actualmentem las estadísticas como el mejor tiempo (PB), el peor tiempo y
+  /// el número de tiempos que hay en la sesión.
+  void initTimeStatistics() async {
+    // VERIFICA SI EL WIDGET SIGUE MONTADO (SI ESTAACTIVO EN PANTALLA)
+    // SI NO LO ESTA, SE SALE PARA EVITAR ERRORES AL USAR CONTEXT O setState
+    // (asi no salen los errores cada vez que entra al timer)
+    if (!mounted) return;
+
+    // OBTENER EL ID DEL USUARIO
+    int? idUser = await userDao.getUserId(context);
+    final session = await sessionDao.getSessionData(context, idUser!);
+
+    var timesList = await timeTrainingDao.getTimesOfSession(session!.idSession);
+
+    final currentStatistics = context.read<CurrentStatistics>();
+    // SE ACTUALIZA EL ESTADO GLOBAL
+    currentStatistics.updateStatistics(timesListUpdate: timesList);
+    CurrentTime currentTime = context.read<CurrentTime>();
+
+    String pb = await currentStatistics.getPbValue(currentTime.isDnfChoose);
+    String worst =
+        await currentStatistics.getWorstValue(currentTime.isDnfChoose);
+    String count = await currentStatistics.getCountValue();
+    String ao5 = await currentStatistics.getAo5Value();
+    String ao12 = await currentStatistics.getAo12Value();
+    String ao50 = await currentStatistics.getAo50Value();
+    String ao100 = await currentStatistics.getAo100Value();
+    String average;
+    // SI LA LISTA NO ESTA VACIA, SE HACE LA MEDIA
+    // Y SI LA LISTA DE TIEMPOS TIENE AL MENOS 3 TIEMPOS DE RESOLUCION
+    // (YA QUE SE QUITAN 2 TIEMPOS, SE EMPIEZA EN EL TERCERO
+    if (timesList.isNotEmpty && timesList.length >= 3) {
+      // DE ESTA FORMA SE SOLUCIONA QUE SE MUESTRE LOS 2 PRIMEROS NUMEROS Y
+      // NO HAYA FALLOS DE RANGO
+      average = await currentStatistics.getAoXValue(timesList.length);
+    } else {
+      // SI NO SE PONE EL TEXTO PREDETERMINADO
+      average = "--:--.--";
+    }
+
+    // ANTES DE HACER UN SetState VERIFICAMOS SI EL WIDGET SIGUE MONTADO
+    if (!mounted) return;
+    setState(() {
+      averageValue = average;
+      pbValue = pb;
+      worstValue = worst;
+      countValue = count;
+      ao5Value = ao5;
+      ao12Value = ao12;
+      ao50Value = ao50;
+      ao100Value = ao100;
+    }); // SETTEA EL ESTADO DE LAS ESTADISTICAS
+  } // INICIALIZAR/ACTUALIZAR LAS ESTADISTICA
+
   /// Abre la pantalla [ShowTimeScreen] y espera el tiempo final del usuario.
   ///
   /// Una vez que el usuario termine de resolver el cubo, se guarda el tiempo
@@ -265,6 +182,9 @@ class _TimerScreenState extends State<TimerScreen> {
   void _openShowTimerScreen(BuildContext context) async {
     // OBTENEMOS EL SCRAMBLE ACTUAL ANTES DE ABRIR LA PANTALLA DE SHOWTIME
     final currentScramble = context.read<CurrentScramble>().scramble.toString();
+
+    DatabaseHelper.logger
+        .i("El tiempo anterior: ${currentTime.timeTraining.toString()}");
 
     // ABRIR LA PANTALLA DE SHOWTIME Y ESPERAR EL RESULTADO
     final result = await Navigator.push(
@@ -274,59 +194,89 @@ class _TimerScreenState extends State<TimerScreen> {
       ),
     );
 
+    // REESTABLECER VALORES DE PENALIZACION
+    currentTime.isPlusTwoChoose = false;
+    currentTime.isDnfChoose = false;
+    isComment = false;
+
     // SI EL RESULTADO NO ES NULO SE ACTUALIZA EL TIEMPO
     if (result != null) {
-      setState(() {
-        _finalTime = result; // ACTUALIZAR TIEMPO
-      });
-
       // SE ACTUALIZA EL SCRAMBLE UNA VEZ TEMINADO EL TIEMPO DE RESOLUCION
       _scrambleKey.currentState?.updateScramble();
 
+      // CONVERTIR EL TIEMPO A SEGUNDOS
+      double finalTimeInSeconds = _convertTimeToSeconds(result);
+
+      setState(() {
+        _finalTime = finalTimeInSeconds.toString(); // ACTUALIZAR TIEMPO
+      });
+
       // GUARDAR EL TIEMPO QUE HA HECHO
-      await _saveTimeToDatabase(double.parse(result), currentScramble);
+      await _saveTimeToDatabase(finalTimeInSeconds, currentScramble);
     }
   } // METODO PARA ABRIR LA PANTALLA DE MOSTRAR EL TIEMPO
+
+  /// Método que convierte un tiempo en formato `String` a `double` en segundos.
+  ///
+  /// Este método admite dos formatos:
+  /// - `mm:ss.SS`: Minutos, segundos y centésimas.
+  /// - `ss.SS`: Solo segundos con centésimas.
+  ///
+  /// Si el formato es inválido o hay errores de conversión, se devuelve 0.0 por defecto.
+  ///
+  /// ### Parámetros:
+  /// - [time]: Tiempo en formato `String` que será convertido.
+  ///
+  /// ### Retorna:
+  /// - Tiempo total en segundos como `double`.
+  double _convertTimeToSeconds(String time) {
+    // VERIFICAMOS SI EL FORMATO INCLUYE MINUTOS
+    if (time.contains(":")) {
+      final parts = time.split(':');
+      if (parts.length != 2) return 0.0; // FORMATO INVALIDO
+
+      // SEPARAMOS MINUTOS Y LA PARTE DE SEGUNDOS.CENTESIMAS
+      final minutes = int.tryParse(parts[0]) ?? 0;
+      final secondsAndMillis = parts[1].split('.');
+
+      final seconds = int.tryParse(secondsAndMillis[0]) ?? 0;
+      final milliseconds = int.tryParse(secondsAndMillis[1]) ?? 0;
+
+      // CALCULAMOS EL TIEMPO TOTAL EN SEGUNDOS
+      double totalSeconds = minutes * 60 + seconds + (milliseconds / 100);
+
+      // AJUSTE EXTRA POR SI LOS SEGUNDOS FUERAN >= 60
+      if (seconds >= 60) {
+        totalSeconds += (seconds ~/ 60) * 60;
+      }
+
+      return totalSeconds;
+    } else {
+      // FORMATO DE SEGUNDOS CON DECIMALES
+      return double.tryParse(time) ?? 0.0;
+    }
+  }
 
   /// Guarda el tiempo realizado en la base de datos.
   ///
   /// Este método recibe el tiempo final en segundos y el scramble utilizado,
   /// luego guarda el tiempo en la base de datos en la tabla correspondiente.
+  ///
+  /// **Parámetros**:
+  /// - `timeInSeconds`: El tiempo total en segundos que se ha tomado para completar la resolución.
+  /// - `scramble`: El scramble que fue utilizado para resolver el cubo.
+  ///
+  /// **Caracteristicas**:
+  /// - Se obtiene el usuario, la sesión, el tipo de cubo actual.
+  /// - Se crea un objeto `TimeTraining` con los detalles del tiempo y se guarda en la base de datos.
+  /// - Si la inserción es exitosa, se actualiza el estado global con el nuevo tiempo.
+  /// - Se actualizan las estadísticas de tiempo.
   Future<void> _saveTimeToDatabase(
       double timeInSeconds, String scramble) async {
-    final userDao = UserDao();
-    final sessionDao = SessionDao();
-    final timeTrainingDao = TimeTrainingDao();
-    CubeTypeDao cubeTypeDao = CubeTypeDao();
-
     try {
-      // OBTENER EL USUARIO ACTUAL
-      final currentUser = context.read<CurrentUser>().user;
       // OBTENER EL ID DEL USUARIO
-      int idUser = await userDao.getIdUserFromName(currentUser!.username);
-      if (idUser == -1) {
-        DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-        return;
-      } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-
-      // OBTENER LA SESSION Y EL TIPO DE CUBO ACTUAL
-      final currentSession = context.read<CurrentSession>().session;
-      final currentCube = context.read<CurrentCubeType>().cubeType;
-      CubeType? cubeType = await cubeTypeDao.cubeTypeDefault(currentCube!.cubeName);
-      if (cubeType == null) {
-        DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
-        return;
-      } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
-
-      // OBTENER EL ID DE LA SESION ACTUAL (por ahora la de por defecto)
-      int idSession =
-          await sessionDao.searchIdSessionByNameAndUser(idUser, "Normal");
-
-      Session? session =
-      await sessionDao.getSessionByUserCubeName(
-          idUser, currentSession!.sessionName, cubeType.idCube);
-
+      int? idUser = await userDao.getUserId(context);
+      final session = await sessionDao.getSessionData(context, idUser!);
 
       final timeTraining = TimeTraining(
         idSession: session!.idSession,
@@ -339,11 +289,23 @@ class _TimerScreenState extends State<TimerScreen> {
       final success = await timeTrainingDao.insertNewTime(timeTraining);
 
       // MOSTRAR UNA LISTA CON LOS TIEMPOS
-      final result = await timeTrainingDao.getTimesOfSession(idSession);
+      final result = await timeTrainingDao.getTimesOfSession(session.idSession);
       DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
 
       if (success) {
         DatabaseHelper.logger.i("Tiempo guardado correctamente.");
+
+        // GUARDAR LOS DATOS DEL TIEMPO EN EL ESTADO GLOBAL
+        currentTime = Provider.of<CurrentTime>(this.context, listen: false);
+        // SE ACTUALIZA EL ESTADO GLOBAL
+        currentTime.setTimeTraining(timeTraining);
+
+        final currentStatistics = context.read<CurrentStatistics>();
+
+        // EL PB AUXILIAR (PILLAMOS EL PB ANTERIOR)
+        auxPbValue =
+            _convertTimeToSeconds(await currentStatistics.getPbValue());
+
         initTimeStatistics(); // ACTUALIZAR LAS ESTADISTICAS
       } else {
         DatabaseHelper.logger.e("Error al guardar el tiempo.");
@@ -354,13 +316,86 @@ class _TimerScreenState extends State<TimerScreen> {
     }
   } // METODO PARA GUARDAR EL TIEMPO REALIZADO
 
-  void logicComment() {} // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
+  /// Muestra una alerta para añadir un comentario al tiempo actual.
+  ///
+  /// Este método es llamado cuando el usuario pulsa el icono de comentarios.
+  /// Se muestra una alerta que permite introducir un comentario, el cual será
+  /// guardado en la base de datos y asociado al tiempo actual.
+  ///
+  /// Si el usuario ya ha introducido un comentario y vuelve a pulsar este icono,
+  /// se establecerá ese mismo comentario introducido.
+  void logicComment() {
+    isComment = true;
+    // APARECERA UNA ALERTA PARA QUE INTRODUZCA UN COMENTARIO
+    AlertUtil.showCommentsTime(context, "add_comment_time", (String com) async {
+      // ACTUALIZAR EN LA BASE DE DATOS EL COMENTARIO
+      if (currentTime.timeTraining != null) {
+        // AÑADIR NUEVO COMENTARIO
+        TimeTraining updatedTime = TimeTraining(
+          idSession: currentTime.timeTraining!.idSession,
+          scramble: currentTime.timeTraining!.scramble,
+          timeInSeconds: currentTime.timeTraining!.timeInSeconds,
+          comments: com,
+          // ACTUALIZAR COMENTARIO
+          penalty: currentTime.timeTraining!.penalty,
+        );
 
-  void
-      logicDeleteTime() {} // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
+        // SE ACTUALIZA EN LA BASE DE DATOS
+        int idTime = await timeTrainingDao.getIdByTime(
+            currentTime.timeTraining!.scramble,
+            currentTime.timeTraining!.idSession);
+
+        if (idTime == -1) {
+          AlertUtil.showSnackBarError(context, "time_saved_error");
+          return;
+        } // VALIDAR QUE EL IDTIME NO DE ERROR
+
+        // ACTUALIZAR EL TIEMPO
+        if (await timeTrainingDao.updateTime(idTime, updatedTime) == false) {
+          AlertUtil.showSnackBarError(context, "time_saved_error");
+          return;
+        } // SI FALLA, SE MUESTRA UN ERROR
+
+        // ACTUALIZAR ESTADO GLOBAL
+        currentTime.setTimeTraining(updatedTime);
+      }
+    });
+  } // METODO PARA CUANDO PULSE EL ICONO DE COMENTARIOS
+
+  /// Muestra una alerta para confirmar la eliminación del tiempo actual.
+  ///
+  /// Este método es llamado cuando el usuario intenta eliminar el tiempo actual.
+  /// Si hay un tiempo almacenado en `currentTime`, se muestra una alerta para confirmar la eliminación.
+  /// Esto para que no pueda eliminar un tiempo que todavía no ha hecho.
+  void logicDeleteTime() async {
+    // OBTENER EL TIEMPO ACTUAL
+    currentTime = context.read<CurrentTime>();
+
+    if (currentTime.timeTraining != null) {
+      AlertUtil.showDeleteSessionOrCube(
+        context,
+        "actual_delete_time",
+        "actual_delete_time_content",
+        () {
+          currentTime.deleteTime(context);
+          // CUANDO SE ELIMINE SE QUITAN LSO COMENTARIOS
+          // PARA QUE DESAPAREZCA EL SIMBOLO AL ELIMINARSE
+          isComment = false;
+        },
+      );
+    } // SI HAY UN TIEMPO ACTUAL, SE MUESTRA LA ALERTA
+  } // METODO PARA CUANDO PULSE EL ICONO DE ELIMINAR TIEMPO
 
   @override
   Widget build(BuildContext context) {
+    currentTime = context.watch<CurrentTime>();
+    // SE MUESTRA EL TIEMPO FORMATEADO (si tiene penalizacines o no)
+    _finalTime = currentTime.getFormattedTime();
+    initTimeStatistics();
+
+    // EL TIEMPO ACTUAL AUXILIAR CONVERTIDO EN SEGUNDOS
+    double auxFinalTime = _convertTimeToSeconds(_finalTime);
+
     return Scaffold(
       key: _scaffoldKey, // KEY PARA CONTROLLAR EL SCAFFOLD PARA EL DRAWER
       drawer: const AppDrawer(), // DRAWER
@@ -369,196 +404,252 @@ class _TimerScreenState extends State<TimerScreen> {
           // FONDO DEGRADADO
           Positioned.fill(
               child: Container(
-            decoration: const BoxDecoration(
-              // COLOR DEGRADADO PARA EL FONDO
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, // DESDE ARRIBA
-                end: Alignment.bottomCenter, // HASTA ABAJO
-                colors: [
-                  // COLOR DE ARRIBA DEL DEGRADADO
-                  AppColors.upLinearColor,
-                  // COLOR DE ABAJO DEL DEGRADADO
-                  AppColors.downLinearColor,
-                ],
-              ),
-            ),
+            decoration: AppStyles.boxDecorationContainer(),
           )),
 
-          // BOTON DE CONFIGURACION ARRIBA A LA IZQUIERDA
           Positioned(
-            top: 20,
-            left: 20,
-            child: IconButton(
-                onPressed: () {
-                  _scaffoldKey.currentState?.openDrawer(); // ABRE EL DRAWER
-                },
-                icon: IconClass.iconMaker(context, Icons.settings, "settings", 30)),
+            // UBICARLO EN LA ESQUINA SUPERIOR IZQUIERDA
+            top: 0,
+            left: 0,
+            child: CustomPaint(
+              painter: SmallWaveContainerPainter(
+                backgroundColor: AppColors.lightVioletColor,
+              ),
+              child: SizedBox(
+                width: 190, // ANCHO
+                height: 97, // ALTO
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 7, top: 0),
+                    child: IconButton(
+                      onPressed: () {
+                        _scaffoldKey.currentState?.openDrawer();
+                      },
+                      icon: IconClass.iconMaker(
+                          context, Icons.settings, "settings", 26),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
 
           // CONTAINER DEL TIPO DE CUBO Y LA SESION UN POCO MAS ABAJO A LA DERECHA
           const Positioned(
-            top: 40,
+            top: 43,
             right: 20,
             child: CubeHeaderContainer(),
           ),
 
           // CONTAINER DEL SCRAMBLE
-          Positioned(
+          const Positioned(
             top: 110,
             right: 20,
             left: 20,
             // SE PASA LA CLAVE DEL SCRMABLE PARA QUE FUNCIONE
-            child: ScrambleContainer(key: _scrambleKey),
+            child: ScrambleContainer(),
           ),
 
           // .fill PARA QUE SE EXPANDA EL TIMER Y SIGA QUEDANDOSE EN EL CENTRO
           Positioned.fill(
             top: 250, // PARA QUE SE COLOQUE JUSTO DESPUES DEL SCRAMBLE
+            bottom: 60,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
+                // CUANDO EMPIECE UN TIEMPO NUEVO, SI HA PULSADO ALGUNA PENALIZACION, SE ACTUALIZA EL TIEMPO
+                if (currentTime.isPlusTwoChoose || currentTime.isDnfChoose) {
+                  int idTime = await timeTrainingDao.getIdByTime(
+                      currentTime.timeTraining!.scramble,
+                      currentTime.timeTraining!.idSession);
+
+                  if (idTime == -1) {
+                    AlertUtil.showSnackBarError(context, "time_saved_error");
+                    return;
+                  } // VALIDAR QUE EL IDTIME NO DE ERROR
+
+                  // ACTUALIZAR ESTADO GLOBAL
+                  currentTime.updateCurrentTime(context);
+                  // (no se muestra mensaje de exito, el usuario lo podra ver en el historial)
+                }
+                // ABRIR TIMER
                 _openShowTimerScreen(context);
               }, // CUANDO MANTIENE PULSADO ABRE LA PANTALLA DE MOSTRAR TIMER
               child: Column(
                 children: [
-                  Container(
-                    padding:
-                        // TODO_EL ESPACIO QUE OCUPA EL ESPACIO DEL TIMER
-                        const EdgeInsets.symmetric(
-                            vertical: 80, horizontal: 20),
-                    child: Column(
-                      // SE CENTRA
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Semantics(
-                          label: Internationalization.internationalization
-                              .getLocalizations(context, "time_label"),
-                          hint: Internationalization.internationalization
-                              .getLocalizations(context, "time_hint"),
-                          child: Text(
-                            key: const Key('timer_display'),
-                            _finalTime,
-                            style: const TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.darkPurpleColor,
-                            ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconClass.iconButton(context, logicComment, "add_comment",
-                                Icons.add_comment_rounded),
-                            TextButton(
-                              onPressed: () {},
-                              child:
-                                  // DNF
-                                  Internationalization.internationalization
-                                      .createLocalizedSemantics(
-                                context,
-                                "dnf_label",
-                                "dnf_hint",
-                                "dnf",
-                                const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor,
+                  // EXPANDE EL CONTENEDOR CON EL TIMER PARA QUE OCUPE TODO_EL ESPACIO
+                  // DISPONIBLE ENTRE EL SCRAMBLE Y LAS ESTADISTICAS
+                  Expanded(
+                    child: Container(
+                      // SOLO SE PONE PADDING HORIZONTAL PARA NO DEJAR FIJO EL VERTICAL
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        // SE CENTRA
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Semantics(
+                              label: Internationalization.internationalization
+                                  .getLocalizations(context, "time_label"),
+                              hint: Internationalization.internationalization
+                                  .getLocalizations(context, "time_hint"),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    key: const Key('timer_display'),
+                                    _finalTime,
+                                    style: AppStyles.darkPurpleAndBold(40),
+                                  ),
+
+                                  // SI HAY UN +2 O COMENTARIOS, SE AÑADE UN PADDING A LA DERECHA
+                                  if (currentTime.isPlusTwoChoose || isComment)
+                                    const Padding(
+                                        padding: EdgeInsets.only(right: 5)),
+
+                                  // SI SOLO ESTA SELECCIONADO EL +2 SIN COMENTARIOS
+                                  if (currentTime.isPlusTwoChoose && !isComment)
+                                    const Text(
+                                      " +2",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.deleteAccount,
+                                      ),
+                                    ),
+
+                                  // SI SOLO HAY COMENTARIOS, SE MUESTRA SOLO EL ICON
+                                  if (isComment && !currentTime.isPlusTwoChoose)
+                                    IconClass.iconMaker(
+                                        context, Icons.comment, "fsd", 15),
+
+                                  // SI HAY COMENTARIOS Y +2, SE MUESTRAN EN COLUMNA
+                                  if (isComment && currentTime.isPlusTwoChoose)
+                                    Column(
+                                      children: [
+                                        IconClass.iconMaker(
+                                            context, Icons.comment, "fsd", 15),
+                                        const Text(
+                                          " +2",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.deleteAccount,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              )),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
+                              currentTime.timeTraining != null
+                                  ? IconClass.iconButton(context, logicComment,
+                                      "add_comment", Icons.add_comment_rounded)
+                                  : IconClass.iconButton(
+                                      context,
+                                      () {},
+                                      "add_comment",
+                                      Icons.add_comment_rounded,
+                                      AppColors.darkPurpleOpacity),
+                              TextButton(
+                                // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
+                                onPressed: currentTime.timeTraining != null
+                                    ? () {
+                                        currentTime.setPenalty(
+                                            "DNF", !currentTime.isDnfChoose);
+                                      }
+                                    : () {},
+                                // SE DESHABILITA SI NO HAY TIEMPO ACTUAl
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context, "dnf_label", "dnf_hint", "dnf",
+                                  // APLICAR COLOR SI ESTA O NO PULSADO
+                                  AppStyles.getButtonTextStyle(
+                                      currentTime.isDnfChoose,
+                                      currentTime.timeTraining != null),
                                 ),
                               ),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child:
-                                  // +2
-                                  Internationalization.internationalization
-                                      .createLocalizedSemantics(
-                                context,
-                                "plus_two_label",
-                                "plus_two_hint",
-                                "plus_two",
-                                const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkPurpleColor,
+                              TextButton(
+                                // SI HA HECHO O NO UN TIEMPO, SE ACTIVAN O "DESACTIVA" EL BOTON
+                                onPressed: currentTime.timeTraining != null
+                                    ? () {
+                                        currentTime.setPenalty(
+                                            "+2", !currentTime.isPlusTwoChoose);
+                                      }
+                                    : () {},
+                                // SE DESHABILITA SI NO HAY TIEMPO ACTUAL
+                                child: Internationalization.internationalization
+                                    .createLocalizedSemantics(
+                                  context, "plus_two_label", "plus_two_hint",
+                                  "plus_two",
+                                  // APLICAR COLOR SI ESTA O NO PULSADO
+                                  AppStyles.getButtonTextStyle(
+                                      currentTime.isPlusTwoChoose,
+                                      currentTime.timeTraining != null),
                                 ),
                               ),
-                            ),
-                            IconClass.iconButton(context,
-                                logicDeleteTime, "delete_time", Icons.close),
-                          ],
-                        )
-                      ],
+                              currentTime.timeTraining != null
+                                  ? IconClass.iconButton(
+                                      context,
+                                      logicDeleteTime,
+                                      "delete_time",
+                                      Icons.close)
+                                  : IconClass.iconButton(
+                                      context,
+                                      () {},
+                                      "delete_time",
+                                      Icons.close,
+                                      AppColors.darkPurpleOpacity)
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
 
-                  // EXPANDE EL CONTENEDOR CON LOS TEXTOS PARA QUE OCUPE TODO_EL ESPACIO
-                  // DISPONIBLE ENTRE EL TIMER Y LOS TEXTOS
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Row(
-                              // ESPACIO ENTRE LAS COLUMNAS
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // COLUMNA IZQUIERDA
-                                Column(
-                                  // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Average: $averageValue",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Pb: $pbValue",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Worst: $worstValue",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Count: $countValue",
-                                      style: style,
-                                    ),
-                                  ],
-                                ),
+                  // ESTADISTICAS
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            // ESPACIO ENTRE LAS COLUMNAS
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // COLUMNA IZQUIERDA
+                              Column(
+                                // EMPIEZA DESDE ARRIBA A LA IZQUIERDA
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _statsText("Average", averageValue),
+                                  _statsText("Pb", pbValue),
+                                  _statsText("Worst", worstValue),
+                                  _statsText("Count", countValue)
+                                ],
+                              ),
 
-                                //COLUMNA DERECHA
-                                Column(
-                                  // EMPIEZA DESDE ARRIBA A LA DERECHA
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "Ao5: $ao5Value",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Ao12: $ao12Value",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Ao50: $ao50Value",
-                                      style: style,
-                                    ),
-                                    Text(
-                                      "Ao100: $ao100Value",
-                                      style: style,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              //COLUMNA DERECHA
+                              Column(
+                                // EMPIEZA DESDE ARRIBA A LA DERECHA
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  _statsText("Ao5", ao5Value),
+                                  _statsText("Ao12", ao12Value),
+                                  _statsText("Ao50", ao50Value),
+                                  _statsText("Ao100", ao100Value)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -566,8 +657,46 @@ class _TimerScreenState extends State<TimerScreen> {
               ),
             ),
           ),
+
+          // SI HA SUPERADO SU PB SE MUESTRA UN CONTAINER EN FORMA DE ALERTA
+          Positioned(
+            bottom: 165,
+            right: 20,
+            child: auxFinalTime < auxPbValue
+                ? Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      // SEPARARLO DE LAS ESTADISTICAS
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: AppColors.lightVioletColor, width: 2)),
+                      child: const Text("¡Has superado tu\nmejor tiempo!"),
+                    )
+
+                    /*CustomPaint(
+                painter: AlertRecordWave(
+                    message: "¡Has superado tu\nmejor tiempo!"
+                ),
+                child: const SizedBox(
+                  width: 160,
+                  height: 80,
+                ),
+              )*/
+                    )
+                : const Text(""),
+          )
         ],
       ),
+    );
+  }
+
+  Text _statsText(String title, String value) {
+    return Text(
+      "$title: $value",
+      style: statsTextStyle,
     );
   }
 }

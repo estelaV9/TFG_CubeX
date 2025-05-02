@@ -144,6 +144,7 @@
   "delete_time": "Botón eliminar tiempo",
   "add_comment": "Botón agregar comentarios",
   "add_scramble_manual": "Botón agregar scramble manualmente",
+  "reset_scramble": "Btón restablecer scramble",
   "more_option": "Botón más opciones",
   "add_new_time": "Botón agregar nuevo tiempo",
   "add_penalty": "Botón agregar penalización",
@@ -189,5 +190,308 @@
   "add_time_error": "Ocurrio un error al añadir el tiempo",
 
    "delete_user_successfully": "Se eliminó el usuario correctamente",
-   "delete_user_error": "Ocurrió un error al eliminar usuario"
+   "delete_user_error": "Ocurrió un error al eliminar usuario",
+
+
+   "delete_all_times_label": "Eliminar todos los tiempos de la sesión",
+   "delete_all_times_hint": "¿Estás seguro de que deseas eliminar todos tus tiempos guardados con esta sesión?",
+   "all_times_deleted_successful": "Todos los tiempos eliminados con éxito",
+   "all_times_deletion_failed": "Error al eliminar todos los tiempos. Por favor, inténtalo de nuevo.",
+
+   "search_time_or_comments": "Buscar tiempo o comentarios...",
+
+   "update_user_successfully": "Se actualizó la información correctamente",
+   "update_user_error": "Ocurrió un error al actualizar información del usuario",
+
+   "exit_without_saving": "Salir sin guardar",
+   "unsaved_changes_message": "Tienes cambios sin guardar. ¿Quieres salir?",
+
+   "insert_old_pass_label": "Ingresa tu antigüa contraseña",
+   "insert_old_pass_hint": "Para continuar y guardar los cambios, introduce tu antigüa contraseña.",
+   "old_pass_form_label": "Contraseña antigüa",
+   "old_pass_form_hint": "Introduce la contraseña asociada a tu cuenta",
+   "old_pass_error": "Contraseña incorrecta. Inténtalo de nuevo.",
+
+   "field_null": "Campo vacio.",
+
+   "confirm_pass_field_null": "El campo confirmar contraseña esta vacio.",
+   "password_mismatch_error": "Las contraseñas no coinciden. Intenta nuevamente.",
+
+   "actual_delete_time": "¿Estás seguro de que deseas eliminar este tiempo?",
+   "actual_delete_time_content": "Una vez eliminado, no podrás recuperar este tiempo.",
+
+   "add_comment_time": "Añadir comentario.",
+   "add_comment_time_content": "Añade un comentario al tiempo registrado.",
+
+   "time_saved_error": "Ocurrió un error al guardar el tiempo",
+   "time_error": "Ocurrió un error con el tiempo",
+
+   "share_not_implemented": "Compartir no está implementado para esta plataforma",
+   "share_error": "Error al compartir",
+   "pdf_generation_error": "Error al generar el PDF",
+   "no_times_found": "No se encontraron tiempos para esta sesión",
+   "pdf_saved_success": "PDF guardado con éxito.",
+
+   "sort_by": "Ordenar por",
+   "date": "Fecha",
+   "ascending": "Ascendente",
+   "descending": "Descendente",
+   "time": "Tiempo",
+   "close_popover": "Cerrar",
+   "close_popover_hint": "Cerrar dialogo",
+   "ascending_hint": "Botón para ordenar ascendentemente",
+   "descending_hint": "Botón para ordenar descendentemente",
+   "order_date_hint": "Botón para ordenar por fecha",
+   "order_time_hint": "Botón para ordenar por tiempo",
+
+   "general_statistics": "Estadísticas Generales",
+   "best_single": "Mejor Tiempo",
+   "worst_single": "Peor Tiempo",
+   "solve_count": "Número de Resoluciones",
+   "dnf_count": "Conteo de DNF",
+   "plus_two_count": "Conteo de +2",
+   "dnf_percentage": "Porcentaje de DNF",
+   "plus_two_percentage": "Porcentaje de +2",
+   "total_solve_time": "Tiempo Total de Resolución",
+
+   "tooltip_best_single": "Mejor tiempo individual registrado",
+   "semantic_best_single": "Esta columna muestra el mejor tiempo individual",
+
+   "tooltip_worst_single": "Peor tiempo individual registrado",
+   "semantic_worst_single": "Esta columna muestra el peor tiempo individual",
+
+   "tooltip_solve_count": "Número total de resoluciones registradas",
+   "semantic_solve_count": "Esta columna muestra cuántas resoluciones hiciste",
+
+   "tooltip_dnf_count": "Cantidad de intentos con penalización DNF",
+   "semantic_dnf_count": "Esta columna muestra los intentos no finalizados (DNF)",
+
+   "tooltip_plus_two_count": "Cantidad de penalizaciones +2",
+   "semantic_plus_two_count": "Esta columna muestra las resoluciones con penalización de +2 segundos",
+
+   "tooltip_dnf_percentage": "Porcentaje de penalizaciones DNF",
+   "semantic_dnf_percentage": "Esta columna muestra el porcentaje de DNFs",
+
+   "tooltip_plus_two_percentage": "Porcentaje de penalizaciones +2",
+   "semantic_plus_two_percentage": "Esta columna muestra el porcentaje de +2",
+
+   "tooltip_total_solve_time": "Tiempo total invertido resolviendo",
+   "semantic_total_solve_time": "Esta columna muestra el tiempo total de resolución acumulado",
+
+   "performance_over_time": "Rendimiento a lo largo del tiempo",
+   "yearly": "Anual",
+   "monthly":  "Mensual",
+   "daily": "Diario",
+   "graph_orientation": "Orientación de la gráfica",
+   "toggle_times_visibility": "Esconder o mostrar los tiempos de la gráfica",
+
+  "average_analysis": "Análisis de promedios",
+  "average_analysis_label": "Análisis de promedios",
+  "average_analysis_hint": "Muestra el análisis de tiempos promedio",
+
+  "current": "Actual",
+  "current_label": "Tiempo promedio actual",
+  "current_hint": "Tiempo medio de las últimas resoluciones",
+
+  "average": "Media",
+  "average_label": "Media de tiempos",
+  "average_hint": "Tabla con las medias de tus tiempos en la sesión",
+
+  "ao5": "Ao5",
+  "ao5_label": "Media de 5",
+  "ao5_hint": "Tiempo promedio de las últimas 5 resoluciones",
+
+  "ao12": "Ao12",
+  "ao12_label": "Media de 12",
+  "ao12_hint": "Tiempo promedio de las últimas 12 resoluciones",
+
+  "ao50": "Ao50",
+  "ao50_label": "Media de 50",
+  "ao50_hint": "Tiempo promedio de las últimas 50 resoluciones",
+
+  "ao100": "Ao100",
+  "ao100_label": "Media de 100",
+  "ao100_hint": "Tiempo promedio de las últimas 100 resoluciones",
+
+  "aoTotal": "AoTotal",
+  "aoTotal_label": "Media total",
+  "aoTotal_hint": "Tiempo promedio de las todas las resoluciones",
+
+  "best": "Mejor",
+  "best_label": "Mejores promedios",
+  "best_hint": "Mejores tiempos promedio registrados",
+
+  "worst": "Peor",
+  "worst_label": "Peores promedios",
+  "worst_hint": "Tiempos promedio más lentos",
+
+  "total_average": "Media total de tiempos",
+  "total_average_label": "Media total",
+  "total_average_hint": "Tiempo medio de todas las resoluciones en esta sesión",
+
+
+  "session_deletion_failed_content_hint": "Debe permanecer al menos una sesión activa.",
+  "session_deletion_failed_content_label": "Eliminar sesión",
+  "session_deletion_failed_content": "No se puede eliminar la sesión porque es la única activa.",
+
+  "cube_deletion_failed_content_hint": "Debe haber al menos un tipo de cubo activo.",
+  "cube_deletion_failed_content_label": "Eliminar tipo de cubo",
+  "cube_deletion_failed_content": "No se puede eliminar este tipo de cubo porque es el único activo.",
+
+  "enable_notifications_title": "Activar notificaciones",
+  "enable_notifications_label": "Notificaciones",
+  "enable_notifications_hint": "Activa esta opción para recibir alertas",
+  "enable_notifications_description": "Recibe actualizaciones oportunas y recordatorios importantes directamente en tu dispositivo.",
+
+  "enable_notifications_button_hint": "Pulsa para activar las notificaciones",
+  "enable_notifications_button_title": "Activar las notificaciones",
+
+
+  "allow_notifications_title": "Permitir notificaciones",
+  "allow_notifications_description": "Recibe recordatorios para mejorar tus tiempos y no olvides entrenar.",
+  "toggle_button_title": "Desactivar notificaciones",
+  "toggle_button_hint": "Toca para desactivar las notificaciones.",
+  "toggle_button_label": "Notificaciones",
+
+  "daily_notifications_title": "Notificaciones Diarias",
+  "daily_notifications_description": "Recibe un recordatorio diario para seguir practicando y mejorar tus tiempos. ¡No olvides entrenar!",
+  "daily_notifications_button_title": "Activar notificaciones diarias",
+  "daily_notifications_button_hint": "Muestra información sobre las notificaciones diarias",
+
+  "weekly_motivation_title": "Motivación Semanal",
+  "weekly_motivation_description": "Recibe mensajes motivacionales semanales para seguir adelante con tus retos. ¡Nunca te rindas!",
+  "weekly_motivation_button_title": "Activar motivación semanal",
+  "weekly_motivation_button_hint": "Muestra información sobre los mensajes motivacionales semanales",
+
+  "new_record_notification_title": "Logros y Récords",
+  "new_record_notification_description": "Activa esta opción para recibir notificaciones cuando consigas un nuevo récord personal o logros importantes.",
+  "new_record_notification_button_title": "Activar logros y récords",
+  "new_record_notification_button_hint": "Muestra información sobre las notificaciones de nuevos récords",
+
+  "training_reminders_title": "Recordatorios de Entrenamiento",
+  "training_reminders_description": "Recibe recordatorios para entrenar y mejorar tu velocidad de resolución a lo largo de la semana. ¡No pierdas la costumbre!",
+  "training_reminders_button_title": "Activar recordatorios de entrenamiento",
+  "training_reminders_button_hint": "Muestra información sobre recordatorios semanales para entrenar",
+
+  "weekly_summary_title": "Resúmenes Semanales",
+  "weekly_summary_description": "Recibe un resumen semanal de tu progreso, tiempos y estadísticas para que sigas viendo tu evolución.",
+  "weekly_summary_button_title": "Activar resumen semanal",
+  "weekly_summary_button_hint": "Muestra información sobre el resumen de tu progreso semanal",
+
+  "inactivity_notification_title": "Notificaciones de Inactividad",
+  "inactivity_notification_description": "Recibe un mensaje si no has resuelto ningún cubo en los últimos días. ¡Es hora de retomar la práctica!",
+  "inactivity_notification_button_title": "Activar notificaciones por inactividad",
+  "inactivity_notification_button_hint": "Muestra información sobre alertas de inactividad prolongada",
+
+  "weekly_stats_title": "Estadísticas Semanales",
+  "weekly_stats_description": "Recibe un informe semanal sobre tus tiempos y mejoras.",
+  "weekly_stats_button_title": "Activar estadísticas semanales",
+  "weekly_stats_button_hint": "Muestra información sobre tus estadísticas de la semana",
+
+  "hide_time_title": "Ocultar el tiempo en ejecución",
+  "hide_time_description": "No mostrar el cronómetro mientras esté activo para evitar distracciones o reducir presión.",
+  "hide_time_button_title": "Ocultar tiempo en ejecución",
+  "hide_time_button_hint": "No muestra el tiempo hasta que finalices la resolución",
+
+  "record_time_alert_title": "Alerta de tiempo récord",
+  "record_time_alert_description": "Recibe una notificación cuando consigas tu mejor tiempo personal.",
+  "record_time_alert_button_title": "Activar alerta de récord",
+  "record_time_alert_button_hint": "Te avisará cuando logres tu mejor tiempo",
+
+  "best_average_alert_title": "Alerta de mejor promedio",
+  "best_average_alert_description": "Se notificará cuando mejores tu promedio de tiempos (ao5, ao12, etc).",
+  "best_average_alert_button_title": "Activar alerta de mejor promedio",
+  "best_average_alert_button_hint": "Recibirás alertas cuando superes tus promedios",
+
+  "worst_time_alert_title": "Alerta de peor tiempo",
+  "worst_time_alert_description": "Recibe una alerta cuando consigas tu peor tiempo personal.",
+  "worst_time_alert_button_title": "Activar alerta de peor tiempo",
+  "worst_time_alert_button_hint": "Te avisará cuando logres tu peor tiempo",
+
+  "inspection_title": "Inspección",
+  "advanced_options_title": "Opciones avanzadas",
+
+  "empty_stats_title": "Todavía no has registrado ningún tiempo",
+  "empty_stats_label": "La gráfica está vacía",
+  "empty_stats_hint": "La gráfica está vacía ya que no se ha registrado ningún tiempo",
+
+  "alerts": "Alertas",
+
+  "inspection_description": "Activa una cuenta atrás de inspección antes de iniciar el tiempo de resolución.",
+  "inspection_button_title": "Activar inspección",
+  "inspection_button_hint": "Muestra una cuenta atrás antes de comenzar la resolución",
+
+  "inspection_time_title": "Tiempo de inspección (segundos)",
+  "inspection_time_description": "Define cuántos segundos tendrás para inspeccionar el cubo antes de empezar. Por defecto, serán 15 segundos.",
+  "inspection_time_button_title": "Cambiar segundos de inspección",
+  "inspection_time_button_hint": "Elige cuántos segundos tendrás para inspeccionar antes de resolver",
+
+  "time_default": "Predeterminado",
+  "time_default_label": "Tiempo predeterminado",
+  "time_default_hint": "Restablece el tiempo de inspección a su valor por defecto (15 segundos)",
+  "inspection_time_form": "Introduce un tiempo de inspección",
+
+  "inspection_field_required": "Este campo es obligatorio",
+  "inspection_only_numbers": "No introduzcas letras, solo números enteros",
+  "inspection_range_1_59": "Solo puedes introducir un rango entre 1 a 59",
+
+  "inspection_advanced_title": "Avisos durante la inspección",
+  "alert_at_8_12_title": "Alerta a los 8 y 12 segundos",
+  "alert_at_8_12_description": "Activa los avisos cuando queden 7 y 3 segundos de inspección.",
+  "alert_at_8_12_button_title": "Activar alertas de tiempo",
+  "alert_at_8_12_button_hint": "Activa una alerta cuando queden 7 y 3 segundos de inspección",
+  "alert_type_title": "Tipo de alerta",
+  "alert_type_description": "Elige cómo se mostrarán las alertas durante la inspección:",
+  "inspection_alert_vibrant_type": "Vibración",
+  "inspection_alert_sound_type": "Sonido",
+  "inspection_alert_both_type": "Ambas",
+
+  "delete": "Eliminar",
+  "delete_selected_times_button": "Botón para eliminar los tiempos seleccionados",
+  "close_selected_time": "Cerrar tiempo seleccionado",
+
+  "reset": "Reiniciar",
+  "reset_notifications_button": "Reiniciar las notificaciones",
+  "notifications_activated": "Notificaciones activadas",
+  "permission_required_title": "Permiso necesario",
+  "permission_required_description": "Para gestionar las notificaciones, por favor activa los permisos en la configuración del dispositivo.",
+  "open_settings_button": "Abrir configuración",
+  "notification_permissions_denied": "Permisos de notificaciones denegados",
+
+  "tour_intro_hello": "¡Hola! Soy Cubix :D",
+  "tour_intro_welcome": "Soy la mascota de la app, y estoy aquí para ayudarte",
+  "tour_intro_tour_question": "¿Quieres un pequeño recorrido?",
+
+  "tour_header": "Esta es la barra principal. Desde aquí verás tu sesión y el tipo de cubo actual.",
+  "tour_cubeType": "Con este botón puedes elegir y gestionar los diferentes tipos de cubos.",
+  "tour_session": "Y con este, puedes cambiar o crear nuevas sesiones para organizar tus tiempos.",
+  "tour_scramble": "Este es el scramble, ¡una mezcla aleatoria para que empieces tu resolución!",
+  "tour_timer": "Aquí es donde empieza la acción. Cronometra tus resoluciones, añade comentarios o penalizaciones si hace falta.",
+  "tour_quick_stats": "Y justo aquí verás un resumen de tus tiempos: tus mejores marcas, promedios, y más.",
+
+  "tour_go_to_history": "Vamos a echar un vistazo al historial.",
+  "tour_history": "Aquí se guardan todos tus tiempos. Puedes verlos, editarlos o eliminarlos cuando quieras.",
+
+  "tour_go_to_stats": "Ahora, veamos las estadísticas más a fondo.",
+  "tour_stats": "Aquí podrás analizar tus tiempos en cada sesión y seguir tu progreso con más detalle.",
+
+  "tour_end_title": "¡Tutorial terminado!",
+  "tour_end_message": "Recuerda! El cubo es tu lienzo, y cada giro una pincelada. Ahora es tu turno de crear tu obra.",
+
+  "form_error_required_field": "Por favor, completa este campo.",
+  "form_error_minimum_8_characters": "Debe tener al menos 8 caracteres.",
+  "form_error_no_spaces_allowed": "No debe contener espacios.",
+  "form_error_special_character_required": "Debe agregar un carácter especial.",
+  "form_error_number_required": "Debe agregar un número.",
+  "form_error_passwords_do_not_match": "Las contraseñas no coinciden.",
+  "form_error_invalid_email": "Por favor, ingresa un correo válido.",
+  "form_error_name_max_length": "El nombre no debe superar los 12 caracteres.",
+
+  "dialog_exit_app_title": "Salir de la aplicación",
+  "dialog_exit_app_message": "¿Estás seguro de que quieres salir de la aplicación?",
+
+  "comments": "Comentarios",
+  "no_comments": "Sin comentarios",
+
+  "press_again_to_exit": "Presiona de nuevo para salir"
 }
