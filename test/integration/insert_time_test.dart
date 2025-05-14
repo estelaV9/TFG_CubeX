@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/time_training_dao_sb.dart';
 import 'package:test/test.dart';
 import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
@@ -13,8 +14,8 @@ void main() {
       ); // SE CREA UNA INSTANCIA DE TimeTraining
 
       // SE REALIZA LA INSERCION EN LA BASE DE DATOS
-      TimeTrainingDao timeTrainingDao = TimeTrainingDao();
-      bool result = await timeTrainingDao.insertNewTime(time);
+      TimeTrainingDaoSb timeTrainingDaoSb = TimeTrainingDaoSb();
+      bool result = await timeTrainingDaoSb.insertNewTime(time);
 
       // SE VERIFICA QUE SE HAYA INSERTADO CORRECTAMENTE
       expect(result, equals(true));

@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/cubetype_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../data/dao/supebase/user_dao_sb.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/session.dart';
@@ -37,10 +37,10 @@ class SearchTimeContainer extends StatefulWidget {
 }
 
 class _SearchTimeContainerState extends State<SearchTimeContainer> {
-  CubeTypeDao cubeTypeDao = CubeTypeDao();
-  SessionDao sessionDao = SessionDao();
-  UserDao userDao = UserDao();
-  TimeTrainingDao timeTrainingDao = TimeTrainingDao();
+  CubeTypeDaoSb cubeTypeDaoSb = CubeTypeDaoSb();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
+  UserDaoSb userDaoSb = UserDaoSb();
+  TimeTrainingDaoSb timeTrainingDaoSb = TimeTrainingDaoSb();
 
   // VARIABLE PARA SABER SI SE ESTA BUSCANDO
   bool _isSearching = false;
@@ -114,7 +114,7 @@ class _SearchTimeContainerState extends State<SearchTimeContainer> {
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
       return;
@@ -125,18 +125,18 @@ class _SearchTimeContainerState extends State<SearchTimeContainer> {
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
     CubeType? cubeType =
-        await cubeTypeDao.getCubeTypeByNameAndIdUser(currentCube!.cubeName, idUser);
-    if (cubeType == null) {
+        await cubeTypeDaoSb.getCubeTypeByNameAndIdUser(currentCube!.cubeName, idUser);
+    if (cubeType.idCube == -1) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
       return;
     } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
 
     // OBJETO SESION CON EL ID DEL USUARIO, NOMBRE Y TIPO DE CUBO
-    Session? session = await sessionDao.getSessionByUserCubeName(
+    SessionClass? session = await sessionDaoSb.getSessionByUserCubeName(
         idUser, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
-      if (await timeTrainingDao.deleteAllTimeBySession(session.idSession)) {
+      if (await timeTrainingDaoSb.deleteAllTimeBySession(session.idSession)) {
         AlertUtil.showSnackBarInformation(
             context, "all_times_deleted_successful");
       } else {

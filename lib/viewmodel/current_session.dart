@@ -7,13 +7,13 @@ import '../model/session.dart';
 /// Notifica a los listeners cuando la sesión cambia.
 class CurrentSession with ChangeNotifier {
   // ALMACENA LA SESION ACTUAL
-  Session? _session;
+  SessionClass? _session;
 
   /// Obtiene la sesión actual.
-  Session? get session => _session;
+  SessionClass? get session => _session;
 
   /// Establece la sesión actual y notifica a los listeners.
-  void setSession(Session newSessionName) {
+  void setSession(SessionClass newSessionName) {
     _session = newSessionName;
     // SE NOTIFICA A TODOS LOS LISTENERS CUANDO EL NOMBRE DE LA SESION CAMBIE
     notifyListeners();

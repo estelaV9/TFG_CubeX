@@ -1,12 +1,12 @@
-import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../../../data/dao/cubetype_dao.dart';
-import '../../../data/dao/session_dao.dart';
-import '../../../data/dao/user_dao.dart';
+import '../../../data/dao/supebase/cubetype_dao_sb.dart';
+import '../../../data/dao/supebase/session_dao_sb.dart';
+import '../../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../../data/dao/supebase/user_dao_sb.dart';
 import '../../../data/database/database_helper.dart';
 import '../../../model/cubetype.dart';
 import '../../../model/session.dart';
@@ -47,10 +47,10 @@ class GraphicPerformanceContainer extends StatefulWidget {
 
 class _GraphicPerformanceContainerState
     extends State<GraphicPerformanceContainer> {
-  UserDao userDao = UserDao();
-  CubeTypeDao cubeTypeDao = CubeTypeDao();
-  SessionDao sessionDao = SessionDao();
-  TimeTrainingDao timeTrainingDao = TimeTrainingDao();
+  UserDaoSb userDaoSb = UserDaoSb();
+  CubeTypeDaoSb cubeTypeDaoSb = CubeTypeDaoSb();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
+  TimeTrainingDaoSb timeTrainingDaoSb = TimeTrainingDaoSb();
 
   // LISTA CON TODOS LOS TIEMPOS DE ENTRENAMIENTO
   List<TimeTraining> _listTimes = [];
@@ -94,7 +94,7 @@ class _GraphicPerformanceContainerState
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
       return;
@@ -104,7 +104,7 @@ class _GraphicPerformanceContainerState
     final currentSession = context.read<CurrentSession>().session;
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
-    CubeType? cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+    CubeType? cubeType = await cubeTypeDaoSb.getCubeTypeByNameAndIdUser(
         currentCube!.cubeName, idUser);
     if (cubeType.idCube == -1) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
@@ -112,7 +112,7 @@ class _GraphicPerformanceContainerState
     } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
 
     // OBJETO SESION CON EL ID DEL USUARIO, NOMBRE Y TIPO DE CUBO
-    Session? session = await sessionDao.getSessionByUserCubeName(
+    SessionClass? session = await sessionDaoSb.getSessionByUserCubeName(
         idUser, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
@@ -120,7 +120,7 @@ class _GraphicPerformanceContainerState
 
       if (currentTime?.searchComment != null) {
         // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE BUSCA POR COMENTARIOS
-        times = await timeTrainingDao.getTimesOfSession(
+        times = await timeTrainingDaoSb.getTimesOfSession(
             session.idSession,
             currentTime?.searchComment,
             null,
@@ -128,7 +128,7 @@ class _GraphicPerformanceContainerState
             currentTime?.timeAsc);
       } else if (currentTime?.searchTime != null) {
         // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR TIEMPO
-        times = await timeTrainingDao.getTimesOfSession(
+        times = await timeTrainingDaoSb.getTimesOfSession(
             session.idSession,
             null,
             currentTime?.searchTime,
@@ -136,11 +136,11 @@ class _GraphicPerformanceContainerState
             currentTime?.timeAsc);
       } else {
         // SI NO SE HA INTRODUCIDO NI COMENTARIO NI TIEMPO, SE BUSCAN TODOS LOS TIEMPOS DE LA SESION
-        times = await timeTrainingDao.getTimesOfSession(session.idSession, null,
+        times = await timeTrainingDaoSb.getTimesOfSession(session.idSession, null,
             null, currentTime?.dateAsc, currentTime?.timeAsc);
       }
 
-      int num = await timeTrainingDao.getCountBySession(times);
+      int num = await timeTrainingDaoSb.getCountBySession(times);
 
       setState(() {
         _listTimes = times;

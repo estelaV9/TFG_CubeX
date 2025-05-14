@@ -1,7 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/cubetype_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
@@ -16,7 +14,9 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/dao/user_dao.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../data/dao/supebase/user_dao_sb.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/session.dart';
@@ -34,6 +34,8 @@ import 'internationalization.dart';
 class AlertUtil {
   /// Icono para las penalizaciones
   static IconData iconPenalty = Icons.block;
+  /// Objeto para el dao de los tiempos de resolucion
+  static final timeTrainingDaoSb = TimeTrainingDaoSb();
 
   /// Muestra una alerta simple con título y contenido.
   ///
@@ -165,15 +167,14 @@ class AlertUtil {
       BuildContext context) async {
     final TextEditingController controllerScramble = TextEditingController();
     final TextEditingController controllerTime = TextEditingController();
-    final cubeTypeDao = CubeTypeDao();
-    final sessionDao = SessionDao();
-    final userDao = UserDao();
-    final timeTrainingDao = TimeTrainingDao();
+    final cubeTypeDaoSb = CubeTypeDaoSb();
+    final sessionDaoSb = SessionDaoSb();
+    final userDaoSb = UserDaoSb();
 
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
@@ -182,10 +183,10 @@ class AlertUtil {
     final tipoCuboEstablecido = context.read<CurrentCubeType>().cubeType;
     final currentSession = context.read<CurrentSession>().session;
     final cubo =
-        await cubeTypeDao.getCubeTypeByNameAndIdUser(tipoCuboEstablecido!.cubeName, idUser);
+        await cubeTypeDaoSb.getCubeTypeByNameAndIdUser(tipoCuboEstablecido!.cubeName, idUser);
 
     // BUSCAMOS EL TIPO DE CUBO QUE TIENE ESA SESION
-    Session? sessionTipoActual = await sessionDao.getSessionByUserCubeName(
+    SessionClass? sessionTipoActual = await sessionDaoSb.getSessionByUserCubeName(
         idUser, currentSession!.sessionName, cubo.idCube);
 
     // CUANDO SELECCIONE UNA SESION, SE BUSCA EL TIPO DE CUBO DE ESA SESION
@@ -194,7 +195,7 @@ class AlertUtil {
 
     // SE BUSCA ESE TIPO DE CUBO POR ESE ID
     CubeType? cubeType =
-        await cubeTypeDao.getCubeById(sessionTipoActual!.idCubeType);
+        await cubeTypeDaoSb.getCubeById(sessionTipoActual!.idCubeType);
     if (cubeType.idCube != -1) {
       // SE ACTUALIZA EL ESTADO GLOBAL
       currentCube.setCubeType(cubeType);
@@ -254,7 +255,7 @@ class AlertUtil {
 
                   // INSERTAR EL TIEMPO
                   bool isInsert =
-                      await timeTrainingDao.insertNewTime(timeTraining);
+                      await timeTrainingDaoSb.insertNewTime(timeTraining);
                   if (isInsert) {
                     // SI SE INSERTO CORRECTAMENTE SE MUESTRA UN SNACKBAR
                     AlertUtil.showSnackBarInformation(
@@ -361,8 +362,6 @@ class AlertUtil {
   /// `timeTraining`: Objeto que contiene los detalles del tiempo.
   static showDetailsTime(BuildContext context,
       Future<void> Function() deleteTime, TimeTraining timeTraining) async {
-    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
-
     // ATRIBUTO PARA SABER SI ESTA PRESIONADO EL SCRAMBLE O LOS COMMENTS
     var isTextPressed = true;
 
@@ -374,7 +373,7 @@ class AlertUtil {
     currentTime.isPlusTwoChoose = false;
     currentTime.isDnfChoose = false;
 
-    int idTime = await timeTrainingDao.getIdByTime(
+    int idTime = await timeTrainingDaoSb.getIdByTime(
         currentTime.timeTraining!.scramble,
         currentTime.timeTraining!.idSession);
 
@@ -465,7 +464,7 @@ class AlertUtil {
                           currentTime.updateCurrentTime(context);
 
                           // GUARDAR CAMBIOS EN LA BASE DE DATOS
-                          if (await timeTrainingDao.updateTime(
+                          if (await timeTrainingDaoSb.updateTime(
                               idTime, currentTime.timeTraining) == false) {
                             // MOSTRAR ERROR SI FALLA LA ACTUALIZACION
                             AlertUtil.showSnackBarError(
@@ -760,7 +759,7 @@ class AlertUtil {
   ///   coincida con la actual.
   /// - Si la validación es exitosa, se redirige a la pantalla principal.
   static Future<bool?> showConfirmWithOldPass(
-      BuildContext context, String key, String oldPass, User currentUser) {
+      BuildContext context, String key, String oldPass, UserClass currentUser) {
     final oldPasswordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
@@ -879,11 +878,10 @@ class AlertUtil {
       Future<void> Function(String comment) addComment) async {
     final commentController = TextEditingController();
     final formKey = GlobalKey<FormState>();
-    TimeTrainingDao timeTrainingDao = TimeTrainingDao();
     final currentTime = context.read<CurrentTime>();
 
     // CONSEGUIR EL ID DEL TIEMPO ACTUAL
-    int idTime = await timeTrainingDao.getIdByTime(
+    int idTime = await timeTrainingDaoSb.getIdByTime(
         currentTime.timeTraining!.scramble,
         currentTime.timeTraining!.idSession);
 
@@ -893,7 +891,7 @@ class AlertUtil {
     } // VALIDAR QUE EL IDTIME NO DE ERROR
 
     // CONSEGUIR EL OBJETO A PARTIR DEL ID DEL TIEMPO
-    TimeTraining? timeTraining = await timeTrainingDao.getTimeById(idTime);
+    TimeTraining? timeTraining = await timeTrainingDaoSb.getTimeById(idTime);
     if (timeTraining != null) {
       // SI YA HAY UN COMENTARIO SE SETTEA
       commentController.text = timeTraining.comments!;

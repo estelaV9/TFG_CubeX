@@ -9,13 +9,13 @@ void main() {
   group('CurrentStatistics Tests', () {
     test('Debería calcular el mejor tiempo correctamente', () async {
       // CREAMOS UN USUARIO DE EJEMPLO
-      User user = User(
+      UserClass user = UserClass(
           idUser: 1111,
           username: "username",
           mail: "mail@mail.com",
           password: "12345678(");
 
-      Session session = Session(
+      SessionClass session = SessionClass(
         idSession: 1111,
         sessionName: "3x3 Session",
         idUser: user.idUser!,

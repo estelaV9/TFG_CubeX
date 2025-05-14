@@ -7,13 +7,13 @@ import '../model/user.dart';
 // CLASE PARA GESTIONAR EL USUARIO ACTUAL EN LA APLICACIÓN
 class CurrentUser extends ChangeNotifier {
   // VARIABLE PARA ALMACENAR EL USUARIO ACTUAL
-  User? _user;
+  UserClass? _user;
 
   /// Obtiene el usuario actual.
-  User? get user => _user;
+  UserClass? get user => _user;
 
   /// Establece el usuario actual y notifica a los listeners.
-  void setUser(User user) {
+  void setUser(UserClass user) {
     _user = user;
     // NOTIFICA A LOS LISTENERS QUE EL ESTADO HA CAMBIADO
     notifyListeners();

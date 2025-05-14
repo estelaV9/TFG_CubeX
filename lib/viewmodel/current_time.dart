@@ -1,7 +1,7 @@
 import 'package:esteladevega_tfg_cubex/model/time_training.dart';
 import 'package:flutter/material.dart';
 
-import '../data/dao/time_training_dao.dart';
+import '../data/dao/supebase/time_training_dao_sb.dart';
 import '../data/database/database_helper.dart';
 import '../view/utilities/alert.dart';
 
@@ -27,7 +27,7 @@ class CurrentTime extends ChangeNotifier {
   /// GUARDAR EL TIEMPO ORIGINAL ANTES DE APLICAR LAS PENALIZACIONES
   double? _originalTime;
 
-  final TimeTrainingDao _timeTrainingDao = TimeTrainingDao();
+  final TimeTrainingDaoSb _timeTrainingDaoSb = TimeTrainingDaoSb();
 
   /// Obtiene el tiempo de resolución actual.
   TimeTraining? get timeTraining => _timeTraining;
@@ -118,7 +118,7 @@ class CurrentTime extends ChangeNotifier {
   void updateCurrentTime(BuildContext context) async {
     // CUANDO EMPIECE UN TIEMPO NUEVO, SI HA PULSADO ALGUNA PENALIZACION, SE ACTUALIZA EL TIEMPO
     if (isPlusTwoChoose || isDnfChoose) {
-      int idTime = await _timeTrainingDao.getIdByTime(
+      int idTime = await _timeTrainingDaoSb.getIdByTime(
           _timeTraining!.scramble, _timeTraining!.idSession);
 
       if (idTime == -1) {
@@ -141,7 +141,7 @@ class CurrentTime extends ChangeNotifier {
       _timeTraining! == updateTime;
 
       // ACTUALIZAR EL TIEMPO
-      if (await _timeTrainingDao.updateTime(idTime, _timeTraining!) == false) {
+      if (await _timeTrainingDaoSb.updateTime(idTime, _timeTraining!) == false) {
         AlertUtil.showSnackBarError(context, "time_saved_error");
       } // SI FALLA, SE MUESTRA UN ERROR
 
@@ -240,7 +240,7 @@ class CurrentTime extends ChangeNotifier {
     if (_timeTraining == null) return;
 
     // OBTENER EL ID DEL TIEMPO A ELIMINAR
-    int idDeleteTime = await _timeTrainingDao.getIdByTime(
+    int idDeleteTime = await _timeTrainingDaoSb.getIdByTime(
         timeTraining!.scramble, timeTraining!.idSession!);
 
     if (idDeleteTime == -1) {
@@ -253,7 +253,7 @@ class CurrentTime extends ChangeNotifier {
 
     try {
       // ELIMINAR EL TIEMPO
-      final isDeleted = await _timeTrainingDao.deleteTime(idDeleteTime);
+      final isDeleted = await _timeTrainingDaoSb.deleteTime(idDeleteTime);
 
       if (isDeleted) {
         // SI SE ELIMINO CORRECTAMENTE SE MUESTRA UN SNACKBAR
