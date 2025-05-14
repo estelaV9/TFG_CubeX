@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_scramble.dart';
@@ -82,13 +83,14 @@ class ScrambleContainerState extends State<ScrambleContainer> {
   /// Método que se ejecuta para generar un nuevo scramble aleatorio.
   ///
   /// Establece el scramble generado como el scramble actual en el estado global.
-  void updateScramble() {
-    setState(() async {
-      scrambleName = await _generator();  // SE ASIGNA UN NUEVO SCRAMBLE
-      // ESTABLECEMOS EL SCRAMBLE ACTUAL
-      final currentScramble = Provider.of<CurrentScramble>(this.context, listen: false);
-      currentScramble.setScramble(scrambleName);
+  void updateScramble() async {
+    String newScramble = await _generator();  // SE ASIGNA UN NUEVO SCRAMBLE
+    setState(() {
+      scrambleName = newScramble;
     });
+    // ESTABLECEMOS EL SCRAMBLE ACTUAL
+    final currentScramble = Provider.of<CurrentScramble>(context, listen: false);
+    currentScramble.setScramble(scrambleName);
   } // METODO PARA ACTUALIZAR EL SCRAMBLE
 
   @override
