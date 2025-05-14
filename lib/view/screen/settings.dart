@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/user_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings_options/advanced_options_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings_options/configure_inspection_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings_options/configure_timer_screen.dart';
@@ -15,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../components/appbar_class.dart';
 import '../utilities/internationalization.dart';
@@ -39,7 +37,7 @@ class SettingsScreen extends StatefulWidget {
 
 class SettingsScreenState extends State<SettingsScreen> {
   String rutaImagen = "assets/default_user_image.png"; // IMAGEN DEFECTO
-  UserDao userDao = UserDao();
+  UserDaoSb userDaoSb = UserDaoSb();
   String mail = "";
 
   // SHARED PREFEERNCES PARA EL IDIOMA
@@ -70,17 +68,19 @@ class SettingsScreenState extends State<SettingsScreen> {
   void returnMail() async {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;
-    String result = await userDao.getMailUserFromName(currentUser!.username);
-    setState(() {
-      mail = result;
-    });
-    if (mail == "") {
-      DatabaseHelper.logger.e("El mail es nulo. Mail: $mail");
-    } // SI EL MAIL ES "", MUESTRA UN AVISO
+    String? result = await userDaoSb.getMailUserFromName(currentUser!.username);
+    if (result != null) {
+      setState(() {
+        mail = result;
+      });
+      if (mail == "") {
+        DatabaseHelper.logger.e("El mail es nulo. Mail: $mail");
+      } // SI EL MAIL ES "", MUESTRA UN AVISO
+    }
   } // METODO PARA RETORNAR EL MAIL DEL USUARIO QUE ACCEDIO
 
   // LA URL DE LA IMAGEN DEL USUARIO, QUE SE INICIALIZA CON LA IMAGEN POR DEFECTO
-  String imageUrl = "assets/default_user_image.png";
+  String imageUrl = "";
 
   @override
   void initState() {
@@ -102,13 +102,13 @@ class SettingsScreenState extends State<SettingsScreen> {
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
       return;
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
-    String? image = await userDao.getImageUser(idUser);
+    String? image = await userDaoSb.getImageUser(idUser);
     if (image != null) {
       setState(() {
         // SE ASIGNA EL VALOR DE LA URL DE LA IMAGEN
@@ -133,26 +133,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // IMAGEN DEL USUARIO
-                    imageUrl.isNotEmpty
-                        ? ClipOval(
-                            child: Image.file(
-                              File(imageUrl),
-                              fit: BoxFit.cover,
-                              width: 140,
-                              height: 140,
-                            ),
-                          )
-                        :
-                        // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
-                        ClipOval(
-                            child: Image.asset(
-                              "assets/default_user_image.png",
-                              fit: BoxFit.cover,
-                              width: 140,
-                              height: 140,
-                            ),
-                          ),
-
+                    ClipOval(
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        width: 140,
+                        height: 140,
+                      ),
+                    ),
                     // COLUMNA PARA EL NOMBRE Y EL MAIL DEL USUARIO
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
@@ -170,12 +158,16 @@ class SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
 
-                          // MAIL USUARIO
-                          Text(
-                            mail,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: AppColors.purpleIntroColor,
+                          // MAIL USUARIO, SI EL NOMBRE DE USUARIO ES LARGO SE SALTA DE LINEA
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 200),
+                            child: Text(
+                              mail,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: AppColors.purpleIntroColor,
+                                overflow: TextOverflow.visible,
+                              ),
                             ),
                           ),
                         ],
