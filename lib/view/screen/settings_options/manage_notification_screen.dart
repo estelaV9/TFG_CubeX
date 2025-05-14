@@ -64,6 +64,10 @@ class _ManageNotificationScreenState extends State<ManageNotificationScreen> {
               keyPreferences == "isActive"
                   ? context.read<CurrentNotifications>().turnOffValue()
                   : context .read<CurrentNotifications>().changeValue(keyPreferences, value);
+
+              // REPROGRAMOS LAS NOTIFICACIONES DESPUES DEL CAMBIO
+              final updatedNotif = context.read<CurrentNotifications>().notification;
+              updatedNotif.scheduleAllNotifications(context);
             },
           ),
         ),
@@ -103,16 +107,16 @@ class _ManageNotificationScreenState extends State<ManageNotificationScreen> {
                 "trainingReminders"),
 
             // RESUMEN SEMANAL
-            listTileOptions(
-                "weekly_summary", appNotif.weeklySummary, "weeklySummary"),
+            /*listTileOptions(
+                "weekly_summary", appNotif.weeklySummary, "weeklySummary"),*/
 
             // NOTIFICACION POR INACTIVIDAD
             listTileOptions("inactivity_notification",
                 appNotif.inactivityNotification, "inactivityNotification"),
 
             // ESTADISTICAS SEMANALES
-            listTileOptions(
-                "weekly_stats", appNotif.weeklyStats, "weeklyStats"),
+            /*listTileOptions(
+                "weekly_stats", appNotif.weeklyStats, "weeklyStats"),*/
           ],
         ));
   }
