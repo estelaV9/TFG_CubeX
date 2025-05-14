@@ -50,7 +50,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // SI SE HA PASADO UN INDICE SE ESTABLECE ESE, SI NO SE ESTABLECE EL TIMER
     _currentIndex = widget.index ?? 1;
@@ -62,7 +61,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       final prefs = await SharedPreferences.getInstance();
 
       // CARGA LOS DATOS DEL USUARIO DESDE LAS PREFERENCIAS
-      User user = User.loadFromPreferences(prefs);
+      UserClass user = UserClass.loadFromPreferences(prefs);
       if (user.username != "") {
         final currentUser = Provider.of<CurrentUser>(this.context, listen: false);
         currentUser.setUser(user); // SE ACTUALIZA EL ESTADO GLOBAL
@@ -76,7 +75,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       } // SE VERIFICA SI EXISTEN DATOS VALIDOS
 
       // CARGA LA SESION ACTUAL DESDE LAS PREFERENCIAS
-      Session session = Session.loadFromPreferences(prefs);
+      SessionClass session = SessionClass.loadFromPreferences(prefs);
       if (session.idUser != -1 || session.idSession != -1) {
         final currentSession = Provider.of<CurrentSession>(context, listen: false);
         currentSession.setSession(session); // SE ACTUALIZA EL ESTADO GLOBAL
@@ -116,30 +115,37 @@ class _BottomNavigationState extends State<BottomNavigation> {
     // PARA LAS PANTALLAS PRINCIPALES QUE MANEJA EL BOTTOM NAVIGATION SE LES APLICA
     // LA VERIFICACION DE SALIDA DE LA APP, Y ASI EVITAR SALIDAS ACCIDENTALES
     return DoubleTapExitDialog(
-      child: Scaffold(
-        extendBody: true,
-        body: PageView(
-          controller: _pageController,
-          children: _screens,
-          onPageChanged: (index) {
-            setState(() => _currentIndex = index);
-          },
-        ),
-        bottomNavigationBar: CurvedNavigationBar(
-          index: _currentIndex,
-          height: 60,
-          // FONDO DEL NAVIGATION BAR (el color del espacio que deja el elemento seleccionado)
-          backgroundColor: Colors.transparent,
-          color: AppColors.lightVioletColor,
-          // COLOR DE LA BARRA
-          animationDuration: const Duration(milliseconds: 350),
-          // ANIMACION
-          onTap: _onTap,
-          items: <Widget>[
-            iconItem(Icons.manage_search, 0),
-            iconItem(Icons.timer, 1),
-            iconItem(Icons.auto_graph, 2)
-          ],
+      child: GestureDetector(
+        // CUANDO SE TOCA EN CUALQUIER LADO DE LA PANTALLA
+        onTap: () {
+          // SE QUITA EL FOCO DEL ELEMENTO ACTUAL, LO QUE CIERRA EL TECLADO SI ESTA ABIERTO
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          extendBody: true,
+          body: PageView(
+            controller: _pageController,
+            children: _screens,
+            onPageChanged: (index) {
+              setState(() => _currentIndex = index);
+            },
+          ),
+          bottomNavigationBar: CurvedNavigationBar(
+            index: _currentIndex,
+            height: 60,
+            // FONDO DEL NAVIGATION BAR (el color del espacio que deja el elemento seleccionado)
+            backgroundColor: Colors.transparent,
+            color: AppColors.lightVioletColor,
+            // COLOR DE LA BARRA
+            animationDuration: const Duration(milliseconds: 350),
+            // ANIMACION
+            onTap: _onTap,
+            items: <Widget>[
+              iconItem(Icons.manage_search, 0),
+              iconItem(Icons.timer, 1),
+              iconItem(Icons.auto_graph, 2)
+            ],
+          ),
         ),
       ),
     );
