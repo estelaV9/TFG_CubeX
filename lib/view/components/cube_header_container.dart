@@ -1,7 +1,6 @@
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/user_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/view/components/session_menu.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
@@ -10,7 +9,7 @@ import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/dao/cubetype_dao.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
 import '../../model/cubetype.dart';
 import '../../viewmodel/current_cube_type.dart';
 import 'Icon/animated_icon.dart';
@@ -29,13 +28,12 @@ class CubeHeaderContainer extends StatefulWidget {
 class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
   /// Tipo de cubo actual, inicializado con un valor por defecto.
   CubeType cubeType = CubeType(idCube: -1, cubeName: "3x3x3"); // VALOR INCIAL
-  CubeTypeDao cubeTypeDao = CubeTypeDao();
-  SessionDao sessionDao = SessionDao();
-  List<Session> sessions = [];
-  UserDao userDao = UserDao();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
+  List<SessionClass> sessions = [];
+  UserDaoSb userDaoSb = UserDaoSb();
 
   /// La sesión activa actual, inicializada con una sesión vacía.
-  Session session = Session.empty();
+  SessionClass session = SessionClass.empty();
 
   /// Selección de un tipo de cubo.
   ///
@@ -77,7 +75,7 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
       }
 
       // OBTENER EL ID DEL USUARIO POR SU NOMBRE
-      int idUser = await userDao.getIdUserFromName(currentUser.username);
+      int idUser = await userDaoSb.getIdUserFromName(currentUser.username);
 
       if (idUser == -1) {
         DatabaseHelper.logger.e("Error al conseguir el ID del usuario actual.");
@@ -85,21 +83,26 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
       } // SI RETORNA -1, MOSTRAMOS UN MENSAJE DE ERROR
 
       // BUSCAR LA SESION DEL USUARIO POR ID Y NOMBRE DE SESION
-      Session? aux = await sessionDao.getSessionByUserAndName(idUser, "Normal");
+      SessionClass? aux = await sessionDaoSb.getSessionByUserAndName(idUser, "Normal");
 
-      if (aux != null) {
-        // ACTUALIZAMOS EL ESTADO
-        setState(() {
-          session = aux;
-        });
-        // RETORNAMOS EL NOMBRE DE LA SESION
-        return aux.sessionName;
+      if (mounted) {
+        if (aux != null) {
+          // ACTUALIZAMOS EL ESTADO
+          setState(() {
+            session = aux;
+          });
+          // RETORNAMOS EL NOMBRE DE LA SESION
+          return aux.sessionName;
+        } else {
+          // MENSAJE DE ERROR
+          DatabaseHelper.logger.e(
+              "Error al conseguir la sesión por el ID de usuario y el nombre de la sesión.");
+          return null;
+        } // VERIFICAR SI LA SESION DEVUELTA ES NULA
       } else {
-        // MENSAJE DE ERROR
-        DatabaseHelper.logger.e(
-            "Error al conseguir la sesión por el ID de usuario y el nombre de la sesión.");
-        return null;
-      } // VERIFICAR SI LA SESION DEVUELTA ES NULA
+        // EL WIDGET YA NO ESTA MONTADO, NO PODEMOS LLAMAR AL SET STATE
+        return aux?.sessionName;
+      }
     } catch (e) {
       DatabaseHelper.logger.e("Error en initSession: $e");
       return null;
@@ -114,10 +117,6 @@ class _CubeHeaderContainerState extends State<CubeHeaderContainer> {
 
   @override
   Widget build(BuildContext context) {
-    // OBTENEMOS LA SESION Y EL TIPO DE CUBO ACTUAL
-    final currentSession = context.read<CurrentSession>().session;
-    final currentCube = context.read<CurrentCubeType>().cubeType;
-
     // USA MediaQuery PARA OBTENER EL ANCHO DE LA VENTANA
     final screenWidth = MediaQuery.sizeOf(context).width;
     // WIDTH INICIAL DEL CONTAINER DEL HEADER
