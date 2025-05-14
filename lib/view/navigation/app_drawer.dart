@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/user_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/about_app_screen.dart';
@@ -35,7 +33,7 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   String rutaImagen = "assets/default_user_image.png"; // IMAGEN DEFECTO
-  UserDao userDao = UserDao();
+  UserDaoSb userDaoSb = UserDaoSb();
   String mail = "";
 
   /// Método para obtener el nombre del usuario actualmente logueado.
@@ -56,17 +54,19 @@ class _AppDrawerState extends State<AppDrawer> {
   void returnMail() async {
     // OBTENEMOS LOS DATOS DEL USUARIO
     final currentUser = context.read<CurrentUser>().user;
-    String result = await userDao.getMailUserFromName(currentUser!.username);
-    setState(() {
-      mail = result;
-    });
-    if (mail == "") {
-      DatabaseHelper.logger.e("El mail es nulo. Mail: $mail");
-    } // SI EL MAIL ES "", MUESTRA UN AVISO
+    String? result = await userDaoSb.getMailUserFromName(currentUser!.username);
+    if (result != null) {
+      setState(() {
+        mail = result;
+      });
+      if (mail == "") {
+        DatabaseHelper.logger.e("El mail es nulo. Mail: $mail");
+      } // SI EL MAIL ES "", MUESTRA UN AVISO
+    } // VERIFICAR QUE NO SEA NULO EL RESULTADO
   } // METODO PARA RETORNAR EL MAIL DEL USUARIO QUE ACCEDIO
 
   // LA URL DE LA IMAGEN DEL USUARIO, QUE SE INICIALIZA CON LA IMAGEN POR DEFECTO
-  String imageUrl = "assets/default_user_image.png";
+  String imageUrl = "";
 
   @override
   void initState() {
@@ -88,13 +88,13 @@ class _AppDrawerState extends State<AppDrawer> {
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
       return;
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
-    String? image = await userDao.getImageUser(idUser);
+    String? image = await userDaoSb.getImageUser(idUser);
     if (image != null) {
       setState(() {
         // SE ASIGNA EL VALOR DE LA URL DE LA IMAGEN
@@ -108,7 +108,7 @@ class _AppDrawerState extends State<AppDrawer> {
   /// Actualiza las preferencias compartidas para marcar que el usuario
   /// ya no está logueado ni registrado (`isLoggedIn` y `isSingup` se establecen en `false`).
   /// Luego se recarga las preferencias para que los cambios se apliquen.
-  void _logoutUser() async{
+  void _logoutUser() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool("isLoggedIn", false);
     await prefs.setBool("isSingup", false);
@@ -161,7 +161,7 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             onTap: () {
               // CAMBIAR VISTA AL TOCAR EL LISTILE
-              if(text == "log_out") {
+              if (text == "log_out") {
                 _logoutUser();
               } // SI HA PUSLADO LA OPCION DE DESLOGEARSE SE ACTUALIZA LAS PREFERENCIAS
               ChangeScreen.changeScreen(nameScreen, context);
@@ -229,26 +229,15 @@ class _AppDrawerState extends State<AppDrawer> {
                         CircleAvatar(
                             radius: 50,
                             backgroundColor: AppColors.imagenBg,
-                            // SI EL USUARIO TIENE UNA FOTO
-                            child: imageUrl.isNotEmpty
-                                ? ClipOval(
-                                    child: Image.file(
-                                      File(imageUrl),
-                                      fit: BoxFit.cover,
-                                      width: 140,
-                                      height: 140,
-                                    ),
-                                  )
-                                :
-                                // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
-                                ClipOval(
-                                    child: Image.asset(
-                                      "assets/default_user_image.png",
-                                      fit: BoxFit.cover,
-                                      width: 140,
-                                      height: 140,
-                                    ),
-                                  )),
+                            // SE MUESTRA LA IMAGEN A TRAVES DEL URL GUARDADO
+                            child: ClipOval(
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                width: 140,
+                                height: 140,
+                              ),
+                            )),
                   ),
 
                   // NOMBRE Y MAIL DEL USUARIO
@@ -264,10 +253,19 @@ class _AppDrawerState extends State<AppDrawer> {
                           style: AppStyles.darkPurpleAndBold(20),
                         ),
 
-                        // MAIL USUARIO
-                        Text(
-                          mail,
-                          style: AppStyles.darkPurple(15),
+                        // MAIL USUARIO, SI EL NOMBRE DE USUARIO ES LARGO SE SALTA DE LINEA
+                        Container(
+                          constraints: const BoxConstraints(
+                              maxWidth: 160, maxHeight: 10),
+                          child: Text(
+                            mail,
+                            style: AppStyles.darkPurple(15).copyWith(
+                              // ACERCAR LAS LINEAS
+                              height: 1,
+                            ),
+                            overflow: TextOverflow.visible,
+                            maxLines: 2,
+                          ),
                         ),
                       ],
                     ),
@@ -276,7 +274,7 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
 
             // OPCIONES DEL MENU
             Expanded(
@@ -286,17 +284,17 @@ class _AppDrawerState extends State<AppDrawer> {
                   textTitleListTile("general"),
                   listTileGenerator(
                       Icons.timer, "timer", const BottomNavigation()),
-                  listTileGenerator(
-                      Icons.palette, "app_theme", const BottomNavigation()),
+                  /*listTileGenerator(
+                      Icons.palette, "app_theme", const BottomNavigation()),*/
                   listTileGenerator(
                       Icons.person, "my_profile", const MyProfileScreen()),
 
-                  const SizedBox(height: 15),
+                  /*const SizedBox(height: 15),
 
                   // VERSUS
                   textTitleListTile("championship"),
                   listTileGenerator(
-                      Icons.sports_kabaddi, "versus", const BottomNavigation()),
+                      Icons.sports_kabaddi, "versus", const BottomNavigation()),*/
 
                   const SizedBox(height: 15),
 
