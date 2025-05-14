@@ -45,7 +45,7 @@ class Validator {
   static String? validatePassword(String? value,
       [bool oldPass = false,
       bool profilePass = false,
-      User? currentUser,
+      UserClass? currentUser,
       BuildContext? context]) {
     if (!profilePass && (value == null || value.isEmpty)) {
       return "form_error_required_field";

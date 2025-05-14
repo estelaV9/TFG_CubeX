@@ -1,3 +1,4 @@
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/cubetype_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../model/session.dart';
 import '../../viewmodel/current_cube_type.dart';
 import '../../viewmodel/current_session.dart';
-import 'cubetype_dao.dart';
 
 /// Clase encargada de gestionar las operaciones CRUD sobre las **sesiones**.
 ///
@@ -23,7 +23,7 @@ class SessionDao {
   ///
   /// Retorna:
   /// - `bool`: `true` si la inserción fue exitosa, `false` si ocurrió un error.
-  Future<bool> insertSession(Session session) async {
+  Future<bool> insertSession(SessionClass session) async {
     final db = await DatabaseHelper.database;
     try {
       final result = await db.insert('sessionTime', {
@@ -50,7 +50,7 @@ class SessionDao {
   ///
   /// Retorna:
   /// - `List<Session>`: Lista de todas las sesiones encontradas en la base de datos.
-  Future<List<Session>> sessionList() async {
+  Future<List<SessionClass>> sessionList() async {
     final db = await DatabaseHelper.database;
     try {
       final sessions = await db.rawQuery('SELECT * FROM sessionTime');
@@ -58,7 +58,7 @@ class SessionDao {
       if (sessions.isNotEmpty) {
         // MAPEAR LOS RESULTADOS A UNA LISTA DE OBJETOS Session
         return sessions
-            .map((map) => Session(
+            .map((map) => SessionClass(
                 sessionName: map['sessionName'] as String,
                 idCubeType: map['idCubeType'] as int,
                 idUser: map['idUser'] as int))
@@ -112,10 +112,10 @@ class SessionDao {
   /// - `idUser`: ID del usuario cuyo sesiones se desean obtener.
   ///
   /// Retorna:
-  /// - `List<Session>`: Lista de sesiones asociadas al usuario.
-  Future<List<Session>> getSessionOfUser(int idName) async {
+  /// - `List<SessionClass>`: Lista de sesiones asociadas al usuario.
+  Future<List<SessionClass>> getSessionOfUser(int idName) async {
     final db = await DatabaseHelper.database;
-    List<Session> sessionError = [];
+    List<SessionClass> sessionError = [];
     try {
       final sessions = await db.query(
           'sessionTime',
@@ -125,7 +125,7 @@ class SessionDao {
 
       if (sessions.isNotEmpty) {
         return sessions.map((session) {
-          return Session(
+          return SessionClass(
             idUser: session['idUser'] as int,
             sessionName: session['sessionName'] as String,
             idCubeType: session['idCubeType'] as int,
@@ -207,7 +207,7 @@ class SessionDao {
   ///
   /// Retorna:
   /// - `Session?`: Objeto [Session] encontrado, o `null` si no se encuentra la sesión.
-  Future<Session?> getSessionByUserAndName(int idUser, String sessionName) async {
+  Future<SessionClass?> getSessionByUserAndName(int idUser, String sessionName) async {
     final db = await DatabaseHelper.database;
     try {
       // CONSULTA PARA OBTENER LA SESION BASADA EN EL ID DEL USUARIO Y EL NOMBRE DE LA SESION
@@ -220,7 +220,7 @@ class SessionDao {
       if (result.isNotEmpty) {
         // SI SE ENCUENTRA LA SESION, SE MAPEA LOS DATOS Y SE DEVOLVE LA SESION
         final session = result.first;
-        return Session(
+        return SessionClass(
           idSession: session['idSession'] as int,
           idUser: session['idUser'] as int,
           sessionName: session['sessionName'] as String,
@@ -252,7 +252,7 @@ class SessionDao {
   ///
   /// Retorna:
   /// - `List<Session>`: Lista de sesiones asociadas al usuario y tipo de cubo.
-  Future<List<Session>> searchSessionByCubeAndUser(
+  Future<List<SessionClass>> searchSessionByCubeAndUser(
       int idUser, int idCubeType) async {
     final db = await DatabaseHelper.database;
     try {
@@ -264,7 +264,7 @@ class SessionDao {
       if (result.isNotEmpty) {
         // DEVUELVE LA LISTA DE SESIONES CON ESE TIPO DE CUBO Y ESE USUARIO
         return result.map((session) {
-          return Session(
+          return SessionClass(
             idSession: session['idSession'] as int,
             idUser: session['idUser'] as int,
             sessionName: session['sessionName'] as String,
@@ -292,7 +292,7 @@ class SessionDao {
   ///
   /// Retorna:
   /// - `Session?`: Objeto [Session] encontrado, o `null` si no se encuentra la sesión.
-  Future<Session?> getSessionByUserCubeName(
+  Future<SessionClass?> getSessionByUserCubeName(
       int idUser, String sessionName, int? idCubeType) async {
     final db = await DatabaseHelper.database;
     try {
@@ -307,7 +307,7 @@ class SessionDao {
       if (result.isNotEmpty) {
         // SI SE ENCUENTRA LA SESION, SE MAPEA LOS DATOS Y SE DEVOLVE LA SESION
         final session = result.first;
-        return Session(
+        return SessionClass(
           idSession: session['idSession'] as int?,
           idUser: session['idUser'] as int,
           sessionName: session['sessionName'] as String,
@@ -337,9 +337,9 @@ class SessionDao {
   /// Si no se encuentra la sesión o el tipo de cubo, se retorna `null` y se muestra un error en consola.
   ///
   /// Retorna un [Future<Session?>] con la sesión o `null`.
-  Future<Session?> getSessionData(BuildContext context, int idUser) async {
+  Future<SessionClass?> getSessionData(BuildContext context, int idUser) async {
     final sessionDao = SessionDao();
-    final cubeDao = CubeTypeDao();
+    final cubeTypeDao = CubeTypeDaoSb();
 
     final currentSession = context.read<CurrentSession>().session;
     final currentCubeType = context.read<CurrentCubeType>().cubeType;
@@ -349,7 +349,7 @@ class SessionDao {
       return null;
     }
 
-    final cubeType = await cubeDao.getCubeTypeByNameAndIdUser(currentCubeType.cubeName, idUser);
+    final cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(currentCubeType.cubeName, idUser);
     return await sessionDao.getSessionByUserCubeName(
         idUser, currentSession.sessionName, cubeType.idCube);
   }
