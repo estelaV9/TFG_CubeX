@@ -493,5 +493,13 @@
   "comments": "Comentarios",
   "no_comments": "Sin comentarios",
 
-  "press_again_to_exit": "Presiona de nuevo para salir"
+  "press_again_to_exit": "Presiona de nuevo para salir",
+
+
+  "daily_notifications_content": "¿Listo para mejorar tu tiempo hoy? ¡No olvides completar al menos una resolución!",
+  "weekly_motivation_content": "¡Nueva semana, nuevos récords! Trata de superar tu mejor tiempo esta semana. ¡Tú puedes!",
+  "new_record_notification_content": "¡Felicidades! Acabas de batir tu récord personal.",
+  "training_reminders_content": "Recuerda practicar tu método favorito hoy. La constancia es la clave para mejorar tus tiempos.",
+  "inactivity_notification_content": "Hace un tiempo que no practicas. ¡Vuelve al cubo y mantén tus dedos ágiles!"
+
 }

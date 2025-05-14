@@ -497,5 +497,11 @@
   "comments": "Comments",
   "no_comments": "No comments",
 
-  "press_again_to_exit": "Press again to exit"
+  "press_again_to_exit": "Press again to exit",
+
+  "daily_notifications_content": "Ready to improve your time today? Don't forget to complete at least one solve.",
+  "weekly_motivation_content": "New week, new records! Try to beat your best time this week. You've got this!",
+  "new_record_notification_content": "Congratulations! You just set a new personal record.",
+  "training_reminders_content": "Remember to practice your favorite method today. Consistency is key to improving your times.",
+  "inactivity_notification_content": "It’s been a while since you last practiced. Get back to the cube and keep your fingers sharp!"
 }
