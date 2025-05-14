@@ -184,22 +184,20 @@ class NotificationService {
   /// - `title`: El título de la notificación.
   /// - `body`: El cuerpo de la notificación.
   /// - `scheduleDate`: La fecha y hora en que debe aparecer la notificación.
-  ///
-  /// No se ha implementado todavia.
-  static Future<void> showNotificationSchedule(
-      String title, String body, DateTime scheduleDate) async {
+  static Future<void> showNotificationSchedule(BuildContext context, int id,
+      String title, DateTime scheduleDate) async {
     const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails("channelId", "channelName",
+        AndroidNotificationDetails("cubex_channel", "CubeX Notification",
             importance: Importance.high, priority: Priority.high);
 
     const NotificationDetails platformDetails =
         NotificationDetails(android: androidDetails);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        title,
-        body,
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 2)),
+        id,
+        Internationalization.internationalization.getLocalizations(context, "${title}_title"),
+        Internationalization.internationalization.getLocalizations(context, "${title}_content"),
+        tz.TZDateTime.from(scheduleDate, tz.local),
         platformDetails,
         matchDateTimeComponents: DateTimeComponents.time,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
