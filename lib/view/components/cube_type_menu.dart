@@ -1,7 +1,4 @@
-import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/cubetype_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
@@ -9,6 +6,9 @@ import 'package:esteladevega_tfg_cubex/view/utilities/app_styles.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../data/dao/supebase/user_dao_sb.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/time_training.dart';
@@ -41,10 +41,10 @@ class CubeTypeMenu extends StatefulWidget {
 }
 
 class _CubeTypeMenuState extends State<CubeTypeMenu> {
-  CubeTypeDao cubeTypeDao = CubeTypeDao();
-  TimeTrainingDao timeTrainingDao = TimeTrainingDao();
-  SessionDao sessionDao = SessionDao();
-  UserDao userDao = UserDao();
+  CubeTypeDaoSb cubeTypeDaoSb = CubeTypeDaoSb();
+  TimeTrainingDaoSb timeTrainingDaoSb = TimeTrainingDaoSb();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
+  UserDaoSb userDaoSb = UserDaoSb();
   Scramble scramble = Scramble();
   List<CubeType> cubeTypes = [];
   late CurrentTime currentTime;
@@ -55,12 +55,12 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
-    List<CubeType> result = await cubeTypeDao.getCubeTypes(idUser);
+    List<CubeType> result = await cubeTypeDaoSb.getCubeTypes(idUser);
     setState(() {
       cubeTypes = result;
     });
@@ -73,8 +73,8 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
   ///
   /// Se muestra un `SnackBar` si se insertó correctamente o no.
   Future<void> insertNewType(String name, int idUser) async {
-    if (!await cubeTypeDao.isExistsCubeTypeName(name)) {
-      if (await cubeTypeDao.insertNewType(name, idUser)) {
+    if (!await cubeTypeDaoSb.isExistsCubeTypeName(name)) {
+      if (await cubeTypeDaoSb.insertNewType(name, idUser)) {
         getTotalCubes(); // RECARGAMOS LA LISTA DE TIPOS DE CUBOS
         AlertUtil.showSnackBarInformation(
             context, "The new type was successfully inserted");
@@ -147,12 +147,12 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onLongPress: () {
-                              // ANTES DE ELIMINAR, SE VERIFICA QUE NO SEA LA ULTIMA SESION,
-                              // ASI VALIDAMOS QUE SIEMPRE HAYA UNA SESION
-                              if (index == 0) {
+                              // ANTES DE ELIMINAR, SE VERIFICA QUE NO SEA EL ULTIMO TIPO DE CUBO,
+                              // ASI VALIDAMOS QUE SIEMPRE HAYA UN TIPO
+                              if (cubeTypes.length == 1) {
                                 // SI EN EL INDEX SOLO HAY UN ELEMENTO
-                                AlertUtil.showAlert("session_deletion_failed",
-                                    "session_deletion_failed_content", context);
+                                AlertUtil.showAlert("cube_type_deletion_failed",
+                                    "cube_type_deletion_failed_content", context);
                               } else {
                                 // SI MANTIENE PULSADO LE SALDRA LA OPCION DE ELIMINAR LA SESION
                                 AlertUtil.showDeleteSessionOrCube(
@@ -171,25 +171,25 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                                   if (currentUser != null) {
                                     // OBTENER EL ID DEL USUARIO QUE ENTRO EN LA APP
                                     int? idUser =
-                                        await userDao.getUserId(context);
+                                        await userDaoSb.getUserId(context);
 
-                                    CubeType? cubeType = await cubeTypeDao
+                                    CubeType? cubeType = await cubeTypeDaoSb
                                         .getCubeTypeByNameAndIdUser(
-                                            selectedCubeType!.cubeName, idUser);
+                                            selectedCubeType.cubeName, idUser!);
 
                                     // FILTRAMOS LAS SESIONES POR EL ID DEL CUBO
-                                    List<Session> result = await sessionDao
+                                    List<SessionClass> result = await sessionDaoSb
                                         .searchSessionByCubeAndUser(
-                                            idUser!, cubeType.idCube!);
+                                            idUser, cubeType.idCube!);
 
-                                    for (Session session in result) {
+                                    for (SessionClass session in result) {
                                       // ELIMINAMOS ANTES LOS TIEMPOS
                                       // COGEMOS TOA LA LISTA DE TIEMPOS VINCULADA A ESA SESION
-                                      var timesList = await timeTrainingDao
+                                      var timesList = await timeTrainingDaoSb
                                           .getTimesOfSession(session.idSession);
 
                                       for (TimeTraining t in timesList) {
-                                        if (await timeTrainingDao.deleteTime(
+                                        if (await timeTrainingDaoSb.deleteTime(
                                                 t.idTimeTraining!) ==
                                             false) {
                                           AlertUtil.showSnackBarError(context,
@@ -198,7 +198,7 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                                         }
                                       }
 
-                                      if (await sessionDao.deleteSession(
+                                      if (await sessionDaoSb.deleteSession(
                                               session.idSession!) ==
                                           false) {
                                         AlertUtil.showSnackBarInformation(
@@ -206,14 +206,14 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                                       } // SE ELIMINA LA SESION
                                     }
 
-                                    if (await cubeTypeDao.deleteCubeType(
+                                    if (await cubeTypeDaoSb.deleteCubeType(
                                         cubeName, idUser)) {
                                       AlertUtil.showSnackBarInformation(context,
                                           "cube_type_deleted_successful");
                                       // SE ACTUALIZAN LOS PROVIDER
                                       // LISTAMOS TODOS LOS TIPOS DE CUBO DEL USUARIO PARA COGER EL PRIMERO
                                       List<CubeType> listCube =
-                                          await cubeTypeDao
+                                          await cubeTypeDaoSb
                                               .getCubeTypes(idUser);
 
                                       CubeType? cubeTypeCurrent = listCube[0];
@@ -226,17 +226,17 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                                       currentCube.setCubeType(cubeTypeCurrent);
 
                                       // FILTRAMOS LAS SESIONES POR EL ID DEL CUBO
-                                      List<Session> sessionList =
-                                          await sessionDao
+                                      List<SessionClass> sessionList =
+                                          await sessionDaoSb
                                               .searchSessionByCubeAndUser(
-                                                  idUser!, listCube[0].idCube!);
+                                                  idUser, listCube[0].idCube!);
 
                                       // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
                                       final currentSession =
                                           Provider.of<CurrentSession>(
                                               this.context,
                                               listen: false);
-                                      Session session = sessionList[0];
+                                      SessionClass session = sessionList[0];
 
                                       // SE ACTUALIZA EL ESTADO GLOBAL
                                       currentSession.setSession(session);
@@ -256,12 +256,10 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               }
                             },
                             onTap: () async {
-                              SessionDao sessionDao = SessionDao();
-                              UserDao userDao = UserDao();
-                              TimeTrainingDao timeTrainingDao =
-                                  TimeTrainingDao();
+                              SessionDaoSb sessionDaoSb = SessionDaoSb();
+                              UserDaoSb userDaoSb = UserDaoSb();
 
-                              int? idUser = await userDao.getUserId(context);
+                              int? idUser = await userDaoSb.getUserId(context);
 
                               // SE ACTUALIZA EL TIPO DE CUBO EN EL PROVIDER
                               final currentCubeType =
@@ -271,9 +269,9 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                                   index]); // SE ACTUALIZA EL ESTADO GLOBAL
 
                               CubeType? cubeType =
-                                  await cubeTypeDao.getCubeTypeByNameAndIdUser(
+                                  await cubeTypeDaoSb.getCubeTypeByNameAndIdUser(
                                       currentCubeType.cubeType!.cubeName,
-                                      idUser);
+                                      idUser!);
                               if (cubeType.idCube == -1) {
                                 DatabaseHelper.logger
                                     .e("Error al obtener el tipo de cubo.");
@@ -287,16 +285,16 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                               final currentSession =
                                   Provider.of<CurrentSession>(this.context,
                                       listen: false);
-                              Session? sessionDefault =
-                                  await sessionDao.getSessionByUserCubeName(
-                                      idUser!, "Normal", cubeType.idCube);
+                              SessionClass? sessionDefault =
+                                  await sessionDaoSb.getSessionByUserCubeName(
+                                      idUser, "Normal", cubeType.idCube);
 
                               if (sessionDefault != null) {
                                 // SE ACTUALIZA EL ESTADO GLOBAL
                                 currentSession.setSession(sessionDefault);
 
                                 var timesList =
-                                    await timeTrainingDao.getTimesOfSession(
+                                    await timeTrainingDaoSb.getTimesOfSession(
                                         currentSession.session!.idSession);
 
                                 // GUARDAR LOS DATOS DE LAS ESTADISTICAS EN EL ESTADO GLOBAL
@@ -362,26 +360,26 @@ class _CubeTypeMenuState extends State<CubeTypeMenu> {
                             "insert_new_type_label",
                             "enter_new_cube_type",
                             context);
-                        UserDao userDao = UserDao();
+                        UserDaoSb userDaoSb = UserDaoSb();
                         // OBTENEMOS LOS DATOS DEL USUARIO
                         final currentUser = context.read<CurrentUser>().user;
-                        int idUser = await userDao
+                        int idUser = await userDaoSb
                             .getIdUserFromName(currentUser!.username);
                         await insertNewType(name!, idUser);
 
                         // CREAR SU SESION POR DEFECTO
-                        SessionDao sessionDao = SessionDao();
-                        CubeType cubeNewType = await cubeTypeDao
+                        SessionDaoSb sessionDaoSb = SessionDaoSb();
+                        CubeType cubeNewType = await cubeTypeDaoSb
                             .getCubeTypeByNameAndIdUser(name, idUser);
                         if (cubeNewType.idCube == -1) {
                           DatabaseHelper.logger.e(
                               "No se pudo conseguir el tipo de cubo al buscarlo por su nombre");
                         } else {
-                          Session newSession = Session(
+                          SessionClass newSession = SessionClass(
                               idUser: idUser,
                               sessionName: "Normal",
                               idCubeType: cubeNewType.idCube!);
-                          if (await sessionDao.insertSession(newSession)) {
+                          if (await sessionDaoSb.insertSession(newSession)) {
                             DatabaseHelper.logger.i(
                                 "Se creó la sesión por defecto correctament");
                           } else {
