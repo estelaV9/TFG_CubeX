@@ -1,8 +1,7 @@
-import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/cubetype_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 import 'package:esteladevega_tfg_cubex/view/components/icon_image_fieldrow.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/signup_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
@@ -12,13 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stroke_text/stroke_text.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/user_dao_sb.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/session.dart';
 import '../../viewmodel/current_cube_type.dart';
 import '../../viewmodel/current_session.dart';
 import '../components/password_field_row.dart';
-import '../../model/user.dart';
 import '../../view/navigation/bottom_navigation.dart';
 import '../../viewmodel/current_user.dart';
 import '../components/waves_painter/wave_container_painter.dart';
@@ -42,7 +42,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  UserDao userDao = UserDao();
+  UserDaoSb userDaoSb = UserDaoSb();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
+  final cubeTypeDaoSb = CubeTypeDaoSb();
   final _formKey = GlobalKey<FormState>();
 
   // CONTROLADORES
@@ -52,81 +54,94 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   String _password = '';
 
-  /// Método encargado de validar las credenciales de inicio de sesión.
+  /// Método encargado de iniciar sesión con credenciales ingresadas por el usuario.
   ///
+  /// Este método sigue el siguiente flujo:
   /// Valida el formulario, encripta la contraseña ingresada, y verifica si las
-  /// credenciales (nombre de usuario/correo electrónico y contraseña) son correctas.
+  ///  credenciales (nombre de usuario y contraseña) con Supabase son correctas.
+  /// Si las credenciales son válidas:
+  ///    - Obtiene los datos del usuario y los guarda en el estado global y en SharedPreferences.
+  ///    - Obtiene la lista de tipos de cubo del usuario y selecciona el primero como predeterminado.
+  ///    - Guarda ese tipo de cubo en el estado global y en SharedPreferences.
+  ///    - Obtiene las sesiones asociadas a ese tipo de cubo y selecciona la primera como predeterminada.
+  ///    - Guarda esa sesión en el estado global y en SharedPreferences.
+  ///    - Redirige a la pantalla principal (`BottomNavigation`).
+  /// Si las credenciales no son válidas, muestra un mensaje de error mediante un `SnackBar`.
   ///
-  /// Si las credenciales son válidas, actualiza el estado global con los datos del
-  /// usuario y redirige a la pantalla principal. Si son incorrectas, muestra un mensaje
-  /// de error.
+  /// Se utiliza Provider para manejar el estado global del usuario, tipo de cubo y sesión actual
+  /// y `SharedPreferences` para mantener la persistencia.
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       final usernameOrEmail = _usernameController.text;
       final password = _passwordController.text;
       final encryptedPassword = EncryptPassword.encryptPassword(password);
 
-      // SE CREA UN USUARIO
-      final newUser = User(
-          username: usernameOrEmail,
-          mail: usernameOrEmail,
-          password: encryptedPassword,
-          isLoggedIn: true);
+      if (await userDaoSb.validateLogin(usernameOrEmail, encryptedPassword)) {
+        // SE CREA UN USUARIO
+        final newUser = await userDaoSb.getUserFromName(usernameOrEmail);
+        if(newUser != null) {
+          // SI EL USUARIO NO ES NULO, SE LE CAMBIA EL ATRIBUTO DE LOGEADO A TRUE
+          newUser.isLoggedIn = true;
 
-      if (await userDao.validateLogin(usernameOrEmail, encryptedPassword)) {
-        // GUARDAR LOS DATOS DEL USURAIO EN EL ESTADO GLOBAL
-        final currentUser =
-            Provider.of<CurrentUser>(this.context, listen: false);
-        // SE ACTUALIZA EL ESTADO GLOBAL Y LAS PREFERENCIAS
-        currentUser.setUser(newUser);
-
-        final prefs = await SharedPreferences.getInstance();
-        await newUser.saveToPreferences(prefs);
-        await prefs.setBool("isLoggedIn", true);
-        await prefs.setBool("isSingup", false);
-        await prefs.reload();
-
-        // OBTENER EL ID DEL USUARIO
-        int idUser =
-            await userDao.getIdUserFromName(currentUser.user!.username);
-        if (idUser == -1) {
-          DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
-        } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
-
-        // SETEAMOS EL ESTADO GLOBAL DEL TIPO DE CUBO Y SESION Y LO
-        // PONEMOS POR DEFECTO AL PRIMER TIPO DE CUBO
-        final cubeTypeDao = CubeTypeDao();
-        // LISTAMOS TODOS LOS TIPOS DE CUBO DEL USUARIO PARA COGER EL PRIMERO
-        List<CubeType> listCube = await cubeTypeDao.getCubeTypes(idUser);
-
-        CubeType? cubeType = listCube[0];
-        // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
-        final currentCube =
-            Provider.of<CurrentCubeType>(this.context, listen: false);
-        // SE ACTUALIZA EL ESTADO GLOBAL Y LAS PREFERENCIAS
-        currentCube.setCubeType(cubeType);
-        await cubeType.saveToPreferences(prefs);
-        await prefs.reload();
-
-        if (cubeType.idCube != null) {
-          // EL TIPO DE SESION ES LA DE POR DEFECTO 'Normal'
-          Session session = Session(
-            idUser: idUser,
-            sessionName: "Normal",
-            idCubeType: cubeType.idCube!,
-          ); // CREAMOS LA SESION
-
-          // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
-          final currentSession =
-              Provider.of<CurrentSession>(this.context, listen: false);
+          // GUARDAR LOS DATOS DEL USURAIO EN EL ESTADO GLOBAL
+          final currentUser =
+          Provider.of<CurrentUser>(this.context, listen: false);
           // SE ACTUALIZA EL ESTADO GLOBAL Y LAS PREFERENCIAS
-          currentSession.setSession(session);
-          await session.saveToPreferences(prefs);
+          currentUser.setUser(newUser);
+
+          // SE ESTABLCEN LOS DATOS DE LOGEADO Y EL UUID
+          currentUser.user!.isLoggedIn = true;
+          currentUser.user!.userUUID = newUser.userUUID;
+
+          // SE ACTUALIZAN LAS PREFERENCIAS
+          final prefs = await SharedPreferences.getInstance();
+          await newUser.saveToPreferences(prefs);
+          await prefs.setBool("isLoggedIn", true);
+          await prefs.setBool("isSingup", false);
           await prefs.reload();
 
-          // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
-          ChangeScreen.changeScreen(const BottomNavigation(), context);
-        } // VERIFICAR QUE HAY UN TIPO DE CUBO
+          // OBTENER EL ID DEL USUARIO
+          int idUser =
+          await userDaoSb.getIdUserFromName(currentUser.user!.username);
+          if (idUser == -1) {
+            DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
+          } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
+
+          // SETEAMOS EL ESTADO GLOBAL DEL TIPO DE CUBO Y SESION Y LO
+          // PONEMOS POR DEFECTO AL PRIMER TIPO DE CUBO
+          // LISTAMOS TODOS LOS TIPOS DE CUBO DEL USUARIO PARA COGER EL PRIMERO
+          List<CubeType> listCube = await cubeTypeDaoSb.getCubeTypes(idUser);
+
+          CubeType? cubeType = listCube[0];
+          // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
+          final currentCube =
+          Provider.of<CurrentCubeType>(this.context, listen: false);
+          // SE ACTUALIZA EL ESTADO GLOBAL Y LAS PREFERENCIAS
+          currentCube.setCubeType(cubeType);
+          await cubeType.saveToPreferences(prefs);
+          await prefs.reload();
+
+          if (cubeType.idCube != null) {
+            List<SessionClass> listSession = await sessionDaoSb
+                .searchSessionByCubeAndUser(idUser, cubeType.idCube!);
+
+            // EL TIPO DE SESION ES LA DE POR DEFECTO LA PRIMERA SESION
+            SessionClass session = listSession[0]; // CREAMOS LA SESION
+
+            // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
+            final currentSession =
+            Provider.of<CurrentSession>(this.context, listen: false);
+            // SE ACTUALIZA EL ESTADO GLOBAL Y LAS PREFERENCIAS
+            currentSession.setSession(session);
+            await session.saveToPreferences(prefs);
+            await prefs.reload();
+
+            // SI COINCIDEN LAS CREDENCIALES, ENTONCES IRA A LA PAGINA PRINCIPAL
+            ChangeScreen.changeScreen(const BottomNavigation(), context);
+          } // VERIFICAR QUE HAY UN TIPO DE CUBO
+        } else {
+          DatabaseHelper.logger.e("no se consiguio correctamente el usuario");
+        } // VERIFICAMOS SI EL USUARIO NO ES NULO
       } else {
         // SI LAS CREDENCIALES FALLAN, SE MUESTRA UNA ALERTA
         AlertUtil.showSnackBarError(context, "incorrect_username_password");
