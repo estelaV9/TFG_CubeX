@@ -1,8 +1,9 @@
-import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'dart:io';
+
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
-import 'package:esteladevega_tfg_cubex/model/cubetype.dart';
+import 'package:esteladevega_tfg_cubex/data/database/supabase_helper.dart';
 import 'package:esteladevega_tfg_cubex/model/session.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
 import 'package:esteladevega_tfg_cubex/view/components/waves_painter/wave_container_painter.dart';
@@ -15,11 +16,17 @@ import 'package:esteladevega_tfg_cubex/view/utilities/encrypt_password.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/validator.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stroke_text/stroke_text.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/dao/supebase/cubetype_dao_sb.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/user_dao_sb.dart';
 import '../components/Icon/icon.dart';
 import '../../view/navigation/bottom_navigation.dart';
 import '../components/password_field_row.dart';
@@ -49,12 +56,14 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  UserDao userDao = UserDao();
   String _password = ''; // ATRIBUTO PARA GUARDAR LA CONTRASEÑA
   bool isExisting = false;
   String newName = "";
   String nameController = "";
   bool isOnTapSuggestion = false;
+  final userDaoSb = UserDaoSb();
+  final sessionDaoSb = SessionDaoSb();
+  final cubeTypeDaoSb = CubeTypeDaoSb();
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
@@ -63,12 +72,70 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _confirmPasswordController =
   TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    // SE INICIA LA ESCUCHA DEL ESTADO DE AUTENTICACION DE SUPABASE
+    SupabaseHelper().getSession(context);
+    _usernameController.text = "eljoaki1";
+    _mailController.text = "joakielgringo@gmail.com";
+    _passwordController.text = "12345678(";
+    _confirmPasswordController.text = "12345678(";
+  }
+
+  /// Abre la aplicacion movil o web en caso de fallar.
+  ///
+  /// Este metodo intenta abrir la app de gmail en dispositivos android usando un
+  /// intent explicito. Si falla, intenta abrir el gmail en el navegador.
+  ///
+  /// En los demas dispositivos, directamente intenta abrir gmail en el navegador.
+  Future<void> openGmailApp() async {
+    // VERIFICAR SI EL DISPOSITIVO ES ANDROID
+    if (Platform.isAndroid) {
+      try {
+        // CREAR UN INTENT EXPLICITO PARA ABRIR LA APP DE GMAIL
+        const intent = AndroidIntent(
+          action: 'android.intent.action.MAIN',
+          category: 'android.intent.category.APP_EMAIL',
+          package: 'com.google.android.gm',
+          flags: [Flag.FLAG_ACTIVITY_NEW_TASK],
+        );
+
+        // LANZA EL INTENT PARA ABRIR GMAIL
+        await intent.launch();
+      } catch (e) {
+        // SI FALLA AL ABRIR LA APP DE GMAIL, ABRIR GMAIL EN EL NAVEGADOR
+        DatabaseHelper.logger.w("No se pudo abrir la app de gmail: $e");
+
+        final Uri gmailWeb = Uri.parse("https://mail.google.com");
+
+        // VERIFICAR SI SE PUEDE ABRIR LA URL EN EL NAVEGADOR
+        if (await canLaunchUrl(gmailWeb)) {
+          await launchUrl(gmailWeb, mode: LaunchMode.externalApplication);
+        } else {
+          DatabaseHelper.logger.e("No se pudo abrir gmail app ni web");
+        }
+      }
+    } else {
+      // SI NO ES ANDROID, SE ABRE DIRECTAMENTE GMAIL EN EL NAVEGADOR
+      final Uri gmailWeb = Uri.parse("https://mail.google.com");
+
+      if (await canLaunchUrl(gmailWeb)) {
+        await launchUrl(gmailWeb, mode: LaunchMode.externalApplication);
+      } else {
+        DatabaseHelper.logger.e("No se pudo abrir gmail web");
+      }
+    }
+  } // METODO PARA ABRIR EL GMAIL
+
   /// Método encargado de registrar un nuevo usuario.
   ///
-  /// Valida los campos del formulario, encripta la contraseña y guarda los datos
+  /// - Valida los campos del formulario, encripta la contraseña y guarda los datos
   /// del usuario en la base de datos.
-  /// Si la creación es exitosa, configura una sesión por defecto y crea los tipos de
+  /// - Crea una cuenta en Supabase, la cual tendra que autentificar.
+  /// - Si la creación es exitosa, configura una sesión por defecto y crea los tipos de
   /// cubos asociados al usuario.
+  ///
   /// Además, maneja la navegación hacia la pantalla principal y muestra mensajes de
   /// éxito o error.
   Future<void> _signUp() async {
@@ -81,118 +148,147 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final mail = _mailController.text;
       String encryptedPassword = EncryptPassword.encryptPassword(_password);
 
-      // SE CREA UN USUARIO
-      final newUser = User(username: username, mail: mail, password: encryptedPassword);
+      final newUser = UserClass(username: username,
+          mail: mail,
+          password: encryptedPassword);
 
-      if (!await userDao.isExistsUsername(username)) {
-        if (!await userDao.isExistsEmail(mail)) {
-          if (await userDao.insertUser(newUser)) {
-            // GUARDAR LOS DATOS DEL USURAIO EN EL ESTADO GLOBAL
-            final currentUser = Provider.of<CurrentUser>(this.context, listen: false);
-            newUser.isSingup = true;
-            // SE ACTUALIZA EL ESTADO GLOBAL Y LAS PREFERENCIAS
-            currentUser.setUser(newUser);
+      if (!await userDaoSb.isExistsUsername(username)) {
+        if (!await userDaoSb.isExistsEmail(mail)) {
+          try {
+            // REGISTRAR AL USUARIO EN SUPABASE
+            final response = await SupabaseHelper.supabase.auth.signUp(
+              emailRedirectTo: Platform.isWindows ? 'https://google.com' :
+              kIsWeb ? null : 'io.supebase.cubex://login-callback',
+              email: mail,
+              password: _password,
+              data: {
+                'username': username,
+                'mail': mail,
+                'password': encryptedPassword,
+              }
+            );
+            final snackBar =  SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.grey,
+              action: SnackBarAction(
+                label: Internationalization.internationalization
+                    .getLocalizations(context, "Go"), // TEXTO BOTON
+                textColor: Colors.yellow,
+                onPressed: () async {
+                  // SE ABRE LA APP DE GMAIL
+                  await openGmailApp();
+                },
+              ),
+              content: const Row(
+                children: [
+                  Icon(Icons.outgoing_mail),
+                  SizedBox(width: 10),
+                  Flexible(
+                    child: Text(
+                      "Cuenta creada, confirma tu email",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 5,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            );
 
-            final prefs = await SharedPreferences.getInstance();
-            await newUser.saveToPreferences(prefs);
-            await prefs.setBool("isLoggedIn", false);
-            await prefs.setBool("isSingup", true);
-            await prefs.reload();
+            // SE MUESTRA EL SNAKCBAR PARA IR AL GMAIL
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-            // SE MUESTRA UN SNACKBAR DE QUE SE HA CREADO CORRECTAMENTE
-            // Y SE REDIRIGE A LA PANTALLA PRINCIPAL
-            AlertUtil.showSnackBarInformation(context, "account_created_successfully");
+            // OBTENER USUARIO DEVUELTO POR SUPABASE
+            final user = response.user;
+            if (user != null) {
+              final idUser = await userDaoSb.getIdUserFromName(mail);
 
-            int idUser = await userDao.getIdUserFromName(currentUser.user!.username);
+              if (idUser != -1) {
+                // GUARDAR LOS DATOS DEL USURAIO EN EL ESTADO GLOBAL
+                final currentUser = Provider.of<CurrentUser>(this.context, listen: false);
+                newUser.isSingup = true;
+                // SE ACTUALIZA EL ESTADO GLOBAL Y LAS PREFERENCIAS
+                currentUser.setUser(newUser);
 
-            if (idUser != -1) {
-              // CUANDO SE INSERTA UN NUEVO USUARIO SE LE ASIGNA CUBOS POR DEFECTO
-              CubeTypeDao cubeTypeDao = CubeTypeDao();
-              SessionDao sessionDao = SessionDao();
+                final prefs = await SharedPreferences.getInstance();
+                await newUser.saveToPreferences(prefs);
+                await prefs.setBool("isLoggedIn", false);
+                await prefs.setBool("isSingup", true);
+                await prefs.reload();
 
-              List<String> cubeTypes = [
-                "2x2x2",
-                "3x3x3",
-                "4x4x4",
-                "5x5x5",
-                "6x6x6",
-                "7x7x7",
-                "PYRAMINX",
-                "SKEWB",
-                "MEGAMINX",
-                "SQUARE-1"
-              ];
+                // CUBOS POR DEFECTO
+                final cubeTypes = [
+                  "2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7",
+                  "PYRAMINX", "SKEWB", "MEGAMINX", "SQUARE-1"
+                ];
 
-              for (String type in cubeTypes) {
-                cubeTypeDao.insertNewType(type, idUser);
-              } // INSETAMOS LOS TIPOS DE CUBO EN LA BD
+                for (final cube in cubeTypes) {
+                  await cubeTypeDaoSb.insertNewType(cube, idUser);
+                } // INSERTAR LOS TIPOS DE CUBO POR DEFECTO
 
-              List<CubeType> listCubeTypes = await cubeTypeDao.getCubeTypes(idUser);
+                // OBTENER LOS TIPOS DE CUBO DEL USUARIO
+                final userCubeTypes = await cubeTypeDaoSb.getCubeTypes(idUser);
 
-              for (CubeType type in listCubeTypes) {
-                if (type.idCube != null) {
-                  Session session = Session(
-                    idUser: idUser,
-                    sessionName: "Normal",
-                    idCubeType: type.idCube!,
-                  ); // CREAMOS LA SESION
-                  await sessionDao.insertSession(session);
+                for (final type in userCubeTypes) {
+                  if (type.idCube != null) {
+                    final session = SessionClass(
+                      idUser: idUser,
+                      sessionName: "Normal",
+                      idCubeType: type.idCube!,
+                    );
+                    await sessionDaoSb.insertSession(session);
 
-                  if (type.cubeName == "3x3x3") {
-                    // GUARDAR LOS DATOS DE LA SESION EN EL ESTADO GLOBAL
-                    final currentSession = Provider.of<CurrentSession>(context, listen: false);
-                    // SE ACTUALIZA EL ESTADO GLOBAL
-                    currentSession.setSession(session);
+                    if (type.cubeName == "3x3x3") {
+                      final currentSession = Provider.of<CurrentSession>(context, listen: false);
+                      final currentCube = Provider.of<CurrentCubeType>(context, listen: false);
 
-                    int idSession = await sessionDao.searchIdSessionByNameAndUser(
-                        idUser, currentSession.session!.sessionName);
+                      currentSession.setSession(session);
+                      currentCube.setCubeType(type);
 
-                    // GUARDAR LOS DATOS DEL TIPO DE CUBO EN EL ESTADO GLOBAL
-                    final currentCube = Provider.of<CurrentCubeType>(context, listen: false);
-                    // SE ACTUALIZA EL ESTADO GLOBAL
-                    currentCube.setCubeType(type);
+                      final idSession = await sessionDaoSb.searchIdSessionByNameAndUser(idUser, session.sessionName);
 
-                    if (idSession != -1) {
-                      // SE MUESTRA UN MENSAJE DE QUE SE HA SETTEADO CORRECTAMENTE
-                      DatabaseHelper.logger.i(
-                          "Se han setteado correctamente el tipo de cubo y sesion acutales"
-                              "\nSession actual: ${currentSession.session.toString()} con su id $idSession"
-                              "\nTipo de cubo actual: ${currentCube.cubeType.toString()}");
-                    } else {
-                      DatabaseHelper.logger.e("No se encontro el id de la session actual: $idSession");
-                    } // SE VERIFICA QUE SE BUSCO BIEN EL ID
-                  } // SI EL TIPO DE CUBO ES 3X3 SE PONE SU SESION Y EL TIPO COMO LOS ACTUALES
-                } else {
-                  DatabaseHelper.logger.e("Error al obtener el tipo de cubo: $type");
-                } // VALIDAMOS QUE EL ID DE TIPO DE CUBO NO SEA NULO
-              } // CREAMOS UNA SESION POR DEFECTO "NORMAL"PARA CADA TIPO DE CUBO
+                      if (idSession != -1) {
+                        DatabaseHelper.logger.w("Sesión y cubo actuales seteados correctamente.");
+                      } else {
+                        DatabaseHelper.logger.w("No se encontró el ID de la sesión actual.");
+                      } // VERIFICAR SI SE ENCONTRO EL ID CORRECTAMENTE
+                    } // CONFIGURAR SESION SI EL TIPO DE CUBO ES 3X3
+                  } else {
+                    DatabaseHelper.logger.w("ID de tipo de cubo es null para $type");
+                  } // VERIFICAR SI SE ENCONTRO EL ID DE CUBO CORRECTAMENTE
+                } // SE RECCOORREN TODOS LOS TIPOS D ECUBOS
 
-              // CAMBIA A LA PANTALLA PRINCIPAL
-              ChangeScreen.changeScreen(const BottomNavigation(), context);
+                // CAMBIAR A LA PANTALLA PRINCIPAL
+                ChangeScreen.changeScreen(const BottomNavigation(), context);
+              } else {
+                AlertUtil.showSnackBarError(context, "error_creating_account");
+              }
+            } // VERIFICAMOS QUE EL USUARIO NO SEA NULL
+          } catch (e) {
+            if (!mounted) return;
+
+            // MANEJO DE ERRORES DE SUPABASE
+            if (e is AuthException && e.message.contains('otp_expired')) {
+              AlertUtil.showSnackBarError(context, "El enlace ha caducado. Solicita uno nuevo.");
             } else {
-              // SE MUESTRA UN ERROR SI ES NULO
-              DatabaseHelper.logger.e("Error al pillar el id de tipo de cubo 3x3");
-              // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR PORQUE ES NULO
-              AlertUtil.showSnackBarError(context, "error_creating_account");
-            } // VERIFICA SI EL ID DEL TIPO DE CUBO ES NULO
-          } else {
-            // SE MUESTRA UN SNACKBARR MOSTRANDO QUE HA OCURRIDO UN ERROR AL CREAR USUARIO
-            AlertUtil.showSnackBarError(context, "error_creating_account");
-          } // INSERTAR AL USUARIO
-        } else {
-          // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL MAIL DEL USUARIO YA EXISTE
-          AlertUtil.showSnackBarError(context, "account_email_exists");
-        } // VALIDAR QUE EL MAIL DEL USUARIO NO EXISTA
-      } else {
-        // SE MUESTRA UN SNACKBARR MOSTRANDO QUE EL NOMBRE DE USUARIO YA EXISTE
-        AlertUtil.showSnackBarError(context, "username_already_in_use");
+              AlertUtil.showSnackBarError(context, "Ocurrió un error. Intenta nuevamente.");
+            }
 
+            DatabaseHelper.logger.e("Error en signUp: $e");
+          }
+        } else {
+          AlertUtil.showSnackBarError(context, "account_email_exists");
+        } // VERIFICAR SI EL CORREO YA EXISTE
+      } else {
+        // EL NOMBRE DE USUARIO YA EXISTE
+        AlertUtil.showSnackBarError(context, "username_already_in_use");
         setState(() {
           isExisting = true;
         });
+        // SE SUGIERE OTRO
         newName = await randomUsername();
-      } // VALIDAR QUE EL NOMBRE DE USUARIO NO EXISTA
-    } // SI TODOS LOS CAMPOS DEL FORMULARIO ESTAN CORRECTOS
+      }
+    }
   } // METODO PARA CREAR UNA CUENTA
 
   /// Método qeu genera un nombre de usuario aleatorio basado en el texto del `_usernameController`.
@@ -210,7 +306,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // CREA EL NUEVO NOMBRE COMBINADO CON EL NUMERO GENERADO
     newName = "${_usernameController.text}$formattedNumber";
-    while (await userDao.isExistsUsername(newName)) {
+    while (await userDaoSb.isExistsUsername(newName)) {
       // SE VUELVE A GENERAR UN NUMERO HASTA QUE SEA UNICO EL NOMBRE
       number = ran.Random().nextInt(9999) + 1;
       formattedNumber = number.toString().padLeft(4, '0');
@@ -301,10 +397,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     child: GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            isOnTapSuggestion = true;
+                                            !Platform.isAndroid && !Platform.isIOS ?
+                                            isOnTapSuggestion = true
+                                            : setState(() {
+                                              _usernameController.text =
+                                                  newName;
+                                              isExisting = false;
+                                            });
                                           });
                                         },
-                                        child: MouseRegion(
+                                        child: !Platform.isAndroid && !Platform.isIOS ?
+                                        MouseRegion(
                                             onHover: (_) {
                                               setState(() {
                                                 _usernameController.text =
@@ -325,7 +428,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 });
                                               }
                                             },
-                                            child: Text(newName))),
+                                            child: Text(newName)) : Text(newName)),
                                   ),
                                 ),
                               ),
