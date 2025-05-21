@@ -77,10 +77,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     // SE INICIA LA ESCUCHA DEL ESTADO DE AUTENTICACION DE SUPABASE
     SupabaseHelper().getSession(context);
-    _usernameController.text = "eljoaki1";
-    _mailController.text = "joakielgringo@gmail.com";
-    _passwordController.text = "12345678(";
-    _confirmPasswordController.text = "12345678(";
   }
 
   /// Abre la aplicacion movil o web en caso de fallar.
