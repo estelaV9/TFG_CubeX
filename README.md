@@ -59,7 +59,7 @@ Durante su desarrollo, se han abordado aspectos clave como:
 
 ## Documentación
 - [Documento de la memoria](https://github.com/estelaV9/TFG_CubeX/blob/master/deVega_Martin_Estela_Memoria_ProyectoFinal_DAM25.pdf)
-- [Manual de usuario](https://github.com/estelaV9/TFG_CubeX/blob/master/deVega_Martin_Estela_Manual_Usuario_ProyectoFinal_DAM25.pdf)
+- [Manual de usuario](https://github.com/estelaV9/TFG_CubeX/blob/master/deVega_Martin_Estela_Manual_ProyectoFinal_DAM25.pdf)
 - [Documentación técnica del proyecto](https://estelav9.github.io/TFG_CubeX_DespliegueDocumentacion/)
 
 ---
