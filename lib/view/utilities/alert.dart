@@ -259,7 +259,7 @@ class AlertUtil {
                   if (isInsert) {
                     // SI SE INSERTO CORRECTAMENTE SE MUESTRA UN SNACKBAR
                     AlertUtil.showSnackBarInformation(
-                        context, "add_time_succesfully");
+                        context, "add_time_successfully");
                   } else {
                     // SI SE INSERTO CORRECTAMENTE SE MUESTRA UN SNACKBAR
                     AlertUtil.showSnackBarInformation(
