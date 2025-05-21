@@ -14,7 +14,7 @@ import '../../model/cubetype.dart';
 import '../../model/time_training.dart';
 import '../../viewmodel/current_scramble.dart';
 import '../../viewmodel/current_time.dart';
-import '../utilities/ScrambleGenerator.dart';
+import '../utilities/scramble_generator.dart';
 import '../utilities/internationalization.dart';
 import '../../viewmodel/current_cube_type.dart';
 import '../../viewmodel/current_session.dart';

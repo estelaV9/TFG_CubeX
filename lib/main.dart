@@ -1,6 +1,6 @@
 import 'package:esteladevega_tfg_cubex/model/notification_service.dart';
 import 'package:esteladevega_tfg_cubex/view/navigation/bottom_navigation.dart';
-import 'package:esteladevega_tfg_cubex/view/screen/IntroScreen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/intro_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_configure_timer.dart';

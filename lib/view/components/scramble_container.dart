@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/cubetype.dart';
-import '../utilities/ScrambleGenerator.dart';
+import '../utilities/scramble_generator.dart';
 import '../utilities/app_styles.dart';
 
 /// Widget que contiene el contenedor para mostrar el scramble y el botón para añadir manualmente.
