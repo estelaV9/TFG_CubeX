@@ -223,7 +223,8 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
         children: [
           Center(
               child: Text(
-            "Average analysis",
+                Internationalization.internationalization
+                    .getLocalizations(context, "average_analysis"),
             style: AppStyles.darkPurpleAndBold(24),
             semanticsLabel: Internationalization.internationalization
                 .getLocalizations(context, "performance_over_time"),
