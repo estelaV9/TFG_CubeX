@@ -1,6 +1,5 @@
-import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/session_dao.dart';
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/cubetype_dao_sb.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/user_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
@@ -8,7 +7,8 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_session.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/dao/time_training_dao.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/time_training_dao_sb.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/cubetype.dart';
 import '../../model/session.dart';
@@ -38,7 +38,7 @@ class CardTimeHistorial extends StatefulWidget {
 
 class _CardTimeHistorialState extends State<CardTimeHistorial> {
   List<TimeTraining> listTimes = [];
-  final timeTrainingDao = TimeTrainingDao();
+  final timeTrainingDaoSb = TimeTrainingDaoSb();
   String scramble = "";
   int? idSession;
 
@@ -62,7 +62,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     } // SI LA LLAMADA AL METODO NO ES CUANDO SE MANTIENE PARA BORRAR, SE CIERRA EL DIALOGO
 
     final idDeleteTime =
-        await timeTrainingDao.getIdByTime(scramble, idSession!);
+        await timeTrainingDaoSb.getIdByTime(scramble, idSession!);
     if (idDeleteTime == -1) {
       // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
       AlertUtil.showSnackBarInformation(context, "delete_time_error");
@@ -71,7 +71,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
       return;
     } // VERIFICA SI SE HA OBTENIDO BIEN EL ID DEL TIEMPO A ELIMINAR
 
-    final isDeleted = await timeTrainingDao.deleteTime(idDeleteTime);
+    final isDeleted = await timeTrainingDaoSb.deleteTime(idDeleteTime);
     if (isDeleted) {
       // SI SE ELIMINO CORRECTAMENTE SE MUESTRA UN SNCAKBAR PARA CONFIRMAR
       AlertUtil.showSnackBarInformation(context, "delete_time_correct");
@@ -80,7 +80,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
       _loadTimes();
     } else {
       // SI OCURRIO UN ERROR MUESTRA UN SNACKBAR
-      AlertUtil.showSnackBarInformation(context, "delete_time_error");
+      AlertUtil.showSnackBarError(context, "delete_time_error");
       DatabaseHelper.logger.e("No se pudo eliminar: $isDeleted");
     }
   } // METODO PARA ELIMINAR EL TIEMPO EN CONCRETO
@@ -113,22 +113,22 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
     final currentSession = context.read<CurrentSession>().session;
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
-    UserDao userDao = UserDao();
-    CubeTypeDao cubeTypeDao = CubeTypeDao();
-    SessionDao sessionDao = SessionDao();
+    UserDaoSb userDaoSb = UserDaoSb();
+    CubeTypeDaoSb cubeTypeDaoSb = CubeTypeDaoSb();
+    SessionDaoSb sessionDaoSb = SessionDaoSb();
 
     // OBTENER EL ID DEL USUARIO
-    int? idUser = await userDao.getUserId(context);
+    int? idUser = await userDaoSb.getUserId(context);
 
-    CubeType? cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
-        currentCube!.cubeName, idUser);
+    CubeType? cubeType = await cubeTypeDaoSb.getCubeTypeByNameAndIdUser(
+        currentCube!.cubeName, idUser!);
     if (cubeType.idCube == -1) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
       return;
     } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
 
     // OBJETO SESION CON EL ID DEL USUARIO, NOMBRE Y TIPO DE CUBO
-    Session? session = await sessionDao.getSessionByUserCubeName(
+    SessionClass? session = await sessionDaoSb.getSessionByUserCubeName(
         idUser!, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
@@ -137,7 +137,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
 
       if (currentTime?.searchComment != null) {
         // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE BUSCA POR COMENTARIOS
-        times = await timeTrainingDao.getTimesOfSession(
+        times = await timeTrainingDaoSb.getTimesOfSession(
             session.idSession,
             currentTime?.searchComment,
             null,
@@ -145,7 +145,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
             currentTime?.timeAsc);
       } else if (currentTime?.searchTime != null) {
         // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR TIEMPO
-        times = await timeTrainingDao.getTimesOfSession(
+        times = await timeTrainingDaoSb.getTimesOfSession(
             session.idSession,
             null,
             currentTime?.searchTime,
@@ -153,7 +153,7 @@ class _CardTimeHistorialState extends State<CardTimeHistorial> {
             currentTime?.timeAsc);
       } else {
         // SI NO SE HA INTRODUCIDO NI COMENTARIO NI TIEMPO, SE BUSCAN TODOS LOS TIEMPOS DE LA SESION
-        times = await timeTrainingDao.getTimesOfSession(session.idSession, null,
+        times = await timeTrainingDaoSb.getTimesOfSession(session.idSession, null,
             null, currentTime?.dateAsc, currentTime?.timeAsc);
       }
 

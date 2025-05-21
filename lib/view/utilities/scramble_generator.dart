@@ -224,11 +224,11 @@ class Scramble {
         // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
         int random = (Random().nextInt(25 - 20 + 1) + 20);
         return generateScramble32Skewb(random);
-      case "4x4x4":
+      // case "4x4x4":
         // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
-        int random = (Random().nextInt(25 - 20 + 1) + 20);
-        //return generateScramble4x4(random);
-        return "";
+        // int random = (Random().nextInt(25 - 20 + 1) + 20);
+        // return generateScramble4x4(random);
+       // return "";
       case "skewb":
         // EL SCRAMBLE DEL SKEWB USA SOLO LAS CAPAS U, R, B, L Y SON 11 MOVIMIENTOS
         return generateScramble32Skewb(11, true);

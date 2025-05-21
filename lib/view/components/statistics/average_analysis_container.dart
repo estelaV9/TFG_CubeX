@@ -1,9 +1,9 @@
 import 'package:esteladevega_tfg_cubex/view/utilities/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../data/dao/session_dao.dart';
-import '../../../data/dao/time_training_dao.dart';
-import '../../../data/dao/user_dao.dart';
+import '../../../data/dao/supebase/session_dao_sb.dart';
+import '../../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../../data/dao/supebase/user_dao_sb.dart';
 import '../../../model/session.dart';
 import '../../../viewmodel/current_statistics.dart';
 import '../../utilities/app_color.dart';
@@ -53,8 +53,8 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
 
   String aoTotal = "00:00.00";
 
-  UserDao userDao = UserDao();
-  SessionDao sessionDao = SessionDao();
+  UserDaoSb userDaoSb = UserDaoSb();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
 
   /// Método que inicializa las estadísticas de tiempo del usuario.
   ///
@@ -67,10 +67,10 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
   /// Retorna:
   /// - `Future<void>`: No devuelve un valor, pero actualiza el estado del widget.
   Future<void> initTimeStatistics() async {
-    int? idUser = await userDao.getUserId(context);
+    int? idUser = await userDaoSb.getUserId(context);
     if (idUser == null) return;
 
-    Session? session = await sessionDao.getSessionData(context, idUser);
+    SessionClass? session = await sessionDaoSb.getSessionData(context, idUser);
     if (session == null) return;
 
     var statistics = await _getStatistics(session);
@@ -91,11 +91,11 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
   ///
   /// Retorna:
   /// - `Map<String, dynamic>?`: Un mapa con las estadísticas calculadas o `null` si ocurre algún error.
-  Future<Map<String, dynamic>?> _getStatistics(Session session) async {
-    final timeTrainingDao = TimeTrainingDao();
+  Future<Map<String, dynamic>?> _getStatistics(SessionClass session) async {
+    final timeTrainingDaoSb = TimeTrainingDaoSb();
     final currentStatistics = context.read<CurrentStatistics>();
 
-    var timesList = await timeTrainingDao.getTimesOfSession(session.idSession);
+    var timesList = await timeTrainingDaoSb.getTimesOfSession(session.idSession);
     currentStatistics.updateStatistics(timesListUpdate: timesList);
 
     String ao5 = await currentStatistics.getAo5Value();
@@ -205,7 +205,7 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
 
     return Container(
       // SIN WITH PARA QUE EXPANDA
-      height: 235,
+      height: 240,
       padding: const EdgeInsets.only(top: 8, right: 20, left: 20, bottom: 15),
       decoration: BoxDecoration(
         color: AppColors.lightVioletColor,
@@ -219,65 +219,64 @@ class _AverageAnalysisContainerState extends State<AverageAnalysisContainer> {
           ),
         ],
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Center(
-                child: Text(
-              "Average analysis",
-              style: AppStyles.darkPurpleAndBold(24),
-              semanticsLabel: Internationalization.internationalization
-                  .getLocalizations(context, "performance_over_time"),
-            )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 5,
-                  children: [
-                    _textForStatsWithSemantics("average"),
-                    _textForStatsWithSemantics("ao5"),
-                    _textForStatsWithSemantics("ao12"),
-                    _textForStatsWithSemantics("ao50"),
-                    _textForStatsWithSemantics("ao100"),
-                  ],
-                ),
-                buildColumn("best", bestTimes),
-                buildColumn("worst", worstTimes),
-                buildColumn("current", currentTimes),
-              ],
-            ),
-            const SizedBox(height: 5),
-            const Divider(
-              color: AppColors.darkPurpleColor,
-              height: 5,
-              indent: 10,
-              endIndent: 10,
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: _textForStatsWithSemantics("aoTotal")),
-                Expanded(
-                    child: Center(
-                  child: Tooltip(
-                    message: Internationalization.internationalization
-                        .getLocalizations(context, "aoTotal_label"),
-                    child: Text(
-                      aoTotal,
-                      style: AppStyles.darkPurple(15),
-                      semanticsLabel: Internationalization.internationalization
-                          .getLocalizations(context, "aoTotal"),
-                    ),
+      child: Column(
+        children: [
+          Center(
+              child: Text(
+                Internationalization.internationalization
+                    .getLocalizations(context, "average_analysis"),
+            style: AppStyles.darkPurpleAndBold(24),
+            semanticsLabel: Internationalization.internationalization
+                .getLocalizations(context, "performance_over_time"),
+          )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 5,
+                children: [
+                  _textForStatsWithSemantics("average"),
+                  _textForStatsWithSemantics("ao5"),
+                  _textForStatsWithSemantics("ao12"),
+                  _textForStatsWithSemantics("ao50"),
+                  _textForStatsWithSemantics("ao100"),
+                ],
+              ),
+              buildColumn("best", bestTimes),
+              buildColumn("worst", worstTimes),
+              buildColumn("current", currentTimes),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const Divider(
+            color: AppColors.darkPurpleColor,
+            height: 5,
+            indent: 10,
+            endIndent: 10,
+          ),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: _textForStatsWithSemantics("aoTotal")),
+              Expanded(
+                  child: Center(
+                child: Tooltip(
+                  message: Internationalization.internationalization
+                      .getLocalizations(context, "aoTotal_label"),
+                  child: Text(
+                    aoTotal,
+                    style: AppStyles.darkPurple(15),
+                    semanticsLabel: Internationalization.internationalization
+                        .getLocalizations(context, "aoTotal"),
                   ),
-                ))
-              ],
-            )
-          ],
-        ),
+                ),
+              ))
+            ],
+          )
+        ],
       ),
     );
   }

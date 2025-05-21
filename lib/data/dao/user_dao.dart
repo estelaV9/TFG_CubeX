@@ -49,7 +49,7 @@ class UserDao {
   ///
   /// Retorna:
   /// - `bool`: `true` si el usuario fue insertado correctamente, `false` si ocurrió un error.
-  Future<bool> insertUser(User user) async {
+  Future<bool> insertUser(UserClass user) async {
     final db = await DatabaseHelper.database;
     try {
       await db.insert('user', {
@@ -208,7 +208,7 @@ class UserDao {
   /// Retorna:
   /// - `bool`: `true` si se actualizó al menos una fila, `false`
   /// si ocurrió un error.
-  Future<bool> updateUserInfo(User user, int idUser) async {
+  Future<bool> updateUserInfo(UserClass user, int idUser) async {
     final db = await DatabaseHelper.database;
     try {
       // MAPA CON LOS VALORES A ACTUALIZAR

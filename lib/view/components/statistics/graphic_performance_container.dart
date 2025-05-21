@@ -1,12 +1,12 @@
-import 'package:esteladevega_tfg_cubex/data/dao/time_training_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/Icon/icon.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../../../data/dao/cubetype_dao.dart';
-import '../../../data/dao/session_dao.dart';
-import '../../../data/dao/user_dao.dart';
+import '../../../data/dao/supebase/cubetype_dao_sb.dart';
+import '../../../data/dao/supebase/session_dao_sb.dart';
+import '../../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../../data/dao/supebase/user_dao_sb.dart';
 import '../../../data/database/database_helper.dart';
 import '../../../model/cubetype.dart';
 import '../../../model/session.dart';
@@ -47,10 +47,10 @@ class GraphicPerformanceContainer extends StatefulWidget {
 
 class _GraphicPerformanceContainerState
     extends State<GraphicPerformanceContainer> {
-  UserDao userDao = UserDao();
-  CubeTypeDao cubeTypeDao = CubeTypeDao();
-  SessionDao sessionDao = SessionDao();
-  TimeTrainingDao timeTrainingDao = TimeTrainingDao();
+  UserDaoSb userDaoSb = UserDaoSb();
+  CubeTypeDaoSb cubeTypeDaoSb = CubeTypeDaoSb();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
+  TimeTrainingDaoSb timeTrainingDaoSb = TimeTrainingDaoSb();
 
   // LISTA CON TODOS LOS TIEMPOS DE ENTRENAMIENTO
   List<TimeTraining> _listTimes = [];
@@ -94,7 +94,7 @@ class _GraphicPerformanceContainerState
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
       return;
@@ -104,7 +104,7 @@ class _GraphicPerformanceContainerState
     final currentSession = context.read<CurrentSession>().session;
     final currentCube = context.read<CurrentCubeType>().cubeType;
 
-    CubeType? cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+    CubeType? cubeType = await cubeTypeDaoSb.getCubeTypeByNameAndIdUser(
         currentCube!.cubeName, idUser);
     if (cubeType.idCube == -1) {
       DatabaseHelper.logger.e("Error al obtener el tipo de cubo.");
@@ -112,7 +112,7 @@ class _GraphicPerformanceContainerState
     } // VERIFICAR QUE SI RETORNA EL TIPO DE CUBO CORRECTAMENTE
 
     // OBJETO SESION CON EL ID DEL USUARIO, NOMBRE Y TIPO DE CUBO
-    Session? session = await sessionDao.getSessionByUserCubeName(
+    SessionClass? session = await sessionDaoSb.getSessionByUserCubeName(
         idUser, currentSession!.sessionName, cubeType.idCube);
 
     if (session!.idSession != -1) {
@@ -120,7 +120,7 @@ class _GraphicPerformanceContainerState
 
       if (currentTime?.searchComment != null) {
         // SI EL USUARIO HA INTRODUCIDO UN COMENTARIO, SE BUSCA POR COMENTARIOS
-        times = await timeTrainingDao.getTimesOfSession(
+        times = await timeTrainingDaoSb.getTimesOfSession(
             session.idSession,
             currentTime?.searchComment,
             null,
@@ -128,7 +128,7 @@ class _GraphicPerformanceContainerState
             currentTime?.timeAsc);
       } else if (currentTime?.searchTime != null) {
         // SI EL USUARIO HA INTRODUCIDO UN TIEMPO, SE BUSCA POR TIEMPO
-        times = await timeTrainingDao.getTimesOfSession(
+        times = await timeTrainingDaoSb.getTimesOfSession(
             session.idSession,
             null,
             currentTime?.searchTime,
@@ -136,11 +136,11 @@ class _GraphicPerformanceContainerState
             currentTime?.timeAsc);
       } else {
         // SI NO SE HA INTRODUCIDO NI COMENTARIO NI TIEMPO, SE BUSCAN TODOS LOS TIEMPOS DE LA SESION
-        times = await timeTrainingDao.getTimesOfSession(session.idSession, null,
-            null, currentTime?.dateAsc, currentTime?.timeAsc);
+        times = await timeTrainingDaoSb.getTimesOfSession(session.idSession,
+            null, null, currentTime?.dateAsc, currentTime?.timeAsc);
       }
 
-      int num = await timeTrainingDao.getCountBySession(times);
+      int num = await timeTrainingDaoSb.getCountBySession(times);
 
       setState(() {
         _listTimes = times;
@@ -265,7 +265,8 @@ class _GraphicPerformanceContainerState
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    "Performance Over Time",
+                    Internationalization.internationalization
+                        .getLocalizations(context, "performance_over_time"),
                     style: AppStyles.darkPurpleAndBold(17),
                     // HACE QUE HAGA UN SALTO DE LINEA SI SE HACE PEQUEÑA EL
                     // TAMAÑO DE LA PANTALLA
@@ -294,7 +295,7 @@ class _GraphicPerformanceContainerState
             ),
             child: Column(children: [
               Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -307,7 +308,7 @@ class _GraphicPerformanceContainerState
                               "${Internationalization.internationalization.getLocalizations(context, "tooltip_solve_count")}: ${solveCount.toString()}",
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 7, left: 4),
+                          padding: const EdgeInsets.only(bottom: 7),
                           child: SizedBox(
                             // DARLE UN TAMAÑO FIJO PARA QUE OCUPE LA FRRASE
                             width: 105,
@@ -325,45 +326,60 @@ class _GraphicPerformanceContainerState
                       label: Internationalization.internationalization
                           .getLocalizations(context, "graph_orientation"),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           IconClass.iconMaker(
                               context,
                               Icons.screen_rotation_alt_rounded,
-                              "graph_orientation"),
-                          Transform.scale(
-                            scale: 0.8,
-                            child: Switch(
-                              value: isVerticalGraphActive,
-                              onChanged: (bool value1) {
-                                setState(() {
-                                  isVerticalGraphActive = value1;
-                                });
-                              },
+                              "graph_orientation",
+                              20),
+                          Transform.translate(
+                            offset: Offset(-11, 0),
+                            child: Transform.scale(
+                              scale: 0.6,
+                              child: Switch(
+                                value: isVerticalGraphActive,
+                                onChanged: (bool value1) {
+                                  setState(() {
+                                    isVerticalGraphActive = value1;
+                                  });
+                                },
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Semantics(
-                      label: Internationalization.internationalization
-                          .getLocalizations(context, "toggle_times_visibility"),
-                      // SE USA TRANSFORM PARA AJUSTAR EL TAMAÑO DEL SWITCH
-                      child: Row(
-                        children: [
-                          IconClass.iconMaker(context, Icons.hide_source,
-                              "toggle_times_visibility"),
-                          Transform.scale(
-                            scale: 0.8,
-                            child: Switch(
-                              value: isNumberActive,
-                              onChanged: (bool value1) {
-                                setState(() {
-                                  isNumberActive = value1;
-                                });
-                              },
-                            ),
+                    Transform.translate(
+                      offset: Offset(-11, 0),
+                      child: Padding(
+                        padding: EdgeInsets.zero,
+                        child: Semantics(
+                          label: Internationalization.internationalization
+                              .getLocalizations(
+                                  context, "toggle_times_visibility"),
+                          // SE USA TRANSFORM PARA AJUSTAR EL TAMAÑO DEL SWITCH
+                          child: Row(
+                            children: [
+                              IconClass.iconMaker(context, Icons.hide_source,
+                                  "toggle_times_visibility", 20),
+                              Transform.translate(
+                                offset: Offset(-10, 0),
+                                child: Transform.scale(
+                                  scale: 0.6,
+                                  child: Switch(
+                                    value: isNumberActive,
+                                    onChanged: (bool value1) {
+                                      setState(() {
+                                        isNumberActive = value1;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     )
                   ],
@@ -406,7 +422,8 @@ class _GraphicPerformanceContainerState
                             // DATOS DE LOS TIEMPOS
                             dataSource: _listTimesData,
                             xValueMapper: (_TimeData timeData, _) {
-                              DateTime parsedDate = DateTime.parse(timeData.date);
+                              DateTime parsedDate =
+                                  DateTime.parse(timeData.date);
                               // SEGUN LA OPCION ELEGIDA SE MUESTRA DE UN TIPO DE FECHA
                               switch (currentFilter) {
                                 case TimeFilter.daily:
@@ -421,7 +438,8 @@ class _GraphicPerformanceContainerState
                               }
                             },
                             // VALOR TIEMPO
-                            yValueMapper: (_TimeData timeData, _) => timeData.time,
+                            yValueMapper: (_TimeData timeData, _) =>
+                                timeData.time,
                             // SE QUITA LA LEYENDA
                             name: '',
                             isVisibleInLegend: false,
@@ -433,7 +451,8 @@ class _GraphicPerformanceContainerState
                         LineSeries<_TimeData, String>(
                             dataSource: pbTimes,
                             xValueMapper: (_TimeData timeData, _) {
-                              DateTime parsedDate = DateTime.parse(timeData.date);
+                              DateTime parsedDate =
+                                  DateTime.parse(timeData.date);
                               switch (currentFilter) {
                                 case TimeFilter.daily:
                                   return '${DateFormat('dd-MM-yyyy').format(parsedDate)}\n${DateFormat('HH:mm').format(parsedDate)}';
@@ -459,7 +478,8 @@ class _GraphicPerformanceContainerState
                               color: AppColors.pointPbGraphic,
                               borderColor: AppColors.pointPbGraphic,
                             ),
-                            yValueMapper: (_TimeData timeData, _) => timeData.time,
+                            yValueMapper: (_TimeData timeData, _) =>
+                                timeData.time,
                             name: '',
                             isVisibleInLegend: false,
                             dataLabelSettings:

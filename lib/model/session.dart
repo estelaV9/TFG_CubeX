@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Clase que representa una sesión para guardar los tiempos de un tipo de cubo.
-class Session {
+class SessionClass {
   /// Identificador único de la sesión (opcional).
   int? idSession;
 
@@ -25,7 +25,7 @@ class Session {
   ///
   /// Si no se introduce el campo de la fecha creación, se le asignará
   /// la fecha actual.
-  Session({
+  SessionClass({
     this.idSession,
     required this.idUser,
     required this.sessionName,
@@ -34,7 +34,7 @@ class Session {
   }) : creationDate = creationDate ?? DateTime.now().toString();
 
   /// Constructor vacío para crear una sesión sin datos iniciales.
-  Session.empty()
+  SessionClass.empty()
       : idSession = null,
         idUser = 0,
         sessionName = '',
@@ -76,8 +76,8 @@ class Session {
   }
 
   /// Recupera un objeto `Session` desde los datos guardados en `SharedPreferences`.
-  static Session loadFromPreferences(SharedPreferences prefs) {
-    return Session(
+  static SessionClass loadFromPreferences(SharedPreferences prefs) {
+    return SessionClass(
       idSession: prefs.getInt("idSession") ?? -1,
       idUser: prefs.getInt("idUser") ?? -1,
       sessionName: prefs.getString("sessionName") ?? '',

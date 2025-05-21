@@ -1,6 +1,6 @@
 import 'package:esteladevega_tfg_cubex/model/notification_service.dart';
 import 'package:esteladevega_tfg_cubex/view/navigation/bottom_navigation.dart';
-import 'package:esteladevega_tfg_cubex/view/screen/IntroScreen.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/intro_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_configure_timer.dart';
@@ -14,9 +14,11 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_usage_timer.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'data/database/database_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,7 +41,7 @@ void main() async {
   await SettingsScreenState.startPreferences();
   await AppNotification.startPreferences();
   await ConfigurationTimer.startPreferences();
-  await User.startPreferences();
+  await UserClass.startPreferences();
 
   // INICIALIZAR EL TIMEZONES
   tz.initializeTimeZones();
@@ -49,6 +51,15 @@ void main() async {
 
   // QUITA EL STATUS BAR EN EL MOVIL
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+  // CARGAMOS EL ARCHIVO .env
+  await dotenv.load(fileName: ".env");
+
+  // INICIALIZAMOS Supabase CON LAS VARIABLES DE ENTORNO
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
 
   runApp(
     MultiProvider(
@@ -86,7 +97,7 @@ class CubeXApp extends StatefulWidget {
 
 class _CubeXAppState extends State<CubeXApp> {
   // ATRIBUTO PARA EL USUARIO
-  User? newUser;
+  UserClass? newUser;
 
   /// Método para cargar el usuario desde SharedPreferences.
   ///
@@ -98,7 +109,7 @@ class _CubeXAppState extends State<CubeXApp> {
   Future<void> loadUser(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     // SE CARGA EL USUARIO ALMACENADO EN LAS PREFERENCIAS
-    newUser = User.loadFromPreferences(prefs);
+    newUser = UserClass.loadFromPreferences(prefs);
     if (newUser != null) {
       final currentUser = Provider.of<CurrentUser>(context, listen: false);
       currentUser.setUser(newUser!); // SE ACTUALIZA EL ESTADO GLOBAL
@@ -109,6 +120,8 @@ class _CubeXAppState extends State<CubeXApp> {
   Widget build(BuildContext context) {
     // ESTABLECER IDIOMA
     final locale = context.watch<CurrentLanguage>().locale;
+    // SESION PARA NO NECESITAR SHAREDPREFERENCES
+    Session? session = Supabase.instance.client.auth.currentSession;
     // SE LLAMA AL METODO PARA VER SI HAY UN USUARIO YA LOGEADO
     loadUser(context);
 

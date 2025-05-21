@@ -6,10 +6,10 @@ import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../data/dao/cubetype_dao.dart';
-import '../../data/dao/session_dao.dart';
-import '../../data/dao/time_training_dao.dart';
-import '../../data/dao/user_dao.dart';
+import '../../data/dao/supebase/cubetype_dao_sb.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../data/dao/supebase/user_dao_sb.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
 import '../../viewmodel/current_cube_type.dart';
@@ -51,29 +51,29 @@ class PdfGenerator {
     try {
       // CONSEGUIR EL USUARIO ACTUAL
       final currentUser = context.read<CurrentUser>().user;
-      final userDao = UserDao();
-      final idUser = await userDao.getIdUserFromName(currentUser!.username);
+      final userDaoSb = UserDaoSb();
+      final idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
       // VERIFICAR QUE NO DE ERROR
       if (idUser == -1) return;
 
       // CONSEGUIR LA SESION Y EL TIPO DE CUBO ACTUAL
       final currentSession = context.read<CurrentSession>();
       final currentCube = context.read<CurrentCubeType>();
-      final cubeTypeDao = CubeTypeDao();
-      final cubeType = await cubeTypeDao.getCubeTypeByNameAndIdUser(
+      final cubeTypeDaoSb = CubeTypeDaoSb();
+      final cubeType = await cubeTypeDaoSb.getCubeTypeByNameAndIdUser(
           currentCube.cubeType!.cubeName, idUser);
       // VERIFICAR QUE NO DE ERROR
       if (cubeType.idCube == -1) return;
 
-      final sessionDao = SessionDao();
-      final session = await sessionDao.getSessionByUserCubeName(
+      final sessionDaoSb = SessionDaoSb();
+      final session = await sessionDaoSb.getSessionByUserCubeName(
           idUser, currentSession.session!.sessionName, cubeType.idCube!);
       // VERIFICAR QUE NO DE ERROR
       if (session!.idSession == -1) return;
 
       // CONSEGUIR TODOS LOS TIEMPOS
-      final timeTrainingDao = TimeTrainingDao();
-      final times = await timeTrainingDao.getTimesOfSession(session.idSession);
+      final timeTrainingDaoSb = TimeTrainingDaoSb();
+      final times = await timeTrainingDaoSb.getTimesOfSession(session.idSession);
 
       if (times.isEmpty) {
         AlertUtil.showSnackBarError(context, "no_times_found");
