@@ -441,9 +441,9 @@
 
   "inspection_advanced_title": "Inspection Alerts",
   "alert_at_8_12_title": "Alert at 8 and 12 seconds",
-  "alert_at_8_12_description": "Enable alerts when there are 7 and 3 seconds left in the inspection.",
+  "alert_at_8_12_description": "Enable alerts when it's in 8 and 12 seconds in the inspection.",
   "alert_at_8_12_button_title": "Enable time alerts",
-  "alert_at_8_12_button_hint": "Enables an alert when 7 and 3 seconds remain during inspection",
+  "alert_at_8_12_button_hint": "Enables an alert when it's in 8 and 12 seconds in the inspection",
   "alert_type_title": "Alert type",
   "alert_type_description": "Choose how alerts will be displayed during the inspection:",
   "inspection_alert_vibrant_type": "Vibrant",

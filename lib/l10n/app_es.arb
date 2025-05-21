@@ -127,7 +127,7 @@
   "versus": "Versus",
   
   "other": "Otros",
-  "settings": "Configuraciones",
+  "settings": "Configuracion",
   "about_the_app": "Acerca de la app",
   
   "log_out": "Cerrar sesión",
@@ -408,7 +408,7 @@
   "worst_time_alert_button_title": "Activar alerta de peor tiempo",
   "worst_time_alert_button_hint": "Te avisará cuando logres tu peor tiempo",
 
-  "inspection_title": "Inspección",
+  "inspection_title": "Inspeccion",
   "advanced_options_title": "Opciones avanzadas",
 
   "empty_stats_title": "Todavía no has registrado ningún tiempo",
@@ -437,9 +437,9 @@
 
   "inspection_advanced_title": "Avisos durante la inspección",
   "alert_at_8_12_title": "Alerta a los 8 y 12 segundos",
-  "alert_at_8_12_description": "Activa los avisos cuando queden 7 y 3 segundos de inspección.",
+  "alert_at_8_12_description": "Activa los avisos cuando este en los 8 y 12 segundos de inspección.",
   "alert_at_8_12_button_title": "Activar alertas de tiempo",
-  "alert_at_8_12_button_hint": "Activa una alerta cuando queden 7 y 3 segundos de inspección",
+  "alert_at_8_12_button_hint": "Activa una alerta cuando este en los 8 y 12 segundos de inspección",
   "alert_type_title": "Tipo de alerta",
   "alert_type_description": "Elige cómo se mostrarán las alertas durante la inspección:",
   "inspection_alert_vibrant_type": "Vibración",
