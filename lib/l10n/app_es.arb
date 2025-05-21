@@ -426,7 +426,7 @@
   "inspection_time_button_title": "Cambiar segundos de inspección",
   "inspection_time_button_hint": "Elige cuántos segundos tendrás para inspeccionar antes de resolver",
 
-  "time_default": "Predeterminado",
+  "time_default": "Predet",
   "time_default_label": "Tiempo predeterminado",
   "time_default_hint": "Restablece el tiempo de inspección a su valor por defecto (15 segundos)",
   "inspection_time_form": "Introduce un tiempo de inspección",
