@@ -368,6 +368,12 @@ class Internationalization {
       'weekly_stats_button_title': () => l10n.weekly_stats_button_title,
       'weekly_stats_button_hint': () => l10n.weekly_stats_button_hint,
 
+      'daily_notifications_content': () => l10n.daily_notifications_content,
+      'weekly_motivation_content': () => l10n.weekly_motivation_content,
+      'new_record_notification_content': () => l10n.new_record_notification_content,
+      'training_reminders_content': () => l10n.training_reminders_content,
+      'inactivity_notification_content': () => l10n.inactivity_notification_content,
+
       'hide_time_title': () => l10n.hide_time_title,
       'hide_time_description': () => l10n.hide_time_description,
       'hide_time_button_title': () => l10n.hide_time_button_title,

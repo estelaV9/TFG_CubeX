@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../data/dao/session_dao.dart';
-import '../../../data/dao/time_training_dao.dart';
-import '../../../data/dao/user_dao.dart';
+import '../../../data/dao/supebase/session_dao_sb.dart';
+import '../../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../../data/dao/supebase/user_dao_sb.dart';
 import '../../../data/database/database_helper.dart';
 import '../../../model/session.dart';
 import '../../../viewmodel/current_statistics.dart';
 import '../../../viewmodel/current_usage_timer.dart';
+import '../../../viewmodel/settings_option/current_language.dart';
 import '../../utilities/app_color.dart';
 import '../../utilities/app_styles.dart';
 import '../../utilities/internationalization.dart';
@@ -45,8 +46,8 @@ class _GeneralStatisticsContainerState
   late double plusTwoPercentage = 0;
   late final String totalSolveTime = "0:00.00";
 
-  UserDao userDao = UserDao();
-  SessionDao sessionDao = SessionDao();
+  UserDaoSb userDaoSb = UserDaoSb();
+  SessionDaoSb sessionDaoSb = SessionDaoSb();
 
   @override
   void initState() {
@@ -62,10 +63,10 @@ class _GeneralStatisticsContainerState
   ///
   /// Se ejecuta automáticamente en el `initState`.
   Future<void> initTimeStatistics() async {
-    int? idUser = await userDao.getUserId(context);
+    int? idUser = await userDaoSb.getUserId(context);
     if (idUser == null) return;
 
-    Session? session = await sessionDao.getSessionData(context, idUser);
+    SessionClass? session = await sessionDaoSb.getSessionData(context, idUser);
     if (session == null) return;
 
     var statistics = await _getStatistics(session);
@@ -83,20 +84,20 @@ class _GeneralStatisticsContainerState
   /// Calcula el mejor tiempo (PB), peor tiempo, total de resoluciones y cantidad de DNF y +2.
   ///
   /// Retorna un [Future<Map<String, dynamic>?>] con las estadísticas o `null`.
-  Future<Map<String, dynamic>?> _getStatistics(Session session) async {
-    final timeTrainingDao = TimeTrainingDao();
+  Future<Map<String, dynamic>?> _getStatistics(SessionClass session) async {
+    final timeTrainingDaoSb = TimeTrainingDaoSb();
     final currentStatistics = context.read<CurrentStatistics>();
 
-    var timesList = await timeTrainingDao.getTimesOfSession(session.idSession);
+    var timesList = await timeTrainingDaoSb.getTimesOfSession(session.idSession);
     currentStatistics.updateStatistics(timesListUpdate: timesList);
 
     String pb = await currentStatistics.getPbValue();
     String worst = await currentStatistics.getWorstValue();
     String countStr = await currentStatistics.getCountValue();
     int count = int.tryParse(countStr) ?? 1;
-    int dnfCnt = await timeTrainingDao.countPenalty(session.idSession, "DNF");
+    int dnfCnt = await timeTrainingDaoSb.countPenalty(session.idSession, "DNF");
     int plusTwoCnt =
-        await timeTrainingDao.countPenalty(session.idSession, "+2");
+        await timeTrainingDaoSb.countPenalty(session.idSession, "+2");
 
     if (dnfCnt == -1 || plusTwoCnt == -1) {
       DatabaseHelper.logger.e("Error al obtener penalizaciones.");
@@ -147,9 +148,11 @@ class _GeneralStatisticsContainerState
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.read<CurrentLanguage>().locale;
     initTimeStatistics();
     return Container(
-      height: 240,
+      // DEPENDIENDO EL IDIOMA SE ESTABLECE UN ALTO DIFERENTE
+      height: locale.languageCode == 'en' ? 270 : 313,
       padding: const EdgeInsets.only(top: 8, right: 20, left: 20, bottom: 20),
       decoration: BoxDecoration(
         color: AppColors.lightVioletColor,
@@ -163,197 +166,195 @@ class _GeneralStatisticsContainerState
           ),
         ],
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Center(
-              child: Internationalization.internationalization.localizedTextOnlyKey(
-                context,
-                "general_statistics",
-                style: AppStyles.darkPurpleAndBold(24),
+      child: Column(
+        children: [
+          Center(
+            child: Internationalization.internationalization.localizedTextOnlyKey(
+              context,
+              "general_statistics",
+              style: AppStyles.darkPurpleAndBold(24),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppStyles.textWithSemanticsAndTooltip(
+                    context,
+                    "semantic_best_single",
+                    "tooltip_best_single",
+                    "best_single",
+                    const TextStyle(color: AppColors.darkPurpleColor),
+                  ),
+                  Text(
+                    bestSingle,
+                    style: AppStyles.darkPurpleAndBold(22),
+                    semanticsLabel:
+                        "${Internationalization.internationalization.getLocalizations(context, "tooltip_best_single")}: $bestSingle",
+                  ),
+                ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AppStyles.textWithSemanticsAndTooltip(
-                      context,
-                      "semantic_best_single",
-                      "tooltip_best_single",
-                      "best_single",
-                      const TextStyle(color: AppColors.darkPurpleColor),
-                    ),
-                    Text(
-                      bestSingle,
-                      style: AppStyles.darkPurpleAndBold(22),
-                      semanticsLabel:
-                          "${Internationalization.internationalization.getLocalizations(context, "tooltip_best_single")}: $bestSingle",
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AppStyles.textWithSemanticsAndTooltip(
-                      context,
-                      "semantic_worst_single",
-                      "tooltip_worst_single",
-                      "worst_single",
-                      const TextStyle(color: AppColors.darkPurpleColor),
-                    ),
-                    Text(
-                      worstSingle,
-                      style: AppStyles.darkPurpleAndBold(22),
-                      semanticsLabel:
-                          "${Internationalization.internationalization.getLocalizations(context, "tooltip_worst_single")}: $worstSingle",
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AppStyles.textWithSemanticsAndTooltip(
-                      context,
-                      "semantic_solve_count",
-                      "tooltip_solve_count",
-                      "solve_count",
-                      const TextStyle(color: AppColors.darkPurpleColor),
-                    ),
-                    Text(
-                      solveCount.toString(),
-                      style: AppStyles.darkPurpleAndBold(22),
-                      semanticsLabel:
-                          "${Internationalization.internationalization.getLocalizations(context, "tooltip_solve_count")}: ${solveCount.toString()}",
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            const Divider(
-              height: 5,
-              indent: 10,
-              endIndent: 10,
-              color: AppColors.darkPurpleColor,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppStyles.textWithSemanticsAndTooltip(
-                          context,
-                          "semantic_dnf_count",
-                          "tooltip_dnf_count",
-                          "dnf_count",
-                          const TextStyle(color: AppColors.darkPurpleColor),
-                        ),
-                        Text(
-                          dnfCount.toString(),
-                          style: AppStyles.darkPurpleAndBold(22),
-                          semanticsLabel:
-                              "${Internationalization.internationalization.getLocalizations(context, "tooltip_dnf_count")}: ${dnfCount.toString()}",
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppStyles.textWithSemanticsAndTooltip(
-                          context,
-                          "semantic_plus_two_count",
-                          "tooltip_plus_two_count",
-                          "plus_two_count",
-                          const TextStyle(color: AppColors.darkPurpleColor),
-                        ),
-                        Text(
-                          plusTwoCount.toString(),
-                          style: AppStyles.darkPurpleAndBold(22),
-                          semanticsLabel:
-                              "${Internationalization.internationalization.getLocalizations(context, "tooltip_plus_two_count")}: ${plusTwoCount.toString()}",
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppStyles.textWithSemanticsAndTooltip(
-                          context,
-                          "semantic_dnf_percentage",
-                          "tooltip_dnf_percentage",
-                          "dnf_percentage",
-                          const TextStyle(color: AppColors.darkPurpleColor),
-                        ),
-                        Text("${dnfPercentage.toStringAsFixed(2).toString()}%",
-                            style: AppStyles.darkPurpleAndBold(22),
-                            semanticsLabel:
-                                "${Internationalization.internationalization.getLocalizations(context, "tooltip_dnf_percentage")}: ${dnfPercentage.toStringAsFixed(2).toString()}%"),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppStyles.textWithSemanticsAndTooltip(
-                          context,
-                          "semantic_plus_two_percentage",
-                          "tooltip_plus_two_percentage",
-                          "plus_two_percentage",
-                          const TextStyle(color: AppColors.darkPurpleColor),
-                        ),
-                        Text(
-                          "${plusTwoPercentage.toStringAsFixed(2).toString()}%",
-                          style: AppStyles.darkPurpleAndBold(22),
-                          semanticsLabel:
-                              "${Internationalization.internationalization.getLocalizations(context, "tooltip_plus_two_percentage")}: ${plusTwoPercentage.toStringAsFixed(2).toString()}%",
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppStyles.textWithSemanticsAndTooltip(
+                    context,
+                    "semantic_worst_single",
+                    "tooltip_worst_single",
+                    "worst_single",
+                    const TextStyle(color: AppColors.darkPurpleColor),
+                  ),
+                  Text(
+                    worstSingle,
+                    style: AppStyles.darkPurpleAndBold(22),
+                    semanticsLabel:
+                        "${Internationalization.internationalization.getLocalizations(context, "tooltip_worst_single")}: $worstSingle",
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppStyles.textWithSemanticsAndTooltip(
+                    context,
+                    "semantic_solve_count",
+                    "tooltip_solve_count",
+                    "solve_count",
+                    const TextStyle(color: AppColors.darkPurpleColor),
+                  ),
+                  Text(
+                    solveCount.toString(),
+                    style: AppStyles.darkPurpleAndBold(22),
+                    semanticsLabel:
+                        "${Internationalization.internationalization.getLocalizations(context, "tooltip_solve_count")}: ${solveCount.toString()}",
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          const Divider(
+            height: 5,
+            indent: 10,
+            endIndent: 10,
+            color: AppColors.darkPurpleColor,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppStyles.textWithSemanticsAndTooltip(
                         context,
-                        "semantic_total_solve_time",
-                        "tooltip_total_solve_time",
-                        "total_solve_time",
+                        "semantic_dnf_count",
+                        "tooltip_dnf_count",
+                        "dnf_count",
                         const TextStyle(color: AppColors.darkPurpleColor),
                       ),
-                      Consumer<CurrentUsageTimer>(
-                          builder: (context, timer, child) {
-                        String formattedTime =
-                            CurrentUsageTimer.formatTime(timer.secondsUsed);
-                        return Text(
-                          formattedTime,
-                          style: AppStyles.darkPurpleAndBold(22),
-                          semanticsLabel:
-                              "${Internationalization.internationalization.getLocalizations(context, "tooltip_total_solve_time")}: $formattedTime",
-                        );
-                      })
+                      Text(
+                        dnfCount.toString(),
+                        style: AppStyles.darkPurpleAndBold(22),
+                        semanticsLabel:
+                            "${Internationalization.internationalization.getLocalizations(context, "tooltip_dnf_count")}: ${dnfCount.toString()}",
+                      ),
                     ],
                   ),
-                )
-              ],
-            ),
-          ],
-        ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppStyles.textWithSemanticsAndTooltip(
+                        context,
+                        "semantic_plus_two_count",
+                        "tooltip_plus_two_count",
+                        "plus_two_count",
+                        const TextStyle(color: AppColors.darkPurpleColor),
+                      ),
+                      Text(
+                        plusTwoCount.toString(),
+                        style: AppStyles.darkPurpleAndBold(22),
+                        semanticsLabel:
+                            "${Internationalization.internationalization.getLocalizations(context, "tooltip_plus_two_count")}: ${plusTwoCount.toString()}",
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppStyles.textWithSemanticsAndTooltip(
+                        context,
+                        "semantic_dnf_percentage",
+                        "tooltip_dnf_percentage",
+                        "dnf_percentage",
+                        const TextStyle(color: AppColors.darkPurpleColor),
+                      ),
+                      Text("${dnfPercentage.toStringAsFixed(2).toString()}%",
+                          style: AppStyles.darkPurpleAndBold(22),
+                          semanticsLabel:
+                              "${Internationalization.internationalization.getLocalizations(context, "tooltip_dnf_percentage")}: ${dnfPercentage.toStringAsFixed(2).toString()}%"),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppStyles.textWithSemanticsAndTooltip(
+                        context,
+                        "semantic_plus_two_percentage",
+                        "tooltip_plus_two_percentage",
+                        "plus_two_percentage",
+                        const TextStyle(color: AppColors.darkPurpleColor),
+                      ),
+                      Text(
+                        "${plusTwoPercentage.toStringAsFixed(2).toString()}%",
+                        style: AppStyles.darkPurpleAndBold(22),
+                        semanticsLabel:
+                            "${Internationalization.internationalization.getLocalizations(context, "tooltip_plus_two_percentage")}: ${plusTwoPercentage.toStringAsFixed(2).toString()}%",
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppStyles.textWithSemanticsAndTooltip(
+                      context,
+                      "semantic_total_solve_time",
+                      "tooltip_total_solve_time",
+                      "total_solve_time",
+                      const TextStyle(color: AppColors.darkPurpleColor),
+                    ),
+                    Consumer<CurrentUsageTimer>(
+                        builder: (context, timer, child) {
+                      String formattedTime =
+                          CurrentUsageTimer.formatTime(timer.secondsUsed);
+                      return Text(
+                        formattedTime,
+                        style: AppStyles.darkPurpleAndBold(22),
+                        semanticsLabel:
+                            "${Internationalization.internationalization.getLocalizations(context, "tooltip_total_solve_time")}: $formattedTime",
+                      );
+                    })
+                  ],
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:esteladevega_tfg_cubex/data/dao/user_dao.dart';
+import 'package:esteladevega_tfg_cubex/data/dao/supebase/user_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/model/user.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/alert.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
@@ -58,7 +58,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       TextEditingController();
   final formKey = GlobalKey<FormState>();
   String _password = ''; // ATRIBUTO PARA GUARDAR LA CONTRASEÑA
-  UserDao userDao = UserDao();
+  UserDaoSb userDaoSb = UserDaoSb();
 
   String? photoPath;
 
@@ -79,12 +79,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
-    bool isDelete = await userDao.deleteUser(idUser);
+    bool isDelete = await userDaoSb.deleteUser(idUser);
 
     if (isDelete) {
       // SI SE ELIMINA CORRECTAMENTE MUESTRA UN MENSAJE Y SE CIERRA LA SESION
@@ -121,7 +121,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   ///   - Solo cambiar la contraseña (la nueva contraseña y su confirmación no deben estar vacías).
   ///   - Cambiar nombre, contraseña y foto a la vez (todos los campos del perfil).
   ///   - Cambiar nombre y contraseña sin cambiar la foto (todos los campos del formulario).
-
   void saveUser() async {
     String newName = _usernameController.text;
     String newPassword = _passwordController.text;
@@ -131,14 +130,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     final currentUser = context.read<CurrentUser>().user;
 
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
       return;
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
     if (newName.isNotEmpty &&
-        await userDao.isExistsUsername(newName) && newName != currentUser.username) {
+        await userDaoSb.isExistsUsername(newName) &&
+        newName != currentUser.username) {
       AlertUtil.showSnackBarError(context, "username_already_in_use");
       return;
     } // VALIDAR SI EL NOMBRE YA ESTA EN USO Y QUE NO ESTE VACIO EL CAMPO
@@ -148,21 +148,36 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     final isFormValid = formKey.currentState!.validate();
 
     // QUE SOLO SE PUEDA EDITAR LA IMAGEN
-    final isPhotoOnlyUpdate = _isPhotoUpdate && newPassword.isEmpty && newName.isEmpty;
+    final isPhotoOnlyUpdate =
+        _isPhotoUpdate && newPassword.isEmpty && newName.isEmpty;
 
     // QUE SOLO SE PUEDA EDITAR EL NOMBRE
-    final isOnlyNameChange = newName.isNotEmpty && newPassword.isEmpty && confirmNewPassword.isEmpty;
+    final isOnlyNameChange =
+        newName.isNotEmpty && newPassword.isEmpty && confirmNewPassword.isEmpty;
 
     // QUE SOLO SE PUEDA EDITAR LA CONTRASEÑA
-    final isPasswordChangeValid = newPassword.isNotEmpty && confirmNewPassword.isNotEmpty && newName.isEmpty;
+    final isPasswordChangeValid = newPassword.isNotEmpty &&
+        confirmNewPassword.isNotEmpty &&
+        newName.isEmpty;
 
     // QUE SE PUEDA EDITAR TODAS LAS OPCIONES
-    final isAllChangeValid = _isPhotoUpdate && newPassword.isNotEmpty && confirmNewPassword.isNotEmpty && newName.isNotEmpty;
+    final isAllChangeValid = _isPhotoUpdate &&
+        newPassword.isNotEmpty &&
+        confirmNewPassword.isNotEmpty &&
+        newName.isNotEmpty;
 
     // QUE SE PUEDA EDITAR TODAS LAS OPCIONES DEL FORMULARIO SIN CAMBIAR LA IMAGEN
-    final isAllFormOptionsChangeValid = !_isPhotoUpdate && newPassword.isNotEmpty && confirmNewPassword.isNotEmpty && newName.isNotEmpty;
+    final isAllFormOptionsChangeValid = !_isPhotoUpdate &&
+        newPassword.isNotEmpty &&
+        confirmNewPassword.isNotEmpty &&
+        newName.isNotEmpty;
 
-    if (isFormValid && (isPhotoOnlyUpdate || isOnlyNameChange || isPasswordChangeValid || isAllChangeValid || isAllFormOptionsChangeValid)) {
+    if (isFormValid &&
+        (isPhotoOnlyUpdate ||
+            isOnlyNameChange ||
+            isPasswordChangeValid ||
+            isAllChangeValid ||
+            isAllFormOptionsChangeValid)) {
       // PARA GUARDAR LOS DATOS DEBERA PONER SU ANTIGUA CONTRASEÑA
       bool? isConfirmed = await AlertUtil.showConfirmWithOldPass(
           context, "insert_old_pass", "old_pass", currentUser);
@@ -172,19 +187,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       } // SI SE CANCELO, MUESTRA UN MENSAJE
 
       // CREAR NUEVO USUARIO CON LOS DATOS QUE SE HAN ACTUALIZADOS
-      User newUserData = User(
-        username: newName.isNotEmpty ? newName : currentUser.username,
-        mail: "",
-        password: newPassword.isNotEmpty
-            ? EncryptPassword.encryptPassword(newPassword)
-            : currentUser.password,
-        imageUrl: _isPhotoUpdate ? photoPath : currentUser.imageUrl,
-      );
+      UserClass newUserData = UserClass(
+          username: newName.isNotEmpty ? newName : currentUser.username,
+          mail: currentUser.mail,
+          password: newPassword.isNotEmpty
+              ? EncryptPassword.encryptPassword(newPassword)
+              : currentUser.password,
+          imageUrl: _isPhotoUpdate ? photoPath : currentUser.imageUrl,
+          userUUID: currentUser.userUUID,
+          isLoggedIn: currentUser.isLoggedIn,
+          isSingup: currentUser.isSingup);
 
-      // ACTUALIZAR EL USUARIO ACTUAL
-      context.read<CurrentUser>().setUser(newUserData);
+      if (await userDaoSb.updateUserInfo(newUserData, idUser)) {
+        // ACTUALIZAR EL USUARIO ACTUAL DESPUES DE ACTUALIZAR
+        final currentUser = context.read<CurrentUser>();
+        currentUser.setUser(newUserData);
 
-      if (await userDao.updateUserInfo(newUserData, idUser)) {
         AlertUtil.showSnackBarInformation(context, "update_user_successfully");
       } else {
         AlertUtil.showSnackBarError(context, "update_user_error");
@@ -212,13 +230,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     // OBTENER EL USUARIO ACTUAL
     final currentUser = context.read<CurrentUser>().user;
     // OBTENER EL ID DEL USUARIO
-    int idUser = await userDao.getIdUserFromName(currentUser!.username);
+    int idUser = await userDaoSb.getIdUserFromName(currentUser!.username);
     if (idUser == -1) {
       DatabaseHelper.logger.e("Error al obtener el ID del usuario.");
       return;
     } // VERIFICAR QUE SI ESTA BIEN EL ID DEL USUARIO
 
-    String? image = await userDao.getImageUser(idUser);
+    String? image = await userDaoSb.getImageUser(idUser);
     if (image != null) {
       setState(() {
         // SE ASIGNA EL VALOR DE LA URL DE LA IMAGEN
@@ -264,244 +282,282 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     return WillPopScope(
         // LLAMAMOS AL METODO SI SE PULSA LA FLECHA DE BACK
         onWillPop: _onWillPopScope,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(Internationalization.internationalization
-                .getLocalizations(context, "my_profile")),
-            backgroundColor: AppColors.lightVioletColor,
-          ),
-          body: Container(
-            decoration: AppStyles.boxDecorationContainer(),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Stack(
-                      // EL ICONO DEL PINCEL ESTARA EN LA ESQUINA DE ABAJO A LA DERECHA
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        // IMAGEN DEL USUARIO
-                        CircleAvatar(
-                            radius: 70,
-                            backgroundColor: AppColors.imagenBg,
-                            // SI SE HA SELECCIONADO UNA FOTO, SE SETTEA ESA FOTO
-                            child: photoPath != null
-                                ?
-                                // SE MUESTRA DE FORMA CIRCULAR
-                                ClipOval(
-                                    child: Image.file(
-                                      File(photoPath!),
-                                      fit: BoxFit.cover,
-                                      width: 140,
-                                      height: 140,
-                                    ),
-                                  )
-                                // SI LA RUTA DE LA FOTO NO ES NULA Y EL USUARIO TIENE UNA FOTO GUARDADA
-                                : imageUrl.isNotEmpty
-                                    ? ClipOval(
-                                        child: Image.file(
-                                          File(imageUrl),
-                                          fit: BoxFit.cover,
-                                          width: 140,
-                                          height: 140,
-                                        ),
-                                      )
-                                    :
-                                    // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
-                                    ClipOval(
-                                        child: Image.asset(
-                                          "assets/default_user_image.png",
-                                          fit: BoxFit.cover,
-                                          width: 140,
-                                          height: 140,
-                                        ),
-                                      )),
+        child: GestureDetector(
+          // CUANDO SE TOCA EN CUALQUIER LADO DE LA PANTALLA
+          onTap: () {
+            // SE QUITA EL FOCO DEL ELEMENTO ACTUAL, LO QUE CIERRA EL TECLADO SI ESTA ABIERTO
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: Scaffold(
+            // EVITAMOS QUE EL CONTENIDO DE LA PANTALLA SE MUEVA HACIA ARRIBA CUANDO APARECE EL TECLADO
+            // ASI LOS ELEMENTOS NO SE DESPLACEN (Y NO GENEREN OVERFLOW)
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: Text(Internationalization.internationalization
+                  .getLocalizations(context, "my_profile")),
+              backgroundColor: AppColors.lightVioletColor,
+            ),
+            body: Container(
+              decoration: AppStyles.boxDecorationContainer(),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Stack(
+                        // EL ICONO DEL PINCEL ESTARA EN LA ESQUINA DE ABAJO A LA DERECHA
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          // IMAGEN DEL USUARIO
+                          CircleAvatar(
+                              radius: 70,
+                              backgroundColor: AppColors.imagenBg,
+                              // SI SE HA SELECCIONADO UNA FOTO, SE SETTEA ESA FOTO
+                              child: photoPath != null
+                                  ?
+                                  // SE MUESTRA DE FORMA CIRCULAR
+                                  ClipOval(
+                                      child: Image.network(
+                                        photoPath!,
+                                        fit: BoxFit.cover,
+                                        width: 140,
+                                        height: 140,
+                                      ),
+                                    )
+                                  // SI LA RUTA DE LA FOTO NO ES NULA Y EL USUARIO TIENE UNA FOTO GUARDADA
+                                  : imageUrl.isNotEmpty
+                                      ? ClipOval(
+                                          child: Image.network(
+                                            imageUrl,
+                                            fit: BoxFit.cover,
+                                            width: 140,
+                                            height: 140,
+                                          ),
+                                        )
+                                      :
+                                      // EN CASO DE NO TENER UNA FOTO O URL, SE MUESTRA LA IMAGEN POR DEFECTO
+                                      ClipOval(
+                                          child: Image.asset(
+                                            "assets/default_user_image.png",
+                                            fit: BoxFit.cover,
+                                            width: 140,
+                                            height: 140,
+                                          ),
+                                        )),
 
-                        // ICONO PARA EDITAR
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5, right: 5),
-                          child: GestureDetector(
-                            onTap: () async {
-                              // ABRIR GALERIA/EXPLORADOR DE ARCHIVOS
-                              final path = await GalleryService().selectPhoto();
-                              if (path == null) return;
-                              setState(() {
-                                photoPath = path;
-                              });
-                              // SE HA CAMBIADO LA FOTO
-                              _isPhotoUpdate = true;
-                            },
-                            child: CircleAvatar(
-                              radius: 18,
-                              // FONDO BLACNO DEL ICONO
-                              backgroundColor: Colors.white,
-                              child: IconClass.iconMaker(
-                                  context, Icons.edit, "edit_button"),
+                          // ICONO PARA EDITAR
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, right: 5),
+                            child: GestureDetector(
+                              onTap: () async {
+                                // ABRIR GALERIA/EXPLORADOR DE ARCHIVOS
+                                // SE ABRE EL EXPLORADOR DE ARCHIVOS PARA SELECCIONAR UNA FOTO
+                                final path =
+                                    await GalleryService().selectPhoto();
+                                if (path == null) return; // SI NO SE HA SELECCIONADO UNA FOTO, SE SALE DEL METODO
+
+                                // SE CREA UN OBJETO FILE CON LA RUTA DE LA IMAGEN SELECCIONADA
+                                final file = File(path);
+                                // SE EXTRAE EL NOMBRE DE LA IMAGEN DE LA RUTA
+                                final fileName = path.split('/').last;
+
+                                // SE SUBE LA IMAGEN SUPABASE
+                                final publicUrl =
+                                    await userDaoSb.uploadImage(file, fileName);
+
+                                if (publicUrl == null) {
+                                  DatabaseHelper.logger
+                                      .e("Error subiendo imagen");
+                                  return;
+                                } // SI NO SE PUDO SUBIR LA IMAGEN, SE MUESTRA UN MENSAJE DE ERROR
+
+                                setState(() {
+                                  // SE ACTUALIZA LA RUTA DE LA FOTO EN LA VARIABLE photoPath
+                                  photoPath = publicUrl;
+                                });
+                                // SE MARCA QUE LA FOTO HA SIDO ACTUALIZADA
+                                _isPhotoUpdate = true;
+                              },
+                              child: CircleAvatar(
+                                radius: 18,
+                                // FONDO BLACNO DEL ICONO
+                                backgroundColor: Colors.white,
+                                child: IconClass.iconMaker(
+                                    context, Icons.edit, "edit_button"),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: IconClass.iconButton(context, () {
-                        // PARA GUARDAR LOS DATOS DEBERA PONER SU ANTIGUA CONTRASEÑA
-                        saveUser();
-                        _isDataSaved = true;
-                      }, "save_data", Icons.save)),
-                  const SizedBox(height: 10),
-                  Form(
-                      key: formKey,
-                      child: Column(children: [
-                        FieldForm(
-                            icon: IconClass.iconMaker(
-                                context, Icons.person, "username"),
-                            labelText: Internationalization.internationalization
-                                .getLocalizations(context, "username"),
-                            hintText: Internationalization.internationalization
-                                .getLocalizations(context, "username_hint"),
-                            controller: _usernameController,
-                            validator: (value) {
-                              String? errorKey =
-                                  Validator.validateUsername(value, true);
-                              if (errorKey != null) {
-                                return Internationalization.internationalization
-                                    .getLocalizations(context, errorKey);
-                              }
-                              return null;
-                            },
-                            labelSemantics: Internationalization
-                                .internationalization
-                                .getLocalizations(context, "username_label"),
-                            hintSemantics: Internationalization
-                                .internationalization
-                                .getLocalizations(context, "username_hint"),
-                            borderSize: 15,
-                            colorBox: AppColors.purpleIntroColor),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: IconClass.iconButton(context, () {
+                          // PARA GUARDAR LOS DATOS DEBERA PONER SU ANTIGUA CONTRASEÑA
+                          saveUser();
+                          _isDataSaved = true;
+                        }, "save_data", Icons.save)),
+                    const SizedBox(height: 10),
+                    Form(
+                        key: formKey,
+                        child: Column(children: [
+                          FieldForm(
+                              icon: IconClass.iconMaker(
+                                  context, Icons.person, "username"),
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_hint"),
+                              controller: _usernameController,
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validateUsername(value, true);
+                                if (errorKey != null) {
+                                  return Internationalization
+                                      .internationalization
+                                      .getLocalizations(context, errorKey);
+                                }
+                                return null;
+                              },
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "username_hint"),
+                              borderSize: 15,
+                              colorBox: AppColors.purpleIntroColor),
 
-                        // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
-                        const SizedBox(height: 10),
+                          // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
+                          const SizedBox(height: 10),
 
-                        PasswordFieldForm(
-                            icon: IconClass.iconMaker(
-                                context, Icons.lock, "password"),
-                            labelText: Internationalization.internationalization
-                                .getLocalizations(context, "password"),
-                            hintText: Internationalization.internationalization
-                                .getLocalizations(context, "password_hint"),
-                            controller: _passwordController,
-                            validator: (value) {
-                              String? errorKey = Validator.validatePassword(
-                                  value, false, true);
-                              if (errorKey != null) {
-                                return Internationalization.internationalization
-                                    .getLocalizations(context, errorKey);
-                              }
-                              return null;
-                            },
-                            passwordOnSaved: (value) => _password = value!,
-                            labelSemantics: Internationalization
-                                .internationalization
-                                .getLocalizations(context, "password_label"),
-                            hintSemantics: Internationalization
-                                .internationalization
-                                .getLocalizations(context, "password_hint"),
-                            borderSize: 15,
-                            colorBox: AppColors.purpleIntroColor),
+                          PasswordFieldForm(
+                              icon: IconClass.iconMaker(
+                                  context, Icons.lock, "password"),
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password"),
+                              hintText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_hint"),
+                              controller: _passwordController,
+                              validator: (value) {
+                                String? errorKey = Validator.validatePassword(
+                                    value, false, true);
+                                if (errorKey != null) {
+                                  return Internationalization
+                                      .internationalization
+                                      .getLocalizations(context, errorKey);
+                                }
+                                return null;
+                              },
+                              passwordOnSaved: (value) => _password = value!,
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(context, "password_hint"),
+                              borderSize: 15,
+                              colorBox: AppColors.purpleIntroColor),
 
-                        // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
-                        const SizedBox(height: 10),
+                          // ESPACIO ENTRE LOS CAMPOS DEL FORMULARIO
+                          const SizedBox(height: 10),
 
-                        PasswordFieldForm(
-                            icon: IconClass.iconMaker(
-                                context, Icons.check, "confirm_password"),
-                            labelText: Internationalization.internationalization
-                                .getLocalizations(context, "confirm_password"),
-                            hintText: Internationalization.internationalization
-                                .getLocalizations(
-                                    context, "confirm_password_hint"),
-                            controller: _confirmPasswordController,
-                            validator: (value) {
-                              String? errorKey =
-                                  Validator.validateConfirmPassword(
-                                      value, _passwordController.text, true);
-                              if (errorKey != null) {
-                                return Internationalization.internationalization
-                                    .getLocalizations(context, errorKey);
-                              }
-                              return null;
-                            },
-                            passwordOnSaved: (value) => _password = value!,
-                            labelSemantics: Internationalization
-                                .internationalization
-                                .getLocalizations(
-                                    context, "confirm_password_label"),
-                            hintSemantics: Internationalization
-                                .internationalization
-                                .getLocalizations(
-                                    context, "confirm_password_hint"),
-                            borderSize: 15,
-                            colorBox: AppColors.purpleIntroColor),
-                      ])),
+                          PasswordFieldForm(
+                              icon: IconClass.iconMaker(
+                                  context, Icons.check, "confirm_password"),
+                              labelText: Internationalization
+                                  .internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password"),
+                              hintText: Internationalization.internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password_hint"),
+                              controller: _confirmPasswordController,
+                              validator: (value) {
+                                String? errorKey =
+                                    Validator.validateConfirmPassword(
+                                        value, _passwordController.text, true);
+                                if (errorKey != null) {
+                                  return Internationalization
+                                      .internationalization
+                                      .getLocalizations(context, errorKey);
+                                }
+                                return null;
+                              },
+                              passwordOnSaved: (value) => _password = value!,
+                              labelSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password_label"),
+                              hintSemantics: Internationalization
+                                  .internationalization
+                                  .getLocalizations(
+                                      context, "confirm_password_hint"),
+                              borderSize: 15,
+                              colorBox: AppColors.purpleIntroColor),
+                        ])),
 
-                  // COLOCAMOS UN EXPANDED PARA OCUPAR EL ESPACIO RESSTANTE Y
-                  // COLOCAR EL BOTON DE DELETE ACCOUN ABAJO DELTODO
-                  Expanded(child: Container()),
+                    // COLOCAMOS UN EXPANDED PARA OCUPAR EL ESPACIO RESSTANTE Y
+                    // COLOCAR EL BOTON DE DELETE ACCOUN ABAJO DELTODO
+                    Expanded(child: Container()),
 
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        height: 62,
-                        decoration: BoxDecoration(
-                          color: AppColors.deleteAccount,
-                          borderRadius: BorderRadius.circular(15),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          height: 62,
+                          decoration: BoxDecoration(
+                            color: AppColors.deleteAccount,
+                            borderRadius: BorderRadius.circular(15),
 
-                          // AÑADIMOS EL EFECTO DE "drop shadow"
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              // COLOR DE LA SOMBRA
-                              spreadRadius: 2,
-                              // LARGURA DE LA SOMBRA
-                              blurRadius: 5,
-                              // EFECTO BLUR DE LA SOMBRA
-                              // DONDE SE VA A COLOCAR HORIZONTAL Y VERTICALMENTE
-                              offset: const Offset(2, 4),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: GestureDetector(
-                            onTap: deleteUser,
-                            child: Row(
-                              children: [
-                                IconClass.iconMaker(
-                                    context, Icons.delete, "delete_account"),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "Delete account",
-                                  style: AppStyles.darkPurpleAndBold(18),
-                                )
-                              ],
+                            // AÑADIMOS EL EFECTO DE "drop shadow"
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                // COLOR DE LA SOMBRA
+                                spreadRadius: 2,
+                                // LARGURA DE LA SOMBRA
+                                blurRadius: 5,
+                                // EFECTO BLUR DE LA SOMBRA
+                                // DONDE SE VA A COLOCAR HORIZONTAL Y VERTICALMENTE
+                                offset: const Offset(2, 4),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: GestureDetector(
+                              onTap: deleteUser,
+                              child: Row(
+                                children: [
+                                  IconClass.iconMaker(
+                                      context, Icons.delete, "delete_account"),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Delete account",
+                                    style: AppStyles.darkPurpleAndBold(18),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../viewmodel/current_time.dart';
 import '../../viewmodel/settings_option/current_configure_timer.dart';
 import '../../viewmodel/settings_option/current_language.dart';
 import '../utilities/app_styles.dart';
@@ -31,6 +32,8 @@ class _ShowTimeScreenState extends State<ShowTimeScreen> {
   int _auxTime = 0; // TIEMPO TRANSCURRIDO EN EL CRONOMETRO
   bool _isCountingDown = false; // ESTADO DE CUENTA ATRAS
   bool _isTimeRunning = false; // ATRIBUTO PARA SABER SI HA EMPEZADO A CRONOMETRARSE
+
+  late CurrentTime currentTime;
 
   // PARA REPRODUCIR LAS ALERTAS
   AudioPlayer audioPlayer = AudioPlayer();
@@ -151,6 +154,13 @@ class _ShowTimeScreenState extends State<ShowTimeScreen> {
         _auxTime++; // INCREMENTAMOS EL TIEMPO EN DECIMAS DE SEGUNDO
         // SE ACTUALIZA EL TEXTO CON EL TIEMPO FORMATEADO
         _showTime = _formatTime();
+
+        if (_auxTime == 35999) {
+          // SI LLEGA A 59:59.9 SE PARA:
+          // 59 MINUTOS = 3540 SEGUNDOS
+          // 3540 * 10 = 35400 DECIMAS + (9.9 SEGUNDOS * 10 = 99 DECIMAS) = 35999
+          _stopCountDown();
+        } // VALIDACION POR SI SE PASA DE TIEMPO
       });
     });
   } // EMPIEZA EL TIMER

@@ -31,9 +31,7 @@ class CurrentNotifications extends ChangeNotifier {
       weeklyMotivation: false,
       newRecordNotification: true,
       trainingReminders: false,
-      weeklySummary: false,
       inactivityNotification: true,
-      weeklyStats: false,
     );
     await notification.saveToPreferences(prefs);
     notifyListeners();
@@ -50,9 +48,7 @@ class CurrentNotifications extends ChangeNotifier {
       weeklyMotivation: false,
       newRecordNotification: false,
       trainingReminders: false,
-      weeklySummary: false,
       inactivityNotification: false,
-      weeklyStats: false,
     );
     await notification.saveToPreferences(prefs);
     notifyListeners();
@@ -78,9 +74,7 @@ class CurrentNotifications extends ChangeNotifier {
           weeklyMotivation: notification.weeklyMotivation,
           newRecordNotification: notification.newRecordNotification,
           trainingReminders: notification.trainingReminders,
-          weeklySummary: notification.weeklySummary,
           inactivityNotification: notification.inactivityNotification,
-          weeklyStats: notification.weeklyStats,
         );
         break;
       case 'dailyNotifications':
@@ -90,9 +84,7 @@ class CurrentNotifications extends ChangeNotifier {
           weeklyMotivation: notification.weeklyMotivation,
           newRecordNotification: notification.newRecordNotification,
           trainingReminders: notification.trainingReminders,
-          weeklySummary: notification.weeklySummary,
           inactivityNotification: notification.inactivityNotification,
-          weeklyStats: notification.weeklyStats,
         );
         break;
       case 'weeklyMotivation':
@@ -102,9 +94,7 @@ class CurrentNotifications extends ChangeNotifier {
           weeklyMotivation: value,
           newRecordNotification: notification.newRecordNotification,
           trainingReminders: notification.trainingReminders,
-          weeklySummary: notification.weeklySummary,
           inactivityNotification: notification.inactivityNotification,
-          weeklyStats: notification.weeklyStats,
         );
         break;
       case 'newRecordNotification':
@@ -114,9 +104,7 @@ class CurrentNotifications extends ChangeNotifier {
           weeklyMotivation: notification.weeklyMotivation,
           newRecordNotification: value,
           trainingReminders: notification.trainingReminders,
-          weeklySummary: notification.weeklySummary,
           inactivityNotification: notification.inactivityNotification,
-          weeklyStats: notification.weeklyStats,
         );
         break;
       case 'trainingReminders':
@@ -126,21 +114,7 @@ class CurrentNotifications extends ChangeNotifier {
           weeklyMotivation: notification.weeklyMotivation,
           newRecordNotification: notification.newRecordNotification,
           trainingReminders: value,
-          weeklySummary: notification.weeklySummary,
           inactivityNotification: notification.inactivityNotification,
-          weeklyStats: notification.weeklyStats,
-        );
-        break;
-      case 'weeklySummary':
-        notification = AppNotification(
-          isActive: notification.isActive,
-          dailyNotifications: notification.dailyNotifications,
-          weeklyMotivation: notification.weeklyMotivation,
-          newRecordNotification: notification.newRecordNotification,
-          trainingReminders: notification.trainingReminders,
-          weeklySummary: value,
-          inactivityNotification: notification.inactivityNotification,
-          weeklyStats: notification.weeklyStats,
         );
         break;
       case 'inactivityNotification':
@@ -150,21 +124,7 @@ class CurrentNotifications extends ChangeNotifier {
           weeklyMotivation: notification.weeklyMotivation,
           newRecordNotification: notification.newRecordNotification,
           trainingReminders: notification.trainingReminders,
-          weeklySummary: notification.weeklySummary,
           inactivityNotification: value,
-          weeklyStats: notification.weeklyStats,
-        );
-        break;
-      case 'weeklyStats':
-        notification = AppNotification(
-          isActive: notification.isActive,
-          dailyNotifications: notification.dailyNotifications,
-          weeklyMotivation: notification.weeklyMotivation,
-          newRecordNotification: notification.newRecordNotification,
-          trainingReminders: notification.trainingReminders,
-          weeklySummary: notification.weeklySummary,
-          inactivityNotification: notification.inactivityNotification,
-          weeklyStats: value,
         );
         break;
     }

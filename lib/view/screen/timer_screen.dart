@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:esteladevega_tfg_cubex/data/dao/cubetype_dao.dart';
 import 'package:esteladevega_tfg_cubex/view/components/cube_header_container.dart';
 import 'package:esteladevega_tfg_cubex/view/components/scramble_container.dart';
 import 'package:esteladevega_tfg_cubex/view/navigation/app_drawer.dart';
@@ -13,15 +10,14 @@ import 'package:esteladevega_tfg_cubex/viewmodel/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../data/dao/supebase/session_dao_sb.dart';
+import '../../data/dao/supebase/time_training_dao_sb.dart';
+import '../../data/dao/supebase/user_dao_sb.dart';
 import '../components/Icon/icon.dart';
-import '../../data/dao/session_dao.dart';
-import '../../data/dao/time_training_dao.dart';
-import '../../data/dao/user_dao.dart';
 import '../../data/database/database_helper.dart';
 import '../../model/time_training.dart';
 import '../components/start_guide/start_guide_component.dart';
 import '../components/waves_painter/small_wave_container_painter.dart';
-import '../utilities/ScrambleGenerator.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
 
 import '../utilities/alert.dart';
@@ -43,11 +39,9 @@ class TimerScreen extends StatefulWidget {
 
 class _TimerScreenState extends State<TimerScreen> {
   TextStyle statsTextStyle = AppStyles.darkPurpleAndBold(15);
-  final userDao = UserDao();
-  final sessionDao = SessionDao();
-  final cubeDao = CubeTypeDao();
-  final timeTrainingDao = TimeTrainingDao();
-  final cubeTypeDao = CubeTypeDao();
+  final userDaoSb = UserDaoSb();
+  final sessionDaoSb = SessionDaoSb();
+  final timeTrainingDaoSb = TimeTrainingDaoSb();
 
   // VALORES DE LAS ESTADISTICAS DE LA SESION
   var averageValue = "--:--.--";
@@ -65,15 +59,14 @@ class _TimerScreenState extends State<TimerScreen> {
   String _finalTime = "0.00";
   // ATRIBUTO PARA COMPARAR EL PB ANTERIOR CON EL TIEMPO QUE HA HECHO PARA MOSTRAR
   // UNA ALERTA SI HA SUPERADO SU PB
-  double auxPbValue = 0;
+  double? auxPbValue;
+  double? auxWorstValue;
+  bool isShowingPbAlert = false;
+  bool isShowingWorstAlert = false;
 
   // KEY DEL ScrambleContainer
   final GlobalKey<ScrambleContainerState> _scrambleKey =
       GlobalKey<ScrambleContainerState>();
-  Scramble scramble = Scramble();
-
-  // RANGO ENTRE 20 A 25 MOVIMIENTOS DE CAPA PARA GENERAR EL SCRAMBLE
-  int random = (Random().nextInt(25 - 20 + 1) + 20);
 
   late CurrentTime currentTime;
 
@@ -85,6 +78,8 @@ class _TimerScreenState extends State<TimerScreen> {
     super.initState();
     // INICIA LAS ESTADISTICAS
     initTimeStatistics();
+    isShowingPbAlert = false;
+    isShowingWorstAlert = false;
     // EJECUTA LA FUNCION DESPUES DE QUE EL FRAME ACTUAL TERMINE DE CONSTRUIRSE,
     // ASI NO CAUSA ERRORES DURANTE EL BUILD PARA HACER CAMBIOS EN EL STATE O EN PROVIDERS
     // (se soluciona el mensaje de error cuando pulsas en el timer de setState() or
@@ -94,6 +89,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
       Provider.of<CurrentTime>(context, listen: false).setResetTimeTraining();
       final currentuser = context.read<CurrentUser>().user;
+      final currentStatistics = context.read<CurrentStatistics>();
 
       if(currentuser!.isSingup! && !currentuser.isLoggedIn){
         // SE CREA EL TUTORIAL AQUI PARA QUE NO HAYA PROBLEMAS CON EL MediaQuery
@@ -105,6 +101,9 @@ class _TimerScreenState extends State<TimerScreen> {
       currentuser.isSingup = false;
       prefs.setBool("isSingup", false);
       prefs.reload();
+
+      auxPbValue = _convertTimeToSeconds(await currentStatistics.getPbValue(isDnfChoose));
+      auxWorstValue = _convertTimeToSeconds(await currentStatistics.getWorstValue(isDnfChoose));
     });
   }
 
@@ -114,7 +113,9 @@ class _TimerScreenState extends State<TimerScreen> {
     // (si ha hecho un tiempo, añadido penalizaciones/comentarios cuando se vaya
     // a otra pestaña, se guardara)
     currentTime.updateCurrentTime(context);
-
+    // DESACTIVAMOS LAS ALERTAS
+    isShowingPbAlert = false;
+    isShowingWorstAlert = false;
     super.dispose();
   }
 
@@ -130,10 +131,12 @@ class _TimerScreenState extends State<TimerScreen> {
     if (!mounted) return;
 
     // OBTENER EL ID DEL USUARIO
-    int? idUser = await userDao.getUserId(context);
-    final session = await sessionDao.getSessionData(context, idUser!);
+    int? idUser = await userDaoSb.getUserId(context);
+    final session = await sessionDaoSb.getSessionData(context, idUser!);
 
-    var timesList = await timeTrainingDao.getTimesOfSession(session!.idSession);
+    var timesList = await timeTrainingDaoSb.getTimesOfSession(session!.idSession);
+
+    if (!mounted) return;
 
     final currentStatistics = context.read<CurrentStatistics>();
     // SE ACTUALIZA EL ESTADO GLOBAL
@@ -187,7 +190,7 @@ class _TimerScreenState extends State<TimerScreen> {
         .i("El tiempo anterior: ${currentTime.timeTraining.toString()}");
 
     // ABRIR LA PANTALLA DE SHOWTIME Y ESPERAR EL RESULTADO
-    final result = await Navigator.push(
+    var result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const ShowTimeScreen(),
@@ -275,8 +278,8 @@ class _TimerScreenState extends State<TimerScreen> {
       double timeInSeconds, String scramble) async {
     try {
       // OBTENER EL ID DEL USUARIO
-      int? idUser = await userDao.getUserId(context);
-      final session = await sessionDao.getSessionData(context, idUser!);
+      int? idUser = await userDaoSb.getUserId(context);
+      final session = await sessionDaoSb.getSessionData(context, idUser!);
 
       final timeTraining = TimeTraining(
         idSession: session!.idSession,
@@ -286,10 +289,10 @@ class _TimerScreenState extends State<TimerScreen> {
       ); // CREAR OBJETO TimeTraining
 
       // INSERTAR EL TIEMPO EN LA BASE DE DATOS
-      final success = await timeTrainingDao.insertNewTime(timeTraining);
+      final success = await timeTrainingDaoSb.insertNewTime(timeTraining);
 
       // MOSTRAR UNA LISTA CON LOS TIEMPOS
-      final result = await timeTrainingDao.getTimesOfSession(session.idSession);
+      final result = await timeTrainingDaoSb.getTimesOfSession(session.idSession);
       DatabaseHelper.logger.i("obtenidas: \n${result.join('\n')}");
 
       if (success) {
@@ -341,7 +344,7 @@ class _TimerScreenState extends State<TimerScreen> {
         );
 
         // SE ACTUALIZA EN LA BASE DE DATOS
-        int idTime = await timeTrainingDao.getIdByTime(
+        int idTime = await timeTrainingDaoSb.getIdByTime(
             currentTime.timeTraining!.scramble,
             currentTime.timeTraining!.idSession);
 
@@ -351,7 +354,7 @@ class _TimerScreenState extends State<TimerScreen> {
         } // VALIDAR QUE EL IDTIME NO DE ERROR
 
         // ACTUALIZAR EL TIEMPO
-        if (await timeTrainingDao.updateTime(idTime, updatedTime) == false) {
+        if (await timeTrainingDaoSb.updateTime(idTime, updatedTime) == false) {
           AlertUtil.showSnackBarError(context, "time_saved_error");
           return;
         } // SI FALLA, SE MUESTRA UN ERROR
@@ -395,6 +398,19 @@ class _TimerScreenState extends State<TimerScreen> {
 
     // EL TIEMPO ACTUAL AUXILIAR CONVERTIDO EN SEGUNDOS
     double auxFinalTime = _convertTimeToSeconds(_finalTime);
+
+    /*if(auxPbValue == null){
+      isShowingPbAlert = false;
+    } else if(auxWorstValue == null){
+      isShowingWorstAlert = false;
+    } else {
+      if(auxFinalTime < auxPbValue!){
+        isShowingPbAlert = true;
+      }
+      if(auxFinalTime > auxWorstValue!){
+        isShowingWorstAlert = true;
+      }
+    }*/
 
     return Scaffold(
       key: _scaffoldKey, // KEY PARA CONTROLLAR EL SCAFFOLD PARA EL DRAWER
@@ -459,7 +475,7 @@ class _TimerScreenState extends State<TimerScreen> {
               onTap: () async {
                 // CUANDO EMPIECE UN TIEMPO NUEVO, SI HA PULSADO ALGUNA PENALIZACION, SE ACTUALIZA EL TIEMPO
                 if (currentTime.isPlusTwoChoose || currentTime.isDnfChoose) {
-                  int idTime = await timeTrainingDao.getIdByTime(
+                  int idTime = await timeTrainingDaoSb.getIdByTime(
                       currentTime.timeTraining!.scramble,
                       currentTime.timeTraining!.idSession);
 
@@ -659,10 +675,10 @@ class _TimerScreenState extends State<TimerScreen> {
           ),
 
           // SI HA SUPERADO SU PB SE MUESTRA UN CONTAINER EN FORMA DE ALERTA
-          Positioned(
+          /*Positioned(
             bottom: 165,
             right: 20,
-            child: auxFinalTime < auxPbValue
+            child: (isShowingPbAlert || isShowingWorstAlert)
                 ? Align(
                     alignment: Alignment.centerRight,
                     child: Container(
@@ -673,10 +689,10 @@ class _TimerScreenState extends State<TimerScreen> {
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                               color: AppColors.lightVioletColor, width: 2)),
-                      child: const Text("¡Has superado tu\nmejor tiempo!"),
+                      child: Text(isShowingWorstAlert ? "Peor tiempo": "¡Has superado tu\nmejor tiempo!"),
                     )
 
-                    /*CustomPaint(
+                    CustomPaint(
                 painter: AlertRecordWave(
                     message: "¡Has superado tu\nmejor tiempo!"
                 ),
@@ -684,10 +700,10 @@ class _TimerScreenState extends State<TimerScreen> {
                   width: 160,
                   height: 80,
                 ),
-              )*/
+              )
                     )
                 : const Text(""),
-          )
+          )*/
         ],
       ),
     );
