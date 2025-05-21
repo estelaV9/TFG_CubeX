@@ -59,17 +59,16 @@ Durante su desarrollo, se han abordado aspectos clave como:
 
 ## Documentación
 - [Documento de la memoria]()
-- [Manual de usuario]()
-- [Documentación técnica del proyecto]()
+- [Manual de usuario](https://github.com/estelaV9/TFG_CubeX/blob/master/deVega_Martin_Estela_Manual_Usuario_ProyectoFinal_DAM25.pdf)
+- [Documentación técnica del proyecto](https://estelav9.github.io/TFG_CubeX_DespliegueDocumentacion/)
 
 ---
 
 ## 📜 Licencia
-
 © 2024/2025 Estela de Vega Martín  
 Este proyecto se encuentra bajo la licencia Copyright 2024/2025, y está protegido por los derechos de autor. El acceso
 es público para su revisión, pero no se permite la modificación ni redistribución sin permiso expreso.
 
 ---
-Proyecto desarrollado como parte del ciclo formativo de grado superior en desarrollo de aplicaciones multiplataforma (DAM).
+Proyecto final desarrollado como última parte del ciclo formativo de grado superior en desarrollo de aplicaciones multiplataforma (DAM).
 >_Estela de Vega Martín | IES Ribera de Castilla_
