@@ -500,6 +500,9 @@
   "weekly_motivation_content": "¡Nueva semana, nuevos récords! Trata de superar tu mejor tiempo esta semana. ¡Tú puedes!",
   "new_record_notification_content": "¡Felicidades! Acabas de batir tu récord personal.",
   "training_reminders_content": "Recuerda practicar tu método favorito hoy. La constancia es la clave para mejorar tus tiempos.",
-  "inactivity_notification_content": "Hace un tiempo que no practicas. ¡Vuelve al cubo y mantén tus dedos ágiles!"
+  "inactivity_notification_content": "Hace un tiempo que no practicas. ¡Vuelve al cubo y mantén tus dedos ágiles!",
+
+  "learn_word": "Aprender",
+  "cube_academy": "Academia del Cubo"
 
 }

@@ -503,5 +503,8 @@
   "weekly_motivation_content": "New week, new records! Try to beat your best time this week. You've got this!",
   "new_record_notification_content": "Congratulations! You just set a new personal record.",
   "training_reminders_content": "Remember to practice your favorite method today. Consistency is key to improving your times.",
-  "inactivity_notification_content": "It’s been a while since you last practiced. Get back to the cube and keep your fingers sharp!"
+  "inactivity_notification_content": "It’s been a while since you last practiced. Get back to the cube and keep your fingers sharp!",
+
+  "learn_word": "Learn",
+  "cube_academy": "Cube Academy"
 }

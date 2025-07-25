@@ -464,6 +464,9 @@ class Internationalization {
       'no_comments': () => l10n.no_comments,
 
       'press_again_to_exit': () => l10n.press_again_to_exit,
+
+      'cube_academy': () => l10n.cube_academy,
+      'learn_word': () => l10n.learn_word,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
