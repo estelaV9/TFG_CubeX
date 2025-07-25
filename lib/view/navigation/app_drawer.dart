@@ -1,5 +1,6 @@
 import 'package:esteladevega_tfg_cubex/data/dao/supebase/user_dao_sb.dart';
 import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
+import 'package:esteladevega_tfg_cubex/view/screen/learn_guide/cube_academy_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/about_app_screen.dart';
 import 'package:esteladevega_tfg_cubex/view/screen/login_screen.dart';
@@ -288,6 +289,13 @@ class _AppDrawerState extends State<AppDrawer> {
                       Icons.palette, "app_theme", const BottomNavigation()),*/
                   listTileGenerator(
                       Icons.person, "my_profile", const MyProfileScreen()),
+
+                  const SizedBox(height: 15),
+
+                  // APRENDER
+                  textTitleListTile("learn_word"),
+                  listTileGenerator(
+                      Icons.school, "cube_academy", const CubeAcademyScreen()),
 
                   /*const SizedBox(height: 15),
 
