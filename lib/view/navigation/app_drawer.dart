@@ -233,10 +233,23 @@ class _AppDrawerState extends State<AppDrawer> {
                             // SE MUESTRA LA IMAGEN A TRAVES DEL URL GUARDADO
                             child: ClipOval(
                               child: Image.network(
-                                imageUrl,
+                                // SI LA URL ES NULA O VACIA, SE PASA UN STRING VACIO
+                                imageUrl ?? '',
                                 fit: BoxFit.cover,
                                 width: 140,
                                 height: 140,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // SI FALLA LA CARGA DE IMAGEN, MOSTRAR ICONO DE PERFIL POR DEFECTO
+                                  return const Icon(Icons.person, size: 40);
+                                },
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  // MIENTRAS SE CARGA, MOSTRAR UN LOADER
+                                  if (loadingProgress == null) return child;
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
                               ),
                             )),
                   ),
