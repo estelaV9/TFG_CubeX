@@ -59,4 +59,14 @@ class AppColors {
 
   /// Color morado oscuro utilizado para el punto de los pbs en la gráfica.
   static const Color pointPbGraphic = Color(0xFF4f3693);
+
+  /// Colores modelado del cubo
+  /// Estos colores representan las caras del cubo de Rubik en la UI.
+  ///
+  /// - `leftColor`: Morado oscuro — Cara izquierda
+  /// - `topColor`: Violeta oscuro — Cara superior
+  /// - `rightColor`: Violeta claro — Cara derecha
+  static const Color leftColor = Color(0xFF7f65cb);
+  static const Color topColor = Color(0xFFb69fff);
+  static const Color rightColor = Color(0xFFe2d6ff);
 }
