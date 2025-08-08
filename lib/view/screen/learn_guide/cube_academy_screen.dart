@@ -1,3 +1,5 @@
+import 'package:esteladevega_tfg_cubex/view/screen/learn_guide/learn_guide_screen.dart';
+import 'package:esteladevega_tfg_cubex/view/utilities/change_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/appbar_class.dart';
@@ -22,12 +24,17 @@ class _CubeAcademyScreenState extends State<CubeAcademyScreen> {
           padding: const EdgeInsets.all(20),
           decoration: AppStyles.boxDecorationContainer(),
           child: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [],
-              ),
+            child: Column(
+              children: [
+                // BOTON DE NAVEGACION A LA GUIA
+                ElevatedButton(
+                  onPressed: () {
+                    ChangeScreen.changeScreen(
+                        const LearnGuideScreen(), context);
+                  },
+                  child: const Text("Go to Learn"),
+                ),
+              ],
             ),
           ),
         ));
