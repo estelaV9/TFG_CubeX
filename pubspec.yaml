@@ -8,6 +8,7 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  carousel_slider: ^5.1.1
   android_intent_plus: ^5.3.0
   supabase_flutter: ^2.8.4
   flutter_dotenv: ^5.2.1
@@ -85,4 +86,7 @@ flutter:
     - family: Broadway
       fonts:
         - asset: assets/fonts/BroadwayFlat.ttf
+    - family: Caprasimo
+      fonts:
+        - asset: assets/fonts/caprasimo-regular.ttf
   uses-material-design: true
