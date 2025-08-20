@@ -468,6 +468,10 @@ class Internationalization {
       'cube_academy': () => l10n.cube_academy,
       'learning_guide': () => l10n.learning_guide,
       'learn_word': () => l10n.learn_word,
+
+      'previous_step': () => l10n.previous_step,
+      'continue_step': () => l10n.continue_step,
+      'complete_step': () => l10n.complete_step,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE
