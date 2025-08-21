@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../viewmodel/current_user.dart';
 import '../../view/navigation/bottom_navigation.dart';
 import '../components/waves_painter/drawer_wave.dart';
+import '../screen/learn_guide/learn_guide_screen.dart';
 import '../utilities/app_styles.dart';
 
 /// Widget que representa el `Drawer` (menú lateral) de la aplicación.
@@ -308,7 +309,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   // APRENDER
                   textTitleListTile("learn_word"),
                   listTileGenerator(
-                      Icons.school, "cube_academy", const CubeAcademyScreen()),
+                      Icons.school, "cube_academy", const LearnGuideScreen()),
 
                   /*const SizedBox(height: 15),
 
