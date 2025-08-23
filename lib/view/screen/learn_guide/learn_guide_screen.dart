@@ -122,6 +122,15 @@ class _LearnGuideScreenState extends State<LearnGuideScreen> {
                           fontFamily: "Caprasimo"),
                     ),
                   )),
+              const SizedBox(height: 20),
+
+              // STEPPER
+              StepperWidget(
+                currentIndex: currentStepIndex,
+                onStepChanged: _onStepChanged,
+                onPrevious: _goToPrevious,
+                onNext: _goToNext,
+              ),
             ],
           ),
         ),
