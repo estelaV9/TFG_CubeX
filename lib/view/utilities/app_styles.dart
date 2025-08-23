@@ -38,7 +38,7 @@ class AppStyles {
       fontSize: 20,
       fontWeight: FontWeight.bold,
       color:
-          isSelected ? AppColors.lightVioletColor : AppColors.darkPurpleColor,
+      isSelected ? AppColors.lightVioletColor : AppColors.darkPurpleColor,
     );
   } // FUNCION PARA EL ESTILO DE TEXTO DEL BOTON
 
@@ -78,13 +78,11 @@ class AppStyles {
   /// - [tooltip]: texto que aparece al hacer hover.
   /// - [text]: el texto visible que se mostrará.
   /// - [style]: estilo del texto.
-  static Widget textWithSemanticsAndTooltip(
-    BuildContext context,
-    String semantic,
-    String tooltip,
-    String text,
-    TextStyle style,
-  ) {
+  static Widget textWithSemanticsAndTooltip(BuildContext context,
+      String semantic,
+      String tooltip,
+      String text,
+      TextStyle style,) {
     final messageSemantic = Internationalization.internationalization
         .getLocalizations(context, semantic);
     final messageTooltip = Internationalization.internationalization
@@ -93,7 +91,10 @@ class AppStyles {
         .getLocalizations(context, text);
 
     // TAMAÑO DE LA PANTALLA
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     final maxTextWidth = screenWidth * 0.25;
 
     return Semantics(
@@ -121,7 +122,7 @@ class AppStyles {
   /// de arriba hacia abajo, utilizando dos colores definidos en `AppColors`
   /// (`upLinearColor` y `downLinearColor`). Este degradado se utiliza como fondo
   /// en varios containers de las pantallas dentro de la aplicación.
-  static BoxDecoration boxDecorationContainer(){
+  static BoxDecoration boxDecorationContainer() {
     return const BoxDecoration(
       // COLOR DEGRADADO PARA EL FONDO
       gradient: LinearGradient(
@@ -134,6 +135,25 @@ class AppStyles {
           AppColors.downLinearColor,
         ],
       ),
+    );
+  }
+
+  /// Devuelve la decoración para el contenedor de la barra de navegación inferior.
+  ///
+  /// Esta función proporciona un `BoxDecoration` con un color de fondo definido
+  /// en `AppColors.downLinearColor` y una sombra sutil hacia arriba.
+  /// La sombra se utiliza para darle profundidad al contenedor y separarlo
+  /// visualmente del contenido superior.
+  static BoxDecoration boxBottomNavigationContainer() {
+    return BoxDecoration(
+      color: AppColors.downLinearColor,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 4,
+          offset: const Offset(0, -2),
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 /// Clase que contiene la paleta de colores utilizada en la aplicación.
 ///
@@ -69,4 +69,16 @@ class AppColors {
   static const Color leftColor = Color(0xFF7f65cb);
   static const Color topColor = Color(0xFFb69fff);
   static const Color rightColor = Color(0xFFe2d6ff);
+
+
+  /// Colores utilizados en el Stepper de la guía de aprendizaje
+  ///
+  /// - `stepCompletedBackground`: Fondo de los pasos completados (morado claro con opacidad)
+  /// - `stepBorderIncomplete`: Borde de los pasos no completados (morado medio)
+  /// - `stepBorderCompleted`: Borde de los pasos completados (blanco semitransparente)
+  /// - `stepTextColorIncomplete`: Color de texto de los pasos no completados (morado oscuro)
+  static const Color stepCompletedBackground = Color(0x989575d3);
+  static const Color stepBorderIncomplete = Color(0xFF8f7bb8);
+  static const Color stepBorderCompleted = Colors.white38;
+  static const Color stepTextColorIncomplete = Color(0xFF29274c);
 }

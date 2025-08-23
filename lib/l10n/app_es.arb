@@ -504,6 +504,9 @@
 
   "learn_word": "Aprender",
   "cube_academy": "Academia del Cubo",
-  "learning_guide": "Guía de Aprendizaje"
+  "learning_guide": "Guía de Aprendizaje",
 
+  "previous_step": "Anterior",
+  "continue_step": "Continuar",
+  "complete_step": "Completado"
 }

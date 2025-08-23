@@ -507,5 +507,9 @@
 
   "learn_word": "Learn",
   "cube_academy": "Cube Academy",
-  "learning_guide": "Learning Guide"
+  "learning_guide": "Learning Guide",
+
+  "previous_step": "Previous",
+  "continue_step": "Continue",
+  "complete_step": "Complete"
 }
