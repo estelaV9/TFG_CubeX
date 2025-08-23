@@ -35,6 +35,53 @@ class LearnGuideScreen extends StatefulWidget {
 }
 
 class _LearnGuideScreenState extends State<LearnGuideScreen> {
+  // VARIABLE DE ESTADO QUE ALMACENA EL INDICE DEL PASO ACTUAL
+  int currentStepIndex = 0;
+
+  /// Metodo que cambia el paso actual al recibir un nuevo index
+  ///
+  /// Parametros:
+  /// - [newIndex]: Indice del paso seleccionado
+  void _onStepChanged(int newIndex) {
+    setState(() {
+      currentStepIndex = newIndex;
+    });
+  }
+
+  /// Metodo que retrocede al paso anterior
+  ///
+  /// Comprueba que el `currentStepIndex` sea mayor que 0 antes de restar,
+  /// evitando salir de los limites
+  void _goToPrevious() {
+    if (currentStepIndex > 0) {
+      setState(() {
+        currentStepIndex--;
+      });
+    } // SI ES MAYOR DE 0
+  }
+
+  /// Metodo que avanza al siguiente paso
+  ///
+  /// Comprueba que el `currentStepIndex` sea menor a 4 antes de sumar.
+  /// (Actualmente el numero maximo de pasos esta fijo en 5, de 0 a 4).
+  void _goToNext() {
+    if (currentStepIndex < 4) {
+      setState(() {
+        currentStepIndex++;
+      });
+    } // SI ES MENOR DE 4
+  }
+
+  /// Metodo que completa el proceso de aprendizaje
+  ///
+  /// Actualmente muestra un `SnackBar` con un mensaje de confirmacion.
+  /// En el futuro se mostrara la mascota felicitando al usuario
+  void _completeProcess() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Proceso completado :)")),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
