@@ -9,11 +9,10 @@ import '../../utilities/app_styles.dart';
 /// Pantalla principal de la guía de aprendizaje.
 ///
 /// Esta pantalla permite al usuario seguir una guía paso a paso para resolver
-/// distintos tipos de cubos utilizando un método específico
-///
-/// Contiene un carrusel para seleccionar el tipo de cubo y muestra un `StepperWidget`
-/// personalizado que guía al usuario a través de los pasos necesarios para completar
-/// el método elegido
+/// distintos tipos de cubos usando un método específico. Contiene un carrusel
+/// para seleccionar el tipo de cubo, gestionado por un `SliverAppBar` que se
+/// expande o colapsa al hacer scroll, y un `StepperWidget` que guia al usuario por
+/// los pasos del metodo.
 ///
 /// Gestiona el estado actual del paso en el que se encuentra el usuario,
 /// permitiendo avanzar, retroceder o completar el proceso.
@@ -88,53 +87,80 @@ class _LearnGuideScreenState extends State<LearnGuideScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        padding: const EdgeInsets.all(20),
         decoration: AppStyles.boxDecorationContainer(),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // FRANJA HORIZONTAL CON LOS TIPOS DE CUBOS A ELEGIR
-              const CubeSelectorRow(),
-              const SizedBox(height: 20),
-              // TITULO A LA IZQUIERDA CON UN FONDO
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: AppColors.downLinearColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Text(
-                      "Método Fridrich",
-                      style: TextStyle(
-                          fontSize: 22,
-                          color: Colors.white,
-                          fontFamily: "Caprasimo"),
-                    ),
-                  )),
-              const SizedBox(height: 20),
+        // SLIVER QUE CONTIENE EL CARROUSEL, QUE SE EXPANDE O COLAPSA AL HACER SCROLL
+        child: CustomScrollView(
+          slivers: [
+            const SliverAppBar(
+              // NO MUESTRA AUTOMATICAMENTE LA FLECHA DE BACK
+              automaticallyImplyLeading: false,
+              // ALTURA EXPANDIDA DEL APPBAR
+              expandedHeight: 170,
+              // EL APPBAR ES TRANSPARENTE
+              backgroundColor: Colors.transparent,
 
-              // STEPPER
-              StepperWidget(
-                currentIndex: currentStepIndex,
-                onStepChanged: _onStepChanged,
-                onPrevious: _goToPrevious,
-                onNext: _goToNext,
+              // ZONA FLEXIBLE DEL APPBAR QUE SE EXPANDE O COLAPSA AL HACER SCROLL (carousel)
+              flexibleSpace: FlexibleSpaceBar(
+                // EFECTO DE PARALLAX AL HACER SCROLL
+                collapseMode: CollapseMode.parallax,
+                // FRANJA HORIZONTAL PARA SELECCIONAR TIPOS DE CUBO
+                background: Padding(
+                  padding: EdgeInsets.only(top: 20, left: 16, right: 16),
+                  child: CubeSelectorRow(),
+                ),
               ),
-            ],
-          ),
+            ),
+            SliverPadding(
+              // ESPACIADO INTERNO DE TODOS LOS ELEMENTOS DEL SLIVERLIST
+              padding: const EdgeInsets.all(16.0),
+              sliver: SliverList(
+                // LISTA DE ELEMENTOS QUE SE MUEVEN CON EL SCROLL
+                delegate: SliverChildListDelegate([
+                  Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      // TITULO A LA IZQUIERDA CON UN FONDO
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: AppColors.downLinearColor,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 6,
+                                  offset: Offset(2, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Text(
+                              "Método Fridrich",
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.white,
+                                  fontFamily: "Caprasimo"),
+                            ),
+                          )),
+                      const SizedBox(height: 20),
+
+                      // STEPPER
+                      StepperWidget(
+                        currentIndex: currentStepIndex,
+                        onStepChanged: _onStepChanged,
+                        onPrevious: _goToPrevious,
+                        onNext: _goToNext,
+                      ),
+                    ],
+                  ),
+                ]),
+              ),
+            ),
+          ],
         ),
       ),
-
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: AppStyles.boxBottomNavigationContainer(),
@@ -150,16 +176,16 @@ class _LearnGuideScreenState extends State<LearnGuideScreen> {
                 // ESTILO DEL BOTON
                 // CAMBIA EL COLOR SEGUN DISPONIBILIDAD
                 backgroundColor:
-                currentStepIndex > 0 ? AppColors.topColor : Colors.grey,
+                    currentStepIndex > 0 ? AppColors.topColor : Colors.grey,
                 // COLOR DEL TEXTO
                 foregroundColor: Colors.white,
                 // ESPACIADO INTERNO DEL BOTON
                 padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               child: Internationalization.internationalization
                   .localizedTextOnlyKey(context, "previous_step",
-                  style: const TextStyle()),
+                      style: const TextStyle()),
             ),
 
             // BOTON PARA IR AL SIGUIENTE PASO O COMPLETAR EL PROCESO
@@ -167,23 +193,23 @@ class _LearnGuideScreenState extends State<LearnGuideScreen> {
               // SI NO ES EL ULTIMO PASO, AVANZA
               onPressed: currentStepIndex < 4
                   ? _goToNext
-              // SI ES EL ULTIMO PASO, COMPLETA EL PROCESO, SI NO, SE DESACTIVA
+                  // SI ES EL ULTIMO PASO, COMPLETA EL PROCESO, SI NO, SE DESACTIVA
                   : (currentStepIndex == 4 ? _completeProcess : null),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.topColor, // COLOR DE FONDO FIJO
                 foregroundColor: Colors.white, // COLOR DEL TEXTO
                 // ESPACIADO INTERNO DEL BOTON
                 padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               // SI ES EL ULTIMO PASO CAMBIA EL TEXTO A "COMPLETE" SI NO SE QUEDA EN "CONTINUE"
               child: currentStepIndex == 4
                   ? Internationalization.internationalization
-                  .localizedTextOnlyKey(context, "complete_step",
-                  style: const TextStyle())
+                      .localizedTextOnlyKey(context, "complete_step",
+                          style: const TextStyle())
                   : Internationalization.internationalization
-                  .localizedTextOnlyKey(context, "continue_step",
-                  style: const TextStyle()),
+                      .localizedTextOnlyKey(context, "continue_step",
+                          style: const TextStyle()),
             ),
           ],
         ),
