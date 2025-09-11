@@ -472,6 +472,7 @@ class Internationalization {
       'previous_step': () => l10n.previous_step,
       'continue_step': () => l10n.continue_step,
       'complete_step': () => l10n.complete_step,
+      'change_cube_method': () => l10n.change_cube_method,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

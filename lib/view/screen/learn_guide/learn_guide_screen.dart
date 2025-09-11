@@ -1,9 +1,9 @@
 import 'package:esteladevega_tfg_cubex/view/components/learn_guide/stepper/stepper_widget.dart';
-import 'package:esteladevega_tfg_cubex/view/utilities/app_color.dart';
-import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
+import 'package:esteladevega_tfg_cubex/view/components/learn_guide/title_method.dart';
 import 'package:flutter/material.dart';
 import '../../components/appbar_class.dart';
 import '../../components/learn_guide/cube_selector_row.dart';
+import '../../components/learn_guide/stepper/navigation_buttons_stepper.dart';
 import '../../utilities/app_styles.dart';
 
 /// Pantalla principal de la guía de aprendizaje.
@@ -119,31 +119,9 @@ class _LearnGuideScreenState extends State<LearnGuideScreen> {
                   Column(
                     children: [
                       const SizedBox(height: 10),
-                      // TITULO A LA IZQUIERDA CON UN FONDO
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: AppColors.downLinearColor,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 6,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                            child: const Text(
-                              "Método Fridrich",
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  color: Colors.white,
-                                  fontFamily: "Caprasimo"),
-                            ),
-                          )),
+                      // TITULO DEL METODO A LA IZQUIERDA CON UN FONDO
+                      const TitleMethod(),
+
                       const SizedBox(height: 20),
 
                       // STEPPER
@@ -161,58 +139,11 @@ class _LearnGuideScreenState extends State<LearnGuideScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: AppStyles.boxBottomNavigationContainer(),
-        child: Row(
-          // FILA PARA PONER LOS BOTONES DE PREVIOUS Y CONTINUE
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // BOTON PARA IR AL PASO ANTERIOR
-            ElevatedButton(
-              // SI NO HAY PASO ANTERIOR, EL BOTON SE DESACTIVA
-              onPressed: currentStepIndex > 0 ? _goToPrevious : null,
-              style: ElevatedButton.styleFrom(
-                // ESTILO DEL BOTON
-                // CAMBIA EL COLOR SEGUN DISPONIBILIDAD
-                backgroundColor:
-                    currentStepIndex > 0 ? AppColors.topColor : Colors.grey,
-                // COLOR DEL TEXTO
-                foregroundColor: Colors.white,
-                // ESPACIADO INTERNO DEL BOTON
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: Internationalization.internationalization
-                  .localizedTextOnlyKey(context, "previous_step",
-                      style: const TextStyle()),
-            ),
-
-            // BOTON PARA IR AL SIGUIENTE PASO O COMPLETAR EL PROCESO
-            ElevatedButton(
-              // SI NO ES EL ULTIMO PASO, AVANZA
-              onPressed: currentStepIndex < 4
-                  ? _goToNext
-                  // SI ES EL ULTIMO PASO, COMPLETA EL PROCESO, SI NO, SE DESACTIVA
-                  : (currentStepIndex == 4 ? _completeProcess : null),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.topColor, // COLOR DE FONDO FIJO
-                foregroundColor: Colors.white, // COLOR DEL TEXTO
-                // ESPACIADO INTERNO DEL BOTON
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              // SI ES EL ULTIMO PASO CAMBIA EL TEXTO A "COMPLETE" SI NO SE QUEDA EN "CONTINUE"
-              child: currentStepIndex == 4
-                  ? Internationalization.internationalization
-                      .localizedTextOnlyKey(context, "complete_step",
-                          style: const TextStyle())
-                  : Internationalization.internationalization
-                      .localizedTextOnlyKey(context, "continue_step",
-                          style: const TextStyle()),
-            ),
-          ],
-        ),
+      bottomNavigationBar: NavigationButtonsStepper(
+        currentStepIndex: currentStepIndex,
+        goToPrevious: _goToPrevious,
+        goToNext: _goToNext,
+        completeProcess: _completeProcess,
       ),
     );
   }

@@ -511,5 +511,7 @@
 
   "previous_step": "Previous",
   "continue_step": "Continue",
-  "complete_step": "Complete"
+  "complete_step": "Complete",
+
+  "change_cube_method": "Tap to change the cube method"
 }

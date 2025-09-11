@@ -169,7 +169,7 @@ class StepperWidgetState extends State<StepperWidget> {
                 },
                 child: Container(
                   width: 50,
-                  height: 50,
+                  height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
 

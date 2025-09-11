@@ -508,5 +508,7 @@
 
   "previous_step": "Anterior",
   "continue_step": "Continuar",
-  "complete_step": "Completado"
+  "complete_step": "Completado",
+
+  "change_cube_method": "Toca para cambiar el método del cubo"
 }

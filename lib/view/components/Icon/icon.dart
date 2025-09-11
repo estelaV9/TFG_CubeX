@@ -44,11 +44,12 @@ class IconClass {
   /// - `colors`: Color para el icono opcional, el cual por defecto será un morado oscuro.
   /// - `size`: El tamaño del icono del botón. Si es `null`, pondrá el valor predeterminado.
   /// - `padding`: Padding del botón. Si es `null`, aplica el padding predeterminado.
+  /// - `disableColor`: Color que se aplicará al ícono cuando el botón esté deshabilitado.
   static IconButton iconButton(
       BuildContext context, Function()? function, String tooltip, IconData icon,
       [Color? colors = AppColors.darkPurpleColor,
       double? size,
-      EdgeInsetsGeometry? padding]) {
+      EdgeInsetsGeometry? padding, Color? disableColor]) {
     final messageTooltip = Internationalization.internationalization
         .getLocalizations(context, tooltip);
 
@@ -57,6 +58,7 @@ class IconClass {
         color: colors,
         padding: padding,
         tooltip: messageTooltip,
+        disabledColor: disableColor,
         icon: Icon(icon, size: size));
   } // METODO QUE DEVUELVE UN ICONBUTTON
 
