@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Clase que representa un metodo de un tipo de cubo.
-/// Contiene información básica como el nombre y el cubo asociado.
+/// Contiene información básica como el nombre y el nombre del cubo asociado.
 class Method {
   /// Identificador único del metodo
   int? idMethod;
@@ -9,15 +9,15 @@ class Method {
   /// Nombre del metodo.
   String methodName;
 
-  /// Identificador del tipo de cubo asociado al metodo (opcional).
-  int? idCubeType;
+  /// Nombre del tipo de cubo del metodo.
+  String cubeTypeName;
 
   /// Constructor para inicializar un metodo.
-  Method({this.idMethod, required this.methodName, this.idCubeType});
+  Method({this.idMethod, required this.methodName, required this.cubeTypeName});
 
   @override
   String toString() {
-    return 'Method{idMethod: $idMethod, methodName: $methodName, idCubeType: $idCubeType}';
+    return 'Method{idMethod: $idMethod, methodName: $methodName, cubeTypeName: $cubeTypeName}';
   }
 
   /// Instancia de las preferencias.
@@ -29,7 +29,7 @@ class Method {
     if (preferences.getKeys().isEmpty) {
       await preferences.setInt("idMethod", -1);
       await preferences.setString("methodName", "");
-      await preferences.setInt("idCubeType", -1);
+      await preferences.setString("cubeTypeName", "");
     }
   }
 
@@ -37,7 +37,7 @@ class Method {
   Future<void> saveToPreferences(SharedPreferences prefs) async {
     await prefs.setInt("idMethod", idMethod!);
     await prefs.setString("methodName", methodName);
-    await prefs.setInt("idCubeType", idCubeType!);
+    await prefs.setString("cubeTypeName", cubeTypeName);
   }
 
   /// Recupera un objeto `Method` desde los datos guardados en `SharedPreferences`.
@@ -45,7 +45,7 @@ class Method {
     return Method(
       idMethod: prefs.getInt("idMethod") ?? -1,
       methodName: prefs.getString("methodName") ?? "",
-      idCubeType: prefs.getInt("idCubeType") ?? -1,
+      cubeTypeName: prefs.getString("cubeTypeName") ?? "",
     );
   }
 }
