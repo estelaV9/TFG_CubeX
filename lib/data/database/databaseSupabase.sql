@@ -44,8 +44,8 @@ CREATE TABLE timeTraining (
 CREATE TABLE method (
   idMethod SERIAL PRIMARY KEY,
   methodName TEXT NOT NULL,
-  -- CADA METODO PERTENECE A UN TIPO DE CUBO
-  idCubeType INTEGER NOT NULL REFERENCES cubeType(idCubeType)
+  -- NOMBRE DEL TIPO DE CUBO RELACIONADO AL METODO
+  cubeTypeName TEXT NOT NULL
 );
 
 CREATE TABLE step (
@@ -71,4 +71,33 @@ CREATE TABLE stepContent (
   orderIndex INTEGER DEFAULT 0,
   -- CADA PASO TIENE MUCHOS CONTENIDOS
   idStep INTEGER NOT NULL REFERENCES step(idStep)
+);
+
+
+INSERT INTO method (methodName, cubeTypeName) VALUES ('beginner_method_name', '2x2x2');
+INSERT INTO method (methodName, cubeTypeName) VALUES ('beginner_method_name', '4x4x4');
+INSERT INTO method (methodName, cubeTypeName) VALUES ('beginner_method_name', '3x3x3');
+INSERT INTO method (methodName, cubeTypeName) VALUES ('reduced_fridrich_method_name', '3x3x3');
+INSERT INTO method (methodName, cubeTypeName) VALUES ('advanced_fridrich_method_name', '3x3x3');
+
+INSERT INTO step (stepTitle, stepNumber, idMethod) VALUES (
+  'cross_step_title', 1, (SELECT idMethod FROM method WHERE cubeTypeName = '3x3x3' AND methodName = 'beginner_method_name')
+);
+INSERT INTO step (stepTitle, stepNumber, idMethod) VALUES (
+  'first_layer_step_title', 2, (SELECT idMethod FROM method WHERE cubeTypeName = '3x3x3' AND methodName = 'beginner_method_name')
+);
+INSERT INTO step (stepTitle, stepNumber, idMethod) VALUES (
+  'second_layer_step_title', 3, (SELECT idMethod FROM method WHERE cubeTypeName = '3x3x3' AND methodName = 'beginner_method_name')
+);
+INSERT INTO step (stepTitle, stepNumber, idMethod) VALUES (
+  'orient_last_layer_step_title', 4, (SELECT idMethod FROM method WHERE cubeTypeName = '3x3x3' AND methodName = 'beginner_method_name')
+);
+INSERT INTO step (stepTitle, stepNumber, idMethod) VALUES (
+  'permute_last_layer_step_title', 5, (SELECT idMethod FROM method WHERE cubeTypeName = '3x3x3' AND methodName = 'beginner_method_name')
+);
+INSERT INTO step (stepTitle, stepNumber, idMethod) VALUES (
+  'not_available', 1, (SELECT idMethod FROM method WHERE cubeTypeName = '2x2x2' AND methodName = 'beginner_method_name')
+);
+INSERT INTO step (stepTitle, stepNumber, idMethod) VALUES (
+  'not_available', 1, (SELECT idMethod FROM method WHERE cubeTypeName = '4x4x4' AND methodName = 'beginner_method_name')
 );
