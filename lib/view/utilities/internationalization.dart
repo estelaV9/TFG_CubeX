@@ -473,6 +473,16 @@ class Internationalization {
       'continue_step': () => l10n.continue_step,
       'complete_step': () => l10n.complete_step,
       'change_cube_method': () => l10n.change_cube_method,
+
+      'beginner_method_name': () => l10n.beginner_method_name,
+      'reduced_fridrich_method_name': () => l10n.reduced_fridrich_method_name,
+      'advanced_fridrich_method_name': () => l10n.advanced_fridrich_method_name,
+      'cross_step_title': () => l10n.cross_step_title,
+      'first_layer_step_title': () => l10n.first_layer_step_title,
+      'second_layer_step_title': () => l10n.second_layer_step_title,
+      'orient_last_layer_step_title': () => l10n.orient_last_layer_step_title,
+      'permute_last_layer_step_title': () => l10n.permute_last_layer_step_title,
+      'not_available_step_title': () => l10n.not_available_step_title,
     }; // SEGUN LA PALABRA QUE LE PASEMOS RETORNARA LA TRADUCCION DE ESA CLAVE
 
     // SI LA CLAVE NO EXISTE EN LA TRADUCCION, DEVUELVE LA CLAVE

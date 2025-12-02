@@ -513,5 +513,16 @@
   "continue_step": "Continue",
   "complete_step": "Complete",
 
-  "change_cube_method": "Tap to change the cube method"
+  "change_cube_method": "Tap to change the cube method",
+
+  "beginner_method_name": "Beginner",
+  "reduced_fridrich_method_name": "Reduced Fridrich",
+  "advanced_fridrich_method_name": "Advanced Fridrich",
+
+  "cross_step_title": "Cross",
+  "first_layer_step_title": "1st Layer",
+  "second_layer_step_title": "2nd Layer",
+  "orient_last_layer_step_title": "Orient Last Layer",
+  "permute_last_layer_step_title": "Permute Last Layer",
+  "not_available_step_title": "Not Available"
 }
