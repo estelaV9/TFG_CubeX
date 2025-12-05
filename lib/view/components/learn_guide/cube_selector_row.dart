@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../viewmodel/cube_selection_provider.dart';
+import '../../../viewmodel/learn_guide/cube_selection_provider.dart';
 
 /// Widget que muestra una franja horizontal con un carrusel de cubos
 /// para seleccionar el tipo de cubo en la guia de aprendizaje.

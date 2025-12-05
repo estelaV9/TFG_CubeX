@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/dao/supebase/method_dao_sb.dart';
-import '../../../viewmodel/cube_selection_provider.dart';
+import '../../../viewmodel/learn_guide/cube_selection_provider.dart';
 import '../../utilities/app_color.dart';
 import '../Icon/icon.dart';
 
