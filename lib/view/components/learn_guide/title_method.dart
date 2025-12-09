@@ -1,8 +1,7 @@
 import 'package:esteladevega_tfg_cubex/view/utilities/internationalization.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/learn_guide/method_selection_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../data/dao/supebase/method_dao_sb.dart';
 import '../../../viewmodel/learn_guide/cube_selection_provider.dart';
 import '../../utilities/app_color.dart';
 import '../Icon/icon.dart';
@@ -14,10 +13,10 @@ import '../Icon/icon.dart';
 /// según el tipo de cubo que haya elegido el usuario.
 ///
 /// ### Características:
-/// - El valor inicial del desplegable es el primer método de la lista.
-/// - Incluye un `Tooltip` con el mensaje internacionalizado.
-/// - Los métodos se cargan desde la base de datos según el tipo de cubo seleccionado.
-/// - Muestra un indicador de carga hasta que los métodos han sido obtenidos.
+/// - Carga automaticamente la lista de metodos disponibles segun el cubo.
+/// - Restaura el metodo guardado previamente en `SharedPreferences`.
+/// - Permite cambiar el metodo y lo guarda de nuevo.
+/// - Muestra un indicador de carga mientras se obtienen los datos.
 ///
 /// Al seleccionar una nueva opción, el estado del widget se actualiza con el
 /// método elegido.
@@ -29,129 +28,112 @@ class TitleMethod extends StatefulWidget {
 }
 
 class _TitleMethodState extends State<TitleMethod> {
-  // LISTA DE METODOS DEL TIPO DE CUBO
-  MethodDaoSb methodDaoSb = MethodDaoSb();
-  List<String> listOfMethods = [];
-  bool isLoading = true;
+  // ALMACENA EL ULTIMO CUBO PARA DETECTAR CAMBIOS
+  String? _lastCube;
 
-  // VALOR DEL DROPDOWNBUTTON
-  late String? dropdownValue;
-
-  @override
-  void initState() {
-    super.initState();
-    isLoading = true;
-    // CARGAR LOS METODOS DEL DDB Y DARLE EL VALOR INICIAL
-    final cubeProvider =
-        Provider.of<CubeSelectionProvider>(context, listen: false);
-    _loadMethods(cubeProvider.selectedCube);
-  }
-
-  /// Carga los métodos de resolución asociados al tipo de cubo indicado
-  /// en [cubeName] y actualiza el estado del widget.
+  /// Método del ciclo de vida que se ejecuta cuando cambian dependencias
+  /// obtenidas mediante Provider.of(context).
   ///
-  /// *Características*:
-  /// - Limpia la lista anterior.
-  /// - Añade los métodos obtenidos desde la base de datos aplicando internacionalización.
-  /// - Establece el valor inicial del `DropdownButton`.
-  /// - Actualiza el indicador de carga.
-  Future<void> _loadMethods(String cubeName) async {
-    // METODOS DE UN CUBO
-    final loadedMethods = await methodDaoSb.getMethods(cubeName);
+  /// Características:
+  /// - Detectar si el usuario ha cambiado el tipo de cubo en la app.
+  /// - Volver a cargar los métodos correspondientes a ese cubo.
+  /// - Restaurar el método seleccionado anteriormente desde SharedPreferences.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    // LIMPIAMOS LA LISTA POR SI CAMBIA DE CUBO
-    listOfMethods.clear();
+    final cubeProvider = Provider.of<CubeSelectionProvider>(context);
+    final methodProvider =
+        Provider.of<MethodSelectionProvider>(context, listen: false);
 
-    for (final method in loadedMethods) {
-      listOfMethods.add(
-        // GUARDAMOS LOS DATOS INTERNACIONALIZANDO
-        Internationalization.internationalization
-            .getLocalizations(context, method.methodName),
-      );
-    } // RECORREMOS LOS DATOS OBTENIDOS Y LOS AÑADIMOS A LA LISTA DE METODO
+    if (_lastCube != cubeProvider.selectedCube) {
+      _lastCube = cubeProvider.selectedCube;
 
-    setState(() {
-      // SETTEAMOS LOS VALORES DE LOS METODOS Y AÑADIMOS EL PRIMER VALOR DEL DDB
-      dropdownValue = listOfMethods.isNotEmpty ? listOfMethods.first : null;
-      isLoading = listOfMethods.isEmpty; // DEJA DE CARGAR EL PRIMER VALOR
-    });
+      // CARGA LOS METODOS Y EL METODO SELECCIONADO GUARDADO guardado
+      methodProvider.loadMethods(_lastCube!, context);
+    } // SI EL CUBO HA CAMBIADO, CARGAMOS SUS METODOS
   }
 
   @override
   Widget build(BuildContext context) {
-    // SI CAMBIA DE CUBO CAMBIA
-    final cubeProvider =
-        Provider.of<CubeSelectionProvider>(context, listen: false);
-    _loadMethods(cubeProvider.selectedCube);
+    final cubeName = Provider.of<CubeSelectionProvider>(context).selectedCube;
+    final methodProvider = Provider.of<MethodSelectionProvider>(context);
+
     return Align(
         alignment: Alignment.centerLeft,
-        child: GestureDetector(
-          onTap: () {},
-          child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              decoration: BoxDecoration(
-                color: AppColors.downLinearColor,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: Tooltip(
-                message: Internationalization.internationalization
-                    .getLocalizations(context, "change_cube_method"),
-                child: isLoading == true
-                    ? const CircularProgressIndicator()
-                    : DropdownButton(
-                        isExpanded: true,
-                        // shrink() ELIMINA EL HUECO DEL ICONO
-                        icon: const SizedBox.shrink(),
-                        dropdownColor: AppColors.downLinearColor,
-                        value: dropdownValue,
-                        iconDisabledColor: Colors.black,
-                        // QUITAR EL SUBRAYADO
-                        underline: const SizedBox(),
-                        borderRadius: BorderRadius.circular(12),
-                        style: const TextStyle(
-                            fontSize: 25,
-                            color: Colors.white,
-                            fontFamily: "Caprasimo"),
-                        items: listOfMethods
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                              value: value, child: Text(value));
-                        }).toList(),
-                        selectedItemBuilder: (BuildContext context) {
-                          return listOfMethods.map((String value) {
-                            return Row(
-                              //mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(value),
-                                // ICONO
-                                IconClass.iconButton(
-                                    context,
-                                    null,
-                                    "",
-                                    Icons.swap_horiz,
-                                    null,
-                                    30,
-                                    const EdgeInsets.all(0),
-                                    Colors.white),
-                              ],
-                            );
-                          }).toList();
-                        },
-                        onChanged: (String? value) {
-                          setState(() {
-                            dropdownValue = value!;
-                          });
-                        },
-                      ),
-              )),
-        ));
+        child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              color: AppColors.downLinearColor,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 6,
+                  offset: Offset(2, 2),
+                ),
+              ],
+            ),
+            child: Tooltip(
+              message: Internationalization.internationalization
+                  .getLocalizations(context, "change_cube_method"),
+              child: methodProvider.isLoading == true
+                  ? const CircularProgressIndicator()
+                  : DropdownButton(
+                      isExpanded: true,
+                      // shrink() ELIMINA EL HUECO DEL ICONO
+                      icon: const SizedBox.shrink(),
+                      dropdownColor: AppColors.downLinearColor,
+                      value: methodProvider.selectedMethod,
+                      iconDisabledColor: Colors.black,
+                      // QUITAR EL SUBRAYADO
+                      underline: const SizedBox(),
+                      borderRadius: BorderRadius.circular(12),
+                      style: const TextStyle(
+                          fontSize: 25,
+                          color: Colors.white,
+                          fontFamily: "Caprasimo"),
+
+                      // ITEMS DEL DESPLEGABLE
+                      items: methodProvider.methods
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                          onTap: () {
+                            // GUARDAR EL METODO CUANDO SE SELECCIONA EN LA LISTA
+                            methodProvider.setSelectedMethod(value, cubeName);
+                          },
+                        );
+                      }).toList(),
+
+                      // TEXTO DEL ITEM SELECCIONADO
+                      selectedItemBuilder: (BuildContext context) {
+                        return methodProvider.methods.map((String value) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(value),
+                              // ICONO
+                              IconClass.iconButton(
+                                  context,
+                                  null,
+                                  "",
+                                  Icons.swap_horiz,
+                                  null,
+                                  30,
+                                  const EdgeInsets.all(0),
+                                  Colors.white),
+                            ],
+                          );
+                        }).toList();
+                      },
+                      onChanged: (String? value) {
+                        if (value != null) {
+                          methodProvider.setSelectedMethod(value, cubeName);
+                        }
+                      },
+                    ),
+            )));
   }
 }
