@@ -43,8 +43,7 @@ class _TitleMethodState extends State<TitleMethod> {
     super.didChangeDependencies();
 
     final cubeProvider = Provider.of<CubeSelectionProvider>(context);
-    final methodProvider =
-        Provider.of<MethodSelectionProvider>(context, listen: false);
+    final methodProvider = Provider.of<MethodSelectionProvider>(context);
 
     if (_lastCube != cubeProvider.selectedCube) {
       _lastCube = cubeProvider.selectedCube;
@@ -52,6 +51,9 @@ class _TitleMethodState extends State<TitleMethod> {
       // CARGA LOS METODOS Y EL METODO SELECCIONADO GUARDADO guardado
       methodProvider.loadMethods(_lastCube!, context);
     } // SI EL CUBO HA CAMBIADO, CARGAMOS SUS METODOS
+
+    // ACTUALIZAR ID DEL METODO
+    methodProvider.setIdMethod(methodProvider.selectedMethod, _lastCube!);
   }
 
   @override
@@ -99,7 +101,8 @@ class _TitleMethodState extends State<TitleMethod> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(Internationalization.internationalization
+                              .getLocalizations(context, value)),
                           onTap: () {
                             // GUARDAR EL METODO CUANDO SE SELECCIONA EN LA LISTA
                             methodProvider.setSelectedMethod(value, cubeName);
@@ -113,7 +116,8 @@ class _TitleMethodState extends State<TitleMethod> {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(value),
+                              Text(Internationalization.internationalization
+                                  .getLocalizations(context, value)),
                               // ICONO
                               IconClass.iconButton(
                                   context,
