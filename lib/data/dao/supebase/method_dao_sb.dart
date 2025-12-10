@@ -68,4 +68,35 @@ class MethodDaoSb {
       return false; // DEVUELVE FALSE EN CASO DE ERROR
     }
   } // METODO PARA INSERTAR UN NUEVO METODO
+
+  /// Obtiene el **ID del metodo** segun su nombre y el tipo de cubo.
+  ///
+  /// Parametros:
+  /// - [methodName]: nombre del metodo (sin traducir)
+  /// - [cubeName]: nombre del cubo al que pertenece el metodo
+  ///
+  /// Retorna:
+  /// - El ID del metodo si existe.
+  /// - `-1` si no se encontro ningun registro o si ocurre un error.
+  Future<int> getIdByNameAndCube(String methodName, String cubeName) async {
+    try {
+      // CONSULTA PARA OBTENER EL ID DEL METODO DEL CUBO
+      final response = await _client
+          .from('method')
+          .select('idmethod')
+          .eq('methodname', methodName)
+          .eq('cubetypename', cubeName)
+          .maybeSingle();
+
+      if (response != null) {
+        return response['idmethod'];
+      } // SI NO ES NULO, RETORNA EL ID
+
+      // DEVUELVE -1 SI NO SE ENCONTRO NADA
+      return -1;
+    } catch (e) {
+      DatabaseHelper.logger.e('Error al buscar ID por nombre del metodo: $e');
+      return -1; // DEVUELVE -1 EN CASO DE ERROR
+    }
+  }
 }
