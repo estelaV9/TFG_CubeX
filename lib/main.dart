@@ -5,6 +5,7 @@ import 'package:esteladevega_tfg_cubex/view/screen/settings.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/learn_guide/cube_selection_provider.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/current_cube_type.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/learn_guide/method_selection_provider.dart';
+import 'package:esteladevega_tfg_cubex/viewmodel/learn_guide/step_selection_provider.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_configure_timer.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_language.dart';
 import 'package:esteladevega_tfg_cubex/viewmodel/settings_option/current_notifications.dart';
@@ -79,6 +80,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CurrentUsageTimer()..start()),
         ChangeNotifierProvider(create: (_) => CubeSelectionProvider()),
         ChangeNotifierProvider(create: (_) => MethodSelectionProvider()),
+        ChangeNotifierProvider(create: (_) => StepSelectionProvider()),
       ],
       child: const CubeXApp(), // SE INICIA LA APLICACIÓN
     ),
