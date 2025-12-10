@@ -1,15 +1,13 @@
 import 'package:esteladevega_tfg_cubex/data/dao/supebase/method_dao_sb.dart';
+import 'package:esteladevega_tfg_cubex/data/database/database_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../view/utilities/internationalization.dart';
 
 /// Provider encargado de gestionar la seleccion del metodo de resolucion
 /// del cubo actualmente elegido.
 ///
 /// Este provider se encarga de:
-/// - Obtener los metodos disponibles desde la base de datos.
-/// - Internacionalizar los nombres de cada metodo.
+/// - Obtener los metodos disponibles con su ID desde la base de datos.
 /// - Restaurar automaticamente el metodo seleccionado previamente
 ///   para cada tipo de cubo.
 /// - Guardar las preferencias del usuario en `SharedPreferences`.
@@ -28,6 +26,9 @@ class MethodSelectionProvider with ChangeNotifier {
   // INDICA SI SE ESTAN CARGANDO LOS METODOS
   bool _isLoading = false;
 
+  // ID DEL METODO ACTUAL
+  int _idMethod = -1;
+
   /// Devuelve la lista de métodos disponibles
   List<String> get methods => _methods;
 
@@ -36,6 +37,9 @@ class MethodSelectionProvider with ChangeNotifier {
 
   /// Devuelve si estan o no cargando los metodos
   bool get isLoading => _isLoading;
+
+  /// Devuelve el ID del metodo seleccionado
+  int get idMethod => _idMethod;
 
   /// Carga los metodos correspondientes al cubo especificado en [cubeName].
   ///
@@ -58,11 +62,8 @@ class MethodSelectionProvider with ChangeNotifier {
     _methods.clear();
 
     for (final method in loadedMethods) {
-      _methods.add(
-        Internationalization.internationalization
-            .getLocalizations(context, method.methodName),
-      );
-    } // GUARDAR LOS METODOS INTERNACIONALIZADOS
+      _methods.add(method.methodName);
+    } // GUARDAR LOS METODOS
 
     if (savedMethod != null && _methods.contains(savedMethod)) {
       _selectedMethod = savedMethod;
@@ -84,5 +85,30 @@ class MethodSelectionProvider with ChangeNotifier {
     // GUARDA LAS PREFERENCIAS EN EL SHARED PREFERENCES
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('selected_method_$cubeName', method);
+  }
+
+  /// Obtiene y guarda el **ID del método** según su nombre y el cubo seleccionado.
+  ///
+  /// Parámetros:
+  /// - [methodName]: Nombre del método seleccionado.
+  /// - [cubeName]: Nombre del cubo seleccionado.
+  ///
+  /// Si el ID es válido, lo asigna al provider, notifica a los listeners y lo
+  /// almacena en [SharedPreferences].
+  /// Si no es válido, registra un error.
+  Future<void> setIdMethod(String methodName, String cubeName) async {
+    int id = await _methodDaoSb.getIdByNameAndCube(methodName, cubeName);
+
+    if (id != -1) {
+      _idMethod = id;
+      notifyListeners();
+
+      // GUARDA LAS PREFERENCIAS EN EL SHARED PREFERENCES
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('idMethod', _idMethod);
+    } else {
+      DatabaseHelper.logger.e("Ocurrio un error con el id del metodo: "
+          "$_idMethod  |  $id  |  $methodName  |  $cubeName");
+    }
   }
 }
